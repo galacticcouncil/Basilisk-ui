@@ -8,7 +8,7 @@ type MenuListProps = {
 
 export const MenuList: FC<MenuListProps> = ({ items }) => (
   <Box flex gap={30}>
-    {items.map(item => (
+    {items.map((item) => (
       <MenuItem text={item.text} active={item.active} />
     ))}
   </Box>

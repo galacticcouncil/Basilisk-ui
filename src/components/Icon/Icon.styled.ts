@@ -6,7 +6,7 @@ export const StyledIconWrapper = styled.span<IconProps>`
   display: flex;
   ${size};
   ${margins};
-  ${p =>
+  ${(p) =>
     p.size &&
     css`
       width: ${p.size}px;
