@@ -11,31 +11,31 @@ export const StyledButton = styled.button<ButtonProps>`
   font-size: 14px;
   text-transform: uppercase;
 
-  ${p =>
+  ${(p) =>
     p.variant === "primary"
       ? p.disabled
         ? css`
-            background: rgba(${theme.rgbColors.primarySuccess100}, 0.06);
+            background: rgba(${theme.rgbColors.primary100}, 0.06);
             color: rgba(${theme.rgbColors.white}, 0.6);
             pointer-events: none;
           `
         : css`
             color: ${theme.colors.backgroundGray800};
-            background: ${theme.colors.primarySuccess400};
+            background: ${theme.colors.primary400};
 
             :hover {
-              background: ${theme.colors.primarySuccess300};
+              background: ${theme.colors.primary300};
               transition: background 0.2s ease-in-out;
             }
 
             :active {
-              background: ${theme.colors.primarySuccess500};
+              background: ${theme.colors.primary500};
               transition: background 0.2s ease-in-out;
             }
           `
       : ``}
 
-  ${p =>
+  ${(p) =>
     p.size === "small" &&
     css`
       padding: 12px 15px;
@@ -43,7 +43,7 @@ export const StyledButton = styled.button<ButtonProps>`
       line-height: 18px;
     `};
 
-  ${p =>
+  ${(p) =>
     p.size === "medium" &&
     css`
       padding: 16px 36px;
@@ -56,13 +56,13 @@ export const StyledButton = styled.button<ButtonProps>`
       line-height: 16px;
     `};
 
-  ${p =>
+  ${(p) =>
     p.fullWidth &&
     css`
       width: 100%;
     `};
 
-  ${p =>
+  ${(p) =>
     p.variant === "gradient" &&
     css`
       background: ${theme.gradients.primaryGradient};
@@ -88,7 +88,7 @@ export const StyledButton = styled.button<ButtonProps>`
       }
     `};
 
-  ${p =>
+  ${(p) =>
     p.variant === "secondary"
       ? p.disabled
         ? css`
@@ -97,16 +97,16 @@ export const StyledButton = styled.button<ButtonProps>`
             pointer-events: none;
           `
         : css`
-            background: rgba(${theme.rgbColors.primarySuccess450}, 0.12);
-            color: ${theme.colors.primarySuccess400};
+            background: rgba(${theme.rgbColors.primary450}, 0.12);
+            color: ${theme.colors.primary400};
 
             :hover {
-              background: rgba(${theme.rgbColors.primarySuccess450}, 0.3);
+              background: rgba(${theme.rgbColors.primary450}, 0.3);
               transition: background 0.2s ease-in-out;
             }
 
             :active {
-              background: rgba(${theme.rgbColors.primarySuccess450}, 0.5);
+              background: rgba(${theme.rgbColors.primary450}, 0.5);
               transition: background 0.2s ease-in-out;
             }
           `

@@ -56,7 +56,7 @@ export const ActionButtons: FC<ActionButtonProps> = ({
           <Button
             fullWidth
             size="small"
-            onClick={e => {
+            onClick={(e) => {
               console.log("click")
             }}
           >

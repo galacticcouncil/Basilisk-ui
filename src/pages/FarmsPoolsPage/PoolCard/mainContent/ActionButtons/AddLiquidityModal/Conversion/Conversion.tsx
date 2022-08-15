@@ -23,7 +23,7 @@ export const Conversion: FC<ConversionProps> = ({
         <Text fs={11} lh={15}>
           {t("addLiquidityModal.conversion.price")}
         </Text>
-        <Text fs={11} lh={15} color="primarySuccess300">
+        <Text fs={11} lh={15} color="primary300">
           {getFormattedNumber(firstValue.amount) + " " + firstValue.currency}
         </Text>
         <Text>=</Text>

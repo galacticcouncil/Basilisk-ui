@@ -34,7 +34,7 @@ export const AddLiquidityModal: FC<AddLiquidityModalProps> = ({
         right={
           <>
             <Text mr={4}>≈ 12 BSX</Text>
-            <Text color="primarySuccess400">(2%)</Text>
+            <Text color="primary400">(2%)</Text>
           </>
         }
       />
@@ -43,7 +43,7 @@ export const AddLiquidityModal: FC<AddLiquidityModalProps> = ({
       <Separator />
       <Row
         left={t("addLiquidityModal.row.shareTokens")}
-        right={<Text color="primarySuccess400">3000</Text>}
+        right={<Text color="primary400">3000</Text>}
       />
       <Button
         text={t("addLiquidityModal.confirmButton")}

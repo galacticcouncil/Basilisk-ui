@@ -22,13 +22,13 @@ type SelectAssetProps = {
   usd: number
 } & MarginProps
 
-export const SelectAsset: FC<SelectAssetProps> = p => {
+export const SelectAsset: FC<SelectAssetProps> = (p) => {
   const { t } = useTranslation()
 
   return (
     <AssetWrapper {...p}>
       <Box flex acenter spread mb={11}>
-        <Text fw={600} lh={22} color="primarySuccess200">
+        <Text fw={600} lh={22} color="primary200">
           {t("selectAsset.title")}
         </Text>
         <Box flex acenter>
