@@ -48,7 +48,7 @@ export const StyledButton = styled.button<ButtonProps>`
     css`
       padding: 16px 36px;
     `};
-  ${p =>
+  ${(p) =>
     p.size === "micro" &&
     css`
       padding: 2px 10px;
@@ -112,7 +112,7 @@ export const StyledButton = styled.button<ButtonProps>`
           `
       : ``};
 
-  ${p =>
+  ${(p) =>
     p.capitalize &&
     css`
       text-transform: capitalize;
