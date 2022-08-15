@@ -28,5 +28,15 @@
   "farmsPoolsPage.poolCard.positions.lockedValue": "{{count}} Shares",
   "farmsPoolsPage.poolCard.positions.currValueTitle": "Current value",
   "farmsPoolsPage.poolCard.actionButtons.chevron.name": "Open details button",
-  "modal.closeButton.name": "Close modal button"
+  "modal.closeButton.name": "Close modal button",
+  "addLiquidityModal.title": "Add Liquidity",
+  "addLiquidityModal.row.apr": "APR",
+  "addLiquidityModal.row.transactionCost": "Transaction cost:",
+  "addLiquidityModal.row.sharePool": "Share of pool",
+  "addLiquidityModal.row.shareTokens": "Received amount of Share Tokens",
+  "addLiquidityModal.confirmButton": "Confirm",
+  "selectAsset.title": "Select asset",
+  "selectAsset.balance": "Your balance:",
+  "selectAsset.button.max": "Max",
+  "addLiquidityModal.conversion.price": "Price:"
 }

@@ -1,10 +1,10 @@
-import { SizeProps } from "common/styles"
+import { MarginProps, SizeProps } from "common/styles"
 import { Link } from "components/Link/Link"
 import { FC, ReactNode, SyntheticEvent } from "react"
 import { StyledButton } from "./Button.styled"
 
 export type ButtonProps = {
-  variant?: "primary" | "secondary" | "gradient"
+  variant?: "primary" | "secondary" | "gradient" | "grey"
   disabled?: boolean
   text?: string
   to?: string
@@ -12,9 +12,11 @@ export type ButtonProps = {
   icon?: SVGElement
   children?: ReactNode
   onClick?: (e: SyntheticEvent) => void
-  size?: "small" | "medium"
+  size?: "small" | "medium" | "micro"
   fullWidth?: boolean
-} & SizeProps
+  capitalize?: boolean
+} & SizeProps &
+  MarginProps
 
 export const Button: FC<ButtonProps> = ({
   type = "button",

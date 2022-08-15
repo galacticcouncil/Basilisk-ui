@@ -6,10 +6,9 @@ import { Box } from "components/Box/Box"
 import { Button } from "components/Button/Button"
 import { Icon } from "components/Icon/Icon"
 import { IconButton } from "components/IconButton/IconButton"
-import { Modal } from "components/Modal/Modal"
-import { Text } from "components/Typography/Text/Text"
 import { FC, useState } from "react"
 import { useTranslation } from "react-i18next"
+import { AddLiquidityModal } from "./AddLiquidityModal/AddLiquidityModal"
 
 type ActionButtonProps = {
   hasJoinedFarms: boolean
@@ -76,14 +75,10 @@ export const ActionButtons: FC<ActionButtonProps> = ({
           />
         )}
       </Box>
-      {/* Gonna be separate component for each modal flow */}
-      <Modal
-        open={addLiquidityOpen}
-        title="Modal title"
+      <AddLiquidityModal
+        isOpen={addLiquidityOpen}
         close={() => setAddLiquidityOpen(false)}
-      >
-        <Text>Placeholder content</Text>
-      </Modal>
+      />
     </>
   )
 }
