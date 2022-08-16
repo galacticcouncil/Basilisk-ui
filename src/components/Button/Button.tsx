@@ -4,7 +4,7 @@ import { FC, ReactNode, SyntheticEvent } from "react"
 import { StyledButton } from "./Button.styled"
 
 export type ButtonProps = {
-  variant?: "primary" | "secondary" | "gradient" | "grey"
+  variant?: "primary" | "secondary" | "gradient"
   disabled?: boolean
   text?: string
   to?: string
