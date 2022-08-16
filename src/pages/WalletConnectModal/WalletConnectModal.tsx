@@ -16,7 +16,7 @@ export function WalletConnectModal(props: {
     <Modal
       width={460}
       open={props.isOpen}
-      close={props.onClose}
+      onClose={props.onClose}
       title={t("walletConnectModal.title")}
     >
       <Text fw={400} mt={6} color="neutralGray200">
