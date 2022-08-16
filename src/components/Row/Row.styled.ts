@@ -1,5 +1,5 @@
 import { Box } from "components/Box/Box"
-import styled from "styled-components"
+import styled from "styled-components/macro"
 import { theme } from "theme"
 
 export const StyledRightSide = styled(Box)`

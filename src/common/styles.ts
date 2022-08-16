@@ -170,7 +170,7 @@ export const colors = css<ColorProps>`
 `
 
 export const fonts = css<FontProps>`
-  ${(p) => p.opacity && `opacity: ${p.opacity}`};
+  ${(p) => p.opacity && `opacity: ${p.opacity}%`};
   ${(p) => p.fs && `font-size: ${p.fs}px`};
   ${(p) => p.fw && `font-weight: ${p.fw}`};
   ${(p) => p.lh && `line-height: ${p.lh}px`};

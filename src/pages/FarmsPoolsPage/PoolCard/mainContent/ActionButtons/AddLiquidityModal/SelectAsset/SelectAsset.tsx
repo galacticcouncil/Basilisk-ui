@@ -1,12 +1,10 @@
-import { BasiliskIcon } from "assets/icons/BasiliskIcon"
 import { ChevronDown } from "assets/icons/ChevronDown"
-import { noop } from "common/helpers"
 import { MarginProps } from "common/styles"
+import { AssetInput } from "components/AssetInput/AssetInput"
 import { Box } from "components/Box/Box"
 import { Icon } from "components/Icon/Icon"
-import { Input } from "components/Input/Input"
 import { Text } from "components/Typography/Text/Text"
-import { FC } from "react"
+import { FC, ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import { getFormattedNumber } from "utils/formatNumber"
 import {
@@ -15,11 +13,13 @@ import {
   SelectAssetButton,
 } from "./SelectAsset.styled"
 
-const currency1 = { short: "BSX", full: "Basilisk" }
-
 type SelectAssetProps = {
   balance: number
   usd: number
+  currency: { short: string; full: string }
+  assetIcon: ReactNode
+  asset: string
+  setAsset: (v: string) => void
 } & MarginProps
 
 export const SelectAsset: FC<SelectAssetProps> = (p) => {
@@ -42,28 +42,31 @@ export const SelectAsset: FC<SelectAssetProps> = (p) => {
             size="micro"
             text={t("selectAsset.button.max")}
             capitalize
+            onClick={() => p.setAsset(p.balance.toString())}
           />
         </Box>
       </Box>
       <Box flex spread acenter>
         <SelectAssetButton size="small">
-          <Icon icon={<BasiliskIcon />} mr={10} />
+          <Icon icon={p.assetIcon} mr={10} />
           <Box mr={6}>
             <Text fw={700} color="white">
-              {currency1.short}
+              {p.currency.short}
             </Text>
             <Text color="neutralGray400" fs={12} lh={14}>
-              {currency1.full}
+              {p.currency.full}
             </Text>
           </Box>
           <Icon icon={<ChevronDown />} />
         </SelectAssetButton>
-        <Input
-          value="2345"
+        <AssetInput
+          value={p.asset}
           name="amount"
           label="deposit amount"
-          onChange={() => noop}
+          onChange={p.setAsset}
           width={368}
+          dollars="1234 USD"
+          unit={p.currency.short}
         />
       </Box>
     </AssetWrapper>

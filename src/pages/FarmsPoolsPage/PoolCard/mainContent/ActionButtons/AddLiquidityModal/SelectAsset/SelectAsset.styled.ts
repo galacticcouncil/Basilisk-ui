@@ -1,11 +1,11 @@
 import { margins } from "common/styles"
 import { Button } from "components/Button/Button"
-import styled from "styled-components"
+import styled from "styled-components/macro"
 import { theme } from "theme"
 
 export const AssetWrapper = styled.div`
   border-radius: 12px;
-  background: rgba(${theme.rgbColors.primarySuccess100}, 0.06);
+  background: rgba(${theme.rgbColors.primary100}, 0.06);
   padding: 20px;
   ${margins};
 `

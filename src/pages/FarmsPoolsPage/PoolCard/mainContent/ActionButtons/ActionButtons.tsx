@@ -2,6 +2,7 @@ import { ChevronDown } from "assets/icons/ChevronDown"
 import { MinusIcon } from "assets/icons/MinusIcon"
 import { PlusIcon } from "assets/icons/PlusIcon"
 import { WindMillIcon } from "assets/icons/WindMillIcon"
+import { noop } from "common/helpers"
 import { Box } from "components/Box/Box"
 import { Button } from "components/Button/Button"
 import { Icon } from "components/Icon/Icon"
@@ -40,13 +41,7 @@ export const ActionButtons: FC<ActionButtonProps> = ({
             </Box>
           </Button>
 
-          <Button
-            fullWidth
-            size="small"
-            onClick={() => {
-              setAddLiquidityOpen(true)
-            }}
-          >
+          <Button fullWidth size="small" onClick={noop}>
             <Box flex acenter jcenter>
               <Icon icon={<MinusIcon />} mr={11} />
               {t("farmsPoolsPage.poolCard.actionButtons.removeLiquidity")}
