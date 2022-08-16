@@ -40,7 +40,7 @@ export const SelectAsset: FC<SelectAssetProps> = ({
             {t("selectAsset.balance")}
           </Text>
           <Text fs={12} lh={16} mr={5}>
-            {Intl.NumberFormat(p.balance)}
+            {getFormattedNumber(p.balance)}
           </Text>
           <MaxButton
             size="micro"
