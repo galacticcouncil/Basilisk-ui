@@ -18,11 +18,15 @@ type SelectAssetProps = {
   usd: number
   currency: { short: string; full: string }
   assetIcon: ReactNode
-  asset: string
-  setAsset: (v: string) => void
+  value: string
+  onChange: (v: string) => void
 } & MarginProps
 
-export const SelectAsset: FC<SelectAssetProps> = (p) => {
+export const SelectAsset: FC<SelectAssetProps> = ({
+  value,
+  onChange,
+  ...p
+}) => {
   const { t } = useTranslation()
 
   return (
@@ -32,7 +36,7 @@ export const SelectAsset: FC<SelectAssetProps> = (p) => {
           {t("selectAsset.title")}
         </Text>
         <Box flex acenter>
-          <Text fs={12} mr={2} lh={16} opacity={70} color="white">
+          <Text fs={12} mr={2} lh={16} opacity={0.7} color="white">
             {t("selectAsset.balance")}
           </Text>
           <Text fs={12} lh={16} mr={5}>
@@ -42,7 +46,7 @@ export const SelectAsset: FC<SelectAssetProps> = (p) => {
             size="micro"
             text={t("selectAsset.button.max")}
             capitalize
-            onClick={() => p.setAsset(p.balance.toString())}
+            onClick={() => onChange(p.balance.toString())}
           />
         </Box>
       </Box>
@@ -60,10 +64,10 @@ export const SelectAsset: FC<SelectAssetProps> = (p) => {
           <Icon icon={<ChevronDown />} />
         </SelectAssetButton>
         <AssetInput
-          value={p.asset}
+          value={value}
           name="amount"
           label="deposit amount"
-          onChange={p.setAsset}
+          onChange={onChange}
           width={368}
           dollars="1234 USD"
           unit={p.currency.short}

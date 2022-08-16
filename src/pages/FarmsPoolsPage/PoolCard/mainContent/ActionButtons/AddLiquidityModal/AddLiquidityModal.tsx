@@ -35,8 +35,8 @@ export const AddLiquidityModal: FC<AddLiquidityModalProps> = ({
         mt={16}
         currency={{ short: "SAK", full: "Sakura" }}
         assetIcon={<SakuraIcon />}
-        asset={asset1}
-        setAsset={setAsset1}
+        value={asset1}
+        onChange={setAsset1}
       />
       <Conversion
         firstValue={{ amount: 1, currency: "SAK" }}
@@ -47,8 +47,8 @@ export const AddLiquidityModal: FC<AddLiquidityModalProps> = ({
         usd={2456}
         currency={{ short: "BSX", full: "Basilisk" }}
         assetIcon={<BasiliskIcon />}
-        asset={asset2}
-        setAsset={setAsset2}
+        value={asset2}
+        onChange={setAsset2}
       />
 
       <Row left={t("farmsPoolsPage.addLiquidity.modal.row.apr")} right="5%" />

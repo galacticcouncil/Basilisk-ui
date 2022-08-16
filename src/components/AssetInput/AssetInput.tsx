@@ -34,8 +34,6 @@ export const AssetInput: FC<AssetInputProps> = ({
         label={label}
         error={p.error}
         withLabel={withLabel}
-        width={p.width || 300}
-        mb={5}
         {...p}
       >
         <InputWrapper dollars={p.dollars} unit={p.unit}>
@@ -47,7 +45,6 @@ export const AssetInput: FC<AssetInputProps> = ({
             id={name}
             type={type}
             error={p.error}
-            unit={p.unit}
             placeholder={placeholder}
           />
         </InputWrapper>
