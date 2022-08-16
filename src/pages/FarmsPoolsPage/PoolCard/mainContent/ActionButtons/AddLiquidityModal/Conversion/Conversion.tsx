@@ -21,7 +21,7 @@ export const Conversion: FC<ConversionProps> = ({
       <Separator color="backgroundGray800" />
       <ConversionWrapper>
         <Text fs={11} lh={15}>
-          {t("addLiquidityModal.conversion.price")}
+          {t("farmsPoolsPage.addLiquidityModal.conversion.price")}
         </Text>
         <Text fs={11} lh={15} color="primary300">
           {getFormattedNumber(firstValue.amount) + " " + firstValue.currency}

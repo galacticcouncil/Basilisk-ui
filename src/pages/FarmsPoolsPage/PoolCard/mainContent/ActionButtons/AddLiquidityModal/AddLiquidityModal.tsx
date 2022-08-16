@@ -24,7 +24,11 @@ export const AddLiquidityModal: FC<AddLiquidityModalProps> = ({
   const [asset2, setAsset2] = useState("1234")
 
   return (
-    <Modal open={isOpen} title={t("addLiquidityModal.title")} close={close}>
+    <Modal
+      open={isOpen}
+      title={t("farmsPoolsPage.addLiquidityModal.title")}
+      close={close}
+    >
       <SelectAsset
         balance={123456789.124}
         usd={2456}
@@ -47,10 +51,10 @@ export const AddLiquidityModal: FC<AddLiquidityModalProps> = ({
         setAsset={setAsset2}
       />
 
-      <Row left={t("addLiquidityModal.row.apr")} right="5%" />
+      <Row left={t("farmsPoolsPage.addLiquidityModal.row.apr")} right="5%" />
       <Separator />
       <Row
-        left={t("addLiquidityModal.row.transactionCost")}
+        left={t("farmsPoolsPage.addLiquidityModal.row.transactionCost")}
         right={
           <>
             <Text mr={4}>≈ 12 BSX</Text>
@@ -59,15 +63,18 @@ export const AddLiquidityModal: FC<AddLiquidityModalProps> = ({
         }
       />
       <Separator />
-      <Row left={t("addLiquidityModal.row.sharePool")} right="5%" />
+      <Row
+        left={t("farmsPoolsPage.addLiquidityModal.row.sharePool")}
+        right="5%"
+      />
       <Separator />
       {/*TODO add tooltip component afterwards */}
       <Row
-        left={t("addLiquidityModal.row.shareTokens")}
+        left={t("farmsPoolsPage.addLiquidityModal.row.shareTokens")}
         right={<Text color="primary400">3000</Text>}
       />
       <Button
-        text={t("addLiquidityModal.confirmButton")}
+        text={t("farmsPoolsPage.addLiquidityModal.confirmButton")}
         variant="primary"
         fullWidth
         mt={30}
