@@ -2,7 +2,6 @@ import { ChevronDown } from "assets/icons/ChevronDown"
 import { MinusIcon } from "assets/icons/MinusIcon"
 import { PlusIcon } from "assets/icons/PlusIcon"
 import { WindMillIcon } from "assets/icons/WindMillIcon"
-import { noop } from "common/helpers"
 import { Box } from "components/Box/Box"
 import { Button } from "components/Button/Button"
 import { Icon } from "components/Icon/Icon"
@@ -10,6 +9,7 @@ import { IconButton } from "components/IconButton/IconButton"
 import { FC, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { AddLiquidityModal } from "./AddLiquidityModal/AddLiquidityModal"
+import { RemoveLiquidityModal } from "pages/FarmsPoolsPage/RemoveLiquidityModal/RemoveLiquidityModal"
 
 type ActionButtonProps = {
   hasJoinedFarms: boolean
@@ -23,6 +23,7 @@ export const ActionButtons: FC<ActionButtonProps> = ({
   const { t } = useTranslation()
 
   const [addLiquidityOpen, setAddLiquidityOpen] = useState(false)
+  const [removeLiquidityOpen, setRemoveLiquidityOpen] = useState(false)
 
   return (
     <>
@@ -41,7 +42,13 @@ export const ActionButtons: FC<ActionButtonProps> = ({
             </Box>
           </Button>
 
-          <Button fullWidth size="small" onClick={noop}>
+          <Button
+            fullWidth
+            size="small"
+            onClick={() => {
+              setRemoveLiquidityOpen(true)
+            }}
+          >
             <Box flex acenter jcenter>
               <Icon icon={<MinusIcon />} mr={11} />
               {t("farmsPoolsPage.poolCard.actionButtons.removeLiquidity")}
@@ -72,7 +79,11 @@ export const ActionButtons: FC<ActionButtonProps> = ({
       </Box>
       <AddLiquidityModal
         isOpen={addLiquidityOpen}
-        close={() => setAddLiquidityOpen(false)}
+        onClose={() => setAddLiquidityOpen(false)}
+      />
+      <RemoveLiquidityModal
+        isOpen={removeLiquidityOpen}
+        onClose={() => setRemoveLiquidityOpen(false)}
       />
     </>
   )

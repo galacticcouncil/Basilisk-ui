@@ -12,12 +12,12 @@ import { SelectAsset } from "./SelectAsset/SelectAsset"
 
 type AddLiquidityModalProps = {
   isOpen: boolean
-  close: () => void
+  onClose: () => void
 }
 
 export const AddLiquidityModal: FC<AddLiquidityModalProps> = ({
   isOpen,
-  close,
+  onClose,
 }) => {
   const { t } = useTranslation()
   const [asset1, setAsset1] = useState("4523")
@@ -26,8 +26,8 @@ export const AddLiquidityModal: FC<AddLiquidityModalProps> = ({
   return (
     <Modal
       open={isOpen}
-      title={t("farmsPoolsPage.addLiquidityModal.title")}
-      close={close}
+      title={t("farmsPoolsPage.addLiquidity.modal.title")}
+      onClose={onClose}
     >
       <SelectAsset
         balance={123456789.124}
@@ -51,10 +51,10 @@ export const AddLiquidityModal: FC<AddLiquidityModalProps> = ({
         setAsset={setAsset2}
       />
 
-      <Row left={t("farmsPoolsPage.addLiquidityModal.row.apr")} right="5%" />
+      <Row left={t("farmsPoolsPage.addLiquidity.modal.row.apr")} right="5%" />
       <Separator />
       <Row
-        left={t("farmsPoolsPage.addLiquidityModal.row.transactionCost")}
+        left={t("farmsPoolsPage.addLiquidity.modal.row.transactionCost")}
         right={
           <>
             <Text mr={4}>≈ 12 BSX</Text>
@@ -64,17 +64,17 @@ export const AddLiquidityModal: FC<AddLiquidityModalProps> = ({
       />
       <Separator />
       <Row
-        left={t("farmsPoolsPage.addLiquidityModal.row.sharePool")}
+        left={t("farmsPoolsPage.addLiquidity.modal.row.sharePool")}
         right="5%"
       />
       <Separator />
       {/*TODO add tooltip component afterwards */}
       <Row
-        left={t("farmsPoolsPage.addLiquidityModal.row.shareTokens")}
+        left={t("farmsPoolsPage.addLiquidity.modal.row.shareTokens")}
         right={<Text color="primary400">3000</Text>}
       />
       <Button
-        text={t("farmsPoolsPage.addLiquidityModal.confirmButton")}
+        text={t("farmsPoolsPage.addLiquidity.modal.confirmButton")}
         variant="primary"
         fullWidth
         mt={30}

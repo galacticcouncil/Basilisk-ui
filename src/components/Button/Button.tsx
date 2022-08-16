@@ -10,11 +10,12 @@ export type ButtonProps = {
   to?: string
   type?: "button" | "submit" | "reset"
   icon?: SVGElement
-  children?: ReactNode
   onClick?: (e: SyntheticEvent) => void
   size?: "small" | "medium" | "micro"
   fullWidth?: boolean
   capitalize?: boolean
+  children?: ReactNode
+  className?: string
 } & SizeProps &
   MarginProps
 
