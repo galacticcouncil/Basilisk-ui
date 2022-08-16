@@ -7,7 +7,7 @@ export const StyledSwitch = styled.div`
   --btn-gap: 8px;
 
   position: relative;
-  z-index: 1;
+  z-index: ${theme.zIndices.boxSwitch};
   height: var(--btn-size);
 
   display: flex;

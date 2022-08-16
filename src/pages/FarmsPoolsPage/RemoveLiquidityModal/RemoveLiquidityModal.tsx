@@ -12,8 +12,8 @@ import { BoxSwitch } from "components/BoxSwitch/BoxSwitch"
 import { Input } from "components/Input/Input"
 import { Text } from "components/Typography/Text/Text"
 import { Box } from "components/Box/Box"
-import { Divider } from "components/Divider/Divider"
 import { RemoveLiquidityModalReward } from "pages/FarmsPoolsPage/RemoveLiquidityModal/reward/RemoveLiquidityModalReward"
+import { Separator } from "components/Separator/Separator"
 
 const options = [
   { label: "24%", value: 24 },
@@ -100,7 +100,7 @@ export const RemoveLiquidityModal: FC<Props> = ({ isOpen, onClose }) => {
             </Text>
           </Box>
         </Box>
-        <Divider mt={8} mb={8} />
+        <Separator mt={8} mb={8} size={2} />
         <Box flex acenter justify="space-between">
           <Text fs={15} color="neutralGray500">
             {t("farmsPoolsPage.removeLiquidity.modal.price")}
