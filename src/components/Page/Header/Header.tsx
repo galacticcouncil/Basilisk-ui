@@ -8,18 +8,20 @@ import { useState } from "react"
 import { Spinner } from "components/Spinner/Spinner"
 
 import { WalletConnectModal } from "pages/WalletConnectModal/WalletConnectModal"
-
-const menuItems = [
-  {
-    text: "Trade",
-    active: false,
-  },
-  { text: "Pools & Farms", active: true },
-  { text: "Wallet", active: false },
-]
+import { useTranslation } from "react-i18next"
 
 export const Header = () => {
   const [open, setOpen] = useState(false)
+  const { t } = useTranslation("translation")
+
+  const menuItems = [
+    {
+      text: t("header.trade"),
+      active: false,
+    },
+    { text: t("header.pools"), active: true },
+    { text: t("header.wallet"), active: false },
+  ]
 
   return (
     <StyledHeader>
@@ -35,7 +37,7 @@ export const Header = () => {
         <Box>
           <StyledLoginButton onClick={() => setOpen(true)}>
             <Spinner />
-            Connect wallet
+            {t("header.walletConnect.button")}
           </StyledLoginButton>
 
           <WalletConnectModal isOpen={open} onClose={() => setOpen(false)} />

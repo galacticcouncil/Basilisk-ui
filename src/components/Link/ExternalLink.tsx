@@ -1,30 +1,17 @@
-import styled, { css } from "styled-components/macro"
 import { ReactNode } from "react"
-import { ColorProps, colors } from "common/styles"
+import { ColorProps } from "common/styles"
 import { ReactComponent as LinkIcon } from "assets/icons/LinkIcon.svg"
+import {
+  StyledExternalLink,
+  StyledExternalLinkAdornment,
+} from "./ExternalLink.styled"
 
 const ExternalLinkAdornment = () => (
-  <span
-    css={css`
-      position: relative;
-    `}
-  >
-    <LinkIcon
-      css={css`
-        position: absolute;
-        bottom: 2px;
-        right: 0;
-      `}
-    />
+  <StyledExternalLinkAdornment>
+    <LinkIcon />
     &nbsp; &nbsp;
-  </span>
+  </StyledExternalLinkAdornment>
 )
-
-const StyledExternalLink = styled.a`
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  ${colors}
-`
 
 export function ExternalLink(
   props: { href: string; children?: ReactNode } & ColorProps,
