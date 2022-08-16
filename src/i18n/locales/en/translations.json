@@ -46,5 +46,11 @@
   "farmsPoolsPage.removeLiquidity.modal.cost": "Transaction cost",
   "farmsPoolsPage.removeLiquidity.modal.price": "Price",
   "farmsPoolsPage.removeLiquidity.modal.confirm": "Confirm removal",
-  "farmsPoolsPage.removeLiquidity.modal.input.label": "Custom"
+  "farmsPoolsPage.removeLiquidity.modal.input.label": "Custom",
+  "walletConnectModal.title": "Connect Wallet",
+  "walletConnectModal.description": "Use available Kusama crypto wallet to connect to Basilisk DEX",
+  "walletConnectModal.continue": "Continue",
+  "walletConnectModal.download": "Download",
+  "walletConnectModal.terms": "By connecting I accept <0>Basilisk Terms & Conditions</0>",
+  "walletConnectModal.learn": "I'm new to Basilisk Chain <0>Learn more about Wallets</0>"
 }
