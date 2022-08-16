@@ -40,7 +40,7 @@ export const SelectAsset: FC<SelectAssetProps> = ({
             {t("selectAsset.balance")}
           </Text>
           <Text fs={12} lh={16} mr={5}>
-            {getFormattedNumber(p.balance)}
+            {Intl.NumberFormat(p.balance)}
           </Text>
           <MaxButton
             size="micro"
@@ -66,7 +66,7 @@ export const SelectAsset: FC<SelectAssetProps> = ({
         <AssetInput
           value={value}
           name="amount"
-          label="deposit amount"
+          label={t("selectAsset.input.label")}
           onChange={onChange}
           width={368}
           dollars="1234 USD"

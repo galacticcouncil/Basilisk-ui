@@ -36,6 +36,7 @@
   "farmsPoolsPage.addLiquidity.modal.row.shareTokens": "Received amount of Share Tokens",
   "farmsPoolsPage.addLiquidity.modal.confirmButton": "Confirm",
   "farmsPoolsPage.addLiquidity.modal.conversion.price": "Price:",
+  "selectAsset.input.label": "Deposit amount",
   "selectAsset.title": "Select asset",
   "selectAsset.balance": "Your balance:",
   "selectAsset.button.max": "Max",
@@ -44,5 +45,6 @@
   "farmsPoolsPage.removeLiquidity.modal.receive": "You'll receive",
   "farmsPoolsPage.removeLiquidity.modal.cost": "Transaction cost",
   "farmsPoolsPage.removeLiquidity.modal.price": "Price",
-  "farmsPoolsPage.removeLiquidity.modal.confirm": "Confirm removal"
+  "farmsPoolsPage.removeLiquidity.modal.confirm": "Confirm removal",
+  "farmsPoolsPage.removeLiquidity.modal.input.label": "Custom"
 }
