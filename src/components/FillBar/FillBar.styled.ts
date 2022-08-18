@@ -14,8 +14,8 @@ export const StyledBar = styled.div`
   border-radius: 9999px;
 `
 
-export const StyledFill = styled.div<{ width: number }>`
-  width: ${({ width }) => width}%;
+export const StyledFill = styled.div<{ percentage: number }>`
+  width: ${({ percentage }) => percentage}%;
   height: 4px;
 
   background: ${theme.colors.primary500};
