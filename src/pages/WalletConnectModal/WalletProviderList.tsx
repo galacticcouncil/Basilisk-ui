@@ -80,12 +80,12 @@ export function WalletProviderList(props: {
             status={
               isInjected ? (
                 <>
-                  {t("walletConnectModal.continue")}
+                  {t("walletConnectModal.provider.continue")}
                   <ChevronRight />
                 </>
               ) : (
                 <>
-                  {t("walletConnectModal.download")}
+                  {t("walletConnectModal.provider.download")}
                   <DownloadIcon />
                 </>
               )

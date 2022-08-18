@@ -13,7 +13,7 @@ export function WalletProviderSelectSection(props: {
   return (
     <>
       <Text fw={400} mt={6} color="neutralGray200">
-        {t("walletConnectModal.description")}
+        {t("walletConnectModal.provider.description")}
       </Text>
 
       <WalletProviderList
@@ -43,7 +43,7 @@ export function WalletProviderSelectSection(props: {
         tAlign="center"
         color="neutralGray400"
       >
-        <Trans t={t} i18nKey="walletConnectModal.terms">
+        <Trans t={t} i18nKey="walletConnectModal.provider.terms">
           <ExternalLink href="/" color="orange100" />
         </Trans>
       </Text>
@@ -58,7 +58,7 @@ export function WalletProviderSelectSection(props: {
       />
 
       <Text fw={400} mt={26} fs={14} tAlign="center" color="neutralGray400">
-        <Trans t={t} i18nKey="walletConnectModal.learn">
+        <Trans t={t} i18nKey="walletConnectModal.provider.learn">
           <ExternalLink href="/" color="primary450" />
         </Trans>
       </Text>

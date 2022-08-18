@@ -24,8 +24,8 @@ export function WalletConnectModal(props: {
   const modalProps = selectedProvider
     ? mutate.isLoading
       ? { title: "" }
-      : { title: t("walletConnectModal.title.account") }
-    : { title: t("walletConnectModal.title.wallet") }
+      : { title: t("walletConnectModal.account.title") }
+    : { title: t("walletConnectModal.provider.title") }
 
   return (
     <Modal

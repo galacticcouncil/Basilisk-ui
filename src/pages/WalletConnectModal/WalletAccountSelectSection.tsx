@@ -82,15 +82,22 @@ function WalletAccountItem(props: { address: string; name: string }) {
       </Box>
 
       <Box flex column gap={12}>
-        <WalletAccountAddress name="Basilisk" address={basiliskAddress} />
+        <WalletAccountAddress
+          name={t("walletConnectModal.account.asset.network")}
+          address={basiliskAddress}
+        />
         <Separator />
-        <WalletAccountAddress name="Kurama" address={kuramaAddress} />
+        <WalletAccountAddress
+          name={t("walletConnectModal.account.asset.parachain")}
+          address={kuramaAddress}
+        />
       </Box>
     </Box>
   )
 }
 
 export function WalletAccountSelectSection(props: { provider: ProviderType }) {
+  const { t } = useTranslation("translation")
   const accounts = useQuery(["web3Accounts", props.provider], () => {
     return web3Accounts({ extensions: [props.provider] })
   })
@@ -98,7 +105,7 @@ export function WalletAccountSelectSection(props: { provider: ProviderType }) {
   return (
     <>
       <Text fw={400} mt={6} color="neutralGray200">
-        Pick one of your account to connect to Basilisk
+        {t("walletConnectModal.account.description")}
       </Text>
 
       <Box
