@@ -35,8 +35,7 @@ export const Header = () => {
         </Box>
 
         <Box>
-          <StyledLoginButton onClick={() => setOpen(true)}>
-            <Spinner />
+          <StyledLoginButton variant="gradient" onClick={() => setOpen(true)}>
             {t("header.walletConnect.button")}
           </StyledLoginButton>
 

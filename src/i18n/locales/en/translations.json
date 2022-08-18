@@ -51,7 +51,8 @@
   "header.pools": "Pools & Farms",
   "header.wallet": "Wallet",
   "header.walletConnect.button": "Connect wallet",
-  "walletConnectModal.title": "Connect Wallet",
+  "walletConnectModal.title.wallet": "Connect Wallet",
+  "walletConnectModal.title.account": "Select Account",
   "walletConnectModal.description": "Use available Kusama crypto wallet to connect to Basilisk DEX",
   "walletConnectModal.continue": "Continue",
   "walletConnectModal.download": "Download",
@@ -61,5 +62,6 @@
   "farmsPoolsPage.allFarms.modal.apr": "{{ from, num }} - {{ to, num }}% APR",
   "farmsPoolsPage.allFarms.modal.distribution": "<0>{{ distributed, compact }}</0> <1>from</1> <0>{{ max, compact }} Distributed</0>",
   "farmsPoolsPage.allFarms.modal.capacity": "{{ capacity, num }}% full",
-  "farmsPoolsPage.allFarms.modal.end": "Expected end {{ end, d.M.yyyy }}"
+  "farmsPoolsPage.allFarms.modal.end": "Expected end {{ end, d.M.yyyy }}",
+  "value.bsx": "{{ amount, amount }} BSX"
 }
