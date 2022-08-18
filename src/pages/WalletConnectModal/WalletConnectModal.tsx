@@ -39,9 +39,10 @@ export function WalletConnectModal(props: {
       </Text>
 
       <Separator
+        ml={-30}
+        color="white"
+        opacity={0.06}
         css={css`
-          margin-left: -30px;
-          background: rgba(255, 255, 255, 0.06);
           width: calc(100% + 60px);
         `}
       />
