@@ -10,6 +10,13 @@ import { StyledWalletButton } from "./WalletProviderList.styled"
 import { Box } from "components/Box/Box"
 import { useQuery } from "@tanstack/react-query"
 import { ProviderType, PROVIDERS } from "./WalletConnectModal.utils"
+import type { InjectedWindowProvider } from "@polkadot/extension-inject/types"
+
+declare global {
+  interface Window {
+    injectedWeb3?: Record<string, InjectedWindowProvider>
+  }
+}
 
 function WalletButton(props: {
   variant: ProviderType
@@ -58,7 +65,6 @@ export function WalletProviderList(props: {
   const { t } = useTranslation("translation")
 
   const injected = useQuery(["provider"], () => {
-    // @ts-ignore
     return Object.keys(window.injectedWeb3 ?? {})
   })
 

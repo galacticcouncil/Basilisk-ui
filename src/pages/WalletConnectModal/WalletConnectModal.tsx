@@ -7,7 +7,7 @@ import { useMutation } from "@tanstack/react-query"
 import { POLKADOT_APP_NAME } from "utils/network"
 import { WalletConfirmPendingSection } from "./WalletConfirmPendingSection"
 import { WalletProviderSelectSection } from "./WalletProviderSelectSection"
-import { WalletAccountSelectSection } from "./WalletAccountSelectSection"
+import { WalletAccountSelectSection } from "./WalletAccountSelectSection/WalletAccountSelectSection"
 
 export function WalletConnectModal(props: {
   isOpen: boolean

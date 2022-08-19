@@ -4,6 +4,7 @@ import { Trans, useTranslation } from "react-i18next"
 import { Separator } from "components/Separator/Separator"
 import { ExternalLink } from "components/Link/ExternalLink"
 import { WalletProviderList } from "./WalletProviderList"
+import { PROVIDER_DOWNLOAD_URLS } from "./WalletConnectModal.utils"
 
 export function WalletProviderSelectSection(props: {
   onWalletSelect: (provider: "talisman" | "polkadot-js") => void
@@ -21,17 +22,8 @@ export function WalletProviderSelectSection(props: {
           props.onWalletSelect(provider)
         }}
         onDownload={(provider) => {
-          switch (provider) {
-            case "polkadot-js": {
-              window.open("https://polkadot.js.org/extension/", "_blank")
-              break
-            }
-
-            case "talisman": {
-              window.open("https://talisman.xyz/", "_blank")
-              break
-            }
-          }
+          const url = PROVIDER_DOWNLOAD_URLS[provider]
+          if (url) window.open("https://polkadot.js.org/extension/", "_blank")
         }}
       />
 
