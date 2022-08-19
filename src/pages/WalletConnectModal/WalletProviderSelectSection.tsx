@@ -23,7 +23,7 @@ export function WalletProviderSelectSection(props: {
         }}
         onDownload={(provider) => {
           const url = PROVIDER_DOWNLOAD_URLS[provider]
-          if (url) window.open("https://polkadot.js.org/extension/", "_blank")
+          if (url) window.open(url, "_blank")
         }}
       />
 
