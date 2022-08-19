@@ -1,5 +1,5 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react"
-import styled from "styled-components/macro"
+import styled from "styled-components"
 import { Spinner as SpinnerComponent } from "./Spinner.styled"
 
 export default {
