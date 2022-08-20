@@ -26,7 +26,6 @@
     "react-dom": "^18.2.0",
     "react-i18next": "^11.18.3",
     "react-router-dom": "^6.3.0",
-    "react-scripts": "5.0.1",
     "recharts": "^2.1.13",
     "styled-components": "^5.3.5",
     "styled-normalize": "^8.0.7",
@@ -82,10 +81,7 @@
     "@storybook/addon-essentials": "^6.5.9",
     "@storybook/addon-interactions": "^6.5.9",
     "@storybook/addon-links": "^6.5.9",
-    "@storybook/builder-webpack5": "^6.5.9",
-    "@storybook/manager-webpack5": "^6.5.9",
-    "@storybook/node-logger": "^6.5.9",
-    "@storybook/preset-create-react-app": "^4.1.2",
+    "@storybook/builder-vite": "^0.2.2",
     "@storybook/react": "^6.5.9",
     "@storybook/testing-library": "^0.0.13",
     "@types/jest": "^27.5.2",
@@ -101,7 +97,6 @@
     "prop-types": "^15.8.1",
     "vite": "^3.0.7",
     "vite-plugin-svgr": "^2.2.1",
-    "vite-tsconfig-paths": "^3.5.0",
-    "webpack": "^5.74.0"
+    "vite-tsconfig-paths": "^3.5.0"
   }
 }

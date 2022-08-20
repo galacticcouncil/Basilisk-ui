@@ -15,7 +15,7 @@ const StyledContainer = styled.div`
 const Template: ComponentStory<typeof SpinnerComponent> = (args) => {
   return (
     <StyledContainer>
-      <SpinnerComponent />
+      <SpinnerComponent width={100} height={100} />
     </StyledContainer>
   )
 }
