@@ -1,4 +1,4 @@
-import { colors, flex, margins, paddings, size } from "common/styles"
+import { colors, flex, margins, paddings, size } from "utils/styles"
 import styled from "styled-components"
 import { BoxProps } from "./Box"
 

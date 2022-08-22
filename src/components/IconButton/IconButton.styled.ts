@@ -1,7 +1,7 @@
-import { colors, margins } from "common/styles"
+import { colors, margins } from "utils/styles"
 import styled, { css } from "styled-components"
 import { theme } from "theme"
-import { ColorProps } from "common/styles"
+import { ColorProps } from "utils/styles"
 
 export const SIconButton = styled.button<{ round?: boolean } & ColorProps>`
   ${(p) =>

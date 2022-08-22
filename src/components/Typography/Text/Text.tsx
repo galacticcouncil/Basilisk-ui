@@ -1,4 +1,4 @@
-import { ColorProps, FontProps, MarginProps } from "common/styles"
+import { ColorProps, FontProps, MarginProps } from "utils/styles"
 import { FC, ReactNode } from "react"
 import { SText } from "./Text.styled"
 import { SProps } from "styled-components"

@@ -1,4 +1,4 @@
-import { MarginProps } from "common/styles"
+import { MarginProps } from "utils/styles"
 import { Label } from "components/Label/Label"
 import { FC } from "react"
 import { SSwitch, SThumb } from "./Switch.styled"

@@ -1,5 +1,5 @@
-import { noop } from "common/helpers"
-import { ColorProps, MarginProps, SizeProps } from "common/styles"
+import { noop } from "utils/helpers"
+import { ColorProps, MarginProps, SizeProps } from "utils/styles"
 import { Icon } from "components/Icon/Icon"
 import { FC, ReactNode } from "react"
 import { SIconButton } from "./IconButton.styled"

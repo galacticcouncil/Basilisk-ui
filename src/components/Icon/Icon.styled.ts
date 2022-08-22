@@ -1,4 +1,4 @@
-import { margins, size } from "common/styles"
+import { margins, size } from "utils/styles"
 import styled, { css } from "styled-components"
 import { IconProps } from "./Icon"
 

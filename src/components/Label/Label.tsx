@@ -1,4 +1,4 @@
-import { FlexProps, FontProps, MarginProps } from "common/styles"
+import { FlexProps, FontProps, MarginProps } from "utils/styles"
 import { FC, ReactNode } from "react"
 import { ErrorMessage, LabelWrapper, SLabel } from "./Label.styled"
 

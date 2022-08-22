@@ -8,7 +8,7 @@ import {
   FontProps,
   MarginProps,
   fonts,
-} from "common/styles"
+} from "utils/styles"
 
 export const SLabel = styled(Label)<{ error?: string } & FontProps>`
   font-size: 16px;

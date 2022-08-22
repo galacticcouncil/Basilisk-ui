@@ -1,4 +1,4 @@
-import { Color, MarginProps } from "common/styles"
+import { Color, MarginProps } from "utils/styles"
 import { FC } from "react"
 import { SSeparator } from "./Separator.styled"
 

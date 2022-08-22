@@ -6,7 +6,7 @@ import {
   FlexProps,
   SizeProps,
   ColorProps,
-} from "common/styles"
+} from "utils/styles"
 
 export type BoxProps = {
   children: ReactNode

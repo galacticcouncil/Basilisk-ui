@@ -1,5 +1,5 @@
 import { Switch, SwitchThumb } from "@radix-ui/react-switch"
-import { margins, MarginProps } from "common/styles"
+import { margins, MarginProps } from "utils/styles"
 import styled, { css } from "styled-components"
 import { theme } from "theme"
 

@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components"
 import * as RadixSeparator from "@radix-ui/react-separator"
-import { margins } from "common/styles"
+import { margins } from "utils/styles"
 import { theme } from "theme"
 import { SeparatorProps } from "./Separator"
 

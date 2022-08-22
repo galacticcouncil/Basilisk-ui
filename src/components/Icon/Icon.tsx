@@ -1,4 +1,4 @@
-import { MarginProps, SizeProps } from "common/styles"
+import { MarginProps, SizeProps } from "utils/styles"
 import { ReactNode } from "react"
 import { FC } from "react"
 import { SIconWrapper } from "./Icon.styled"

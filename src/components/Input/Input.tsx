@@ -1,4 +1,4 @@
-import { MarginProps, SizeProps } from "common/styles"
+import { MarginProps, SizeProps } from "utils/styles"
 import { Label } from "components/Label/Label"
 import React, { FC } from "react"
 import { InputWrapper, SInput } from "./Input.styled"

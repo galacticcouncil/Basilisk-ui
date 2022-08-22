@@ -1,15 +1,10 @@
-import { FC } from "react"
-import { ReactNode } from "react"
-import { Header } from "./Header/Header"
-import { SPage, PageInner, PageContent } from "./Page.styled"
+import { FC, PropsWithChildren } from "react"
+import { PageHeader } from "components/Page/Header/PageHeader"
+import { PageContent, PageInner, SPage } from "./Page.styled"
 
-type PageProps = {
-  children: ReactNode
-}
-
-export const Page: FC<PageProps> = ({ children }) => (
+export const Page: FC<PropsWithChildren> = ({ children }) => (
   <SPage>
-    <Header />
+    <PageHeader />
     <PageContent>
       <PageInner>{children}</PageInner>
     </PageContent>

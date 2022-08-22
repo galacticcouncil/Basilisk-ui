@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { colors } from "common/styles"
+import { colors } from "utils/styles"
 
 export const SExternalLink = styled.a`
   text-decoration: underline;

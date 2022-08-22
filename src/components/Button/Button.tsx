@@ -1,4 +1,4 @@
-import { MarginProps, SizeProps } from "common/styles"
+import { MarginProps, SizeProps } from "utils/styles"
 import { Link } from "components/Link/Link"
 import { FC, ReactNode, SyntheticEvent } from "react"
 import { SButton } from "./Button.styled"

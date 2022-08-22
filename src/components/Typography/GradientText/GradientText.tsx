@@ -1,4 +1,4 @@
-import { FontProps, MarginProps } from "common/styles"
+import { FontProps, MarginProps } from "utils/styles"
 import { FC } from "react"
 import { HeadingProps } from "../Heading/Heading"
 import { SGradientText } from "./GradientText.styled"

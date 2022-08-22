@@ -1,5 +1,5 @@
 import { ReactNode } from "react"
-import { ColorProps } from "common/styles"
+import { ColorProps } from "utils/styles"
 import { ReactComponent as LinkIcon } from "assets/icons/LinkIcon.svg"
 import { SExternalLink, SExternalLinkAdornment } from "./ExternalLink.styled"
 
