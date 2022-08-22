@@ -2,9 +2,9 @@ import { FC } from "react"
 import { Modal } from "components/Modal/Modal"
 import { Trans, useTranslation } from "react-i18next"
 import {
-  StyledFarm,
-  StyledFarmIcon,
-  StyledFarmRow,
+  SFarm,
+  SFarmIcon,
+  SFarmRow,
 } from "pages/FarmsPoolsPage/AllFarmsModal/AllFarmsModal.styled"
 import { Box } from "components/Box/Box"
 import { Text } from "components/Typography/Text/Text"
@@ -63,7 +63,7 @@ export const AllFarmsModal: FC<Props> = ({ isOpen, onClose }) => {
     >
       <Box flex column gap={8} mt={24}>
         {mock.farms.map((farm) => (
-          <StyledFarm key={farm.id}>
+          <SFarm key={farm.id}>
             <Box flex column gap={8}>
               <Box flex acenter gap={8}>
                 <BasiliskIcon />
@@ -77,7 +77,7 @@ export const AllFarmsModal: FC<Props> = ({ isOpen, onClose }) => {
               </Text>
             </Box>
             <Box flex column>
-              <StyledFarmRow>
+              <SFarmRow>
                 <FillBar
                   percentage={
                     (farm.distribution.distributed / farm.distribution.max) *
@@ -97,23 +97,23 @@ export const AllFarmsModal: FC<Props> = ({ isOpen, onClose }) => {
                     <Text as="span" fs={14} color="neutralGray300" />
                   </Trans>
                 </Text>
-              </StyledFarmRow>
-              <StyledFarmRow>
+              </SFarmRow>
+              <SFarmRow>
                 <FillBar percentage={farm.capacity * 100} />
                 <Text fs={14} color="neutralGray100">
                   {t("farmsPoolsPage.allFarms.modal.capacity", {
                     capacity: farm.capacity * 100,
                   })}
                 </Text>
-              </StyledFarmRow>
+              </SFarmRow>
               <Text fs={12} lh={16} fw={400} color="neutralGray500">
                 {t("farmsPoolsPage.allFarms.modal.end", { end: farm.end })}
               </Text>
             </Box>
-            <StyledFarmIcon>
+            <SFarmIcon>
               <ChevronDown />
-            </StyledFarmIcon>
-          </StyledFarm>
+            </SFarmIcon>
+          </SFarm>
         ))}
       </Box>
     </Modal>

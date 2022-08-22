@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import { theme } from "theme"
 
-export const StyledFarm = styled.button`
+export const SFarm = styled.button`
   display: grid;
   grid-template-columns: auto 1fr auto;
   grid-column-gap: 32px;
@@ -28,7 +28,7 @@ export const StyledFarm = styled.button`
   }
 `
 
-export const StyledFarmRow = styled.div`
+export const SFarmRow = styled.div`
   display: grid;
   grid-template-columns: 88px 1fr;
   grid-column-gap: 12px;
@@ -40,7 +40,7 @@ export const StyledFarmRow = styled.div`
   border-bottom: 2px solid ${theme.colors.backgroundGray800};
 `
 
-export const StyledFarmIcon = styled.div`
+export const SFarmIcon = styled.div`
   display: flex;
   align-items: center;
 

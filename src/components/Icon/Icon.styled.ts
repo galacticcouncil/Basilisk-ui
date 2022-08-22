@@ -2,7 +2,7 @@ import { margins, size } from "common/styles"
 import styled, { css } from "styled-components"
 import { IconProps } from "./Icon"
 
-export const StyledIconWrapper = styled.span<IconProps>`
+export const SIconWrapper = styled.span<IconProps>`
   display: flex;
   ${size};
   ${margins};

@@ -6,7 +6,7 @@ import { ReactComponent as DownloadIcon } from "assets/icons/DownloadIcon.svg"
 import { ReactNode } from "react"
 import { Text } from "components/Typography/Text/Text"
 import { useTranslation } from "react-i18next"
-import { StyledWalletButton } from "./WalletProviderList.styled"
+import { SWalletButton } from "./WalletProviderList.styled"
 import { Box } from "components/Box/Box"
 import { useQuery } from "@tanstack/react-query"
 import { ProviderType, PROVIDERS } from "./WalletConnectModal.utils"
@@ -35,7 +35,7 @@ function WalletButton(props: {
   }
 
   return (
-    <StyledWalletButton onClick={props.onClick} variant={props.variant}>
+    <SWalletButton onClick={props.onClick} variant={props.variant}>
       {logo}
       <Text fs={18} css={{ flexGrow: 1 }}>
         {title}
@@ -54,7 +54,7 @@ function WalletButton(props: {
           {props.status}
         </Text>
       )}
-    </StyledWalletButton>
+    </SWalletButton>
   )
 }
 

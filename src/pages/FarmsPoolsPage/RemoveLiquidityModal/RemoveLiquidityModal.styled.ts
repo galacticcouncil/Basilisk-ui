@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import { theme } from "theme"
 
-export const StyledSlippage = styled.div`
+export const SSlippage = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-column-gap: 8px;
@@ -14,7 +14,7 @@ export const StyledSlippage = styled.div`
   border-radius: 12px;
 `
 
-export const StyledTradingPairContainer = styled.div`
+export const STradingPairContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;

@@ -2,8 +2,8 @@ import { FC, useState } from "react"
 import { Modal } from "components/Modal/Modal"
 import { useTranslation } from "react-i18next"
 import {
-  StyledSlippage,
-  StyledTradingPairContainer,
+  SSlippage,
+  STradingPairContainer,
 } from "pages/FarmsPoolsPage/RemoveLiquidityModal/RemoveLiquidityModal.styled"
 import { Button } from "components/Button/Button"
 import { Heading } from "components/Typography/Heading/Heading"
@@ -61,7 +61,7 @@ export const RemoveLiquidityModal: FC<Props> = ({ isOpen, onClose }) => {
         step={1}
       />
 
-      <StyledSlippage>
+      <SSlippage>
         <BoxSwitch options={options} selected={selected} onSelect={onSelect} />
         <Input
           value={input}
@@ -70,9 +70,9 @@ export const RemoveLiquidityModal: FC<Props> = ({ isOpen, onClose }) => {
           label="Custom"
           placeholder="Custom"
         />
-      </StyledSlippage>
+      </SSlippage>
 
-      <StyledTradingPairContainer>
+      <STradingPairContainer>
         <Text color="neutralGray400">
           {t("farmsPoolsPage.removeLiquidity.modal.receive")}
         </Text>
@@ -86,7 +86,7 @@ export const RemoveLiquidityModal: FC<Props> = ({ isOpen, onClose }) => {
           symbol="KAR"
           amount={34456.56}
         />
-      </StyledTradingPairContainer>
+      </STradingPairContainer>
 
       <Box mb={32} mt={16}>
         <Box flex acenter justify="space-between">

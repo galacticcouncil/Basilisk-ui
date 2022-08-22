@@ -3,7 +3,7 @@ import { margins, MarginProps } from "common/styles"
 import styled, { css } from "styled-components"
 import { theme } from "theme"
 
-export const StyledThumb = styled(SwitchThumb)<{
+export const SThumb = styled(SwitchThumb)<{
   checked: boolean
   disabled?: boolean
   size?: "small" | "regular"
@@ -46,7 +46,7 @@ export const StyledThumb = styled(SwitchThumb)<{
     `}
 `
 
-export const StyledSwitch = styled(Switch)<
+export const SSwitch = styled(Switch)<
   { size?: "small" | "regular" } & MarginProps
 >`
   position: relative;

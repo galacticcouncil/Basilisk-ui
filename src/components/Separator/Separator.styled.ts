@@ -4,7 +4,7 @@ import { margins } from "common/styles"
 import { theme } from "theme"
 import { SeparatorProps } from "./Separator"
 
-export const StyledSeparator = styled(RadixSeparator.Root)<SeparatorProps>`
+export const SSeparator = styled(RadixSeparator.Root)<SeparatorProps>`
   background: ${(p) =>
     p.color ? theme.colors[p.color] : theme.colors.backgroundGray700};
   opacity: ${(p) => p.opacity ?? 1};

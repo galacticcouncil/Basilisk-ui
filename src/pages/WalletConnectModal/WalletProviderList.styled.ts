@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components"
 
-export const StyledWalletButton = styled.button<{
+export const SWalletButton = styled.button<{
   variant: "polkadot-js" | "talisman"
 }>`
   display: flex;

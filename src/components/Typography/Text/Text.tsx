@@ -1,7 +1,7 @@
 import { ColorProps, FontProps, MarginProps } from "common/styles"
 import { FC, ReactNode } from "react"
-import { StyledText } from "./Text.styled"
-import { StyledProps } from "styled-components"
+import { SText } from "./Text.styled"
+import { SProps } from "styled-components"
 
 export type TextProps = {
   children?: ReactNode
@@ -10,7 +10,7 @@ export type TextProps = {
 } & ColorProps &
   MarginProps &
   FontProps &
-  StyledProps<any>
+  SProps<any>
 
 export const Text: FC<TextProps> = ({
   children,
@@ -20,7 +20,7 @@ export const Text: FC<TextProps> = ({
   color = "neutralGray100",
   ...rest
 }) => (
-  <StyledText {...rest} fw={fw} fs={fs} color={color}>
+  <SText {...rest} fw={fw} fs={fs} color={color}>
     {text || children}
-  </StyledText>
+  </SText>
 )

@@ -10,7 +10,7 @@ import {
   fonts,
 } from "common/styles"
 
-export const StyledLabel = styled(Label)<{ error?: string } & FontProps>`
+export const SLabel = styled(Label)<{ error?: string } & FontProps>`
   font-size: 16px;
   line-height: 22px;
   color: ${(p) => (p.error ? theme.colors.error : theme.colors.neutralGray100)};
