@@ -46,7 +46,10 @@
     "lint:prettier": "prettier -l \"src/**/*.{ts,tsx,json}\"",
     "fix": "run-p -lsc 'fix:*'",
     "fix:eslint": "eslint --fix src",
-    "fix:prettier": "prettier --write \"src/**/*.{ts,tsx,json}\""
+    "fix:prettier": "prettier --write \"src/**/*.{ts,tsx,json}\"",
+    "generate": "yarn generate:defs && yarn generate:meta",
+    "generate:defs": "ts-node --skip-project node_modules/.bin/polkadot-types-from-defs --package Basilisk-mining-ui/interfaces --input ./src/interfaces --endpoint wss://rpc.basilisk.cloud",
+    "generate:meta": "ts-node --skip-project node_modules/.bin/polkadot-types-from-chain --package Basilisk-mining-ui/interfaces --endpoint wss://rpc.basilisk.cloud --output ./src/interfaces"
   },
   "eslintConfig": {
     "extends": [
@@ -81,6 +84,7 @@
     "@babel/plugin-transform-typescript": "^7.18.12",
     "@babel/preset-typescript": "^7.18.6",
     "@open-web3/orml-types": "^2.0.1",
+    "@polkadot/typegen": "^9.2.3",
     "@storybook/addon-actions": "^6.5.9",
     "@storybook/addon-essentials": "^6.5.9",
     "@storybook/addon-interactions": "^6.5.9",
@@ -100,6 +104,7 @@
     "eslint-config-react-app": "^7.0.1",
     "npm-run-all": "^4.1.5",
     "prop-types": "^15.8.1",
+    "ts-node": "^10.9.1",
     "vite": "^3.0.7",
     "vite-plugin-svgr": "^2.2.1",
     "vite-tsconfig-paths": "^3.5.0"
