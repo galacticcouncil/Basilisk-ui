@@ -4,7 +4,8 @@ import { useTranslation } from "react-i18next"
 import { Text } from "components/Typography/Text/Text"
 import { Box } from "components/Box/Box"
 import { SDetailRow } from "./PoolReviewTransaction.styled"
-import { Button } from "../../../../../components/Button/Button"
+import { Button } from "components/Button/Button"
+import { TransactionCode } from "components/TransactionCode/TransactionCode"
 
 type Props = {
   isOpen: boolean
@@ -28,7 +29,37 @@ export const PoolReviewTransaction: React.FC<Props> = ({ isOpen, onClose }) => {
           symbol2: "aUSD",
         })}
       </Text>
-      <Box mt={16}>Code highlighting</Box>
+      <Box mt={16}>
+        <TransactionCode
+          name="Method utility.batchAll(calls)"
+          src={{
+            calls: [
+              {
+                args: {
+                  asset_out: "0",
+                  asset_in: "1",
+                  amount: "10 000 000 000 000 000",
+                  max_limit: "33 000 000 000 000",
+                  discount: false,
+                },
+                method: "buy",
+                section: "xyk",
+              },
+              {
+                args: {
+                  asset_in: "1",
+                  asset_out: "0",
+                  amount: "10 000 000 000 000 000",
+                  max_limit: "33 000 000 000 000",
+                  discount: false,
+                },
+                method: "sell",
+                section: "xyk",
+              },
+            ],
+          }}
+        />
+      </Box>
       <Box mt={10}>
         <SDetailRow>
           <Text color="neutralGray300">
