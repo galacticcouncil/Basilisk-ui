@@ -3,8 +3,6 @@ import { useApiPromise } from "utils/network"
 import { useEffect, useState } from "react"
 import BN from "bn.js"
 
-import type { Event } from "@polkadot/types/interfaces"
-
 // TODO: determine, whether we want to
 // - use subscribe method for each query
 // - use react-query and invalidate on each block globally
