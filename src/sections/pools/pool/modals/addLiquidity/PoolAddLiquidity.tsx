@@ -9,16 +9,27 @@ import { FC, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { PoolAddLiquidityConversion } from "sections/pools/pool/modals/addLiquidity/conversion/PoolAddLiquidityConversion"
 import { PoolAddLiquidityAssetSelect } from "sections/pools/pool/modals/addLiquidity/assetSelect/PoolAddLiquidityAssetSelect"
+import { PoolConfig } from "../../Pool"
+import { useAddPoolAddLiquidity } from "./PoolAddLiquidity.utils"
+import { getFullDisplayBalance } from "../../../../../utils/balance"
 
-type Props = {
+type Props = PoolConfig & {
   isOpen: boolean
   onClose: () => void
 }
 
-export const PoolAddLiquidity: FC<Props> = ({ isOpen, onClose }) => {
+export const PoolAddLiquidity: FC<Props> = ({
+  isOpen,
+  onClose,
+  assetA,
+  assetB,
+}) => {
   const { t } = useTranslation()
-  const [asset1, setAsset1] = useState("4523")
-  const [asset2, setAsset2] = useState("1234")
+  const { data: dataAssetA } = useAddPoolAddLiquidity(assetA)
+  const { data: dataAssetB } = useAddPoolAddLiquidity(assetB)
+
+  const [inputAssetA, setInputAssetA] = useState("0")
+  const [inputAssetB, setInputAssetB] = useState("0")
 
   return (
     <Modal
@@ -27,25 +38,38 @@ export const PoolAddLiquidity: FC<Props> = ({ isOpen, onClose }) => {
       onClose={onClose}
     >
       <PoolAddLiquidityAssetSelect
-        balance={123456789.124}
+        asset={assetA}
+        balance={getFullDisplayBalance(
+          dataAssetA.balance,
+          dataAssetA.asset.decimals,
+          dataAssetA.asset?.decimals,
+        )}
         usd={2456}
         mt={16}
-        currency={{ short: "SAK", full: "Sakura" }}
+        currency={{ short: dataAssetA.asset?.name ?? "", full: "Sakura" }}
         assetIcon={<SakuraIcon />}
-        value={asset1}
-        onChange={setAsset1}
+        value={inputAssetA}
+        onChange={setInputAssetA}
       />
       <PoolAddLiquidityConversion
-        firstValue={{ amount: 1, currency: "SAK" }}
-        secondValue={{ amount: 0.000123, currency: "BSX" }}
+        firstValue={{ amount: 1, currency: dataAssetA.asset.name ?? "" }}
+        secondValue={{
+          amount: 0.000123,
+          currency: dataAssetB.asset.name ?? "",
+        }}
       />
       <PoolAddLiquidityAssetSelect
-        balance={123456789}
+        asset={assetB}
+        balance={getFullDisplayBalance(
+          dataAssetB.balance,
+          dataAssetB.asset?.decimals,
+          dataAssetB.asset?.decimals,
+        )}
         usd={2456}
-        currency={{ short: "BSX", full: "Basilisk" }}
+        currency={{ short: dataAssetB.asset?.name ?? "", full: "Basilisk" }}
         assetIcon={<BasiliskIcon />}
-        value={asset2}
-        onChange={setAsset2}
+        value={inputAssetB}
+        onChange={setInputAssetB}
       />
 
       <Row left={t("pools.addLiquidity.modal.row.apr")} right="5%" />

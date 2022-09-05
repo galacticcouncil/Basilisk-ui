@@ -6,7 +6,6 @@ import { Icon } from "components/Icon/Icon"
 import { Text } from "components/Typography/Text/Text"
 import { FC, ReactNode } from "react"
 import { useTranslation } from "react-i18next"
-import { formatNum } from "utils/formatting"
 import {
   SContainer,
   SMaxButton,
@@ -14,7 +13,8 @@ import {
 } from "./PoolAddLiquidityAssetSelect.styled"
 
 type Props = {
-  balance: number
+  asset: string
+  balance: string
   usd: number
   currency: { short: string; full: string }
   assetIcon: ReactNode
@@ -25,6 +25,8 @@ type Props = {
 export const PoolAddLiquidityAssetSelect: FC<Props> = ({
   value,
   onChange,
+  asset,
+  balance,
   ...p
 }) => {
   const { t } = useTranslation()
@@ -40,13 +42,13 @@ export const PoolAddLiquidityAssetSelect: FC<Props> = ({
             {t("selectAsset.balance")}
           </Text>
           <Text fs={12} lh={16} mr={5}>
-            {formatNum(p.balance)}
+            {balance}
           </Text>
           <SMaxButton
             size="micro"
             text={t("selectAsset.button.max")}
             capitalize
-            onClick={() => onChange(p.balance.toString())}
+            onClick={() => onChange(balance.toString())}
           />
         </Box>
       </Box>
@@ -68,7 +70,6 @@ export const PoolAddLiquidityAssetSelect: FC<Props> = ({
           name="amount"
           label={t("selectAsset.input.label")}
           onChange={onChange}
-          width={368}
           dollars="1234 USD"
           unit={p.currency.short}
         />
