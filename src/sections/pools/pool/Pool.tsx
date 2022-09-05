@@ -33,7 +33,7 @@ export const Pool: FC<PoolConfig> = (props) => {
           totalLiquidity={data?.totalLiquidity ?? "0"}
           tradingFee={data?.tradingFee ?? TRADING_FEE}
         />
-        <PoolIncentives />
+        <PoolIncentives id={props.id} />
         <PoolActions {...props} />
       </Box>
       {props.hasLiquidity && <PoolShares />}
