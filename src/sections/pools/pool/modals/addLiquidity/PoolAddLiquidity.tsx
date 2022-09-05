@@ -11,6 +11,8 @@ import { PoolConfig } from "../../Pool"
 import { useAddPoolAddLiquidity } from "./PoolAddLiquidity.utils"
 import { getFullDisplayBalance } from "../../../../../utils/balance"
 import { getAssetLogo } from "components/AssetIcon/AssetIcon"
+import { getFullDisplayBalance } from "utils/balance"
+import { useAddLiquidity } from "api/addLiquidity"
 
 type Props = PoolConfig & {
   isOpen: boolean
@@ -29,6 +31,25 @@ export const PoolAddLiquidity: FC<Props> = ({
 
   const [inputAssetA, setInputAssetA] = useState("0")
   const [inputAssetB, setInputAssetB] = useState("0")
+
+  const { pendingTx, handleAddLiquidity } = useAddLiquidity()
+
+  async function handleSubmit() {
+    try {
+      handleAddLiquidity([
+        {
+          id: assetA,
+          amount: inputAssetA,
+        },
+        {
+          id: assetB,
+          amount: inputAssetB,
+        },
+      ])
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   return (
     <Modal
@@ -95,6 +116,8 @@ export const PoolAddLiquidity: FC<Props> = ({
         variant="primary"
         fullWidth
         mt={30}
+        disabled={pendingTx}
+        onClick={handleSubmit}
       />
     </Modal>
   )

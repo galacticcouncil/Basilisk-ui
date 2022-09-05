@@ -3,22 +3,22 @@ import { Modal } from "components/Modal/Modal"
 import { useTranslation } from "react-i18next"
 import { Text } from "components/Typography/Text/Text"
 import { Box } from "components/Box/Box"
-import { SDetailRow } from "./PoolReviewTransaction.styled"
+import { SDetailRow } from "./ReviewTransaction.styled"
 import { Button } from "components/Button/Button"
 import { TransactionCode } from "components/TransactionCode/TransactionCode"
 
 type Props = {
-  isOpen: boolean
-  onClose: () => void
+  onCancel: () => void
+  onBack?: () => void
 }
 
-export const PoolReviewTransaction: React.FC<Props> = ({ isOpen, onClose }) => {
+export const ReviewTransaction: React.FC<Props> = ({ onCancel }) => {
   const { t } = useTranslation()
 
   return (
     <Modal
-      open={isOpen}
-      onClose={onClose}
+      open={true}
+      onClose={onCancel}
       title={t("pools.reviewTransaction.modal.title")}
     >
       <Text color="neutralGray400" fw={400} mt={6}>
@@ -93,7 +93,7 @@ export const PoolReviewTransaction: React.FC<Props> = ({ isOpen, onClose }) => {
       </Box>
       <Box mt={24} flex spread>
         <Button
-          onClick={onClose}
+          onClick={onCancel}
           text={t("pools.reviewTransaction.modal.cancel")}
           variant="secondary"
         />
