@@ -3,7 +3,8 @@ export default {
     ProposalRecord: {
       index: "u32",
       author: "AccountId",
-      stage: "VoteStage",
+      // Ignored for now, uncomment to add own type
+      // stage: "VoteStage",
       transition_time: "u32",
       title: "Text",
       contents: "Text",

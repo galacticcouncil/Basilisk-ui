@@ -465,31 +465,31 @@ declare module '@polkadot/api-base/types/events' {
       /**
        * Offer was accepted
        **/
-      OfferAccepted: AugmentedEvent<ApiType, [who: AccountId32, class: u128, instance: u128, amount: u128, maker: AccountId32], { who: AccountId32, class: u128, instance: u128, amount: u128, maker: AccountId32 }>;
+      OfferAccepted: AugmentedEvent<ApiType, [who: AccountId32, class_: u128, instance: u128, amount: u128, maker: AccountId32], { who: AccountId32, class: u128, instance: u128, amount: u128, maker: AccountId32 }>;
       /**
        * Offer was placed on a token
        **/
-      OfferPlaced: AugmentedEvent<ApiType, [who: AccountId32, class: u128, instance: u128, amount: u128, expires: u32], { who: AccountId32, class: u128, instance: u128, amount: u128, expires: u32 }>;
+      OfferPlaced: AugmentedEvent<ApiType, [who: AccountId32, class_: u128, instance: u128, amount: u128, expires: u32], { who: AccountId32, class: u128, instance: u128, amount: u128, expires: u32 }>;
       /**
        * Offer was withdrawn
        **/
-      OfferWithdrawn: AugmentedEvent<ApiType, [who: AccountId32, class: u128, instance: u128], { who: AccountId32, class: u128, instance: u128 }>;
+      OfferWithdrawn: AugmentedEvent<ApiType, [who: AccountId32, class_: u128, instance: u128], { who: AccountId32, class: u128, instance: u128 }>;
       /**
        * Marketplace data has been added
        **/
-      RoyaltyAdded: AugmentedEvent<ApiType, [class: u128, instance: u128, author: AccountId32, royalty: u8], { class: u128, instance: u128, author: AccountId32, royalty: u8 }>;
+      RoyaltyAdded: AugmentedEvent<ApiType, [class_: u128, instance: u128, author: AccountId32, royalty: u8], { class: u128, instance: u128, author: AccountId32, royalty: u8 }>;
       /**
        * Royalty hs been paid to the author
        **/
-      RoyaltyPaid: AugmentedEvent<ApiType, [class: u128, instance: u128, author: AccountId32, royalty: u8, royaltyAmount: u128], { class: u128, instance: u128, author: AccountId32, royalty: u8, royaltyAmount: u128 }>;
+      RoyaltyPaid: AugmentedEvent<ApiType, [class_: u128, instance: u128, author: AccountId32, royalty: u8, royaltyAmount: u128], { class: u128, instance: u128, author: AccountId32, royalty: u8, royaltyAmount: u128 }>;
       /**
        * The price for a token was updated
        **/
-      TokenPriceUpdated: AugmentedEvent<ApiType, [who: AccountId32, class: u128, instance: u128, price: Option<u128>], { who: AccountId32, class: u128, instance: u128, price: Option<u128> }>;
+      TokenPriceUpdated: AugmentedEvent<ApiType, [who: AccountId32, class_: u128, instance: u128, price: Option<u128>], { who: AccountId32, class: u128, instance: u128, price: Option<u128> }>;
       /**
        * Token was sold to a new owner
        **/
-      TokenSold: AugmentedEvent<ApiType, [owner: AccountId32, buyer: AccountId32, class: u128, instance: u128, price: u128], { owner: AccountId32, buyer: AccountId32, class: u128, instance: u128, price: u128 }>;
+      TokenSold: AugmentedEvent<ApiType, [owner: AccountId32, buyer: AccountId32, class_: u128, instance: u128, price: u128], { owner: AccountId32, buyer: AccountId32, class: u128, instance: u128, price: u128 }>;
       /**
        * Generic event
        **/
@@ -785,17 +785,6 @@ declare module '@polkadot/api-base/types/events' {
        **/
       [key: string]: AugmentedEvent<ApiType>;
     };
-    session: {
-      /**
-       * New session has happened. Note that the argument is the session index, not the
-       * block number as the type might suggest.
-       **/
-      NewSession: AugmentedEvent<ApiType, [sessionIndex: u32], { sessionIndex: u32 }>;
-      /**
-       * Generic event
-       **/
-      [key: string]: AugmentedEvent<ApiType>;
-    };
     scheduler: {
       /**
        * The call for the provided hash was not found so the task has been aborted.
@@ -813,6 +802,17 @@ declare module '@polkadot/api-base/types/events' {
        * Scheduled some task.
        **/
       Scheduled: AugmentedEvent<ApiType, [when: u32, index: u32], { when: u32, index: u32 }>;
+      /**
+       * Generic event
+       **/
+      [key: string]: AugmentedEvent<ApiType>;
+    };
+    session: {
+      /**
+       * New session has happened. Note that the argument is the session index, not the
+       * block number as the type might suggest.
+       **/
+      NewSession: AugmentedEvent<ApiType, [sessionIndex: u32], { sessionIndex: u32 }>;
       /**
        * Generic event
        **/
@@ -999,92 +999,92 @@ declare module '@polkadot/api-base/types/events' {
        * An approval for a `delegate` account to transfer the `instance` of an asset `class` was
        * cancelled by its `owner`.
        **/
-      ApprovalCancelled: AugmentedEvent<ApiType, [class: u128, instance: u128, owner: AccountId32, delegate: AccountId32], { class: u128, instance: u128, owner: AccountId32, delegate: AccountId32 }>;
+      ApprovalCancelled: AugmentedEvent<ApiType, [class_: u128, instance: u128, owner: AccountId32, delegate: AccountId32], { class: u128, instance: u128, owner: AccountId32, delegate: AccountId32 }>;
       /**
        * An `instance` of an asset `class` has been approved by the `owner` for transfer by a
        * `delegate`.
        **/
-      ApprovedTransfer: AugmentedEvent<ApiType, [class: u128, instance: u128, owner: AccountId32, delegate: AccountId32], { class: u128, instance: u128, owner: AccountId32, delegate: AccountId32 }>;
+      ApprovedTransfer: AugmentedEvent<ApiType, [class_: u128, instance: u128, owner: AccountId32, delegate: AccountId32], { class: u128, instance: u128, owner: AccountId32, delegate: AccountId32 }>;
       /**
        * An asset `class` has had its attributes changed by the `Force` origin.
        **/
-      AssetStatusChanged: AugmentedEvent<ApiType, [class: u128], { class: u128 }>;
+      AssetStatusChanged: AugmentedEvent<ApiType, [class_: u128], { class: u128 }>;
       /**
        * Attribute metadata has been cleared for an asset class or instance.
        **/
-      AttributeCleared: AugmentedEvent<ApiType, [class: u128, maybeInstance: Option<u128>, key: Bytes], { class: u128, maybeInstance: Option<u128>, key: Bytes }>;
+      AttributeCleared: AugmentedEvent<ApiType, [class_: u128, maybeInstance: Option<u128>, key: Bytes], { class: u128, maybeInstance: Option<u128>, key: Bytes }>;
       /**
        * New attribute metadata has been set for an asset class or instance.
        **/
-      AttributeSet: AugmentedEvent<ApiType, [class: u128, maybeInstance: Option<u128>, key: Bytes, value: Bytes], { class: u128, maybeInstance: Option<u128>, key: Bytes, value: Bytes }>;
+      AttributeSet: AugmentedEvent<ApiType, [class_: u128, maybeInstance: Option<u128>, key: Bytes, value: Bytes], { class: u128, maybeInstance: Option<u128>, key: Bytes, value: Bytes }>;
       /**
        * An asset `instance` was destroyed.
        **/
-      Burned: AugmentedEvent<ApiType, [class: u128, instance: u128, owner: AccountId32], { class: u128, instance: u128, owner: AccountId32 }>;
+      Burned: AugmentedEvent<ApiType, [class_: u128, instance: u128, owner: AccountId32], { class: u128, instance: u128, owner: AccountId32 }>;
       /**
        * Some asset `class` was frozen.
        **/
-      ClassFrozen: AugmentedEvent<ApiType, [class: u128], { class: u128 }>;
+      ClassFrozen: AugmentedEvent<ApiType, [class_: u128], { class: u128 }>;
       /**
        * Metadata has been cleared for an asset class.
        **/
-      ClassMetadataCleared: AugmentedEvent<ApiType, [class: u128], { class: u128 }>;
+      ClassMetadataCleared: AugmentedEvent<ApiType, [class_: u128], { class: u128 }>;
       /**
        * New metadata has been set for an asset class.
        **/
-      ClassMetadataSet: AugmentedEvent<ApiType, [class: u128, data: Bytes, isFrozen: bool], { class: u128, data: Bytes, isFrozen: bool }>;
+      ClassMetadataSet: AugmentedEvent<ApiType, [class_: u128, data: Bytes, isFrozen: bool], { class: u128, data: Bytes, isFrozen: bool }>;
       /**
        * Some asset `class` was thawed.
        **/
-      ClassThawed: AugmentedEvent<ApiType, [class: u128], { class: u128 }>;
+      ClassThawed: AugmentedEvent<ApiType, [class_: u128], { class: u128 }>;
       /**
        * An asset class was created.
        **/
-      Created: AugmentedEvent<ApiType, [class: u128, creator: AccountId32, owner: AccountId32], { class: u128, creator: AccountId32, owner: AccountId32 }>;
+      Created: AugmentedEvent<ApiType, [class_: u128, creator: AccountId32, owner: AccountId32], { class: u128, creator: AccountId32, owner: AccountId32 }>;
       /**
        * An asset `class` was destroyed.
        **/
-      Destroyed: AugmentedEvent<ApiType, [class: u128], { class: u128 }>;
+      Destroyed: AugmentedEvent<ApiType, [class_: u128], { class: u128 }>;
       /**
        * An asset class was force-created.
        **/
-      ForceCreated: AugmentedEvent<ApiType, [class: u128, owner: AccountId32], { class: u128, owner: AccountId32 }>;
+      ForceCreated: AugmentedEvent<ApiType, [class_: u128, owner: AccountId32], { class: u128, owner: AccountId32 }>;
       /**
        * Some asset `instance` was frozen.
        **/
-      Frozen: AugmentedEvent<ApiType, [class: u128, instance: u128], { class: u128, instance: u128 }>;
+      Frozen: AugmentedEvent<ApiType, [class_: u128, instance: u128], { class: u128, instance: u128 }>;
       /**
        * An asset `instance` was issued.
        **/
-      Issued: AugmentedEvent<ApiType, [class: u128, instance: u128, owner: AccountId32], { class: u128, instance: u128, owner: AccountId32 }>;
+      Issued: AugmentedEvent<ApiType, [class_: u128, instance: u128, owner: AccountId32], { class: u128, instance: u128, owner: AccountId32 }>;
       /**
        * Metadata has been cleared for an asset instance.
        **/
-      MetadataCleared: AugmentedEvent<ApiType, [class: u128, instance: u128], { class: u128, instance: u128 }>;
+      MetadataCleared: AugmentedEvent<ApiType, [class_: u128, instance: u128], { class: u128, instance: u128 }>;
       /**
        * New metadata has been set for an asset instance.
        **/
-      MetadataSet: AugmentedEvent<ApiType, [class: u128, instance: u128, data: Bytes, isFrozen: bool], { class: u128, instance: u128, data: Bytes, isFrozen: bool }>;
+      MetadataSet: AugmentedEvent<ApiType, [class_: u128, instance: u128, data: Bytes, isFrozen: bool], { class: u128, instance: u128, data: Bytes, isFrozen: bool }>;
       /**
        * The owner changed.
        **/
-      OwnerChanged: AugmentedEvent<ApiType, [class: u128, newOwner: AccountId32], { class: u128, newOwner: AccountId32 }>;
+      OwnerChanged: AugmentedEvent<ApiType, [class_: u128, newOwner: AccountId32], { class: u128, newOwner: AccountId32 }>;
       /**
        * Metadata has been cleared for an asset instance.
        **/
-      Redeposited: AugmentedEvent<ApiType, [class: u128, successfulInstances: Vec<u128>], { class: u128, successfulInstances: Vec<u128> }>;
+      Redeposited: AugmentedEvent<ApiType, [class_: u128, successfulInstances: Vec<u128>], { class: u128, successfulInstances: Vec<u128> }>;
       /**
        * The management team changed.
        **/
-      TeamChanged: AugmentedEvent<ApiType, [class: u128, issuer: AccountId32, admin: AccountId32, freezer: AccountId32], { class: u128, issuer: AccountId32, admin: AccountId32, freezer: AccountId32 }>;
+      TeamChanged: AugmentedEvent<ApiType, [class_: u128, issuer: AccountId32, admin: AccountId32, freezer: AccountId32], { class: u128, issuer: AccountId32, admin: AccountId32, freezer: AccountId32 }>;
       /**
        * Some asset `instance` was thawed.
        **/
-      Thawed: AugmentedEvent<ApiType, [class: u128, instance: u128], { class: u128, instance: u128 }>;
+      Thawed: AugmentedEvent<ApiType, [class_: u128, instance: u128], { class: u128, instance: u128 }>;
       /**
        * An asset `instance` was transferred.
        **/
-      Transferred: AugmentedEvent<ApiType, [class: u128, instance: u128, from: AccountId32, to: AccountId32], { class: u128, instance: u128, from: AccountId32, to: AccountId32 }>;
+      Transferred: AugmentedEvent<ApiType, [class_: u128, instance: u128, from: AccountId32, to: AccountId32], { class: u128, instance: u128, from: AccountId32, to: AccountId32 }>;
       /**
        * Generic event
        **/

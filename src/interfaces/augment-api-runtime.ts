@@ -9,10 +9,10 @@ import type { ApiTypes, AugmentedCall, DecoratedCallBase } from '@polkadot/api-b
 import type { Bytes, Null, Option, Vec, u32 } from '@polkadot/types-codec';
 import type { AnyNumber, ITuple } from '@polkadot/types-codec/types';
 import type { CheckInherentsResult, InherentData } from '@polkadot/types/interfaces/blockbuilder';
+import type { BlockHash } from '@polkadot/types/interfaces/chain';
 import type { AuthorityId } from '@polkadot/types/interfaces/consensus';
 import type { CollationInfo } from '@polkadot/types/interfaces/cumulus';
 import type { Extrinsic } from '@polkadot/types/interfaces/extrinsics';
-import type { BlockHash } from '@polkadot/types/interfaces/chain';
 import type { OpaqueMetadata } from '@polkadot/types/interfaces/metadata';
 import type { FeeDetails, RuntimeDispatchInfo } from '@polkadot/types/interfaces/payment';
 import type { AccountId, Block, Header, Index, KeyTypeId, SlotDuration } from '@polkadot/types/interfaces/runtime';
@@ -59,17 +59,17 @@ declare module '@polkadot/api-base/types/calls' {
        **/
       applyExtrinsic: AugmentedCall<ApiType, (extrinsic: Extrinsic | IExtrinsic | string | Uint8Array) => Observable<ApplyExtrinsicResultPre6>>;
       /**
+       * Check that the inherents are valid.
+       **/
+      checkInherents: AugmentedCall<ApiType, (block: Block | { header?: any; extrinsics?: any } | string | Uint8Array, data: InherentData | { data?: any } | string | Uint8Array) => Observable<CheckInherentsResult>>;
+      /**
        * Finish the current block.
        **/
       finalizeBlock: AugmentedCall<ApiType, () => Observable<Header>>;
       /**
-       * Check that the inherents are valid.
-       **/
-      checkInherents: AugmentedCall<ApiType, (block: Block | { header?: any; extrinsics?: any } | string | Uint8Array, data: InherentData) => Observable<CheckInherentsResult>>;
-      /**
        * Generate inherent extrinsics.
        **/
-      inherentExtrinsics: AugmentedCall<ApiType, (inherent: InherentData) => Observable<Vec<Extrinsic>>>;
+      inherentExtrinsics: AugmentedCall<ApiType, (inherent: InherentData | { data?: any } | string | Uint8Array) => Observable<Vec<Extrinsic>>>;
       /**
        * Generic call
        **/
@@ -80,7 +80,7 @@ declare module '@polkadot/api-base/types/calls' {
       /**
        * Collect information about a collation.
        **/
-      collectCollationInfo: AugmentedCall<ApiType, (header: Header) => Observable<CollationInfo>>;
+      collectCollationInfo: AugmentedCall<ApiType, (header: Header | { parentHash?: any; number?: any; stateRoot?: any; extrinsicsRoot?: any; digest?: any } | string | Uint8Array) => Observable<CollationInfo>>;
       /**
        * Generic call
        **/
@@ -95,7 +95,7 @@ declare module '@polkadot/api-base/types/calls' {
       /**
        * Initialize a block with the given header.
        **/
-      initializeBlock: AugmentedCall<ApiType, (header: Header) => Observable<Null>>;
+      initializeBlock: AugmentedCall<ApiType, (header: Header | { parentHash?: any; number?: any; stateRoot?: any; extrinsicsRoot?: any; digest?: any } | string | Uint8Array) => Observable<Null>>;
       /**
        * Returns the version of the runtime.
        **/
@@ -121,7 +121,7 @@ declare module '@polkadot/api-base/types/calls' {
       /**
        * Starts the off-chain task for given block header.
        **/
-      offchainWorker: AugmentedCall<ApiType, (header: Header) => Observable<Null>>;
+      offchainWorker: AugmentedCall<ApiType, (header: Header | { parentHash?: any; number?: any; stateRoot?: any; extrinsicsRoot?: any; digest?: any } | string | Uint8Array) => Observable<Null>>;
       /**
        * Generic call
        **/
@@ -136,7 +136,7 @@ declare module '@polkadot/api-base/types/calls' {
       /**
        * Generate a set of session keys with optionally using the given seed.
        **/
-      generateSessionKeys: AugmentedCall<ApiType, (seed: Option<Bytes>) => Observable<Bytes>>;
+      generateSessionKeys: AugmentedCall<ApiType, (seed: Option<Bytes> | null | Uint8Array | Bytes | string) => Observable<Bytes>>;
       /**
        * Generic call
        **/
@@ -147,7 +147,7 @@ declare module '@polkadot/api-base/types/calls' {
       /**
        * Validate the transaction.
        **/
-      validateTransaction: AugmentedCall<ApiType, (source: TransactionSource, tx: Extrinsic | IExtrinsic | string | Uint8Array, blockHash: BlockHash | string | Uint8Array) => Observable<TransactionValidity>>;
+      validateTransaction: AugmentedCall<ApiType, (source: TransactionSource | 'InBlock' | 'Local' | 'External' | number | Uint8Array, tx: Extrinsic | IExtrinsic | string | Uint8Array, blockHash: BlockHash | string | Uint8Array) => Observable<TransactionValidity>>;
       /**
        * Generic call
        **/

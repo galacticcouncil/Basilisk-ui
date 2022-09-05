@@ -11,7 +11,6 @@ export interface ProposalContents extends Bytes {}
 export interface ProposalRecord extends Struct {
   readonly index: u32;
   readonly author: AccountId;
-  readonly stage: VoteStage;
   readonly transition_time: u32;
   readonly title: Text;
   readonly contents: Text;
