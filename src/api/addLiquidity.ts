@@ -2,10 +2,11 @@ import { useApiPromise } from "../utils/network"
 import { useStore } from "../state/store"
 import { useCallback, useState } from "react"
 import { useTransaction } from "../sections/transaction/transaction.utils"
+import BigNumber from "bignumber.js"
 
 interface AddLiquidityAsset {
   id: string
-  amount: string
+  amount: BigNumber
 }
 
 export function useAddLiquidity() {
@@ -23,8 +24,8 @@ export function useAddLiquidity() {
           const tx = await api.tx.xyk.addLiquidity(
             assetA.id,
             assetB.id,
-            assetA.amount,
-            assetB.amount,
+            assetA.amount.toFixed(),
+            assetB.amount.toFixed(),
           )
 
           create({

@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js"
 import { Button } from "components/Button/Button"
 import { Modal } from "components/Modal/Modal"
 import { Row } from "components/Row/Row"
@@ -9,9 +10,8 @@ import { PoolAddLiquidityConversion } from "sections/pools/pool/modals/addLiquid
 import { PoolAddLiquidityAssetSelect } from "sections/pools/pool/modals/addLiquidity/assetSelect/PoolAddLiquidityAssetSelect"
 import { PoolConfig } from "../../Pool"
 import { useAddPoolAddLiquidity } from "./PoolAddLiquidity.utils"
-import { getFullDisplayBalance } from "../../../../../utils/balance"
+import { getDecimalAmount, getFullDisplayBalance } from "utils/balance"
 import { getAssetLogo } from "components/AssetIcon/AssetIcon"
-import { getFullDisplayBalance } from "utils/balance"
 import { useAddLiquidity } from "api/addLiquidity"
 import { WalletConnectButton } from "../../../../wallet/connect/modal/WalletConnectButton"
 import { useStore } from "state/store"
@@ -44,11 +44,17 @@ export const PoolAddLiquidity: FC<Props> = ({
       handleAddLiquidity([
         {
           id: assetA,
-          amount: inputAssetA,
+          amount: getDecimalAmount(
+            new BigNumber(inputAssetA),
+            dataAssetA.asset.decimals,
+          ),
         },
         {
           id: assetB,
-          amount: inputAssetB,
+          amount: getDecimalAmount(
+            new BigNumber(inputAssetB),
+            dataAssetB.asset.decimals,
+          ),
         },
       ])
     } catch (err) {
