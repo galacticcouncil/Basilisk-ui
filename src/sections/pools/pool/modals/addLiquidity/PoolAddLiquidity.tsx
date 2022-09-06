@@ -37,7 +37,7 @@ export const PoolAddLiquidity: FC<Props> = ({
   const [inputAssetA, setInputAssetA] = useState("0")
   const [inputAssetB, setInputAssetB] = useState("0")
 
-  const { pendingTx, handleAddLiquidity } = useAddLiquidity("Test")
+  const { pendingTx, handleAddLiquidity } = useAddLiquidity()
 
   async function handleSubmit() {
     try {
