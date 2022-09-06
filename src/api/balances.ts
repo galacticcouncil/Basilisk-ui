@@ -75,5 +75,5 @@ export function useTokensBalances(tokenIds: string[]) {
     })),
   })
 
-  return queries.map((balance) => balance.data ?? new BigNumber(NaN))
+  return queries.map((balance) => balance.data)
 }
