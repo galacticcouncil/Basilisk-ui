@@ -48,7 +48,8 @@ export const getTokenBalance =
     const data = res.toHuman() as
       | { free: string; frozen: string; reserved: string }
       | undefined
-    return new BigNumber(data?.free ?? NaN)
+
+    return new BigNumber(data?.free.replaceAll(",", "") ?? NaN)
   }
 
 export const useTokenBalance = (id: string, accountAddress?: string) => {
