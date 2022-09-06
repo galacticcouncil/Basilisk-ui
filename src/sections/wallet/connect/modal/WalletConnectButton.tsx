@@ -2,7 +2,7 @@ import { WalletConnectModal } from "./WalletConnectModal"
 import { SLoginButton } from "./WalletConnectButton.styled"
 import React, { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { ButtonProps } from "../../../../components/Button/Button"
+import { ButtonProps } from "components/Button/Button"
 
 export const WalletConnectButton: React.FC<ButtonProps> = ({ ...props }) => {
   const [open, setOpen] = useState(false)

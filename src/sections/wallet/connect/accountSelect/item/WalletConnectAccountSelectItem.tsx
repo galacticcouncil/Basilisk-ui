@@ -8,7 +8,6 @@ import { useTokenBalance } from "api/balances"
 import { SSelectItem } from "./WalletConnectAccountSelectItem.styled"
 import { WalletConnectAccountSelectAddress } from "sections/wallet/connect/accountSelect/item/address/WalletConnectAccountSelectAddress"
 import { FC } from "react"
-import { getFullDisplayBalance } from "utils/balance"
 
 type Props = {
   address: string
@@ -34,7 +33,7 @@ export const WalletConnectAccountSelectItem: FC<Props> = ({
     <SSelectItem onClick={setAccount}>
       <Box flex align="center" justify="space-between">
         <Text>{name}</Text>
-        <Text>{t("value.bsx", { amount: getFullDisplayBalance(data) })}</Text>
+        <Text>{t("value.bsx", { amount: data })}</Text>
       </Box>
 
       <Box flex column>

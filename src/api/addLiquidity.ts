@@ -1,7 +1,6 @@
 import { useApiPromise } from "../utils/network"
 import { useStore } from "../state/store"
 import { useCallback, useState } from "react"
-import { useTransaction } from "../sections/transaction/transaction.utils"
 import BigNumber from "bignumber.js"
 
 interface AddLiquidityAsset {
@@ -11,10 +10,8 @@ interface AddLiquidityAsset {
 
 export function useAddLiquidity() {
   const api = useApiPromise()
-  const { account } = useStore()
+  const { account, createTransaction } = useStore()
   const [pendingTx, setPendingTx] = useState(false)
-
-  const { create } = useTransaction()
 
   const handleAddLiquidity = useCallback(
     async ([assetA, assetB]: [AddLiquidityAsset, AddLiquidityAsset]) => {
@@ -29,7 +26,7 @@ export function useAddLiquidity() {
             assetB.amount.toFixed(),
           )
 
-          create({
+          createTransaction({
             hash: tx.hash.toString(),
             tx,
           })
@@ -41,7 +38,7 @@ export function useAddLiquidity() {
         }
       }
     },
-    [create, account, api],
+    [createTransaction, account, api],
   )
 
   return {
