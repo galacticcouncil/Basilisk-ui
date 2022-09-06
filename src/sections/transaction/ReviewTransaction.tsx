@@ -7,20 +7,17 @@ import { SDetailRow } from "./ReviewTransaction.styled"
 import { Button } from "components/Button/Button"
 import { TransactionCode } from "components/TransactionCode/TransactionCode"
 import { Transaction } from "../../state/store"
-import { getTransactionJSON, TransactionMeta } from "./ReviewTransaction.utils"
+import { getTransactionJSON } from "./ReviewTransaction.utils"
 
 type Props = {
   onCancel: () => void
   onBack?: () => void
 } & Transaction
 
-export const ReviewTransaction: React.FC<Props> = ({ onCancel, tx, data }) => {
+export const ReviewTransaction: React.FC<Props> = ({ onCancel, tx, title }) => {
   const { t } = useTranslation()
 
-  const json = getTransactionJSON(
-    tx.meta.toHuman() as unknown as TransactionMeta,
-    data,
-  )
+  const json = getTransactionJSON(tx)
 
   return (
     <Modal
@@ -28,14 +25,11 @@ export const ReviewTransaction: React.FC<Props> = ({ onCancel, tx, data }) => {
       onClose={onCancel}
       title={t("pools.reviewTransaction.modal.title")}
     >
-      <Text color="neutralGray400" fw={400} mt={6}>
-        {t("pools.reviewTransaction.modal.joining", {
-          name: "BSX",
-          amount: "2134",
-          symbol1: "BSX",
-          symbol2: "aUSD",
-        })}
-      </Text>
+      {title && (
+        <Text color="neutralGray400" fw={400} mt={6}>
+          {title}
+        </Text>
+      )}
       <Box mt={16}>
         <TransactionCode name={`Method ${json.name}`} src={json.code} />
       </Box>

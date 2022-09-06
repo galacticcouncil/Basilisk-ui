@@ -8,8 +8,8 @@ interface Account {
 
 export interface Transaction {
   hash: string
+  title?: string
   tx: SubmittableExtrinsic
-  data: any
 }
 
 interface Store {

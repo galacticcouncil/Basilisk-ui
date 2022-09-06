@@ -1,20 +1,23 @@
-export interface TransactionMeta {
-  name: string
-  args: {
-    name: string
-    type: string
-    typeName: string
-  }[]
+import type { AnyJson } from "@polkadot/types-codec/types"
+import { SubmittableExtrinsic } from "@polkadot/api/promise/types"
+
+type TXData = AnyJson & {
+  method: {
+    args: {
+      [key: string]: string
+    }
+    method: string
+    section: string
+  }
 }
 
-export function getTransactionJSON(meta: TransactionMeta, data: string[]) {
+export function getTransactionJSON(tx: SubmittableExtrinsic) {
+  const data = tx.toHuman() as TXData
+
   return {
-    name: `${meta.name}(${meta.args.map((arg) => arg.name).join(", ")})`,
-    code: meta.args.reduce((acc, cur, index) => {
-      return {
-        ...acc,
-        [cur.name]: data[index],
-      }
-    }, {}),
+    name: `${data.method.section}.${data.method.method}(args)`,
+    code: {
+      args: data.method.args,
+    },
   }
 }
