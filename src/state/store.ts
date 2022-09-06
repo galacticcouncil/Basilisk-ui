@@ -9,7 +9,7 @@ interface Account {
 export interface Transaction {
   hash: string
   tx: SubmittableExtrinsic
-  data: string[]
+  data: any
 }
 
 interface Store {

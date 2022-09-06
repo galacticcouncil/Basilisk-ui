@@ -27,7 +27,7 @@ export function useAddLiquidity() {
             assetB.id,
             assetA.amount.toFixed(),
             assetB.amount.toFixed(),
-          ]
+          ] as const
 
           const tx = await api.tx.xyk.addLiquidity(...transactionArgs)
 
