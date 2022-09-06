@@ -16,7 +16,7 @@ export const getDecimalAmount = (
 }
 
 export const getFullDisplayBalance = (
-  balance: BigNumber,
+  balance: BigNumber | undefined,
   decimals: string | number = 12,
   displayDecimals: string | number = 12,
 ) => {
@@ -26,7 +26,7 @@ export const getFullDisplayBalance = (
     typeof displayDecimals === "string"
       ? parseInt(displayDecimals, 10)
       : displayDecimals
-  return balance.isNaN()
+  return !balance || balance.isNaN()
     ? "-"
     : getBalanceAmount(balance, parsedDecimals).toFixed(parsedDisplayDecimals)
 }
