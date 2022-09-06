@@ -6,14 +6,21 @@ import { Box } from "components/Box/Box"
 import { SDetailRow } from "./ReviewTransaction.styled"
 import { Button } from "components/Button/Button"
 import { TransactionCode } from "components/TransactionCode/TransactionCode"
+import { Transaction } from "../../state/store"
+import { getTransactionJSON, TransactionMeta } from "./ReviewTransaction.utils"
 
 type Props = {
   onCancel: () => void
   onBack?: () => void
-}
+} & Transaction
 
-export const ReviewTransaction: React.FC<Props> = ({ onCancel }) => {
+export const ReviewTransaction: React.FC<Props> = ({ onCancel, tx, data }) => {
   const { t } = useTranslation()
+
+  const json = getTransactionJSON(
+    tx.meta.toHuman() as unknown as TransactionMeta,
+    data,
+  )
 
   return (
     <Modal
@@ -30,35 +37,7 @@ export const ReviewTransaction: React.FC<Props> = ({ onCancel }) => {
         })}
       </Text>
       <Box mt={16}>
-        <TransactionCode
-          name="Method utility.batchAll(calls)"
-          src={{
-            calls: [
-              {
-                args: {
-                  asset_out: "0",
-                  asset_in: "1",
-                  amount: "10 000 000 000 000 000",
-                  max_limit: "33 000 000 000 000",
-                  discount: false,
-                },
-                method: "buy",
-                section: "xyk",
-              },
-              {
-                args: {
-                  asset_in: "1",
-                  asset_out: "0",
-                  amount: "10 000 000 000 000 000",
-                  max_limit: "33 000 000 000 000",
-                  discount: false,
-                },
-                method: "sell",
-                section: "xyk",
-              },
-            ],
-          }}
-        />
+        <TransactionCode name={`Method ${json.name}`} src={json.code} />
       </Box>
       <Box mt={10}>
         <SDetailRow>

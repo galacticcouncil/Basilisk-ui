@@ -1,9 +1,10 @@
 import { useStore } from "state/store"
 
 export function useTransaction() {
-  const { createTransaction } = useStore()
+  const { createTransaction, transactions } = useStore()
 
   return {
     create: createTransaction,
+    pendingTransactions: transactions,
   }
 }

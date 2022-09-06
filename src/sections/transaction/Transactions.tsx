@@ -10,6 +10,7 @@ export const Transactions = () => {
     return (
       <ReviewTransaction
         onCancel={() => cancelTransaction(currentTransaction.hash)}
+        {...currentTransaction}
       />
     )
   }

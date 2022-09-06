@@ -21,16 +21,20 @@ export function useAddLiquidity() {
       if (account) {
         try {
           setPendingTx(true)
-          const tx = await api.tx.xyk.addLiquidity(
+
+          const transactionArgs = [
             assetA.id,
             assetB.id,
             assetA.amount.toFixed(),
             assetB.amount.toFixed(),
-          )
+          ]
+
+          const tx = await api.tx.xyk.addLiquidity(...transactionArgs)
 
           create({
             hash: tx.hash.toString(),
             tx,
+            data: transactionArgs,
           })
 
           setPendingTx(false)
