@@ -13,6 +13,8 @@ import { getFullDisplayBalance } from "../../../../../utils/balance"
 import { getAssetLogo } from "components/AssetIcon/AssetIcon"
 import { getFullDisplayBalance } from "utils/balance"
 import { useAddLiquidity } from "api/addLiquidity"
+import { WalletConnectButton } from "../../../../wallet/connect/modal/WalletConnectButton"
+import { useStore } from "state/store"
 
 type Props = PoolConfig & {
   isOpen: boolean
@@ -26,6 +28,9 @@ export const PoolAddLiquidity: FC<Props> = ({
   assetB,
 }) => {
   const { t } = useTranslation()
+
+  const { account } = useStore()
+
   const { data: dataAssetA } = useAddPoolAddLiquidity(assetA)
   const { data: dataAssetB } = useAddPoolAddLiquidity(assetB)
 
@@ -111,14 +116,18 @@ export const PoolAddLiquidity: FC<Props> = ({
         left={t("pools.addLiquidity.modal.row.shareTokens")}
         right={<Text color="primary400">3000</Text>}
       />
-      <Button
-        text={t("pools.addLiquidity.modal.confirmButton")}
-        variant="primary"
-        fullWidth
-        mt={30}
-        disabled={pendingTx}
-        onClick={handleSubmit}
-      />
+      {account ? (
+        <Button
+          text={t("pools.addLiquidity.modal.confirmButton")}
+          variant="primary"
+          fullWidth
+          mt={30}
+          disabled={pendingTx}
+          onClick={handleSubmit}
+        />
+      ) : (
+        <WalletConnectButton mt={30} fullWidth />
+      )}
     </Modal>
   )
 }
