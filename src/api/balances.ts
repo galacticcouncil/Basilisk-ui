@@ -6,6 +6,7 @@ import { ApiPromise } from "@polkadot/api"
 import { useQueries, useQuery } from "@tanstack/react-query"
 import { QUERY_KEYS } from "../utils/queryKeys"
 import { u32 } from "@polkadot/types"
+import { AccountId32 } from "@polkadot/types/interfaces"
 
 function calculateFreeBalance(
   free: BigNumber,
@@ -17,7 +18,7 @@ function calculateFreeBalance(
 }
 
 export const getTokenBalance =
-  (api: ApiPromise, account: string, id: string) => async () => {
+  (api: ApiPromise, account: AccountId32 | string, id: string) => async () => {
     if (id === NATIVE_ASSET_ID) {
       const res = await api.query.system.account(account)
       const freeBalance = new BigNumber(res.data.free.toHex())
@@ -44,7 +45,10 @@ export const getTokenBalance =
     )
   }
 
-export const useTokenBalance = (id: string | u32, address?: string) => {
+export const useTokenBalance = (
+  id: string | u32,
+  address?: AccountId32 | string,
+) => {
   const api = useApiPromise()
   const { account } = useStore()
 

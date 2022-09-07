@@ -15,6 +15,7 @@ export interface PoolConfig {
   id: AccountId32
   assetA: u32
   assetB: u32
+  shareToken: u32
   hasJoinedFarms?: boolean
   hasLiquidity?: boolean
 }

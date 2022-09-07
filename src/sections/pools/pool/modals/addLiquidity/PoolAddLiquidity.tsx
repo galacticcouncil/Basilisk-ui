@@ -15,6 +15,11 @@ import { getAssetLogo } from "components/AssetIcon/AssetIcon"
 import { useAddLiquidity } from "api/addLiquidity"
 import { WalletConnectButton } from "sections/wallet/connect/modal/WalletConnectButton"
 import { useStore } from "state/store"
+import { useMath } from "utils/math"
+import { useTokenBalance } from "api/balances"
+import { useTotalIssuance } from "api/totalIssuance"
+import { BN_NAN, BN_100 } from "utils/constants"
+import { useAsset } from "../../../../../api/asset"
 
 type Props = PoolConfig & {
   isOpen: boolean
@@ -22,8 +27,10 @@ type Props = PoolConfig & {
 }
 
 export const PoolAddLiquidity: FC<Props> = ({
+  id,
   isOpen,
   onClose,
+  shareToken,
   assetA,
   assetB,
 }) => {
@@ -33,11 +40,41 @@ export const PoolAddLiquidity: FC<Props> = ({
 
   const { data: dataAssetA } = useAddPoolAddLiquidity(assetA)
   const { data: dataAssetB } = useAddPoolAddLiquidity(assetB)
+  const { data: dataShareToken } = useAsset(shareToken)
 
   const [inputAssetA, setInputAssetA] = useState("0")
   const [inputAssetB, setInputAssetB] = useState("0")
 
   const { pendingTx, handleAddLiquidity } = useAddLiquidity()
+
+  const shareIssuance = useTotalIssuance(shareToken)
+  const assetAReserve = useTokenBalance(assetA, id)
+
+  const { xyk } = useMath()
+
+  const calculatedShares =
+    xyk && assetAReserve.data && shareIssuance.data
+      ? new BigNumber(
+          xyk.calculate_shares(
+            getDecimalAmount(
+              assetAReserve.data,
+              dataAssetA.asset.decimals,
+            ).toFixed(),
+            getDecimalAmount(
+              new BigNumber(inputAssetA),
+              dataAssetA.asset.decimals,
+            ).toFixed(),
+            getDecimalAmount(
+              shareIssuance.data,
+              dataShareToken.decimals,
+            ).toFixed(),
+          ),
+        )
+      : BN_NAN
+
+  const calculatedRatio = shareIssuance.data
+    ? calculatedShares.pow(shareIssuance.data).multipliedBy(100)
+    : BN_NAN
 
   async function handleSubmit() {
     try {
@@ -115,12 +152,26 @@ export const PoolAddLiquidity: FC<Props> = ({
         }
       />
       <Separator />
-      <Row left={t("pools.addLiquidity.modal.row.sharePool")} right="5%" />
+      <Row
+        left={t("pools.addLiquidity.modal.row.sharePool")}
+        right={`${(calculatedRatio.isFinite()
+          ? calculatedRatio
+          : BN_100
+        ).toFixed()}%`}
+      />
       <Separator />
       {/*TODO add tooltip component afterwards */}
       <Row
         left={t("pools.addLiquidity.modal.row.shareTokens")}
-        right={<Text color="primary400">3000</Text>}
+        right={
+          <Text color="primary400">
+            {getFullDisplayBalance(
+              calculatedShares,
+              dataShareToken.decimals,
+              5,
+            )}
+          </Text>
+        }
       />
       {account ? (
         <Button
