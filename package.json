@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@galacticcouncil/math": "https://github.com/galacticcouncil/HydraDX-wasm",
     "@polkadot/api": "^9.3.3",
     "@polkadot/types": "^9.3.3",
     "@polkadot/typegen": "^9.3.3",
