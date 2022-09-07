@@ -5,6 +5,7 @@ import { FC } from "react"
 import { useAsset } from "api/asset"
 import BN from "bignumber.js"
 import { u32 } from "@polkadot/types-codec"
+import { useTranslation } from "react-i18next"
 
 type Props = {
   assetId: u32
@@ -12,6 +13,7 @@ type Props = {
 }
 
 export const PoolIncentivesRow: FC<Props> = ({ assetId, apr }) => {
+  const { t } = useTranslation()
   // TODO: use u32
   const asset = useAsset(assetId.toHuman())
 
@@ -22,7 +24,7 @@ export const PoolIncentivesRow: FC<Props> = ({ assetId, apr }) => {
         {asset.data.name}
       </Text>
       <Text ml={"auto"} fw={700} color="primary200">
-        {apr.toFixed(2) + "% APR"}
+        {t("pools.pool.incentives.apr", { percentage: apr.toFixed(2) })}
       </Text>
     </Box>
   )

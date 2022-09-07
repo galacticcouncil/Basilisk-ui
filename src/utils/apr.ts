@@ -3,7 +3,7 @@ import { secondsInYear } from "date-fns/constants"
 import { useActiveYieldFarms, useGlobalFarms, useYieldFarms } from "api/farms"
 import { useMemo } from "react"
 import { AccountId32 } from "@polkadot/types/interfaces/runtime"
-import { BN_10 } from "utils/constants"
+import { BN_QUINTILL } from "utils/constants"
 
 export const useAPR = (poolId: AccountId32) => {
   const activeYieldFarms = useActiveYieldFarms(poolId)
@@ -34,11 +34,13 @@ export const useAPR = (poolId: AccountId32) => {
       if (!gFarm || !yFarm) return undefined
 
       const totalSharesZ = new BN(gFarm.totalSharesZ.toHex())
-      const yieldPerPeriod = new BN(gFarm.yieldPerPeriod.toHex())
+      const yieldPerPeriod = new BN(gFarm.yieldPerPeriod.toHex()).div(
+        BN_QUINTILL,
+      )
       const maxRewardPerPeriod = new BN(gFarm.maxRewardPerPeriod.toHex())
       const blocksPerPeriod = new BN(gFarm.blocksPerPeriod.toHex())
-      const blockTime = new BN(6000)
-      const multiplier = new BN(yFarm.multiplier.toHex()).div(BN_10.pow(12))
+      const blockTime = new BN(6)
+      const multiplier = new BN(yFarm.multiplier.toHex())
 
       const globalRewardPerPeriod = getGlobalRewardPerPeriod(
         totalSharesZ,
