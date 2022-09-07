@@ -1,29 +1,21 @@
-import { useEffect, useState } from "react"
+import { useQuery } from "@tanstack/react-query"
+import { QUERY_KEYS } from "./queryKeys"
 
-export const loadMath = () => {
+export const getMath = () => async () => {
+  const xyk = await import("@galacticcouncil/math/build/xyk/bundler");
+  const lbp = await import("@galacticcouncil/math/build/lbp/bundler");
   return {
-    xyk: import('@galacticcouncil/math/build/xyk/bundler'),
-    lbp: import('@galacticcouncil/math/build/lbp/bundler')
+    xyk,
+    lbp
   }
 }
 
 export const useMath = () => {
-  const [wasm, setWasm] = useState<{
-    instance: any | undefined,
-    loading: boolean
-  } | undefined>({
-    instance: undefined,
-    loading: true,
-  });
+  const { data, ...rest } = useQuery(QUERY_KEYS.math, getMath())
 
-  useEffect(() => {
-    (async () => {
-      setWasm({
-        instance: loadMath(),
-        loading: false,
-      });
-    })();
-  }, [setWasm])
+  return {
+    ...data,
+    ...rest
+  }
 
-  return { math: wasm?.instance, loading: wasm?.loading };
 }

@@ -15,7 +15,6 @@ import { getAssetLogo } from "components/AssetIcon/AssetIcon"
 import { useAddLiquidity } from "api/addLiquidity"
 import { WalletConnectButton } from "sections/wallet/connect/modal/WalletConnectButton"
 import { useStore } from "state/store"
-import { useMath } from "../../../../../utils/math"
 
 type Props = PoolConfig & {
   isOpen: boolean
@@ -31,8 +30,6 @@ export const PoolAddLiquidity: FC<Props> = ({
   const { t } = useTranslation()
 
   const { account } = useStore()
-
-  const { math } = useMath()
 
   const { data: dataAssetA } = useAddPoolAddLiquidity(assetA)
   const { data: dataAssetB } = useAddPoolAddLiquidity(assetB)
