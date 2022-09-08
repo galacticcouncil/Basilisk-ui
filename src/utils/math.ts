@@ -2,8 +2,10 @@ import { useQuery } from "@tanstack/react-query"
 import { QUERY_KEYS } from "./queryKeys"
 
 export const getMath = () => async () => {
-  const xyk = await import("@galacticcouncil/math/build/xyk/bundler")
-  const lbp = await import("@galacticcouncil/math/build/lbp/bundler")
+  const [xyk, lbp] = await Promise.all([
+    import("@galacticcouncil/math/build/xyk/bundler"),
+    import("@galacticcouncil/math/build/lbp/bundler"),
+  ])
   return {
     xyk,
     lbp,
