@@ -5,11 +5,12 @@ import { BN_0, BN_1, BN_10, BN_12, BN_2, DOLLAR_RATES } from "utils/constants"
 import { useTotalLiquidity } from "api/totalLiquidity"
 import { useExchangeFee } from "api/exchangeFee"
 import { AccountId32 } from "@polkadot/types/interfaces/runtime"
+import { u32 } from "@polkadot/types"
 
 type Props = {
   id: AccountId32
-  assetA: string
-  assetB: string
+  assetA: u32
+  assetB: u32
 }
 
 export const usePoolData = ({ id, assetA, assetB }: Props) => {
