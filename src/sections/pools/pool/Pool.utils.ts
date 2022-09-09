@@ -56,7 +56,15 @@ export const usePoolData = ({ id, assetA, assetB }: Props) => {
     const tradingFee = exchangeFee.data
 
     return { assetA, assetB, tradingFee, totalLiquidity }
-  }, [isLoading])
+  }, [
+    assetADetails.data,
+    assetAMeta.data,
+    assetBDetails.data,
+    assetBMeta.data,
+    exchangeFee.data,
+    isLoading,
+    total.data,
+  ])
 
   return { data, isLoading }
 }
