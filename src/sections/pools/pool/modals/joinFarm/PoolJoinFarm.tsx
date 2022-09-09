@@ -16,7 +16,7 @@ import { getAssetLogo } from "components/AssetIcon/AssetIcon"
 import { u32 } from "@polkadot/types"
 import { addSeconds } from "date-fns"
 import BN from "bignumber.js"
-import { BLOCK_TIME_IN_SECONDS } from "utils/constants"
+import { BLOCK_TIME } from "utils/constants"
 
 const PoolJoinFarmItem = (props: { farm: AprFarm; onSelect: () => void }) => {
   const asset = useAsset(props.farm.assetId)
@@ -29,7 +29,7 @@ const PoolJoinFarmItem = (props: { farm: AprFarm; onSelect: () => void }) => {
     new BN(bestNumber.data.toHex()),
   )
 
-  const secondsDurationToEnd = blockDurationToEnd.times(BLOCK_TIME_IN_SECONDS)
+  const secondsDurationToEnd = blockDurationToEnd.times(BLOCK_TIME)
 
   return (
     <SFarm onClick={props.onSelect}>
@@ -114,7 +114,7 @@ export const PoolJoinFarm = (props: {
       <Box flex column gap={8} mt={24}>
         {apr.data.map((farm) => (
           <PoolJoinFarmItem
-            key={farm.yieldFarmId.toString()}
+            key={farm.toString()}
             farm={farm}
             onSelect={props.onSelect}
           />

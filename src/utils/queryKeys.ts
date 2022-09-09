@@ -18,4 +18,5 @@ export const QUERY_KEYS = {
   assetDetails: (id: string) => ["assetDetails", id],
   assetMeta: (id: string) => ["assetMeta", id],
   exchangeFee: ["exchangeFee"],
+  math: ["@galacticcouncil/math"],
 } as const

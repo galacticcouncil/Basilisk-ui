@@ -2,7 +2,7 @@ import BN from "bignumber.js"
 import { useActiveYieldFarms, useGlobalFarms, useYieldFarms } from "api/farms"
 import { useMemo } from "react"
 import { AccountId32 } from "@polkadot/types/interfaces/runtime"
-import { BLOCK_TIME_IN_SECONDS, BN_QUINTILL } from "utils/constants"
+import { BLOCK_TIME, BN_QUINTILL } from "utils/constants"
 import { secondsInYear } from "date-fns"
 import { useApiPromise } from "./network"
 import { useQuery } from "@tanstack/react-query"
@@ -37,48 +37,35 @@ export const useAPR = (poolId: AccountId32) => {
     )
       return []
 
-    let aFarms = activeYieldFarms.data
-    const gFarms = globalFarms.data.filter((gf) =>
-      aFarms.some((af) => af.globalFarmId.eq(gf.id)),
+    const farms = activeYieldFarms.data.map((af) => {
+      const globalFarm = globalFarms.data.find((gf) =>
+        af.globalFarmId.eq(gf.id),
+      )
+      const yieldFarm = yieldFarms.data.find((yf) => af.yieldFarmId.eq(yf.id))
+      if (!globalFarm || !yieldFarm) return undefined
+      return { globalFarm, yieldFarm }
+    })
+
+    const filteredFarms = farms.filter(
+      (x): x is NonNullable<typeof farms[number]> => x != null,
     )
-    const yFarms = yieldFarms.data.filter((yf) =>
-      aFarms.some((af) => af.yieldFarmId.eq(yf.id)),
-    )
 
-    const farms = aFarms
-      .map((farm) => {
-        const gFarm = gFarms.find((gf) => gf.id.eq(farm.globalFarmId))
-        const yFarm = yFarms.find((yf) => yf.id.eq(farm.yieldFarmId))
-        if (!gFarm || !yFarm) return undefined
-        return { gFarm, yFarm, farm }
-      })
-      .filter(
-        (
-          x,
-        ): x is {
-          gFarm: typeof gFarms[number]
-          yFarm: typeof yFarms[number]
-          farm: typeof aFarms[number]
-        } => x != null,
-      )
+    const data = filteredFarms.map((farm) => {
+      const { globalFarm, yieldFarm } = farm
 
-    const data = farms.map(({ farm, gFarm, yFarm }) => {
-      const totalSharesZ = new BN(gFarm.totalSharesZ.toHex())
-      const plannedYieldingPeriods = new BN(
-        gFarm.plannedYieldingPeriods.toHex(),
-      )
-      const yieldPerPeriod = new BN(gFarm.yieldPerPeriod.toHex()).div(
-        BN_QUINTILL,
-      )
-
-      const maxRewardPerPeriod = new BN(gFarm.maxRewardPerPeriod.toHex())
-      const blocksPerPeriod = new BN(gFarm.blocksPerPeriod.toHex())
-      const currentPeriod = new BN(bestNumber.data.toHex()).dividedToIntegerBy(
-        blocksPerPeriod,
-      )
-
-      const blockTime = BLOCK_TIME_IN_SECONDS
-      const multiplier = new BN(yFarm.multiplier.toHex()).div(BN_QUINTILL)
+      const totalSharesZ = globalFarm.totalSharesZ.toBigNumber()
+      const plannedYieldingPeriods =
+        globalFarm.plannedYieldingPeriods.toBigNumber()
+      const yieldPerPeriod = globalFarm.yieldPerPeriod
+        .toBigNumber()
+        .div(BN_QUINTILL) // 18dp
+      const maxRewardPerPeriod = globalFarm.maxRewardPerPeriod.toBigNumber()
+      const blocksPerPeriod = globalFarm.blocksPerPeriod.toBigNumber()
+      const currentPeriod = bestNumber.data
+        .toBigNumber()
+        .dividedToIntegerBy(blocksPerPeriod)
+      const blockTime = BLOCK_TIME
+      const multiplier = yieldFarm.multiplier.toBigNumber().div(BN_QUINTILL)
 
       const globalRewardPerPeriod = getGlobalRewardPerPeriod(
         totalSharesZ,
@@ -90,20 +77,19 @@ export const useAPR = (poolId: AccountId32) => {
         multiplier,
         totalSharesZ,
       )
-
       const apr = getAPR(poolYieldPerPeriod, blockTime, blocksPerPeriod)
 
       // max distribution of rewards
       // https://www.notion.so/Screen-elements-mapping-Farms-baee6acc456542ca8d2cccd1cc1548ae?p=4a2f16a9f2454095945dbd9ce0eb1b6b&pm=s
-      const distributedRewards = new BN(gFarm.accumulatedRewards.toHex()).plus(
-        gFarm.paidAccumulatedRewards.toHex(),
-      )
+      const distributedRewards = globalFarm.accumulatedRewards
+        .toBigNumber()
+        .plus(globalFarm.paidAccumulatedRewards.toBigNumber())
 
       const maxRewards = maxRewardPerPeriod.times(plannedYieldingPeriods)
       const leftToDistribute = maxRewards.minus(distributedRewards)
 
       // estimate, when the farm will most likely distribute all the rewards
-      const updatedAtPeriod = new BN(gFarm.updatedAt.toHex())
+      const updatedAtPeriod = globalFarm.updatedAt.toBigNumber()
       const periodsLeft = leftToDistribute.div(maxRewardPerPeriod)
 
       // if there are no deposits, the farm is not running and distributing rewards
@@ -126,9 +112,7 @@ export const useAPR = (poolId: AccountId32) => {
         maxRewards,
         fullness,
         estimatedEndBlock: estimatedEndBlock,
-        assetId: gFarm.rewardCurrency,
-        globalFarm: gFarm,
-        yieldFarm: yFarm,
+        assetId: globalFarm.rewardCurrency,
         ...farm,
       }
     })

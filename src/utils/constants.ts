@@ -9,6 +9,9 @@ export const BN_QUINTILL = new BN(BN_10.pow(18))
 
 export const TRADING_FEE = new BN(3).div(new BN(1000))
 
+// block time in seconds
+export const BLOCK_TIME = new BN(12)
+
 // temporary values
 export const DOLLAR_RATES = new Map([
   ["BSX", new BN(0.00015843)],
@@ -18,5 +21,3 @@ export const DOLLAR_RATES = new Map([
   ["AUSD", new BN(0.933333)],
   ["Acala USD", new BN(0.933333)],
 ])
-
-export const BLOCK_TIME_IN_SECONDS = new BN(12)
