@@ -9,16 +9,27 @@ import { Box } from "components/Box/Box"
 import { Text } from "components/Typography/Text/Text"
 import { FillBar } from "components/FillBar/FillBar"
 import { ChevronDown } from "assets/icons/ChevronDown"
-import { AprFarm, useAPR } from "utils/apr"
+import { AprFarm, useAPR, useBestNumber } from "utils/apr"
 import { AccountId32 } from "@polkadot/types/interfaces"
 import { useAsset } from "api/asset"
 import { getAssetLogo } from "components/AssetIcon/AssetIcon"
 import { u32 } from "@polkadot/types"
 import { addSeconds } from "date-fns"
+import BN from "bignumber.js"
+import { BLOCK_TIME_IN_SECONDS } from "utils/constants"
 
 const PoolJoinFarmItem = (props: { farm: AprFarm; onSelect: () => void }) => {
   const asset = useAsset(props.farm.assetId)
   const { t } = useTranslation()
+
+  const bestNumber = useBestNumber()
+  if (!bestNumber?.data) return null
+
+  const blockDurationToEnd = props.farm.estimatedEndBlock.minus(
+    new BN(bestNumber.data.toHex()),
+  )
+
+  const secondsDurationToEnd = blockDurationToEnd.times(BLOCK_TIME_IN_SECONDS)
 
   return (
     <SFarm onClick={props.onSelect}>
@@ -28,7 +39,9 @@ const PoolJoinFarmItem = (props: { farm: AprFarm; onSelect: () => void }) => {
           <Text fw={700}>{asset.data.name}</Text>
         </Box>
         <Text fs={20} lh={28} fw={600} color="primary200">
-          {t("pools.allFarms.modal.apr.single", { value: props.farm.apr })}
+          {t("pools.allFarms.modal.apr.single", {
+            value: props.farm.apr.toFixed(2),
+          })}
         </Text>
       </Box>
       <Box flex column>
@@ -45,8 +58,8 @@ const PoolJoinFarmItem = (props: { farm: AprFarm; onSelect: () => void }) => {
               t={t}
               i18nKey="pools.allFarms.modal.distribution"
               tOptions={{
-                distributed: props.farm.distributedRewards.toNumber(),
-                max: props.farm.maxRewards.toNumber(),
+                distributed: props.farm.distributedRewards,
+                max: props.farm.maxRewards,
               }}
             >
               <Text as="span" fs={14} color="neutralGray100" />
@@ -64,10 +77,7 @@ const PoolJoinFarmItem = (props: { farm: AprFarm; onSelect: () => void }) => {
         </SFarmRow>
         <Text fs={12} lh={16} fw={400} color="neutralGray500">
           {t("pools.allFarms.modal.end", {
-            end: addSeconds(
-              new Date(),
-              props.farm.expectedSecondsToEnd.toNumber(),
-            ),
+            end: addSeconds(new Date(), secondsDurationToEnd.toNumber()),
           })}
         </Text>
       </Box>

@@ -18,3 +18,5 @@ export const DOLLAR_RATES = new Map([
   ["AUSD", new BN(0.933333)],
   ["Acala USD", new BN(0.933333)],
 ])
+
+export const BLOCK_TIME_IN_SECONDS = new BN(12)

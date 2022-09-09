@@ -4,7 +4,7 @@ import translationEN from "./locales/en/translations.json"
 import { formatDate, formatNum } from "utils/formatting"
 import BN from "bignumber.js"
 import { getFullDisplayBalance } from "../utils/balance"
-import { BN_10 } from "../utils/constants"
+import { BN_10, BN_12 } from "../utils/constants"
 import BigNumber from "bignumber.js"
 
 function isBNPrecision(value: any): value is { value: BN; precision?: number } {
@@ -67,7 +67,12 @@ i18n
         }
 
         if (format === "compact") {
-          return formatNum(value, { notation: "compact" }, lng)?.toLowerCase()
+          const precision = BN_10.pow(BN_12)
+          return formatNum(
+            BN.isBigNumber(value) ? value.div(precision).toNumber() : value,
+            { notation: "compact" },
+            lng,
+          )?.toLowerCase()
         }
 
         if (value instanceof Date) {
