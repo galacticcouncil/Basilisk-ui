@@ -4,18 +4,9 @@ import { useMemo } from "react"
 import { AccountId32 } from "@polkadot/types/interfaces/runtime"
 import { BLOCK_TIME, BN_QUINTILL } from "utils/constants"
 import { secondsInYear } from "date-fns"
-import { useApiPromise } from "./network"
-import { useQuery } from "@tanstack/react-query"
-import { QUERY_KEYS } from "./queryKeys"
+import { useBestNumber } from "api/chain"
 
 export type AprFarm = NonNullable<ReturnType<typeof useAPR>["data"][number]>
-
-export const useBestNumber = () => {
-  const api = useApiPromise()
-  return useQuery(QUERY_KEYS.bestNumber, () => {
-    return api.derive.chain.bestNumber()
-  })
-}
 
 export const useAPR = (poolId: AccountId32) => {
   const bestNumber = useBestNumber()
@@ -152,8 +143,8 @@ export const getAPR = (
   blockTime: BN,
   blocksPerPeriod: BN,
 ) => {
-  const blocksPerYear = new BN(secondsInYear).div(blockTime)
-  const periodsPerYear = blocksPerYear.div(blocksPerPeriod)
+  const secondsPerYear = new BN(secondsInYear)
+  const periodsPerYear = secondsPerYear.div(blockTime.times(blocksPerPeriod))
 
   return poolYieldPerPeriod.times(periodsPerYear)
 }

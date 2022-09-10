@@ -4,12 +4,8 @@ import translationEN from "./locales/en/translations.json"
 import { formatDate, formatNum } from "utils/formatting"
 import BN from "bignumber.js"
 import { getFullDisplayBalance } from "../utils/balance"
-import { BN_10, BN_12 } from "../utils/constants"
 import BigNumber from "bignumber.js"
-
-function isBNPrecision(value: any): value is { value: BN; precision?: number } {
-  return value != null && "value" in value && BN.isBigNumber(value.value)
-}
+import { BN_10 } from "utils/constants"
 
 function isBalanceWithSettings(value: any): value is {
   value: BigNumber
@@ -19,10 +15,47 @@ function isBalanceWithSettings(value: any): value is {
   return value !== null && "value" in value
 }
 
+function isFormatParams(x: unknown): x is Record<string, unknown> {
+  return x != null && !Array.isArray(x) && typeof x === "object"
+}
+
+function isPrecisionFormatParams(
+  x: unknown,
+): x is { precision: BigNumber | number } {
+  return (
+    x != null &&
+    "precision" in x &&
+    (BigNumber.isBigNumber(x["precision"]) ||
+      typeof x["precision"] === "number")
+  )
+}
+
+function convertBigNumberToString(
+  value: BN | BigNumber | number | null | undefined,
+  options: Record<string, unknown> | undefined,
+) {
+  if (value == null) return null
+  if (typeof value === "number") return value.toString()
+  let bn: BigNumber = BN.isBigNumber(value)
+    ? new BigNumber(value.toString())
+    : value
+
+  if (
+    options != null &&
+    typeof options.interpolationkey === "string" &&
+    isFormatParams(options.formatParams)
+  ) {
+    const params = options.formatParams[options.interpolationkey]
+    if (isPrecisionFormatParams(params)) {
+      bn = bn.div(BN_10.pow(params.precision))
+    }
+  }
+
+  return bn.toFixed()
+}
+
 const resources = {
-  en: {
-    translation: translationEN,
-  },
+  en: { translation: translationEN },
 }
 
 i18n
@@ -32,7 +65,7 @@ i18n
     fallbackLng: "en",
     lng: "en",
     interpolation: {
-      format(value, format, lng) {
+      format(value, format, lng, options) {
         if (format === "balance") {
           if (!value) {
             return "-"
@@ -49,30 +82,16 @@ i18n
           return getFullDisplayBalance(value)
         }
 
-        if (format === "amount") {
-          if (isBNPrecision(value)) {
-            const precision = BN_10.pow(new BN(value.precision ?? 12))
-            return value.value.div(precision).toString()
-          }
-
-          if (BN.isBigNumber(value)) {
-            return value.toString()
-          }
-
-          return null
-        }
-
         if (format === "num") {
-          return formatNum(value, undefined, lng)
+          const parsed = convertBigNumberToString(value, options)
+          if (parsed == null) return null
+          return formatNum(parsed, undefined, lng)
         }
 
         if (format === "compact") {
-          const precision = BN_10.pow(BN_12)
-          return formatNum(
-            BN.isBigNumber(value) ? value.div(precision).toNumber() : value,
-            { notation: "compact" },
-            lng,
-          )?.toLowerCase()
+          const parsed = convertBigNumberToString(value, options)
+          if (parsed == null) return null
+          return formatNum(parsed, { notation: "compact" }, lng)?.toLowerCase()
         }
 
         if (value instanceof Date) {

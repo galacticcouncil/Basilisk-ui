@@ -9,14 +9,15 @@ import { Box } from "components/Box/Box"
 import { Text } from "components/Typography/Text/Text"
 import { FillBar } from "components/FillBar/FillBar"
 import { ChevronDown } from "assets/icons/ChevronDown"
-import { AprFarm, useAPR, useBestNumber } from "utils/apr"
+import { AprFarm, useAPR } from "utils/apr"
 import { AccountId32 } from "@polkadot/types/interfaces"
 import { useAsset } from "api/asset"
 import { getAssetLogo } from "components/AssetIcon/AssetIcon"
 import { u32 } from "@polkadot/types"
 import { addSeconds } from "date-fns"
 import BN from "bignumber.js"
-import { BLOCK_TIME } from "utils/constants"
+import { BLOCK_TIME, BN_10, BN_12 } from "utils/constants"
+import { useBestNumber } from "api/chain"
 
 const PoolJoinFarmItem = (props: { farm: AprFarm; onSelect: () => void }) => {
   const asset = useAsset(props.farm.assetId)
@@ -40,18 +41,17 @@ const PoolJoinFarmItem = (props: { farm: AprFarm; onSelect: () => void }) => {
         </Box>
         <Text fs={20} lh={28} fw={600} color="primary200">
           {t("pools.allFarms.modal.apr.single", {
-            value: props.farm.apr.toFixed(2),
+            value: props.farm.apr.toFixed(),
           })}
         </Text>
       </Box>
       <Box flex column>
         <SFarmRow>
           <FillBar
-            percentage={
-              props.farm.distributedRewards
-                .div(props.farm.maxRewards)
-                .toNumber() * 100
-            }
+            percentage={props.farm.distributedRewards
+              .div(props.farm.maxRewards)
+              .times(100)
+              .toNumber()}
           />
           <Text>
             <Trans
@@ -60,6 +60,10 @@ const PoolJoinFarmItem = (props: { farm: AprFarm; onSelect: () => void }) => {
               tOptions={{
                 distributed: props.farm.distributedRewards,
                 max: props.farm.maxRewards,
+                formatParams: {
+                  distributed: { precision: 12 },
+                  max: { precision: 12 },
+                },
               }}
             >
               <Text as="span" fs={14} color="neutralGray100" />
@@ -68,10 +72,10 @@ const PoolJoinFarmItem = (props: { farm: AprFarm; onSelect: () => void }) => {
           </Text>
         </SFarmRow>
         <SFarmRow>
-          <FillBar percentage={props.farm.fullness.toNumber() * 100} />
+          <FillBar percentage={props.farm.fullness.times(100).toNumber()} />
           <Text fs={14} color="neutralGray100">
             {t("pools.allFarms.modal.capacity", {
-              capacity: props.farm.fullness.toNumber() * 100,
+              capacity: props.farm.fullness.times(100).toNumber(),
             })}
           </Text>
         </SFarmRow>
