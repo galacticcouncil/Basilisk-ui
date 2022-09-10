@@ -12,7 +12,6 @@ import { ChevronDown } from "assets/icons/ChevronDown"
 import { AprFarm, useAPR } from "utils/apr"
 import { AccountId32 } from "@polkadot/types/interfaces"
 import { useAsset } from "api/asset"
-import { getAssetLogo } from "components/AssetIcon/AssetIcon"
 import { u32 } from "@polkadot/types"
 import { addSeconds } from "date-fns"
 import BN from "bignumber.js"
@@ -36,7 +35,7 @@ const PoolJoinFarmItem = (props: { farm: AprFarm; onSelect: () => void }) => {
     <SFarm onClick={props.onSelect}>
       <Box flex column gap={8}>
         <Box flex acenter gap={8}>
-          {getAssetLogo(asset.data.name)}
+          {asset.data.icon}
           <Text fw={700}>{asset.data.name}</Text>
         </Box>
         <Text fs={20} lh={28} fw={600} color="primary200">

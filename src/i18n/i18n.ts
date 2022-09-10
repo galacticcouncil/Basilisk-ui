@@ -108,6 +108,14 @@ i18n
           return formatNum(parsed, { notation: "compact" }, lng)?.toLowerCase()
         }
 
+        if (format === "usd") {
+          const n = BN.isBigNumber(value) ? value.toNumber() : value
+          return formatNum(n, {
+            style: "currency",
+            currency: "USD",
+          })
+        }
+
         if (value instanceof Date) {
           return formatDate(value, format || "")
         }
