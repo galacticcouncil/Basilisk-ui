@@ -15,19 +15,40 @@ function isBalanceWithSettings(value: any): value is {
   return value !== null && "value" in value
 }
 
-function isFormatParams(x: unknown): x is Record<string, unknown> {
-  return x != null && !Array.isArray(x) && typeof x === "object"
+function isRecord<Key extends string, Value>(
+  x: unknown,
+): x is Record<Key, Value> {
+  return typeof x === "string"
 }
 
-function isPrecisionFormatParams(
+function getFormatParams<T>(
+  typeParams: (value: unknown) => T | null,
+  options: Record<string, unknown> | undefined,
+) {
+  if (options == null) return null
+  if (
+    typeof options.interpolationkey === "string" &&
+    isRecord<string, unknown>(options.formatParams)
+  ) {
+    return typeParams(options.formatParams[options.interpolationkey])
+  }
+
+  return null
+}
+
+function getBigNumberParams(
   x: unknown,
-): x is { precision: BigNumber | number } {
-  return (
-    x != null &&
-    "precision" in x &&
-    (BigNumber.isBigNumber(x["precision"]) ||
-      typeof x["precision"] === "number")
-  )
+): null | { precision: BigNumber | number } {
+  if (!isRecord(x) || !("precision" in x)) return null
+
+  if (
+    BigNumber.isBigNumber(x["precision"]) ||
+    typeof x["precision"] === "number"
+  ) {
+    return { precision: x["precision"] }
+  }
+
+  return null
 }
 
 function convertBigNumberToString(
@@ -40,17 +61,10 @@ function convertBigNumberToString(
     ? new BigNumber(value.toString())
     : value
 
-  if (
-    options != null &&
-    typeof options.interpolationkey === "string" &&
-    isFormatParams(options.formatParams)
-  ) {
-    const params = options.formatParams[options.interpolationkey]
-    if (isPrecisionFormatParams(params)) {
-      bn = bn.div(BN_10.pow(params.precision))
-    }
+  const params = getFormatParams(getBigNumberParams, options)
+  if (params != null) {
+    bn = bn.div(BN_10.pow(params.precision))
   }
-
   return bn.toFixed()
 }
 
