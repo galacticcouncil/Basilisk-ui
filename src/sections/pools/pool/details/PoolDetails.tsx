@@ -61,10 +61,7 @@ export const PoolDetails: FC<Props> = ({
             {t("pools.pool.poolDetails.valueLocked")}
           </Text>
           <Text lh={22} color="white" fs={18}>
-            {formatNum(totalValue.toFixed(), {
-              style: "currency",
-              currency: "USD",
-            })}
+            {t("value.usd", { amount: totalValue })}
           </Text>
         </Box>
         <Box flex column width={120} align="start">
