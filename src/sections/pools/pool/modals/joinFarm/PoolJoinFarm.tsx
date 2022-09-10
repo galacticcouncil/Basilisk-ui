@@ -16,7 +16,7 @@ import { getAssetLogo } from "components/AssetIcon/AssetIcon"
 import { u32 } from "@polkadot/types"
 import { addSeconds } from "date-fns"
 import BN from "bignumber.js"
-import { BLOCK_TIME, BN_10, BN_12 } from "utils/constants"
+import { BLOCK_TIME } from "utils/constants"
 import { useBestNumber } from "api/chain"
 
 const PoolJoinFarmItem = (props: { farm: AprFarm; onSelect: () => void }) => {
