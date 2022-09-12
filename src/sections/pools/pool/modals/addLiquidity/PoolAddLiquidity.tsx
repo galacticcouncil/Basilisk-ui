@@ -22,7 +22,6 @@ import { BN_NAN, BN_100 } from "utils/constants"
 import { useAsset } from "api/asset"
 import { usePoolShareToken } from "api/pools"
 import { useExchangeFee } from "api/exchangeFee"
-import { u32 } from "@polkadot/types"
 
 type Props = PoolConfig & {
   isOpen: boolean
@@ -44,7 +43,7 @@ export const PoolAddLiquidity: FC<Props> = ({
   const { data: dataAssetB } = useAddPoolAddLiquidity(assetB)
 
   const { data: shareTokenId } = usePoolShareToken(id)
-  const { data: dataShareToken } = useAsset(shareTokenId as u32)
+  const { data: dataShareToken } = useAsset(shareTokenId)
 
   const [inputAssetA, setInputAssetA] = useState("0")
   const [inputAssetB, setInputAssetB] = useState("0")
@@ -56,7 +55,7 @@ export const PoolAddLiquidity: FC<Props> = ({
 
   const exchangeFee = useExchangeFee()
 
-  const shareIssuance = useTotalIssuance(shareTokenId as u32)
+  const shareIssuance = useTotalIssuance(shareTokenId)
   const assetAReserve = useTokenBalance(assetA, id)
 
   const { xyk } = useMath()

@@ -3,7 +3,7 @@ import { useAssetDetails } from "./assetDetails"
 import { getAssetLogo } from "components/AssetIcon/AssetIcon"
 import { u32 } from "@polkadot/types"
 
-export const useAsset = (id: u32) => {
+export const useAsset = (id?: u32) => {
   const detail = useAssetDetails(id)
   const meta = useAssetMeta(id)
 
