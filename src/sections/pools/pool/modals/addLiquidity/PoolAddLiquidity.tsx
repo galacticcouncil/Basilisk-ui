@@ -19,7 +19,10 @@ import { useMath } from "utils/math"
 import { useTokenBalance } from "api/balances"
 import { useTotalIssuance } from "api/totalIssuance"
 import { BN_NAN, BN_100 } from "utils/constants"
-import { useAsset } from "../../../../../api/asset"
+import { useAsset } from "api/asset"
+import { usePoolShareToken } from "api/pools"
+import { useExchangeFee } from "api/exchangeFee"
+import { u32 } from "@polkadot/types"
 
 type Props = PoolConfig & {
   isOpen: boolean
@@ -30,7 +33,6 @@ export const PoolAddLiquidity: FC<Props> = ({
   id,
   isOpen,
   onClose,
-  shareToken,
   assetA,
   assetB,
 }) => {
@@ -40,14 +42,21 @@ export const PoolAddLiquidity: FC<Props> = ({
 
   const { data: dataAssetA } = useAddPoolAddLiquidity(assetA)
   const { data: dataAssetB } = useAddPoolAddLiquidity(assetB)
-  const { data: dataShareToken } = useAsset(shareToken)
+
+  const { data: shareTokenId } = usePoolShareToken(id)
+  const { data: dataShareToken } = useAsset(shareTokenId as u32)
 
   const [inputAssetA, setInputAssetA] = useState("0")
   const [inputAssetB, setInputAssetB] = useState("0")
 
-  const { pendingTx, handleAddLiquidity } = useAddLiquidity()
+  const { pendingTx, handleAddLiquidity, paymentInfo } = useAddLiquidity(
+    assetA,
+    assetB,
+  )
 
-  const shareIssuance = useTotalIssuance(shareToken)
+  const exchangeFee = useExchangeFee()
+
+  const shareIssuance = useTotalIssuance(shareTokenId as u32)
   const assetAReserve = useTokenBalance(assetA, id)
 
   const { xyk } = useMath()
@@ -140,15 +149,27 @@ export const PoolAddLiquidity: FC<Props> = ({
         onChange={setInputAssetB}
       />
 
-      <Row left={t("pools.addLiquidity.modal.row.apr")} right="5%" />
+      <Row
+        left={t("pools.addLiquidity.modal.row.tradeFee")}
+        right={`${exchangeFee.data?.times(100).toFixed()}%`}
+      />
       <Separator />
       <Row
         left={t("pools.addLiquidity.modal.row.transactionCost")}
         right={
-          <>
-            <Text mr={4}>≈ 12 BSX</Text>
-            <Text color="primary400">(2%)</Text>
-          </>
+          paymentInfo && (
+            <>
+              <Text mr={4}>
+                {t("pools.addLiquidity.modal.row.transactionCostValue", {
+                  amount: {
+                    value: new BigNumber(paymentInfo.partialFee.toHex()),
+                    displayDecimals: 2,
+                  },
+                })}
+              </Text>
+              <Text color="primary400">(2%)</Text>
+            </>
+          )
         }
       />
       <Separator />

@@ -1,5 +1,6 @@
 import type { u32 } from "@polkadot/types"
 import type { AccountId32 } from "@polkadot/types/interfaces"
+import { CodecHash } from "@polkadot/types/interfaces/runtime"
 
 export const QUERY_KEY_PREFIX = "@block"
 
@@ -36,7 +37,7 @@ export const QUERY_KEYS = {
     "totalLiquidities",
     ...ids,
   ],
-  tokenBalance: (id: string, address?: string) => [
+  tokenBalance: (id: string, address?: AccountId32 | string) => [
     QUERY_KEY_PREFIX,
     "tokenBalance",
     id,
@@ -52,4 +53,10 @@ export const QUERY_KEYS = {
   assetMeta: (id: string) => [QUERY_KEY_PREFIX, "assetMeta", id],
   exchangeFee: [QUERY_KEY_PREFIX, "exchangeFee"],
   math: ["@galacticcouncil/math"],
+  paymentInfo: (hash: CodecHash, account?: AccountId32 | string) => [
+    QUERY_KEY_PREFIX,
+    "paymentInfo",
+    hash,
+    account,
+  ],
 } as const
