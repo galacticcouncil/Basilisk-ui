@@ -110,8 +110,8 @@ export const PoolJoinFarm = (props: {
       open={props.isOpen}
       onClose={props.onClose}
       title={t("pools.allFarms.modal.title", {
-        symbol1: assetA.data.name,
-        symbol2: assetB.data.name,
+        symbol1: assetA.data?.name,
+        symbol2: assetB.data?.name,
       })}
     >
       <Box flex column gap={8} mt={24}>
