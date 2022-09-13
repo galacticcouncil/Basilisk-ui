@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query"
 import { QUERY_KEYS } from "utils/queryKeys"
 import BigNumber from "bignumber.js"
 import { u32 } from "@polkadot/types"
-import { BN_NAN } from "../utils/constants"
 
 export const getTotalIssuance =
   (api: ApiPromise, lpToken?: u32) => async () => {
@@ -12,7 +11,7 @@ export const getTotalIssuance =
       const res = await api.query.tokens.totalIssuance(lpToken)
       return new BigNumber(res.toHex())
     }
-    return BN_NAN
+    return null
   }
 
 export const useTotalIssuance = (lpToken?: u32) => {
@@ -20,8 +19,6 @@ export const useTotalIssuance = (lpToken?: u32) => {
   return useQuery(
     QUERY_KEYS.totalIssuance(lpToken),
     getTotalIssuance(api, lpToken),
-    {
-      enabled: !!lpToken,
-    },
+    { enabled: !!lpToken },
   )
 }
