@@ -18,7 +18,7 @@ import { useStore } from "state/store"
 import { useMath } from "utils/math"
 import { useTokenBalance } from "api/balances"
 import { useTotalIssuance } from "api/totalIssuance"
-import { BN_NAN, BN_100 } from "utils/constants"
+import { BN_100 } from "utils/constants"
 import { useAsset } from "api/asset"
 import { usePoolShareToken } from "api/pools"
 import { useExchangeFee } from "api/exchangeFee"
@@ -61,28 +61,27 @@ export const PoolAddLiquidity: FC<Props> = ({
   const { xyk } = useMath()
 
   const calculatedShares =
-    xyk && assetAReserve.data && shareIssuance.data
-      ? new BigNumber(
-          xyk.calculate_shares(
-            getDecimalAmount(
-              assetAReserve.data,
-              dataAssetA.asset.decimals,
-            ).toFixed(),
-            getDecimalAmount(
-              new BigNumber(inputAssetA),
-              dataAssetA.asset.decimals,
-            ).toFixed(),
-            getDecimalAmount(
-              shareIssuance.data,
-              dataShareToken.decimals,
-            ).toFixed(),
-          ),
-        )
-      : BN_NAN
+    xyk &&
+    assetAReserve.data &&
+    shareIssuance.data &&
+    new BigNumber(
+      xyk.calculate_shares(
+        getDecimalAmount(
+          assetAReserve.data,
+          dataAssetA.asset.decimals,
+        ).toFixed(),
+        getDecimalAmount(
+          new BigNumber(inputAssetA),
+          dataAssetA.asset.decimals,
+        ).toFixed(),
+        getDecimalAmount(shareIssuance.data, dataShareToken.decimals).toFixed(),
+      ),
+    )
 
-  const calculatedRatio = shareIssuance.data
-    ? calculatedShares.pow(shareIssuance.data).multipliedBy(100)
-    : BN_NAN
+  const calculatedRatio =
+    shareIssuance.data &&
+    calculatedShares &&
+    calculatedShares.pow(shareIssuance.data).multipliedBy(100)
 
   async function handleSubmit() {
     try {
@@ -174,7 +173,7 @@ export const PoolAddLiquidity: FC<Props> = ({
       <Separator />
       <Row
         left={t("pools.addLiquidity.modal.row.sharePool")}
-        right={`${(calculatedRatio.isFinite()
+        right={`${(calculatedRatio && calculatedRatio.isFinite()
           ? calculatedRatio
           : BN_100
         ).toFixed()}%`}
