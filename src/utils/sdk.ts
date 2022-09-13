@@ -14,7 +14,7 @@ export const useTradeRouter = () => {
 
       return tradeRouter
     }
-  }, [sdk.data])
+  }, [api, sdk.data])
 
   return router
 }
@@ -24,6 +24,6 @@ export const useSdk = () => {
 }
 
 export const getSdk = async () => {
-  const sdk = await import("@galacticcouncil/sdk/src/index")
+  const sdk = await import("@galacticcouncil/sdk")
   return sdk
 }
