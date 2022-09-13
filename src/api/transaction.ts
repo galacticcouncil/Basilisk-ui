@@ -4,7 +4,7 @@ import { AccountId32 } from "@polkadot/types/interfaces"
 import { useQuery } from "@tanstack/react-query"
 import { QUERY_KEYS } from "../utils/queryKeys"
 import { Maybe } from "utils/types"
-import { nullNoop } from "utils/helpers"
+import { undefinedNoop } from "utils/helpers"
 
 const getPaymentInfo =
   (tx: SubmittableExtrinsic, account: AccountId32 | string) => async () => {
@@ -21,7 +21,7 @@ export function usePaymentInfo(
 
   return useQuery(
     QUERY_KEYS.paymentInfo(tx.hash, finalAccount),
-    finalAccount != null ? getPaymentInfo(tx, finalAccount) : nullNoop,
+    finalAccount != null ? getPaymentInfo(tx, finalAccount) : undefinedNoop,
     { enabled: !!finalAccount },
   )
 }

@@ -8,7 +8,7 @@ import { QUERY_KEYS } from "../utils/queryKeys"
 import { u32 } from "@polkadot/types"
 import { AccountId32 } from "@polkadot/types/interfaces"
 import { Maybe } from "utils/types"
-import { nullNoop } from "utils/helpers"
+import { undefinedNoop } from "utils/helpers"
 
 function calculateFreeBalance(
   free: BigNumber,
@@ -65,7 +65,7 @@ export const useTokenBalance = (
     QUERY_KEYS.tokenBalance(safeId, finalAddress),
     finalAddress != null
       ? getTokenBalance(api, finalAddress, safeId)
-      : nullNoop,
+      : undefinedNoop,
     { enabled: !!finalAddress },
   )
 }

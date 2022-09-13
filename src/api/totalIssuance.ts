@@ -5,7 +5,7 @@ import { QUERY_KEYS } from "utils/queryKeys"
 import BigNumber from "bignumber.js"
 import { u32 } from "@polkadot/types"
 import { Maybe } from "utils/types"
-import { nullNoop } from "utils/helpers"
+import { undefinedNoop } from "utils/helpers"
 
 const getTotalIssuance = (api: ApiPromise, lpToken: u32) => async () => {
   const res = await api.query.tokens.totalIssuance(lpToken)
@@ -16,7 +16,7 @@ export const useTotalIssuance = (lpToken: Maybe<u32>) => {
   const api = useApiPromise()
   return useQuery(
     QUERY_KEYS.totalIssuance(lpToken),
-    lpToken != null ? getTotalIssuance(api, lpToken) : nullNoop,
+    lpToken != null ? getTotalIssuance(api, lpToken) : undefinedNoop,
     { enabled: !!lpToken },
   )
 }

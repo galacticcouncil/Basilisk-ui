@@ -4,13 +4,13 @@ import { QUERY_KEYS } from "utils/queryKeys"
 import { ApiPromise } from "@polkadot/api"
 import { u32 } from "@polkadot/types"
 import { Maybe } from "utils/types"
-import { nullNoop } from "utils/helpers"
+import { undefinedNoop } from "utils/helpers"
 
 export const useAssetMeta = (id: Maybe<u32>) => {
   const api = useApiPromise()
   return useQuery(
     QUERY_KEYS.assetMeta(id),
-    id != null ? getAssetMeta(api, id) : nullNoop,
+    id != null ? getAssetMeta(api, id) : undefinedNoop,
     { enabled: !!id },
   )
 }
