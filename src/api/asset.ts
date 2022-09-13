@@ -14,7 +14,7 @@ export const useAsset = (id: Maybe<u32>) => {
   const icon = getAssetLogo(detail.data?.name)
 
   if (detail.data == null || meta.data?.data == null)
-    return { isLoading, data: null }
+    return { isLoading, data: undefined }
 
   return {
     isLoading,
