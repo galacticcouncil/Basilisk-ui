@@ -7,6 +7,8 @@ import { useQueries, useQuery } from "@tanstack/react-query"
 import { QUERY_KEYS } from "../utils/queryKeys"
 import { u32 } from "@polkadot/types"
 import { AccountId32 } from "@polkadot/types/interfaces"
+import { Maybe } from "utils/types"
+import { nullNoop } from "utils/helpers"
 
 function calculateFreeBalance(
   free: BigNumber,
@@ -50,18 +52,20 @@ export const getTokenBalance =
 
 export const useTokenBalance = (
   id: string | u32,
-  address?: AccountId32 | string,
+  address: Maybe<AccountId32 | string>,
 ) => {
   const api = useApiPromise()
   const { account } = useStore()
 
   // TODO: replace later with native Polkadot types
   const safeId = id.toString()
-  const finalAddress = address ?? account?.address ?? ""
+  const finalAddress = address ?? account?.address
 
   return useQuery(
     QUERY_KEYS.tokenBalance(safeId, finalAddress),
-    getTokenBalance(api, finalAddress, safeId),
+    finalAddress != null
+      ? getTokenBalance(api, finalAddress, safeId)
+      : nullNoop,
     { enabled: !!finalAddress },
   )
 }

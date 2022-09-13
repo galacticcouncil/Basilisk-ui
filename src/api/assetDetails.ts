@@ -4,27 +4,25 @@ import { QUERY_KEYS } from "utils/queryKeys"
 import { ApiPromise } from "@polkadot/api"
 import { u32 } from "@polkadot/types"
 import { Maybe } from "utils/types"
+import { nullNoop } from "utils/helpers"
 
 export const useAssetDetails = (id: Maybe<u32>) => {
   const api = useApiPromise()
 
   return useQuery(
     QUERY_KEYS.assetDetails(id?.toString()),
-    getAssetDetails(api, id),
+    id != null ? getAssetDetails(api, id) : nullNoop,
     { enabled: !!id },
   )
 }
 
-export const getAssetDetails =
-  (api: ApiPromise, id: Maybe<u32>) => async () => {
-    if (id == null) throw new Error("Missing ID for asset details")
-
-    const res = await api.query.assetRegistry.assets(id)
-    const data = res.toHuman() as {
-      name: string
-      assetType: "Token" | { PoolShare: string[] }
-      existentialDeposit: any
-      locked: boolean
-    }
-    return data
+export const getAssetDetails = (api: ApiPromise, id: u32) => async () => {
+  const res = await api.query.assetRegistry.assets(id)
+  const data = res.toHuman() as {
+    name: string
+    assetType: "Token" | { PoolShare: string[] }
+    existentialDeposit: any
+    locked: boolean
   }
+  return data
+}

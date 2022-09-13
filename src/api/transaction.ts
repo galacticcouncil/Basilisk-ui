@@ -4,11 +4,10 @@ import { AccountId32 } from "@polkadot/types/interfaces"
 import { useQuery } from "@tanstack/react-query"
 import { QUERY_KEYS } from "../utils/queryKeys"
 import { Maybe } from "utils/types"
+import { nullNoop } from "utils/helpers"
 
 const getPaymentInfo =
-  (tx: SubmittableExtrinsic, account: Maybe<AccountId32 | string>) =>
-  async () => {
-    if (account == null) throw new Error("Null address for payment info")
+  (tx: SubmittableExtrinsic, account: AccountId32 | string) => async () => {
     const paymentInfo = await tx.paymentInfo(account)
     return paymentInfo
   }
@@ -22,7 +21,7 @@ export function usePaymentInfo(
 
   return useQuery(
     QUERY_KEYS.paymentInfo(tx.hash, finalAccount),
-    getPaymentInfo(tx, finalAccount),
-    { enabled: !!address },
+    finalAccount != null ? getPaymentInfo(tx, finalAccount) : nullNoop,
+    { enabled: !!finalAccount },
   )
 }
