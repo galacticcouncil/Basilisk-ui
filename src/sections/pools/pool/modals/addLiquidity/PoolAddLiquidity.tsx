@@ -64,17 +64,22 @@ export const PoolAddLiquidity: FC<Props> = ({
     xyk &&
     assetAReserve.data &&
     shareIssuance.data &&
+    dataShareToken &&
+    dataAssetA.asset &&
     new BigNumber(
       xyk.calculate_shares(
         getDecimalAmount(
-          assetAReserve.data,
-          dataAssetA.asset.decimals,
+          assetAReserve.data.balance,
+          dataAssetA.asset.decimals.toNumber(),
         ).toFixed(),
         getDecimalAmount(
           new BigNumber(inputAssetA),
-          dataAssetA.asset.decimals,
+          dataAssetA.asset.decimals.toNumber(),
         ).toFixed(),
-        getDecimalAmount(shareIssuance.data, dataShareToken.decimals).toFixed(),
+        getDecimalAmount(
+          shareIssuance.data,
+          dataShareToken.decimals.toNumber(),
+        ).toFixed(),
       ),
     )
 
@@ -90,14 +95,14 @@ export const PoolAddLiquidity: FC<Props> = ({
           id: assetA,
           amount: getDecimalAmount(
             new BigNumber(inputAssetA),
-            dataAssetA.asset.decimals,
+            dataAssetA.asset?.decimals.toNumber(),
           ),
         },
         {
           id: assetB,
           amount: getDecimalAmount(
             new BigNumber(inputAssetB),
-            dataAssetB.asset.decimals,
+            dataAssetB.asset?.decimals.toNumber(),
           ),
         },
       ])
@@ -116,33 +121,33 @@ export const PoolAddLiquidity: FC<Props> = ({
         asset={assetA}
         balance={getFullDisplayBalance(
           dataAssetA.balance,
-          dataAssetA.asset.decimals,
-          dataAssetA.asset?.decimals,
+          dataAssetA.asset?.decimals?.toNumber(),
+          dataAssetA.asset?.decimals?.toNumber(),
         )}
         usd={2456}
         mt={16}
         currency={{ short: dataAssetA.asset?.name ?? "", full: "Sakura" }}
-        assetIcon={getAssetLogo(dataAssetA.asset.symbol)}
+        assetIcon={getAssetLogo(dataAssetA.asset?.symbol.toString())}
         value={inputAssetA}
         onChange={setInputAssetA}
       />
       <PoolAddLiquidityConversion
-        firstValue={{ amount: 1, currency: dataAssetA.asset.name ?? "" }}
+        firstValue={{ amount: 1, currency: dataAssetA.asset?.name ?? "" }}
         secondValue={{
           amount: 0.000123,
-          currency: dataAssetB.asset.name ?? "",
+          currency: dataAssetB.asset?.name ?? "",
         }}
       />
       <PoolAddLiquidityAssetSelect
         asset={assetB}
         balance={getFullDisplayBalance(
           dataAssetB.balance,
-          dataAssetB.asset?.decimals,
-          dataAssetB.asset?.decimals,
+          dataAssetB.asset?.decimals?.toNumber(),
+          dataAssetB.asset?.decimals?.toNumber(),
         )}
         usd={2456}
         currency={{ short: dataAssetB.asset?.name ?? "", full: "Basilisk" }}
-        assetIcon={getAssetLogo(dataAssetB.asset.symbol)}
+        assetIcon={getAssetLogo(dataAssetB.asset?.symbol.toString())}
         value={inputAssetB}
         onChange={setInputAssetB}
       />
@@ -185,8 +190,8 @@ export const PoolAddLiquidity: FC<Props> = ({
         right={
           <Text color="primary400">
             {getFullDisplayBalance(
-              calculatedShares,
-              dataShareToken.decimals,
+              calculatedShares ?? undefined,
+              dataShareToken?.decimals?.toNumber(),
               5,
             )}
           </Text>

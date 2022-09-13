@@ -1,5 +1,4 @@
 import { useTokenBalance } from "api/balances"
-import BigNumber from "bignumber.js"
 import { useAsset } from "api/asset"
 import { u32 } from "@polkadot/types"
 
@@ -14,7 +13,7 @@ export function useAddPoolAddLiquidity(assetId: u32) {
     isLoading,
     data: {
       asset: asset.data,
-      balance: balance.data ?? new BigNumber(NaN),
+      balance: balance.data?.balance,
     },
   }
 }

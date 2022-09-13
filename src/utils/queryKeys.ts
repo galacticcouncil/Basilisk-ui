@@ -1,6 +1,7 @@
 import type { u32 } from "@polkadot/types"
 import type { AccountId32 } from "@polkadot/types/interfaces"
 import { CodecHash } from "@polkadot/types/interfaces/runtime"
+import { Maybe } from "./types"
 
 export const QUERY_KEY_PREFIX = "@block"
 
@@ -31,7 +32,7 @@ export const QUERY_KEYS = {
   yieldFarm: (id: string) => [QUERY_KEY_PREFIX, "yieldFarm", id],
   activeYieldFarm: (id: string) => [QUERY_KEY_PREFIX, "activeYieldFarm", id],
   totalLiquidity: (id: string) => [QUERY_KEY_PREFIX, "totalLiquidity", id],
-  totalIssuance: (lpToken?: u32) => ["totalIssuance", lpToken],
+  totalIssuance: (lpToken: Maybe<u32>) => ["totalIssuance", lpToken],
   totalLiquidities: (ids: string[]) => [
     QUERY_KEY_PREFIX,
     "totalLiquidities",
@@ -49,9 +50,21 @@ export const QUERY_KEYS = {
     address,
     ...ids,
   ],
-  assetDetails: (id?: string) => [QUERY_KEY_PREFIX, "assetDetails", id],
-  assetMeta: (id?: string) => [QUERY_KEY_PREFIX, "assetMeta", id],
+  assetDetails: (id: Maybe<string>) => [QUERY_KEY_PREFIX, "assetDetails", id],
+  assetMeta: (id: Maybe<u32>) => [
+    QUERY_KEY_PREFIX,
+    "assetMeta",
+    id?.toString(),
+  ],
   exchangeFee: [QUERY_KEY_PREFIX, "exchangeFee"],
+  calculateTotalLiqInPools: [QUERY_KEY_PREFIX, "totalLiqInPools"],
+  spotPrice: (assetA: string, assetB: string) => [
+    QUERY_KEY_PREFIX,
+    "spotPrice",
+    assetA,
+    assetB,
+  ],
+  provider: (url: string) => ["provider", url],
   math: ["@galacticcouncil/math"],
   paymentInfo: (hash: CodecHash, account?: AccountId32 | string) => [
     QUERY_KEY_PREFIX,
@@ -59,4 +72,5 @@ export const QUERY_KEYS = {
     hash,
     account,
   ],
+  sdk: ["@galacticcouncil/sdk"],
 } as const

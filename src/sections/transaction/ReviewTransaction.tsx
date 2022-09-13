@@ -19,7 +19,8 @@ type Props = {
 export const ReviewTransaction: React.FC<Props> = ({ onCancel, tx, title }) => {
   const { t } = useTranslation()
 
-  const { data: paymentInfoData } = usePaymentInfo(tx)
+  // TODO: add transaction
+  const { data: paymentInfoData } = usePaymentInfo(tx, "")
 
   const json = getTransactionJSON(tx)
 
