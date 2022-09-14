@@ -1,8 +1,7 @@
 import { useAssetMeta } from "api/assetMeta"
 import { useAssetDetails } from "api/assetDetails"
 import { useMemo } from "react"
-import { BN_0, BN_1, DOLLAR_RATES } from "utils/constants"
-import { useTotalLiquidity } from "api/totalLiquidity"
+import { BN_0, BN_1, DOLLAR_RATES, TRADING_FEE } from "utils/constants"
 import { useExchangeFee } from "api/exchangeFee"
 import { AccountId32 } from "@polkadot/types/interfaces/runtime"
 import { u32 } from "@polkadot/types"
@@ -27,8 +26,6 @@ export const usePoolData = ({ id, assetA, assetB }: Props) => {
 
   const exchangeFee = useExchangeFee()
 
-  const total = useTotalLiquidity(id)
-
   const queries = [
     assetAMeta,
     assetBMeta,
@@ -37,7 +34,6 @@ export const usePoolData = ({ id, assetA, assetB }: Props) => {
     assetABalance,
     assetBBalance,
     exchangeFee,
-    total,
   ]
   const isLoading = queries.some((q) => q.isLoading)
 
@@ -72,7 +68,7 @@ export const usePoolData = ({ id, assetA, assetB }: Props) => {
 
     const totalValue = totalA?.plus(totalB ?? BN_0)
 
-    const tradingFee = exchangeFee.data
+    const tradingFee = exchangeFee.data ?? TRADING_FEE
 
     return { assetA, assetB, tradingFee, totalValue }
   }, [
