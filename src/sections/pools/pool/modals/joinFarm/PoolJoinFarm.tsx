@@ -1,5 +1,5 @@
 import { Modal } from "components/Modal/Modal"
-import { useAPR } from "utils/apr"
+import { useAPR, useLoyaltyFactor } from "utils/apr"
 import { u32 } from "@polkadot/types"
 import { PoolBase } from "@galacticcouncil/sdk"
 import { useState } from "react"
@@ -15,6 +15,7 @@ export const PoolJoinFarm = (props: {
 }) => {
   const apr = useAPR(props.pool.address)
 
+  const loyaltyFactors = useLoyaltyFactor(props.pool.address)
   const [selectedYieldFarmId, setSelectedYieldFarmId] = useState<{
     globalFarmId: u32
     yieldFarmId: u32
@@ -45,6 +46,9 @@ export const PoolJoinFarm = (props: {
             onSelect={setSelectedYieldFarmId}
           />
         )}
+      </div>
+      <div css={{ height: 300, width: "100%" }}>
+        <Graph labelX="Periods" labelY="Loyalty Rate" data={data} />
       </div>
     </Modal>
   )
