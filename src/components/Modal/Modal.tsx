@@ -17,7 +17,7 @@ import { SizeProps } from "utils/styles"
 type Props = {
   open: boolean
   onClose: () => void
-  title: string
+  title?: string | undefined
   secondaryIcon?: { icon: ReactNode; onClick: () => void; name: string }
   withoutClose?: boolean
 } & Pick<SizeProps, "width">
