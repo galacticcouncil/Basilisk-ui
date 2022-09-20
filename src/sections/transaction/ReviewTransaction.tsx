@@ -38,6 +38,8 @@ export const ReviewTransaction: React.FC<Props> = (props) => {
       ? {
           width: 460,
           title: undefined,
+          variant: sendTx.isError ? "error" : "default",
+          withoutClose: sendTx.isLoading,
         }
       : {
           title: t("pools.reviewTransaction.modal.title"),

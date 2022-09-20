@@ -18,6 +18,7 @@ type Props = {
   open: boolean
   onClose: () => void
   title?: string | undefined
+  variant?: "default" | "error"
   secondaryIcon?: { icon: ReactNode; onClick: () => void; name: string }
   withoutClose?: boolean
 } & Pick<SizeProps, "width">
@@ -30,13 +31,14 @@ export const Modal: FC<PropsWithChildren<Props>> = ({
   withoutClose = false,
   open,
   width,
+  variant,
 }) => {
   const { t } = useTranslation()
   return (
     <Dialog open={open}>
       <DialogPortal>
         <ModalContainer>
-          <Backdrop />
+          <Backdrop variant={variant} />
           <ModalWindow width={width} onEscapeKeyDown={onClose}>
             <IconsWrapper>
               {!!secondaryIcon && (

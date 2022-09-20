@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next"
 export const ReviewTransactionPending = () => {
   const { t } = useTranslation()
   return (
-    <Box flex align="center" column>
+    <Box flex align="center" column pt={50}>
       <Spinner css={{ width: 135, height: 135 }} />
       <GradientText mt={20} fs={24} fw={600} tAlign="center">
         {t("pools.reviewTransaction.modal.pending.title")}
