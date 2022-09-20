@@ -10,7 +10,6 @@ import { Text } from "components/Typography/Text/Text"
 import { FillBar } from "components/FillBar/FillBar"
 import { ReactComponent as ChevronDown } from "assets/icons/ChevronDown.svg"
 import { AprFarm, useAPR } from "utils/apr"
-import { AccountId32 } from "@polkadot/types/interfaces"
 import { useAsset } from "api/asset"
 import { u32 } from "@polkadot/types"
 import { addSeconds } from "date-fns"
@@ -18,8 +17,14 @@ import BN from "bignumber.js"
 import { BLOCK_TIME } from "utils/constants"
 import { useBestNumber } from "api/chain"
 import { PoolToken } from "@galacticcouncil/sdk"
+import { ComponentProps, useState } from "react"
+import { ReactComponent as ChevronRight } from "assets/icons/ChevronRight.svg"
 
-const PoolJoinFarmItem = (props: { farm: AprFarm; onSelect: () => void }) => {
+const PoolJoinFarmItem = (props: {
+  farm: AprFarm
+  onSelect: () => void
+  variant: "list" | "detail"
+}) => {
   const asset = useAsset(props.farm.assetId)
   const { t } = useTranslation()
 
@@ -33,7 +38,11 @@ const PoolJoinFarmItem = (props: { farm: AprFarm; onSelect: () => void }) => {
   const secondsDurationToEnd = blockDurationToEnd.times(BLOCK_TIME)
 
   return (
-    <SFarm onClick={props.onSelect}>
+    <SFarm
+      as={props.variant === "detail" ? "div" : "button"}
+      variant={props.variant}
+      onClick={props.onSelect}
+    >
       <Box flex column gap={8}>
         <Box flex acenter gap={8}>
           {asset.data?.icon}
@@ -85,9 +94,11 @@ const PoolJoinFarmItem = (props: { farm: AprFarm; onSelect: () => void }) => {
           })}
         </Text>
       </Box>
-      <SFarmIcon>
-        <ChevronDown />
-      </SFarmIcon>
+      {props.variant === "list" && (
+        <SFarmIcon>
+          <ChevronDown />
+        </SFarmIcon>
+      )}
     </SFarm>
   )
 }
@@ -103,24 +114,54 @@ export const PoolJoinFarm = (props: {
   const { t } = useTranslation()
   const apr = useAPR(props.poolId)
 
+  const [selectedYieldFarmId, setSelectedYieldFarmId] =
+    useState<u32 | null>(null)
+
+  const selectedFarm = selectedYieldFarmId
+    ? apr.data.find((i) => i.yieldFarm.id.eq(selectedYieldFarmId))
+    : null
+
+  const modalProps: Partial<ComponentProps<typeof Modal>> =
+    selectedYieldFarmId != null
+      ? {
+          title: t("pools.allFarms.detail.modal.title"),
+          secondaryIcon: {
+            icon: <ChevronRight css={{ transform: "rotate(180deg)" }} />,
+            name: "Back",
+            onClick: () => setSelectedYieldFarmId(null),
+          },
+        }
+      : {
+          title: t("pools.allFarms.modal.title", {
+            symbol1: props.assetA.symbol,
+            symbol2: props.assetB.symbol,
+          }),
+        }
+
   return (
-    <Modal
-      open={props.isOpen}
-      onClose={props.onClose}
-      title={t("pools.allFarms.modal.title", {
-        symbol1: props.assetA.symbol,
-        symbol2: props.assetB.symbol,
-      })}
-    >
-      <Box flex column gap={8} mt={24}>
-        {apr.data.map((farm) => (
+    <Modal open={props.isOpen} onClose={props.onClose} {...modalProps}>
+      {selectedFarm != null ? (
+        <Box flex column gap={8} mt={24}>
           <PoolJoinFarmItem
-            key={farm.toString()}
-            farm={farm}
-            onSelect={props.onSelect}
+            variant="detail"
+            farm={selectedFarm}
+            onSelect={() => console.log("test")}
           />
-        ))}
-      </Box>
+        </Box>
+      ) : (
+        <Box flex column gap={8} mt={24}>
+          {apr.data.map((farm) => (
+            <PoolJoinFarmItem
+              variant="list"
+              key={farm.toString()}
+              farm={farm}
+              onSelect={() => {
+                setSelectedYieldFarmId(farm.yieldFarm.id)
+              }}
+            />
+          ))}
+        </Box>
+      )}
     </Modal>
   )
 }

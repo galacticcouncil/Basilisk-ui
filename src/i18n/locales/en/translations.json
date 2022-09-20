@@ -59,6 +59,7 @@
   "pools.removeLiquidity.modal.confirm": "Confirm removal",
   "pools.removeLiquidity.modal.input.label": "Custom",
   "pools.allFarms.modal.title": "All {{ symbol1 }}/{{ symbol2 }} Farms",
+  "pools.allFarms.detail.modal.title": "Farm Detail",
   "pools.allFarms.modal.apr": "{{ from, num }} - {{ to, num }}% APR",
   "pools.allFarms.modal.apr.single": "{{ value }}% APR",
   "pools.allFarms.modal.distribution": "<0>{{ distributed, compact }}</0> <1>from</1> <0>{{ max, compact }} Distributed</0>",
