@@ -8,7 +8,6 @@ export const QUERY_KEY_PREFIX = "@block"
 export const QUERY_KEYS = {
   bestNumber: ["bestNumber"],
   pools: [QUERY_KEY_PREFIX, "pools"],
-  sdkPools: [QUERY_KEY_PREFIX, "sdkPools"],
   poolShareToken: (poolId: AccountId32 | string) => [
     QUERY_KEY_PREFIX,
     "poolShareToken",

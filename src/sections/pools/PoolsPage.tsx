@@ -2,10 +2,10 @@ import { Page } from "components/Page/Page"
 import { PoolsHeader } from "sections/pools/header/PoolsHeader"
 import { Pool } from "sections/pools/pool/Pool"
 import { Box } from "components/Box/Box"
-import { useSdkPools } from "api/pools"
+import { usePools } from "api/pools"
 
 export const PoolsPage = () => {
-  const pools = useSdkPools()
+  const pools = usePools()
 
   return (
     <Page>
