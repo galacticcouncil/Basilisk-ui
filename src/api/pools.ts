@@ -25,11 +25,11 @@ export const usePools = () => {
 }
 
 const getPoolShareToken =
-  (api: ApiPromise, poolId: AccountId32) => async () => {
+  (api: ApiPromise, poolId: AccountId32 | string) => async () => {
     return await api.query.xyk.shareToken(poolId)
   }
 
-export const usePoolShareToken = (poolId: AccountId32) => {
+export const usePoolShareToken = (poolId: AccountId32 | string) => {
   const api = useApiPromise()
 
   return useQuery(
