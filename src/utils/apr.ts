@@ -76,7 +76,7 @@ export const useAPR = (poolId: AccountId32) => {
           multiplier,
           totalSharesZ,
         )
-        apr = getAPR(poolYieldPerPeriod, blockTime, blocksPerPeriod)
+        apr = poolYieldPerPeriod.times(periodsPerYear)
       }
 
       // max distribution of rewards
@@ -145,15 +145,4 @@ export const getPoolYieldPerPeriod = (
   totalSharesZ: BN,
 ) => {
   return globalRewardPerPeriod.times(multiplier).div(totalSharesZ)
-}
-
-export const getAPR = (
-  poolYieldPerPeriod: BN,
-  blockTime: BN,
-  blocksPerPeriod: BN,
-) => {
-  const secondsPerYear = new BN(secondsInYear)
-  const periodsPerYear = secondsPerYear.div(blockTime.times(blocksPerPeriod))
-
-  return poolYieldPerPeriod.times(periodsPerYear)
 }
