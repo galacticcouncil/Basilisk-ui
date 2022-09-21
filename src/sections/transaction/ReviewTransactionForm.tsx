@@ -7,7 +7,6 @@ import { TransactionCode } from "components/TransactionCode/TransactionCode"
 import { Transaction, useStore } from "../../state/store"
 import { getTransactionJSON } from "./ReviewTransaction.utils"
 import { usePaymentInfo } from "../../api/transaction"
-import BigNumber from "bignumber.js"
 import { web3FromAddress } from "@polkadot/extension-dapp"
 import { useMutation } from "@tanstack/react-query"
 import { SubmittableExtrinsic } from "@polkadot/api/types"
@@ -58,13 +57,14 @@ export const ReviewTransactionForm = (
                 <Text color="white">
                   {t("pools.addLiquidity.modal.row.transactionCostValue", {
                     amount: {
-                      value: new BigNumber(paymentInfoData.partialFee.toHex()),
+                      value: paymentInfoData.partialFee.toBigNumber(),
                       displayDecimals: 2,
                     },
                   })}
                 </Text>
                 <Text color="primary400" fs={12}>
-                  2%
+                  {/* TODO */}
+                  {/* 2% */}
                 </Text>
               </>
             )}
@@ -74,19 +74,28 @@ export const ReviewTransactionForm = (
           <Text color="neutralGray300">
             {t("pools.reviewTransaction.modal.detail.lifetime")}
           </Text>
-          <Text color="white">12/10/2022, 10:00:00</Text>
+          <Text color="white">
+            {/* TODO */}
+            {/* 12/10/2022, 10:00:00 */}
+          </Text>
         </SDetailRow>
         <SDetailRow>
           <Text color="neutralGray300">
             {t("pools.reviewTransaction.modal.detail.tip")}
           </Text>
-          <Text color="white">0.0066 BSX</Text>
+          <Text color="white">
+            {/* TODO */}
+            {/* 0.0066 BSX */}
+          </Text>
         </SDetailRow>
         <SDetailRow>
           <Text color="neutralGray300">
             {t("pools.reviewTransaction.modal.detail.nonce")}
           </Text>
-          <Text color="white">0</Text>
+          <Text color="white">
+            {/* TODO */}
+            {/* 0 */}
+          </Text>
         </SDetailRow>
       </Box>
       <Box mt={24} flex spread>

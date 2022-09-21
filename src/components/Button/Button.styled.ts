@@ -114,6 +114,14 @@ export const SButton = styled.button<ButtonProps>`
       : ``};
 
   ${(p) =>
+    p.variant === "transparent"
+      ? css`
+          background: transparent;
+          color: ${theme.colors.primary450};
+        `
+      : ``}
+
+  ${(p) =>
     p.capitalize &&
     css`
       text-transform: capitalize;

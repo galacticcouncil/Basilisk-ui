@@ -4,6 +4,7 @@ import { Button } from "components/Button/Button"
 import { ReactComponent as FailIcon } from "assets/icons/FailIcon.svg"
 import { css } from "styled-components"
 import { useTranslation } from "react-i18next"
+import { SButtons } from "./ReviewTransactionError.styled"
 
 export const ReviewTransactionError = (props: {
   onClose: () => void
@@ -22,19 +23,9 @@ export const ReviewTransactionError = (props: {
           {t("pools.reviewTransaction.modal.error.description")}
         </Text>
 
-        <Box
-          css={css`
-            max-width: 200px;
-            width: 100%;
-            flex-grow: 1;
-
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-          `}
-        >
+        <SButtons>
           <Button
+            type="button"
             variant="secondary"
             mt={40}
             onClick={props.onClose}
@@ -47,19 +38,16 @@ export const ReviewTransactionError = (props: {
             {t("pools.reviewTransaction.modal.error.close")}
           </Button>
 
-          <Text
-            color="primary450"
-            fw={500}
-            fs={14}
+          <Button
+            type="button"
+            variant="transparent"
+            size="small"
             mt={10}
-            css={css`
-              cursor: pointer;
-            `}
             onClick={props.onReview}
           >
             {t("pools.reviewTransaction.modal.error.review")}
-          </Text>
-        </Box>
+          </Button>
+        </SButtons>
       </Box>
     </Box>
   )

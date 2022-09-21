@@ -4,10 +4,13 @@ import { Box } from "components/Box/Box"
 import { Button } from "components/Button/Button"
 import { GradientText } from "components/Typography/GradientText/GradientText"
 import { ReactComponent as SuccessIcon } from "assets/icons/SuccessIcon.svg"
-import { css } from "styled-components"
-import { theme } from "theme"
-import { motion } from "framer-motion"
 import { Trans, useTranslation } from "react-i18next"
+import {
+  SProgressContainer,
+  SProgressTime,
+  SProgressBar,
+  SProgressBarValue,
+} from "./ReviewTransactionSuccess.styled"
 
 export const ReviewTransactionSuccess = (props: { onClose: () => void }) => {
   const { t } = useTranslation()
@@ -38,37 +41,17 @@ export const ReviewTransactionSuccess = (props: { onClose: () => void }) => {
         </Button>
       </Box>
 
-      <Box
-        css={css`
-          position: absolute;
-          height: 32px;
-          width: 100%;
-          bottom: 0;
-          left: 0;
-          right: 0;
-
-          border-bottom-left-radius: 16px;
-          border-bottom-right-radius: 16px;
-
-          overflow: hidden;
-
-          pointer-events: none;
-        `}
-      >
+      <SProgressContainer>
         <Text fs={12} fw={400} color="primary100" tAlign="center">
           <Trans
             i18nKey="pools.reviewTransaction.modal.success.timer"
             t={t}
             tOptions={{ value: sec }}
           >
-            <span
-              css={css`
-                color: ${theme.colors.primary300};
-              `}
-            />
+            <SProgressTime />
           </Trans>
         </Text>
-        <motion.div
+        <SProgressBar
           initial={{ width: "100%" }}
           animate={{ width: "0%" }}
           transition={{ duration: 3 }}
@@ -78,21 +61,10 @@ export const ReviewTransactionSuccess = (props: { onClose: () => void }) => {
             }
           }}
           onAnimationComplete={() => props.onClose()}
-          css={css`
-            position: absolute;
-            bottom: 0;
-            left: 0;
-          `}
         >
-          <div
-            css={css`
-              width: 100%;
-              height: 3px;
-              background: ${theme.colors.primary500};
-            `}
-          />
-        </motion.div>
-      </Box>
+          <SProgressBarValue />
+        </SProgressBar>
+      </SProgressContainer>
     </Box>
   )
 }
