@@ -114,9 +114,9 @@ const PoolJoinFarmItem = (props: {
 }
 
 const PoolJoinFarmDeposit = (props: {
-  ammId: AccountId32
-  assetA: u32
-  assetB: u32
+  poolId: string
+  assetIn: PoolToken
+  assetOut: PoolToken
   farm: AprFarm
 }) => {
   const { t } = useTranslation()
@@ -125,10 +125,10 @@ const PoolJoinFarmDeposit = (props: {
 
   const [value, setValue] = useState("")
 
-  const assetA = useAsset(props.assetA)
-  const assetB = useAsset(props.assetB)
+  const assetA = useAsset(props.assetIn.id)
+  const assetB = useAsset(props.assetOut.id)
 
-  const shareToken = usePoolShareToken(props.ammId)
+  const shareToken = usePoolShareToken(props.poolId)
 
   const { account } = useStore()
   const shareTokenBalance = useTokenBalance(shareToken.data, account?.address)
@@ -140,8 +140,8 @@ const PoolJoinFarmDeposit = (props: {
       props.farm.globalFarm.id,
       props.farm.yieldFarm.id,
       {
-        assetIn: props.assetA,
-        assetOut: props.assetB,
+        assetIn: props.assetIn.id,
+        assetOut: props.assetOut.id,
       },
       value,
     )
@@ -279,9 +279,9 @@ export const PoolJoinFarm = (props: {
           />
 
           <PoolJoinFarmDeposit
-            ammId={props.ammId}
-            assetA={props.assetA}
-            assetB={props.assetB}
+            poolId={props.poolId}
+            assetIn={props.assetA}
+            assetOut={props.assetB}
             farm={selectedFarm}
           />
         </Box>
