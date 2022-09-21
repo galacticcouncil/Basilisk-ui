@@ -4,6 +4,7 @@ import {
   SFarm,
   SFarmIcon,
   SFarmRow,
+  SMaxButton,
 } from "sections/pools/pool/modals/joinFarm/PoolJoinFarm.styled"
 import { Box } from "components/Box/Box"
 import { Text } from "components/Typography/Text/Text"
@@ -19,6 +20,15 @@ import { useBestNumber } from "api/chain"
 import { PoolToken } from "@galacticcouncil/sdk"
 import { ComponentProps, useState } from "react"
 import { ReactComponent as ChevronRight } from "assets/icons/ChevronRight.svg"
+import { css } from "styled-components"
+import { AssetInput } from "components/AssetInput/AssetInput"
+import { DualAssetIcons } from "components/DualAssetIcons/DualAssetIcons"
+import { Button } from "components/Button/Button"
+import { useStore } from "state/store"
+import { useApiPromise } from "utils/network"
+import { usePoolShareToken } from "api/pools"
+import { useTokenBalance } from "api/balances"
+import { useForm } from "react-hook-form"
 
 const PoolJoinFarmItem = (props: {
   farm: AprFarm
@@ -103,6 +113,126 @@ const PoolJoinFarmItem = (props: {
   )
 }
 
+const PoolJoinFarmDeposit = (props: {
+  ammId: AccountId32
+  assetA: u32
+  assetB: u32
+  farm: AprFarm
+}) => {
+  const { t } = useTranslation()
+  const { createTransaction } = useStore()
+  const api = useApiPromise()
+
+  const [value, setValue] = useState("")
+
+  const assetA = useAsset(props.assetA)
+  const assetB = useAsset(props.assetB)
+
+  const shareToken = usePoolShareToken(props.ammId)
+
+  const { account } = useStore()
+  const shareTokenBalance = useTokenBalance(shareToken.data, account?.address)
+
+  const form = useForm()
+
+  async function handleSubmit() {
+    const tx = api.tx.liquidityMining.depositShares(
+      props.farm.globalFarm.id,
+      props.farm.yieldFarm.id,
+      {
+        assetIn: props.assetA,
+        assetOut: props.assetB,
+      },
+      value,
+    )
+
+    return await createTransaction({
+      hash: tx.hash.toString(),
+      tx,
+    })
+  }
+
+  return (
+    <form onSubmit={form.handleSubmit(handleSubmit)}>
+      <Box
+        bg="backgroundGray800"
+        p={20}
+        mt={20}
+        css={css`
+          border-radius: 12px;
+        `}
+      >
+        <Box flex acenter spread mb={11}>
+          <Text fw={600} lh={22} color="primary200">
+            Amount to deposit
+          </Text>
+          <Box flex acenter>
+            <Text fs={12} lh={16} mr={5} color="white">
+              <span css={{ opacity: 0.7 }}>Share token balance: </span>
+              {shareTokenBalance.data?.balance?.toFixed()}
+            </Text>
+            <SMaxButton
+              size="micro"
+              text={t("selectAsset.button.max")}
+              capitalize
+              onClick={() => {
+                const balance = shareTokenBalance.data?.balance
+
+                if (balance != null) {
+                  setValue(balance.toString())
+                }
+              }}
+            />
+          </Box>
+        </Box>
+        <Box flex acenter>
+          <DualAssetIcons
+            firstIcon={{ icon: assetA.data?.icon }}
+            secondIcon={{ icon: assetB.data?.icon }}
+          />
+          <Box
+            flex
+            column
+            mr={20}
+            css={css`
+              flex-shrink: 0;
+            `}
+          >
+            <Text fw={700} fs={16}>
+              {assetA.data?.name.toString()}/{assetB.data?.name.toString()}
+            </Text>
+            <Text fw={500} fs={12} color="neutralGray500">
+              Token/Token
+            </Text>
+          </Box>
+
+          <AssetInput
+            value={value}
+            css={css`
+              flex-grow: 1;
+            `}
+            dollars="200"
+            label="dd"
+            name="tet"
+            onChange={setValue}
+          />
+        </Box>
+      </Box>
+
+      <Box
+        flex
+        css={css`
+          justify-content: flex-end;
+        `}
+      >
+        <Button type="submit" variant="primary" mt={20}>
+          Join farm
+        </Button>
+      </Box>
+    </form>
+  )
+}
+
 export const PoolJoinFarm = (props: {
   poolId: string
   assetA: PoolToken
@@ -146,6 +276,13 @@ export const PoolJoinFarm = (props: {
             variant="detail"
             farm={selectedFarm}
             onSelect={() => console.log("test")}
+          />
+
+          <PoolJoinFarmDeposit
+            ammId={props.ammId}
+            assetA={props.assetA}
+            assetB={props.assetB}
+            farm={selectedFarm}
           />
         </Box>
       ) : (

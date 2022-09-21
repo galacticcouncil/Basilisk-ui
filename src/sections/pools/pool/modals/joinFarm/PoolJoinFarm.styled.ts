@@ -1,3 +1,4 @@
+import { Button } from "components/Button/Button"
 import styled, { css } from "styled-components"
 import { theme } from "theme"
 
@@ -66,5 +67,15 @@ export const SFarmIcon = styled.div`
 
     opacity: 0.5;
     transform: rotate(-90deg);
+  }
+`
+
+export const SMaxButton = styled(Button)`
+  background: rgba(${theme.rgbColors.white}, 0.06);
+  color: ${theme.colors.white};
+  font-weight: 600;
+
+  :hover {
+    background: rgba(${theme.rgbColors.white}, 0.15);
   }
 `
