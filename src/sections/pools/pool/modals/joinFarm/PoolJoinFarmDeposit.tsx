@@ -3,7 +3,6 @@ import { SMaxButton } from "sections/pools/pool/modals/joinFarm/PoolJoinFarm.sty
 import { Box } from "components/Box/Box"
 import { Text } from "components/Typography/Text/Text"
 import { AprFarm } from "utils/apr"
-import { useAsset } from "api/asset"
 import { PoolToken } from "@galacticcouncil/sdk"
 import { AssetInput } from "components/AssetInput/AssetInput"
 import { DualAssetIcons } from "components/DualAssetIcons/DualAssetIcons"
@@ -15,6 +14,7 @@ import { useTokenBalance } from "api/balances"
 import { useForm, Controller } from "react-hook-form"
 import { FormValues } from "utils/types"
 import { WalletConnectButton } from "sections/wallet/connect/modal/WalletConnectButton"
+import { getAssetLogo } from "components/AssetIcon/AssetIcon"
 
 export const PoolJoinFarmDeposit = (props: {
   poolId: string
@@ -25,9 +25,6 @@ export const PoolJoinFarmDeposit = (props: {
   const { t } = useTranslation()
   const { createTransaction } = useStore()
   const api = useApiPromise()
-
-  const assetA = useAsset(props.assetIn.id)
-  const assetB = useAsset(props.assetOut.id)
 
   const shareToken = usePoolShareToken(props.poolId)
 
@@ -90,12 +87,12 @@ export const PoolJoinFarmDeposit = (props: {
         </Box>
         <Box flex acenter>
           <DualAssetIcons
-            firstIcon={{ icon: assetA.data?.icon }}
-            secondIcon={{ icon: assetB.data?.icon }}
+            firstIcon={{ icon: getAssetLogo(props.assetIn.symbol) }}
+            secondIcon={{ icon: getAssetLogo(props.assetOut.symbol) }}
           />
           <Box flex column mr={20} css={{ flexShrink: 0 }}>
             <Text fw={700} fs={16}>
-              {assetA.data?.name.toString()}/{assetB.data?.name.toString()}
+              {props.assetIn.symbol}/{props.assetOut.symbol}
             </Text>
             <Text fw={500} fs={12} color="neutralGray500">
               {t("farms.deposit.assetType")}
