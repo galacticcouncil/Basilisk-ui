@@ -18,7 +18,7 @@ import BN from "bignumber.js"
 import { BLOCK_TIME } from "utils/constants"
 import { useBestNumber } from "api/chain"
 import { PoolToken } from "@galacticcouncil/sdk"
-import { ComponentProps, useState } from "react"
+import { ComponentProps, Fragment, useState } from "react"
 import { ReactComponent as ChevronRight } from "assets/icons/ChevronRight.svg"
 import { css } from "styled-components"
 import { AssetInput } from "components/AssetInput/AssetInput"
@@ -28,7 +28,9 @@ import { useStore } from "state/store"
 import { useApiPromise } from "utils/network"
 import { usePoolShareToken } from "api/pools"
 import { useTokenBalance } from "api/balances"
-import { useForm } from "react-hook-form"
+import { useForm, Controller } from "react-hook-form"
+import { FormValues } from "utils/types"
+import { WalletConnectButton } from "sections/wallet/connect/modal/WalletConnectButton"
 
 const PoolJoinFarmItem = (props: {
   farm: AprFarm
@@ -123,8 +125,6 @@ const PoolJoinFarmDeposit = (props: {
   const { createTransaction } = useStore()
   const api = useApiPromise()
 
-  const [value, setValue] = useState("")
-
   const assetA = useAsset(props.assetIn.id)
   const assetB = useAsset(props.assetOut.id)
 
@@ -133,9 +133,11 @@ const PoolJoinFarmDeposit = (props: {
   const { account } = useStore()
   const shareTokenBalance = useTokenBalance(shareToken.data, account?.address)
 
-  const form = useForm()
+  const form = useForm<{ value: string }>({})
 
-  async function handleSubmit() {
+  async function handleSubmit(data: FormValues<typeof form>) {
+    if (!account) throw new Error("No account found")
+
     const tx = api.tx.liquidityMining.depositShares(
       props.farm.globalFarm.id,
       props.farm.yieldFarm.id,
@@ -143,7 +145,7 @@ const PoolJoinFarmDeposit = (props: {
         assetIn: props.assetIn.id,
         assetOut: props.assetOut.id,
       },
-      value,
+      data.value,
     )
 
     return await createTransaction({
@@ -179,7 +181,7 @@ const PoolJoinFarmDeposit = (props: {
                 const balance = shareTokenBalance.data?.balance
 
                 if (balance != null) {
-                  setValue(balance.toString())
+                  form.setValue("value", balance.toString())
                 }
               }}
             />
@@ -206,28 +208,52 @@ const PoolJoinFarmDeposit = (props: {
             </Text>
           </Box>
 
-          <AssetInput
-            value={value}
-            css={css`
-              flex-grow: 1;
-            `}
-            dollars="200"
-            label="dd"
-            name="tet"
-            onChange={setValue}
+          <Controller
+            name="value"
+            control={form.control}
+            rules={{
+              validate: {
+                minDeposit: (value) => {
+                  const minDeposit =
+                    props.farm.globalFarm.minDeposit.toBigNumber()
+
+                  return !minDeposit.lte(value)
+                    ? `Must be at least ${minDeposit.toFixed()}`
+                    : undefined
+                },
+              },
+            }}
+            render={({
+              field: { value, onChange, name },
+              formState: { errors },
+            }) => (
+              <AssetInput
+                name={name}
+                label={name}
+                value={value}
+                css={{ flexGrow: 1 }}
+                error={errors.value?.message}
+                onChange={onChange}
+              />
+            )}
           />
         </Box>
       </Box>
 
       <Box
         flex
+        mt={20}
         css={css`
           justify-content: flex-end;
         `}
       >
-        <Button type="submit" variant="primary" mt={20}>
-          Join farm
-        </Button>
+        {account ? (
+          <Button type="submit" variant="primary">
+            Join farm
+          </Button>
+        ) : (
+          <WalletConnectButton />
+        )}
       </Box>
     </form>
   )
@@ -270,35 +296,37 @@ export const PoolJoinFarm = (props: {
 
   return (
     <Modal open={props.isOpen} onClose={props.onClose} {...modalProps}>
-      {selectedFarm != null ? (
-        <Box flex column gap={8} mt={24}>
-          <PoolJoinFarmItem
-            variant="detail"
-            farm={selectedFarm}
-            onSelect={() => console.log("test")}
-          />
-
-          <PoolJoinFarmDeposit
-            poolId={props.poolId}
-            assetIn={props.assetA}
-            assetOut={props.assetB}
-            farm={selectedFarm}
-          />
-        </Box>
-      ) : (
-        <Box flex column gap={8} mt={24}>
-          {apr.data.map((farm) => (
+      <Box flex column gap={8} mt={24}>
+        {selectedFarm != null ? (
+          <Fragment key="detail">
             <PoolJoinFarmItem
-              variant="list"
-              key={farm.toString()}
-              farm={farm}
-              onSelect={() => {
-                setSelectedYieldFarmId(farm.yieldFarm.id)
-              }}
+              variant="detail"
+              farm={selectedFarm}
+              onSelect={() => console.log("test")}
             />
-          ))}
-        </Box>
-      )}
+
+            <PoolJoinFarmDeposit
+              poolId={props.poolId}
+              assetIn={props.assetA}
+              assetOut={props.assetB}
+              farm={selectedFarm}
+            />
+          </Fragment>
+        ) : (
+          <Fragment key="list">
+            {apr.data.map((farm) => (
+              <PoolJoinFarmItem
+                variant="list"
+                key={farm.toString()}
+                farm={farm}
+                onSelect={() => {
+                  setSelectedYieldFarmId(farm.yieldFarm.id)
+                }}
+              />
+            ))}
+          </Fragment>
+        )}
+      </Box>
     </Modal>
   )
 }
