@@ -51,6 +51,8 @@ export const WalletConnectAccountSelect: FC<Props> = ({
         `}
       >
         {accounts.data
+          // As Talisman allows Ethereum accounts to be added as well, filter these accounts out
+          // as I believe these are not supported on Basilisk / HydraDX
           ?.filter((i) => i.type !== "ethereum" && i.type !== "ecdsa")
           ?.map((account) => {
             const accountName = account.meta.name ?? account.address

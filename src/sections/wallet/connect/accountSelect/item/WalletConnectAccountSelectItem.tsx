@@ -26,7 +26,6 @@ export const WalletConnectAccountSelectItem: FC<Props> = ({
   name,
   setAccount,
 }) => {
-  console.log(address)
   const basiliskAddress = encodeAddress(
     decodeAddress(address),
     BASILISK_ADDRESS_PREFIX,

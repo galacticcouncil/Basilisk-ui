@@ -1,5 +1,5 @@
 import { WalletConnectModal } from "./WalletConnectModal"
-import { SLoginButton } from "./WalletConnectButton.styled"
+import { SContainer, SLoginButton } from "./WalletConnectButton.styled"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Box } from "components/Box/Box"
@@ -17,17 +17,7 @@ const WalletActiveButton = (props: {
   className?: string
 }) => {
   return (
-    <Box
-      className={props.className}
-      onClick={props.onOpen}
-      css={css`
-        border-radius: 13px;
-        padding: 9px 9px 8px 14px;
-        background: ${theme.colors.backgroundGray1000};
-        border: 1px solid ${theme.colors.backgroundGray900};
-        cursor: pointer;
-      `}
-    >
+    <SContainer className={props.className} onClick={props.onOpen}>
       <Box
         flex
         gap={12}
@@ -63,7 +53,7 @@ const WalletActiveButton = (props: {
           <ChevronDownSmall />
         </Box>
       </Box>
-    </Box>
+    </SContainer>
   )
 }
 

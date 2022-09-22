@@ -8,6 +8,11 @@ import { ReactComponent as LogoutIcon } from "assets/icons/LogoutIcon.svg"
 import { getProviderMeta, ProviderType } from "./WalletConnectModal.utils"
 import { Account } from "state/store"
 import { useTranslation } from "react-i18next"
+import {
+  SContainer,
+  SLogoutContainer,
+  SSwitchText,
+} from "./WalletConnectActiveFooter.styled"
 
 export function WalletConnectActiveFooter(props: {
   account: Account | undefined
@@ -19,40 +24,15 @@ export function WalletConnectActiveFooter(props: {
   const { t } = useTranslation()
 
   return (
-    <Box
-      flex
-      css={css`
-        align-items: center;
-        justify-content: space-between;
-
-        background: ${theme.colors.backgroundGray1000};
-
-        margin: 0px -30px -30px;
-        width: calc(100% + 30px * 2);
-
-        border-radius: 16px;
-        border-top-left-radius: 0px;
-        border-top-right-radius: 0px;
-
-        padding: 20px 30px;
-      `}
-    >
+    <SContainer flex>
       {props.account ? (
         <ButtonTransparent onClick={props.onLogout}>
-          <Box
-            flex
-            css={css`
-              gap: 2px;
-              align-items: center;
-              justify-content: center;
-              color: ${theme.colors.neutralGray500};
-            `}
-          >
+          <SLogoutContainer flex>
             <LogoutIcon />
             <Text css={{ color: "currentColor" }} fs={14} fw={500}>
               {t("walletConnect.logout")}
             </Text>
-          </Box>
+          </SLogoutContainer>
         </ButtonTransparent>
       ) : (
         <span />
@@ -73,21 +53,12 @@ export function WalletConnectActiveFooter(props: {
               {name}
             </Text>
           </Box>
-          <Text
-            fs={14}
-            fw={500}
-            css={css`
-              color: ${theme.colors.primary450};
-              display: flex;
-              align-items: center;
-              justify-content: center;
-            `}
-          >
+          <SSwitchText fs={14} fw={500}>
             <span>{t("walletConnect.switch")}</span>
             <ChevronRight css={{ marginLeft: -3 }} />
-          </Text>
+          </SSwitchText>
         </Box>
       </ButtonTransparent>
-    </Box>
+    </SContainer>
   )
 }
