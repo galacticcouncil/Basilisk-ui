@@ -50,6 +50,7 @@ const WalletActiveButton = (props: {
             align-items: center;
             justify-content: center;
             gap: 2px;
+            color: ${theme.colors.neutralGray300};
           `}
         >
           <Identicon
