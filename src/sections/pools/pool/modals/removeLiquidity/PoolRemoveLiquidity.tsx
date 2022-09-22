@@ -14,6 +14,11 @@ import { Text } from "components/Typography/Text/Text"
 import { Box } from "components/Box/Box"
 import { PoolRemoveLiquidityReward } from "sections/pools/pool/modals/removeLiquidity/reward/PoolRemoveLiquidityReward"
 import { Separator } from "components/Separator/Separator"
+import { useForm, Controller } from "react-hook-form"
+import { useStore } from "state/store"
+import { WalletConnectButton } from "sections/wallet/connect/modal/WalletConnectButton"
+import { FormValues } from "utils/types"
+import { PoolBase } from "@galacticcouncil/sdk"
 
 const options = [
   { label: "24%", value: 24 },
@@ -25,44 +30,45 @@ const options = [
 type Props = {
   isOpen: boolean
   onClose: () => void
+  pool: PoolBase
 }
 
-export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose }) => {
-  const { t } = useTranslation()
-  const [slider, setSlider] = useState(25)
-  const [selected, setSelected] = useState<number | undefined>(50)
+const PoolRemoveLiquidityInput = (props: {
+  value: number
+  onChange: (value: number) => void
+}) => {
   const [input, setInput] = useState("")
 
   const onChange = (value: string) => {
-    setSelected(undefined)
     setInput(value)
+
+    const parsedValue = Number.parseFloat(value)
+    if (!Number.isNaN(parsedValue) && parsedValue >= 0 && parsedValue <= 100) {
+      props.onChange(parsedValue)
+    }
   }
 
   const onSelect = (value: number) => {
     setInput("")
-    setSelected(value)
+    props.onChange(value)
   }
 
   return (
-    <Modal
-      title={t("pools.removeLiquidity.modal.title")}
-      open={isOpen}
-      onClose={onClose}
-    >
-      <Heading fs={42} lh={52} mb={16} mt={16}>
-        {slider}%
-      </Heading>
-
+    <>
       <Slider
-        value={[slider]}
-        onChange={(val) => setSlider(val[0])}
+        value={[props.value]}
+        onChange={([val]) => onSelect(val)}
         min={0}
         max={100}
         step={1}
       />
 
       <SSlippage>
-        <BoxSwitch options={options} selected={selected} onSelect={onSelect} />
+        <BoxSwitch
+          options={options}
+          selected={props.value}
+          onSelect={onSelect}
+        />
         <Input
           value={input}
           onChange={onChange}
@@ -71,47 +77,87 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose }) => {
           placeholder="Custom"
         />
       </SSlippage>
+    </>
+  )
+}
 
-      <STradingPairContainer>
-        <Text color="neutralGray400">
-          {t("pools.removeLiquidity.modal.receive")}
-        </Text>
-        <PoolRemoveLiquidityReward
-          name="Basilisk"
-          symbol="BSX"
-          amount={1000000.579187897408}
-        />
-        <PoolRemoveLiquidityReward
-          name="Karura"
-          symbol="KAR"
-          amount={34456.56}
-        />
-      </STradingPairContainer>
+export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
+  const { t } = useTranslation()
+  const form = useForm<{ value: number }>({ defaultValues: { value: 25 } })
+  const { account } = useStore()
 
-      <Box mb={32} mt={16}>
-        <Box flex acenter justify="space-between">
-          <Text color="neutralGray500" fs={15}>
-            {t("pools.removeLiquidity.modal.cost")}
+  async function handleSubmit(data: FormValues<typeof form>) {
+    if (!account) throw new Error("Missing account")
+  }
+
+  return (
+    <Modal
+      title={t("pools.removeLiquidity.modal.title")}
+      open={isOpen}
+      onClose={onClose}
+    >
+      <form onSubmit={form.handleSubmit(handleSubmit)}>
+        <Heading fs={42} lh={52} mb={16} mt={16}>
+          {form.watch("value")}%
+        </Heading>
+
+        <Controller
+          name="value"
+          control={form.control}
+          render={({ field }) => (
+            <PoolRemoveLiquidityInput
+              value={field.value}
+              onChange={field.onChange}
+            />
+          )}
+        />
+
+        <STradingPairContainer>
+          <Text color="neutralGray400">
+            {t("pools.removeLiquidity.modal.receive")}
           </Text>
-          <Box flex acenter gap={4}>
-            <Text fs={14}>≈ 12 BSX</Text>
-            <Text fs={14} color="primary400">
-              (2%)
+
+          <PoolRemoveLiquidityReward
+            name="Token"
+            symbol={pool.tokens[0].symbol}
+            amount={1000000.579187897408}
+          />
+          <PoolRemoveLiquidityReward
+            name="Token"
+            symbol={pool.tokens[1].symbol}
+            amount={34456.56}
+          />
+        </STradingPairContainer>
+
+        <Box mb={32} mt={16}>
+          <Box flex acenter justify="space-between">
+            <Text color="neutralGray500" fs={15}>
+              {t("pools.removeLiquidity.modal.cost")}
             </Text>
+            <Box flex acenter gap={4}>
+              <Text fs={14}>≈ 12 BSX</Text>
+              <Text fs={14} color="primary400">
+                (2%)
+              </Text>
+            </Box>
+          </Box>
+          <Separator mt={8} mb={8} size={2} />
+          <Box flex acenter justify="space-between">
+            <Text fs={15} color="neutralGray500">
+              {t("pools.removeLiquidity.modal.price")}
+            </Text>
+            <Text fs={14}>1 BSX = 225 KAR</Text>
           </Box>
         </Box>
-        <Separator mt={8} mb={8} size={2} />
-        <Box flex acenter justify="space-between">
-          <Text fs={15} color="neutralGray500">
-            {t("pools.removeLiquidity.modal.price")}
-          </Text>
-          <Text fs={14}>1 BSX = 225 KAR</Text>
-        </Box>
-      </Box>
 
-      <Button variant="primary" fullWidth>
-        {t("pools.removeLiquidity.modal.confirm")}
-      </Button>
+        {account ? (
+          <Button type="submit" variant="primary" fullWidth>
+            {t("pools.removeLiquidity.modal.confirm")}
+          </Button>
+        ) : (
+          <WalletConnectButton css={{ marginTop: 20, width: "100%" }} />
+        )}
+      </form>
     </Modal>
   )
 }
