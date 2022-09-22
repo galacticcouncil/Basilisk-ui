@@ -5,6 +5,8 @@ import { useTradeRouter } from "utils/sdk"
 import { TradeRouter } from "@galacticcouncil/sdk"
 import { Maybe } from "utils/types"
 import { BN_1, BN_10 } from "utils/constants"
+import { any } from "prop-types"
+import BN from "bignumber.js"
 
 export const useSpotPrice = (
   assetA: Maybe<u32 | string>,
@@ -51,3 +53,9 @@ export const getSpotPrice =
 
     return { tokenIn, tokenOut, spotPrice }
   }
+
+export type SpotPrice = {
+  tokenIn: string
+  tokenOut: string
+  spotPrice: BN
+}
