@@ -36,7 +36,11 @@ export const QUERY_KEYS = {
     "totalLiquidity",
     id?.toString(),
   ],
-  totalIssuance: (lpToken: Maybe<u32>) => ["totalIssuance", lpToken],
+  totalIssuance: (lpToken: Maybe<u32>) => [
+    QUERY_KEY_PREFIX,
+    "totalIssuance",
+    lpToken?.toString(),
+  ],
   totalLiquidities: (ids: string[]) => [
     QUERY_KEY_PREFIX,
     "totalLiquidities",
