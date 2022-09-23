@@ -27,7 +27,7 @@ export const usePoolShareTokens = (poolIds: string[]) => {
     queries: poolIds.map((id) => ({
       queryKey: QUERY_KEYS.poolShareToken(id),
       queryFn: getPoolShareToken(api, id),
-      enabled: !!poolIds.length,
+      enabled: !!id,
     })),
   })
 }

@@ -5,7 +5,6 @@ import { useTradeRouter } from "utils/sdk"
 import { TradeRouter } from "@galacticcouncil/sdk"
 import { Maybe } from "utils/types"
 import { BN_1, BN_10 } from "utils/constants"
-import { any } from "prop-types"
 import BN from "bignumber.js"
 
 export const useSpotPrice = (
@@ -38,7 +37,7 @@ export const useSpotPrices = (
     queries: assets.map((tokenIn) => ({
       queryKey: QUERY_KEYS.spotPrice(tokenIn, tokenOut),
       queryFn: getSpotPrice(tradeRouter, tokenIn, tokenOut),
-      enabled: !!assets.length && !!tokenOut,
+      enabled: !!tokenIn && !!tokenOut,
     })),
   })
 }

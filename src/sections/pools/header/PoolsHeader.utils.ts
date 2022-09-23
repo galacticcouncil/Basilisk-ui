@@ -142,14 +142,13 @@ const getPoolTotal = (
   tokens: PoolToken[],
   spotPrices: (SpotPrice | undefined)[],
 ) => {
-  const [assetA, assetB] = tokens
-  const amountA = getBalanceAmount(new BN(assetA.balance), assetA.decimals)
-  const amountB = getBalanceAmount(new BN(assetB.balance), assetB.decimals)
-  const spotPriceA = spotPrices.find((sp) => sp?.tokenIn === assetA.id)
-  const spotPriceB = spotPrices.find((sp) => sp?.tokenIn === assetB.id)
-  const totalA = amountA.times(spotPriceA?.spotPrice ?? BN_0)
-  const totalB = amountB.times(spotPriceB?.spotPrice ?? BN_0)
-  const total = totalA.plus(totalB)
+  const total = tokens.reduce((acc, token) => {
+    const amount = getBalanceAmount(new BN(token.balance), token.decimals)
+    const spotPrice = spotPrices.find((sp) => sp?.tokenIn === token.id)
+    const total = amount.times(spotPrice?.spotPrice ?? BN_0)
+
+    return acc.plus(total)
+  }, BN_0)
 
   return total
 }

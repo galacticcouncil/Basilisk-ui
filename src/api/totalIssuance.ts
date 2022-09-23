@@ -5,13 +5,14 @@ import { QUERY_KEYS } from "utils/queryKeys"
 import BigNumber from "bignumber.js"
 import { u32 } from "@polkadot/types"
 import { Maybe } from "utils/types"
+import { undefinedNoop } from "utils/helpers"
 
 export const useTotalIssuance = (token: Maybe<u32>) => {
   const api = useApiPromise()
 
   return useQuery(
     QUERY_KEYS.totalIssuance(token),
-    getTotalIssuance(api, token),
+    token ? getTotalIssuance(api, token) : undefinedNoop,
     { enabled: !!token },
   )
 }
@@ -25,14 +26,13 @@ export const useTotalIssuances = (tokens: Maybe<u32>[]) => {
     queries: tokenIds.map((id) => ({
       queryKey: QUERY_KEYS.totalIssuance(id),
       queryFn: getTotalIssuance(api, id),
-      enabled: !!tokens.length,
+      enabled: !!id,
     })),
   })
 }
 
-export const getTotalIssuance =
-  (api: ApiPromise, token: Maybe<u32>) => async () => {
-    const res = await api.query.tokens.totalIssuance(token)
-    const total = new BigNumber(res.toHex())
-    return { token, total }
-  }
+export const getTotalIssuance = (api: ApiPromise, token: u32) => async () => {
+  const res = await api.query.tokens.totalIssuance(token)
+  const total = new BigNumber(res.toHex())
+  return { token, total }
+}
