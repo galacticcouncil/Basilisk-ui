@@ -1,6 +1,6 @@
 import { FC, useState } from "react"
 import { Modal } from "components/Modal/Modal"
-import { useTranslation } from "react-i18next"
+import { Trans, useTranslation } from "react-i18next"
 import {
   SSlippage,
   STradingPairContainer,
@@ -26,6 +26,7 @@ import { BN_0, BN_1 } from "utils/constants"
 import { getBalanceAmount } from "utils/balance"
 import { useApiPromise } from "utils/network"
 import { usePaymentInfo } from "api/transaction"
+import { useSpotPrice } from "api/spotPrice"
 
 const options = [
   { label: "24%", value: 24 },
@@ -115,9 +116,7 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
     api.tx.xyk.removeLiquidity(pool.tokens[0].id, pool.tokens[1].id, "0"),
   )
 
-  const spotPrice = BN_1.multipliedBy(pool.tokens[1].balance).dividedBy(
-    pool.tokens[0].balance,
-  )
+  const spotPrice = useSpotPrice(pool.tokens[0].id, pool.tokens[1].id)
 
   async function handleSubmit(data: FormValues<typeof form>) {
     if (!account) throw new Error("Missing account")
@@ -144,7 +143,7 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
     >
       <form onSubmit={form.handleSubmit(handleSubmit)}>
         <Heading fs={42} lh={52} mb={16} mt={16}>
-          {value}%
+          {t("value.percentage", { percentage: value })}
         </Heading>
 
         <Controller
@@ -203,8 +202,19 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
               {t("pools.removeLiquidity.modal.price")}
             </Text>
             <Text fs={14}>
-              1 {pool.tokens[0].symbol} = {spotPrice.toFixed()}{" "}
-              {pool.tokens[1].symbol}
+              <Trans
+                t={t}
+                i18nKey="pools.removeLiquidity.modal.row.spotPrice"
+                tOptions={{
+                  firstAmount: { value: BN_1, decimals: 0, displayDecimals: 0 },
+                  secondAmount: {
+                    value: spotPrice.data?.spotPrice,
+                    decimals: 0,
+                  },
+                  firstCurrency: pool.tokens[0].symbol,
+                  secondCurrency: pool.tokens[1].symbol,
+                }}
+              />
             </Text>
           </Box>
         </Box>
