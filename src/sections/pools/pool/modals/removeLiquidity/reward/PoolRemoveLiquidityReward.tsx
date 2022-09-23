@@ -7,7 +7,7 @@ import { getAssetLogo } from "components/AssetIcon/AssetIcon"
 type Props = {
   name: string
   symbol: string
-  amount: number
+  amount: string
 }
 
 export const PoolRemoveLiquidityReward: FC<Props> = ({

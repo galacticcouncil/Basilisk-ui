@@ -19,6 +19,13 @@ import { useStore } from "state/store"
 import { WalletConnectButton } from "sections/wallet/connect/modal/WalletConnectButton"
 import { FormValues } from "utils/types"
 import { PoolBase } from "@galacticcouncil/sdk"
+import { usePoolShareToken } from "api/pools"
+import { useTokenBalance } from "api/balances"
+import { useTotalLiquidity } from "api/totalLiquidity"
+import { BN_0, BN_1 } from "utils/constants"
+import { getBalanceAmount } from "utils/balance"
+import { useApiPromise } from "utils/network"
+import { usePaymentInfo } from "api/transaction"
 
 const options = [
   { label: "24%", value: 24 },
@@ -84,10 +91,49 @@ const PoolRemoveLiquidityInput = (props: {
 export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
   const { t } = useTranslation()
   const form = useForm<{ value: number }>({ defaultValues: { value: 25 } })
-  const { account } = useStore()
+  const { account, createTransaction } = useStore()
+
+  const api = useApiPromise()
+
+  const shareToken = usePoolShareToken(pool.address)
+  const shareTokenBalance = useTokenBalance(shareToken.data, account?.address)
+
+  const totalLiquidity = useTotalLiquidity(pool.address)
+
+  const value = form.watch("value")
+  const amount = shareTokenBalance.data?.balance
+    ?.multipliedBy(value)
+    .dividedToIntegerBy(100)
+
+  const removeAmount = pool.tokens.map(({ balance }) => {
+    return amount && totalLiquidity.data && !totalLiquidity.data.isZero()
+      ? amount.multipliedBy(balance).dividedBy(totalLiquidity.data)
+      : BN_0
+  })
+
+  const paymentInfoEstimate = usePaymentInfo(
+    api.tx.xyk.removeLiquidity(pool.tokens[0].id, pool.tokens[1].id, "0"),
+  )
+
+  const spotPrice = BN_1.multipliedBy(pool.tokens[1].balance).dividedBy(
+    pool.tokens[0].balance,
+  )
 
   async function handleSubmit(data: FormValues<typeof form>) {
     if (!account) throw new Error("Missing account")
+    if (!shareTokenBalance.data?.balance)
+      throw new Error("No share token balance")
+
+    const tokenAmount = shareTokenBalance.data?.balance
+      .multipliedBy(data.value)
+      .dividedToIntegerBy(100)
+
+    const tx = api.tx.xyk.removeLiquidity(
+      pool.tokens[0].id,
+      pool.tokens[1].id,
+      tokenAmount.toFixed(),
+    )
+    return await createTransaction({ hash: tx.hash.toString(), tx })
   }
 
   return (
@@ -98,7 +144,7 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
     >
       <form onSubmit={form.handleSubmit(handleSubmit)}>
         <Heading fs={42} lh={52} mb={16} mt={16}>
-          {form.watch("value")}%
+          {value}%
         </Heading>
 
         <Controller
@@ -120,12 +166,18 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
           <PoolRemoveLiquidityReward
             name="Token"
             symbol={pool.tokens[0].symbol}
-            amount={1000000.579187897408}
+            amount={getBalanceAmount(
+              removeAmount[0],
+              pool.tokens[0].decimals,
+            ).toFixed()}
           />
           <PoolRemoveLiquidityReward
             name="Token"
             symbol={pool.tokens[1].symbol}
-            amount={34456.56}
+            amount={getBalanceAmount(
+              removeAmount[1],
+              pool.tokens[1].decimals,
+            ).toFixed()}
           />
         </STradingPairContainer>
 
@@ -135,9 +187,13 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
               {t("pools.removeLiquidity.modal.cost")}
             </Text>
             <Box flex acenter gap={4}>
-              <Text fs={14}>≈ 12 BSX</Text>
-              <Text fs={14} color="primary400">
-                (2%)
+              <Text fs={14}>
+                {t("pools.removeLiquidity.modal.row.transactionCostValue", {
+                  amount: {
+                    value: paymentInfoEstimate.data?.partialFee.toBigNumber(),
+                    displayDecimals: 2,
+                  },
+                })}
               </Text>
             </Box>
           </Box>
@@ -146,7 +202,10 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
             <Text fs={15} color="neutralGray500">
               {t("pools.removeLiquidity.modal.price")}
             </Text>
-            <Text fs={14}>1 BSX = 225 KAR</Text>
+            <Text fs={14}>
+              1 {pool.tokens[0].symbol} = {spotPrice.toFixed()}{" "}
+              {pool.tokens[1].symbol}
+            </Text>
           </Box>
         </Box>
 
