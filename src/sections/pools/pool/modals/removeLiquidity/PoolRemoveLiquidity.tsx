@@ -97,7 +97,10 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
   const api = useApiPromise()
 
   const shareToken = usePoolShareToken(pool.address)
-  const shareTokenBalance = useTokenBalance(shareToken.data, account?.address)
+  const shareTokenBalance = useTokenBalance(
+    shareToken.data?.token,
+    account?.address,
+  )
 
   const totalLiquidity = useTotalLiquidity(pool.address)
 
