@@ -30,8 +30,8 @@ export const WalletConnectAccountSelectItem: FC<Props> = ({
     decodeAddress(address),
     BASILISK_ADDRESS_PREFIX,
   )
-  const kuramaAddress = address
-  const { data } = useTokenBalance(NATIVE_ASSET_ID, kuramaAddress)
+  const kusamaAddress = address
+  const { data } = useTokenBalance(NATIVE_ASSET_ID, kusamaAddress)
 
   const { t } = useTranslation()
 
@@ -61,7 +61,7 @@ export const WalletConnectAccountSelectItem: FC<Props> = ({
           />
           <WalletConnectAccountSelectAddress
             name={t("walletConnect.accountSelect.asset.parachain")}
-            address={kuramaAddress}
+            address={kusamaAddress}
           />
         </Box>
       </SSelectItem>
