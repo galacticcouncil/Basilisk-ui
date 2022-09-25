@@ -8,7 +8,7 @@ import { FC, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { PoolAddLiquidityConversion } from "sections/pools/pool/modals/addLiquidity/conversion/PoolAddLiquidityConversion"
 import { PoolAddLiquidityAssetSelect } from "sections/pools/pool/modals/addLiquidity/assetSelect/PoolAddLiquidityAssetSelect"
-import { formatBigNumber, getFixedPointAmount } from "utils/balance"
+import { getFixedPointAmount, getFloatingPointAmount } from "utils/balance"
 import { getAssetLogo } from "components/AssetIcon/AssetIcon"
 import { useAddLiquidity } from "api/addLiquidity"
 import { WalletConnectButton } from "sections/wallet/connect/modal/WalletConnectButton"
@@ -66,21 +66,18 @@ export const PoolAddLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
 
   const handleChangeAssetAInput = (value: string) => {
     if (assetAReserve.data && assetBReserve.data && xyk) {
-      const parsedValue = getFixedPointAmount(
-        new BigNumber(value),
-        pool.tokens[0].decimals,
-      )
+      const parsedValue = getFixedPointAmount(value, pool.tokens[0].decimals)
+
       const calculatedAmount = xyk.calculate_liquidity_in(
         assetAReserve.data.balance.toFixed(),
         assetBReserve.data.balance.toFixed(),
         parsedValue.toFixed(),
       )
       setInputAssetB(
-        formatBigNumber(calculatedAmount, {
-          fixedPointScale: pool.tokens[0].decimals,
-          decimalPlaces: 4,
-          numberNotation: "raw",
-        }) ?? "",
+        getFloatingPointAmount(
+          calculatedAmount,
+          pool.tokens[0].decimals,
+        ).toFixed(4),
       )
     }
     setInputAssetA(value)
@@ -99,11 +96,10 @@ export const PoolAddLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
       )
 
       setInputAssetA(
-        formatBigNumber(calculatedAmount, {
-          fixedPointScale: pool.tokens[1].decimals,
-          decimalPlaces: 4,
-          numberNotation: "raw",
-        }) ?? "",
+        getFloatingPointAmount(
+          calculatedAmount,
+          pool.tokens[1].decimals,
+        ).toFixed(4),
       )
     }
     setInputAssetB(value)

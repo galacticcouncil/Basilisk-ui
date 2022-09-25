@@ -13,7 +13,7 @@ import {
 } from "./PoolAddLiquidityAssetSelect.styled"
 import { u32 } from "@polkadot/types"
 import BigNumber from "bignumber.js"
-import { formatBigNumber } from "utils/balance"
+import { getFloatingPointAmount } from "utils/balance"
 
 type Props = {
   name: string
@@ -62,13 +62,9 @@ export const PoolAddLiquidityAssetSelect: FC<Props> = ({
             text={t("selectAsset.button.max")}
             capitalize
             onClick={() => {
-              const newBalance = formatBigNumber(balance, {
-                fixedPointScale: decimals,
-                decimalPlaces: 4,
-                numberNotation: "raw",
-              })
-
-              if (newBalance != null) onChange(newBalance)
+              if (balance != null) {
+                onChange(getFloatingPointAmount(balance, decimals).toFixed(4))
+              }
             }}
           />
         </Box>

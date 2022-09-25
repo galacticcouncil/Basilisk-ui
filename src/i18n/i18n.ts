@@ -1,8 +1,13 @@
 import i18n from "i18next"
 import { initReactI18next } from "react-i18next"
 import translationEN from "./locales/en/translations.json"
-import { formatDate, formatNum } from "utils/formatting"
-import { BalanceFormatOptionsSchema, formatBigNumber } from "../utils/balance"
+import {
+  BigNumberFormatOptionsSchema,
+  formatBigNumber,
+  formatDate,
+  formatNum,
+} from "utils/formatting"
+import { normalizeBigNumber } from "../utils/balance"
 import { isRecord } from "utils/types"
 
 /**
@@ -13,14 +18,14 @@ function getBigNumberFormatParams(
 ) {
   if (options == null) return null
 
-  let parsed = BalanceFormatOptionsSchema.safeParse(options)
+  let parsed = BigNumberFormatOptionsSchema.safeParse(options)
   if (parsed.success) return parsed.data
 
   if (
     typeof options.interpolationkey === "string" &&
     isRecord(options.formatParams)
   ) {
-    parsed = BalanceFormatOptionsSchema.safeParse(
+    parsed = BigNumberFormatOptionsSchema.safeParse(
       options.formatParams[options.interpolationkey],
     )
     if (parsed.success) return parsed.data
@@ -75,14 +80,9 @@ i18n
 
         // Not ideal, but we don't have a way to format BigNumber to a compact form
         if (formatName === "compact") {
-          const num = formatBigNumber(
-            value,
-            { ...getBigNumberFormatParams(options), numberNotation: "raw" },
-            lng,
-          )
-
+          const num = normalizeBigNumber(value)
           if (num == null) return null
-          return formatNum(Number.parseFloat(num), { notation: "compact" }, lng)
+          return formatNum(num.toFixed(), { notation: "compact" }, lng)
         }
 
         if (value instanceof Date) {

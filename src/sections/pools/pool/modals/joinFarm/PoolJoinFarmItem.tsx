@@ -13,6 +13,7 @@ import { useAsset } from "api/asset"
 import { addSeconds } from "date-fns"
 import { BLOCK_TIME } from "utils/constants"
 import { useBestNumber } from "api/chain"
+import { getFloatingPointAmount } from "utils/balance"
 
 export const PoolJoinFarmItem = (props: {
   farm: AprFarm
@@ -61,12 +62,11 @@ export const PoolJoinFarmItem = (props: {
               t={t}
               i18nKey="pools.allFarms.modal.distribution"
               tOptions={{
-                distributed: props.farm.distributedRewards,
-                max: props.farm.maxRewards,
-                formatParams: {
-                  distributed: { fixedPointScale: 12 },
-                  max: { fixedPointScale: 12 },
-                },
+                distributed: getFloatingPointAmount(
+                  props.farm.distributedRewards,
+                  12,
+                ),
+                max: getFloatingPointAmount(props.farm.maxRewards, 12),
               }}
             >
               <Text as="span" fs={14} color="neutralGray100" />
