@@ -16,6 +16,13 @@ export const formatNum = (
   }
 }
 
+export const getFormatSeparators = (locales: string | string[] | undefined) => {
+  const parts = new Intl.NumberFormat(locales).formatToParts(1000.1)
+  const group = parts.find((i) => i.type === "group")?.value
+  const decimal = parts.find((i) => i.type === "decimal")?.value
+  return { group, decimal }
+}
+
 export const formatDate = (
   date: Date,
   formatting: string,

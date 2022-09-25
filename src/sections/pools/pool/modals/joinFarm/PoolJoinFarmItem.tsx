@@ -44,7 +44,7 @@ export const PoolJoinFarmItem = (props: {
         </Box>
         <Text fs={20} lh={28} fw={600} color="primary200">
           {t("pools.allFarms.modal.apr.single", {
-            value: props.farm.apr.toFixed(),
+            value: props.farm.apr,
           })}
         </Text>
       </Box>
@@ -64,8 +64,8 @@ export const PoolJoinFarmItem = (props: {
                 distributed: props.farm.distributedRewards,
                 max: props.farm.maxRewards,
                 formatParams: {
-                  distributed: { precision: 12 },
-                  max: { precision: 12 },
+                  distributed: { fixedPointScale: 12 },
+                  max: { fixedPointScale: 12 },
                 },
               }}
             >
@@ -78,7 +78,8 @@ export const PoolJoinFarmItem = (props: {
           <FillBar percentage={props.farm.fullness.times(100).toNumber()} />
           <Text fs={14} color="neutralGray100">
             {t("pools.allFarms.modal.capacity", {
-              capacity: props.farm.fullness.times(100).toNumber(),
+              capacity: props.farm.fullness.times(100),
+              decimalPlaces: 0,
             })}
           </Text>
         </SFarmRow>
