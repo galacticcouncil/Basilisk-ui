@@ -46,7 +46,7 @@
   "pools.pool.positions.farms.joinedFarms": "Joined Farms",
   "pools.pool.positions.farms.details": "Details",
   "pools.pool.positions.position.title": "Position #{{ index }}",
-  "pools.pool.positions.position.entered": "Entered {{ date }}",
+  "pools.pool.positions.position.entered": "Entered {{ date, dd.MM.yyyy }}",
   "pools.pool.positions.position.locked": "Locked",
   "pools.pool.positions.position.shares": "{{ shares, compact }} Shares",
   "pools.pool.positions.position.current": "Current value",

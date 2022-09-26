@@ -7,6 +7,8 @@ import { PalletLiquidityMiningYieldFarmEntry } from "@polkadot/types/lookup"
 import { AccountId32 } from "@polkadot/types/interfaces"
 import { SContainer } from "sections/pools/pool/position/PoolPosition.styled"
 import { useGlobalFarm } from "api/farms"
+import { BLOCK_TIME } from "utils/constants"
+import { subSeconds } from "date-fns"
 
 type Props = {
   position: PalletLiquidityMiningYieldFarmEntry
@@ -27,7 +29,9 @@ export const PoolPosition: FC<Props> = ({ position, index, poolId }) => {
       .times(blocksPerPeriod)
       .plus(blocksPerPeriod.plus(1))
 
-    return blockRange.toFixed()
+    const date = subSeconds(Date.now(), blockRange.times(BLOCK_TIME).toNumber())
+
+    return date
   }, [globalFarm.data, position.enteredAt])
 
   return (
@@ -37,9 +41,7 @@ export const PoolPosition: FC<Props> = ({ position, index, poolId }) => {
           {t("pools.pool.positions.position.title", { index })}
         </Text>
         <Text fs={14} lh={18} color="white">
-          {t("pools.pool.positions.position.entered", {
-            date: enteredDate, // TODO: get a date from this
-          })}
+          {t("pools.pool.positions.position.entered", { date: enteredDate })}
         </Text>
       </Box>
       <Box flex column gap={6}>
