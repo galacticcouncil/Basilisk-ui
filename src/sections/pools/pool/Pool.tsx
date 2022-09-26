@@ -11,7 +11,7 @@ import { AnimatePresence, motion } from "framer-motion"
 type Props = { pool: PoolBase }
 
 export const Pool: FC<Props> = ({ pool }) => {
-  const [isExpanded, setIsExpanded] = useState(true)
+  const [isExpanded, setIsExpanded] = useState(false)
 
   return (
     <SContainer>

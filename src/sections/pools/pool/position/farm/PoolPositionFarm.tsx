@@ -34,7 +34,7 @@ export const PoolPositionFarm: FC<Props> = ({
           <Box flex acenter gap={6}>
             {asset.data.icon}
             <Text fs={14} lh={16} color="primary200">
-              {t("value.apr", { apr: apr.apr.toFixed() })}
+              {t("value.APR", { apr: apr.apr })}
             </Text>
           </Box>
           <Button size="small">

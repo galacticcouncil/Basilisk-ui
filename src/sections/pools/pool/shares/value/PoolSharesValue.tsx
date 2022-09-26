@@ -8,12 +8,12 @@ import BN from "bignumber.js"
 import { PoolBase } from "@galacticcouncil/sdk"
 import { useCurrentSharesValue } from "sections/pools/pool/shares/value/PoolSharesValue.utils"
 
-type Props = { token: Maybe<u32>; pool: PoolBase; balance: BN }
+type Props = { shareToken: Maybe<u32>; pool: PoolBase; shareTokenBalance: BN }
 
 export const PoolSharesValue: FC<Props> = (props) => {
   const { t } = useTranslation()
 
-  const { dollarValue } = useCurrentSharesValue(props)
+  const { dollarValue, assetA, assetB } = useCurrentSharesValue(props)
 
   return (
     <Box flex column gap={6}>
@@ -22,7 +22,12 @@ export const PoolSharesValue: FC<Props> = (props) => {
       </Text>
       <Box flex column gap={2}>
         <Text fs={14} lh={18} color="white">
-          TODO
+          {t("pools.pool.liquidity.amounts", {
+            amountA: assetA?.amount,
+            symbolA: assetA?.symbol,
+            amountB: assetB?.amount,
+            symbolB: assetB?.symbol,
+          })}
         </Text>
         <Text fs={12} lh={16} color="neutralGray500">
           {t("value.usd", { amount: dollarValue })}

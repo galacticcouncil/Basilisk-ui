@@ -9,3 +9,8 @@ export const SContainer = styled.div`
 
   overflow: hidden;
 `
+
+export const SDetails = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+`

@@ -1,5 +1,8 @@
 import { FC } from "react"
-import { SContainer } from "sections/pools/pool/shares/PoolShares.styled"
+import {
+  SContainer,
+  SDetails,
+} from "sections/pools/pool/shares/PoolShares.styled"
 import { useTranslation } from "react-i18next"
 import { GradientText } from "components/Typography/GradientText/GradientText"
 import { Box } from "components/Box/Box"
@@ -29,15 +32,15 @@ export const PoolShares: FC<Props> = ({ pool }) => {
         {t("pools.pool.liquidity.title")}
       </GradientText>
       {balance.data && (
-        <Box flex spread>
+        <SDetails>
           <PoolSharesUnstaked balance={balance.data.balance} />
           <PoolSharesValue
-            token={shareToken.data?.token}
+            shareToken={shareToken.data?.token}
             pool={pool}
-            balance={balance.data.balance}
+            shareTokenBalance={balance.data.balance}
           />
           <PoolSharesApr poolId={pool.address} />
-        </Box>
+        </SDetails>
       )}
       {!!deposits.data?.length && (
         <Box flex column gap={12} mt={32}>

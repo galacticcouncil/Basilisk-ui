@@ -28,7 +28,7 @@ export const PoolSharesApr: FC<Props> = ({ poolId }) => {
                 min: sortedAPR[0].apr.toFixed(),
                 max: sortedAPR[sortedAPR.length - 1].apr.toFixed(),
               })
-            : t("value.apr", { apr: sortedAPR[0].apr })}
+            : t("value.APR", { apr: sortedAPR[0].apr })}
         </Text>
       )}
     </Box>

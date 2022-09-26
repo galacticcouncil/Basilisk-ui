@@ -5,31 +5,47 @@ import { u32 } from "@polkadot/types"
 import { Maybe } from "utils/types"
 import { PoolBase } from "@galacticcouncil/sdk"
 import BN from "bignumber.js"
+import { BN_10 } from "utils/constants"
 
 export const useCurrentSharesValue = ({
-  token,
+  shareToken,
+  shareTokenBalance,
   pool,
-  balance,
 }: {
-  token: Maybe<u32>
+  shareToken: Maybe<u32>
+  shareTokenBalance: BN
   pool: PoolBase
-  balance: BN
 }) => {
-  const totalIssuance = useTotalIssuance(token)
+  const totalIssuance = useTotalIssuance(shareToken)
   const totalInPool = useTotalInPool({ pool })
 
   const isLoading = totalIssuance.isLoading || totalInPool.isLoading
 
-  const dollarValue = useMemo(() => {
+  const data = useMemo(() => {
     if (!totalIssuance.data || !totalInPool.data) return undefined
 
     const issuance = totalIssuance.data.total
     const liquidity = totalInPool.data
-    const ratio = balance.div(issuance)
-    const result = liquidity.times(ratio)
+    const ratio = shareTokenBalance.div(issuance)
 
-    return result
-  }, [totalIssuance.data, totalInPool.data, balance])
+    const [assetA, assetB] = pool.tokens
+    const balanceA = new BN(assetA.balance).div(
+      BN_10.pow(new BN(assetA.decimals)),
+    )
+    const balanceB = new BN(assetB.balance).div(
+      BN_10.pow(new BN(assetB.decimals)),
+    )
 
-  return { dollarValue, isLoading }
+    const amountA = balanceA.times(ratio)
+    const amountB = balanceB.times(ratio)
+    const dollarValue = liquidity.times(ratio)
+
+    return {
+      assetA: { symbol: assetA.symbol, amount: amountA },
+      assetB: { symbol: assetB.symbol, amount: amountB },
+      dollarValue,
+    }
+  }, [totalIssuance.data, totalInPool.data, shareTokenBalance, pool])
+
+  return { ...data, isLoading }
 }

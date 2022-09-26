@@ -25,4 +25,10 @@ export const SButtonOpen = styled(ButtonTransparent)<{ isActive: boolean }>`
     background-color: ${({ isActive }) =>
       !isActive && theme.colors.backgroundGray500};
   }
+
+  &:disabled,
+  &[disabled] {
+    color: ${theme.colors.neutralGray500};
+    background-color: ${theme.colors.backgroundGray800};
+  }
 `
