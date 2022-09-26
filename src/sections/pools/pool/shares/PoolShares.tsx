@@ -22,7 +22,7 @@ export const PoolShares: FC<Props> = ({ pool }) => {
   const { t } = useTranslation()
 
   const { account } = useStore()
-  const deposits = useDeposits(pool.address)
+  const deposits = useDeposits(pool.address) // TODO: filter deposits belonging to current account
   const shareToken = usePoolShareToken(pool.address)
   const balance = useTokenBalance(shareToken.data?.token, account?.address)
 
