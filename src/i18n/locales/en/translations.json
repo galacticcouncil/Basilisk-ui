@@ -39,7 +39,7 @@
   "pools.pool.liquidity.value": "Current value",
   "pools.pool.liquidity.amounts": "{{ amountA, bignumber(decimalPlaces: 2) }} {{ symbolA }} | {{ amountB, bignumber(decimalPlaces: 2) }} {{ symbolB }}",
   "pools.pool.liquidity.apr.title": "Possible APR",
-  "pools.pool.liquidity.apr.value": "{{ min }}-{{ max }}% APR",
+  "pools.pool.liquidity.apr.value": "{{ min, bignumber }}-{{ max, bignumber }}% APR",
   "pools.pool.positions.title": "Your Farming Positions #{{ index }}",
   "pools.pool.positions.farms.openFarm": "Open farms",
   "pools.pool.positions.farms.join": "Join",

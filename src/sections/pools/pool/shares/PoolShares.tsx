@@ -48,7 +48,7 @@ export const PoolShares: FC<Props> = ({ pool }) => {
             <PoolPositionList
               key={id.toString()}
               deposit={deposit}
-              index={++i}
+              index={i + 1}
             />
           ))}
         </Box>

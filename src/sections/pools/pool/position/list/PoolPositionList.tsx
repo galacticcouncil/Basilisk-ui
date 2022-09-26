@@ -30,7 +30,7 @@ export const PoolPositionList: FC<Props> = ({ index, deposit }) => {
           <PoolPosition
             key={i}
             position={position}
-            index={++i}
+            index={i + 1}
             poolId={deposit.ammPoolId}
           />
         ))}
