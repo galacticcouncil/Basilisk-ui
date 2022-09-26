@@ -28,7 +28,7 @@ export const PoolPosition: FC<Props> = ({ position, index, poolId }) => {
       .plus(blocksPerPeriod.plus(1))
 
     return blockRange.toFixed()
-  }, [globalFarm.data])
+  }, [globalFarm.data, position.enteredAt])
 
   return (
     <SContainer key={index}>
