@@ -17,9 +17,10 @@ import { NATIVE_ASSET_ID, useApiPromise } from "utils/network"
 import { useMutation } from "@tanstack/react-query"
 import { useStore } from "state/store"
 import { SContainer } from "./PoolJoinFarmClaim.styled"
+import { getFormatSeparators } from "utils/formatting"
 
 export function PoolJoinFarmClaim(props: { poolId: string }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const math = useMath()
   const bestNumber = useBestNumber()
   const apr = useAPR(props.poolId)
@@ -118,12 +119,13 @@ export function PoolJoinFarmClaim(props: { poolId: string }) {
     math.liquidityMining,
   ])
 
+  const separators = getFormatSeparators(i18n.languages[0])
   const [num, denom] = t("value", {
     value: rewards?.bsx,
     fixedPointScale: 12,
     numberPrefix: "≈",
     decimalPlaces: 4,
-  }).split(".")
+  }).split(separators.decimal ?? ".")
 
   const api = useApiPromise()
   const { createTransaction } = useStore()
