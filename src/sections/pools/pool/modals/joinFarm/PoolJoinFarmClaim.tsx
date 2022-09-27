@@ -191,6 +191,7 @@ export function PoolJoinFarmClaim(props: { poolId: string }) {
         css={css`
           flex-shrink: 0;
         `}
+        disabled={!!rewards?.bsx.isZero}
         isLoading={claimMutation.isLoading}
         onClick={() => claimMutation.mutate()}
       >
