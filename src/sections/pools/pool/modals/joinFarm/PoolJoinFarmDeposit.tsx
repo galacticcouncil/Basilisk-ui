@@ -39,6 +39,7 @@ export const PoolJoinFarmDeposit = (props: {
   async function handleSubmit(data: FormValues<typeof form>) {
     if (!account) throw new Error("No account found")
     if (!props.farm) throw new Error("Missing farm")
+
     return await createTransaction({
       tx: api.tx.liquidityMining.depositShares(
         props.farm.globalFarm.id,
