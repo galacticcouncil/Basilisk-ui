@@ -19,4 +19,3 @@ export const SContainer = styled(Box)`
   border-radius: 12px;
   padding: 30px;
 `
-
