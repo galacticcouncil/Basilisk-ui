@@ -39,7 +39,7 @@ export const useFilteredPools = ({ showMyPositions }: PoolsPageFilter) => {
     )
 
     return relevantPools
-  }, [pools, accountDeposits, allDeposits, showMyPositions, isLoading])
+  }, [pools, accountDeposits, allDeposits, showMyPositions, account])
 
   return { data, isLoading }
 }
