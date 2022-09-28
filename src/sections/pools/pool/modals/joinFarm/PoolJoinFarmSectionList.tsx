@@ -1,7 +1,7 @@
 import { ModalMeta } from "components/Modal/Modal"
 import { useTranslation } from "react-i18next"
 import { useAPR } from "utils/apr"
-import { u32 } from "@polkadot/types"
+import { u128, u32 } from "@polkadot/types"
 import { PoolToken } from "@galacticcouncil/sdk"
 import { Fragment } from "react"
 import { PoolJoinFarmDeposit } from "./PoolJoinFarmDeposit"
@@ -12,12 +12,19 @@ import { useAccountStore } from "state/store"
 import { PoolJoinFarmClaim } from "./PoolJoinFarmClaim"
 import { Box } from "components/Box/Box"
 import { PoolJoinFarmWithdraw } from "./PoolJoinFarmWithdraw"
+import { PalletLiquidityMiningYieldFarmEntry } from "@polkadot/types/lookup"
 
 export function PoolJoinFarmSectionList(props: {
   poolId: string
   assetIn: PoolToken
   assetOut: PoolToken
-  onSelect: (yieldFarmId: u32 | null) => void
+  onSelect: (
+    value: {
+      yieldFarmId: u32
+      globalFarmId: u32
+      yieldFarmEntry?: PalletLiquidityMiningYieldFarmEntry
+    } | null,
+  ) => void
 }) {
   const { t } = useTranslation()
   const apr = useAPR(props.poolId)
@@ -60,6 +67,13 @@ export function PoolJoinFarmSectionList(props: {
                         assetB: props.assetOut,
                         data: deposit,
                       }}
+                      onSelect={() =>
+                        props.onSelect({
+                          globalFarmId: farm.globalFarm.id,
+                          yieldFarmId: farm.yieldFarm.id,
+                          yieldFarmEntry: entry,
+                        })
+                      }
                     />
                   )
                 })}
@@ -87,7 +101,12 @@ export function PoolJoinFarmSectionList(props: {
         <PoolJoinFarmItem
           key={[farm.globalFarm.id, farm.yieldFarm.id].join(",")}
           farm={farm}
-          onSelect={() => props.onSelect(farm.yieldFarm.id)}
+          onSelect={() =>
+            props.onSelect({
+              globalFarmId: farm.globalFarm.id,
+              yieldFarmId: farm.yieldFarm.id,
+            })
+          }
         />
       ))}
 

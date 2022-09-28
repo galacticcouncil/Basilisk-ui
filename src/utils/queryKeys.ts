@@ -4,6 +4,7 @@ import { CodecHash } from "@polkadot/types/interfaces/runtime"
 import { Maybe } from "./types"
 import { u128 } from "@polkadot/types-codec"
 import { FarmIds } from "api/farms"
+import type BigNumber from "bignumber.js"
 
 export const QUERY_KEY_PREFIX = "@block"
 
@@ -15,7 +16,7 @@ export const QUERY_KEYS = {
     "poolShareToken",
     poolId.toString(),
   ],
-  deposit: (id: u128) => [QUERY_KEY_PREFIX, "deposit", id.toString()],
+  deposit: (id: Maybe<u128>) => [QUERY_KEY_PREFIX, "deposit", id?.toString()],
   deposits: (poolId?: string) => [QUERY_KEY_PREFIX, "deposits", poolId],
   accountDepositIds: (accountId: AccountId32 | string) => [
     QUERY_KEY_PREFIX,
@@ -98,6 +99,10 @@ export const QUERY_KEYS = {
     "bestSell",
     params,
   ],
+  timestamp: (bestNumber: Maybe<u32 | BigNumber>) =>
+    bestNumber != null
+      ? ["timestamp", bestNumber]
+      : [QUERY_KEY_PREFIX, "timestamp"],
   provider: (url: string) => ["provider", url],
   math: ["@galacticcouncil/math"],
 } as const

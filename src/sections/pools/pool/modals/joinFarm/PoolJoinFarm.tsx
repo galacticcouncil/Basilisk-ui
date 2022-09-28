@@ -1,11 +1,12 @@
 import { Modal } from "components/Modal/Modal"
 import { Box } from "components/Box/Box"
 import { useAPR } from "utils/apr"
-import { u32 } from "@polkadot/types"
+import { u128, u32 } from "@polkadot/types"
 import { PoolToken } from "@galacticcouncil/sdk"
 import { useState } from "react"
 import { PoolJoinFarmSectionList } from "./PoolJoinFarmSectionList"
 import { PoolJoinFarmSectionDetail } from "./PoolJoinFarmSectionDetail"
+import { PalletLiquidityMiningYieldFarmEntry } from "@polkadot/types/lookup"
 
 export const PoolJoinFarm = (props: {
   poolId: string
@@ -18,10 +19,18 @@ export const PoolJoinFarm = (props: {
   const apr = useAPR(props.poolId)
 
   const [selectedYieldFarmId, setSelectedYieldFarmId] =
-    useState<u32 | null>(null)
+    useState<{
+      globalFarmId: u32
+      yieldFarmId: u32
+      yieldFarmEntry?: PalletLiquidityMiningYieldFarmEntry
+    } | null>(null)
 
   const selectedFarm = selectedYieldFarmId
-    ? apr.data.find((i) => i.yieldFarm.id.eq(selectedYieldFarmId))
+    ? apr.data.find(
+        (i) =>
+          i.yieldFarm.id.eq(selectedYieldFarmId.yieldFarmId) &&
+          i.globalFarm.id.eq(selectedYieldFarmId.globalFarmId),
+      )
     : null
 
   return (
@@ -33,6 +42,7 @@ export const PoolJoinFarm = (props: {
             assetIn={props.assetA}
             assetOut={props.assetB}
             farm={selectedFarm}
+            yieldFarmEntry={selectedYieldFarmId?.yieldFarmEntry}
             onBack={() => setSelectedYieldFarmId(null)}
           />
         ) : (

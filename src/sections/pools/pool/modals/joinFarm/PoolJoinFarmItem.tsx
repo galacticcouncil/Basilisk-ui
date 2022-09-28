@@ -64,7 +64,15 @@ export const PoolJoinFarmItem = (props: {
             {asset.data?.icon}
             <Text fw={700}>{asset.data?.name}</Text>
           </Box>
-          <Text fs={20} lh={28} fw={600} color="primary200">
+          <Text
+            fs={20}
+            lh={28}
+            fw={600}
+            color="primary200"
+            css={css`
+              word-break: break-all;
+            `}
+          >
             {t("pools.allFarms.modal.apr.single", {
               value: props.farm.apr,
             })}
