@@ -66,5 +66,19 @@ export const GlobalStyle = createGlobalStyle`
   a {
     text-decoration: none;
     color: unset;
-  }  
+  }
+
+  &::-webkit-scrollbar {
+    width: 18px;
+    height: 18px;
+  }
+
+  &::-webkit-scrollbar-thumb:vertical {
+    background: transparent url("/images/Scrollbar.svg") no-repeat;
+    background-position: bottom;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: transparent;
+  }
 `
