@@ -49,9 +49,10 @@ function PoolJoinFarmYieldFarmEntryDetail(props: {
   const mined = useMemo(() => {
     if (bestNumber.data == null || math.liquidityMining == null) return null
 
-    const currentPeriod = bestNumber.data
+    const currentPeriod = bestNumber.data.relaychainBlockNumber
       .toBigNumber()
       .dividedToIntegerBy(props.farm.globalFarm.blocksPerPeriod.toBigNumber())
+
     const periods = currentPeriod.minus(
       props.yieldFarmEntry.enteredAt.toBigNumber(),
     )

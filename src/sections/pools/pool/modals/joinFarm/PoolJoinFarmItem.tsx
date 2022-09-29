@@ -36,7 +36,7 @@ export const PoolJoinFarmItem = (props: {
   if (!bestNumber?.data) return null
 
   const blockDurationToEnd = props.farm.estimatedEndBlock.minus(
-    bestNumber.data.toBigNumber(),
+    bestNumber.data.relaychainBlockNumber.toBigNumber(),
   )
 
   const secondsDurationToEnd = blockDurationToEnd.times(BLOCK_TIME)

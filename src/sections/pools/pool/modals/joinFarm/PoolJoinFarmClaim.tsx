@@ -64,7 +64,7 @@ export function PoolJoinFarmClaim(props: { poolId: string }) {
           )
             return null
 
-          const currentPeriod = bestNumber.data
+          const currentPeriod = bestNumber.data.relaychainBlockNumber
             .toBigNumber()
             .dividedToIntegerBy(
               aprEntry.globalFarm.blocksPerPeriod.toBigNumber(),
