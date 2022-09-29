@@ -7,6 +7,7 @@ import { PoolJoinFarmDeposit } from "./PoolJoinFarmDeposit"
 import { PoolJoinFarmItem } from "./PoolJoinFarmItem"
 import { PalletLiquidityMiningYieldFarmEntry } from "@polkadot/types/lookup"
 import { PoolJoinFarmPosition } from "./PoolJoinFarmPosition"
+import { PoolJoinFarmLoyaltyGraph } from "./PoolJoinFarmLoyaltyGraph"
 
 export function PoolJoinFarmSectionDetail(props: {
   farm: AprFarm
@@ -28,6 +29,8 @@ export function PoolJoinFarmSectionDetail(props: {
       />
 
       <PoolJoinFarmItem pool={props.pool} farm={props.farm} />
+
+      <PoolJoinFarmLoyaltyGraph farm={props.farm} />
 
       {props.position ? (
         <PoolJoinFarmPosition

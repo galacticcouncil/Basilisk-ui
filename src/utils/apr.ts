@@ -1,86 +1,12 @@
-import BN, { BigNumber } from "bignumber.js"
+import BN from "bignumber.js"
 import { useActiveYieldFarms, useGlobalFarms, useYieldFarms } from "api/farms"
 import { useMemo } from "react"
 import { AccountId32 } from "@polkadot/types/interfaces/runtime"
-import { BLOCK_TIME, BN_0, BN_QUINTILL } from "utils/constants"
+import { BLOCK_TIME, BN_QUINTILL } from "utils/constants"
 import { secondsInYear } from "date-fns"
 import { useBestNumber } from "api/chain"
-import { useMath } from "./math"
 
 export type AprFarm = NonNullable<ReturnType<typeof useAPR>["data"][number]>
-
-const usePoolFarms = (poolId: AccountId32 | string) => {
-  const activeYieldFarms = useActiveYieldFarms(poolId)
-  const globalFarms = useGlobalFarms(
-    activeYieldFarms.data?.map((f) => f.globalFarmId) ?? [],
-  )
-  const yieldFarms = useYieldFarms(activeYieldFarms.data ?? [])
-
-  const queries = [activeYieldFarms, globalFarms, yieldFarms]
-  const isLoading = queries.some((q) => q.isLoading)
-
-  const data = useMemo(() => {
-    if (!globalFarms.data || !activeYieldFarms.data || !yieldFarms.data) {
-      return []
-    }
-
-    const farms = activeYieldFarms.data.map((af) => {
-      const globalFarm = globalFarms.data.find((gf) =>
-        af.globalFarmId.eq(gf.id),
-      )
-      const yieldFarm = yieldFarms.data.find((yf) => af.yieldFarmId.eq(yf.id))
-      if (!globalFarm || !yieldFarm) return undefined
-      return { globalFarm, yieldFarm }
-    })
-
-    return farms.filter(
-      (x): x is NonNullable<typeof farms[number]> => x != null,
-    )
-  }, [activeYieldFarms.data, globalFarms.data, yieldFarms.data])
-
-  return { isLoading, data }
-}
-
-export const useLoyaltyFactor = (poolId: string) => {
-  const pools = usePoolFarms(poolId)
-  const math = useMath()
-
-  return useMemo(() => {
-    if (pools.isLoading || math.isLoading) return []
-
-    return pools.data.map(({ globalFarm, yieldFarm }) => {
-      if (math.liquidityMining == null) return []
-      const result: BigNumber[] = []
-
-      if (!yieldFarm.loyaltyCurve.isNone) {
-        const loyaltyCurve = yieldFarm.loyaltyCurve.unwrap()
-        const plannedYieldingPeriods =
-          globalFarm.plannedYieldingPeriods.toBigNumber()
-
-        const initialRewardPercentage = loyaltyCurve.initialRewardPercentage
-          .toBigNumber()
-          .div(BN_QUINTILL)
-
-        // scaleCoef = half-time
-        const scaleCoef = loyaltyCurve.scaleCoef.toBigNumber()
-
-        for (let i = BN_0; i.lt(plannedYieldingPeriods); i = i.plus(1)) {
-          result.push(
-            new BigNumber(
-              math.liquidityMining.calculate_loyalty_multiplier(
-                i.toString(),
-                initialRewardPercentage.toFixed(),
-                scaleCoef.toString(),
-              ),
-            ),
-          )
-        }
-      }
-
-      return result
-    })
-  }, [pools.isLoading, pools.data, math.isLoading, math.liquidityMining])
-}
 
 export const useAPR = (poolId: AccountId32 | string) => {
   const bestNumber = useBestNumber()
