@@ -84,8 +84,8 @@ export const TalismanAvatar = (props: {
           <rect fill={`url(#${id}-bg)`} x={0} y={0} width={64} height={64} />
           <circle
             fill={`url(#${id}-circle)`}
-            x={cx}
-            y={cy}
+            cx={cx}
+            cy={cy}
             r={45}
             opacity={0.7}
           />
