@@ -18,15 +18,12 @@ import { css } from "styled-components"
 import { GradientText } from "components/Typography/GradientText/GradientText"
 import { DepositType } from "api/deposits"
 import { Tag } from "components/Tag/Tag"
-import { PoolToken } from "@galacticcouncil/sdk"
+import { PoolBase } from "@galacticcouncil/sdk"
 
 export const PoolJoinFarmItem = (props: {
+  pool: PoolBase
   farm: AprFarm
-  deposit?: {
-    data: DepositType
-    assetA: PoolToken
-    assetB: PoolToken
-  }
+  deposit?: DepositType
   onSelect?: () => void
 }) => {
   const asset = useAsset(props.farm.assetId)
@@ -40,6 +37,8 @@ export const PoolJoinFarmItem = (props: {
   )
 
   const secondsDurationToEnd = blockDurationToEnd.times(BLOCK_TIME)
+
+  const [assetIn, assetOut] = props.pool.tokens
 
   return (
     <SFarm
@@ -120,9 +119,9 @@ export const PoolJoinFarmItem = (props: {
             </GradientText>
             <Text fs={14} color="neutralGray100">
               {t("pools.allFarms.modal.lockedShares.value", {
-                value: props.deposit.data.deposit.shares,
-                assetA: props.deposit.assetA.symbol,
-                assetB: props.deposit.assetB.symbol,
+                value: props.deposit.deposit.shares,
+                assetA: assetIn.symbol,
+                assetB: assetOut.symbol,
               })}
             </Text>
           </SFarmRow>

@@ -1,8 +1,8 @@
 import { ModalMeta } from "components/Modal/Modal"
 import { useTranslation } from "react-i18next"
 import { useAPR } from "utils/apr"
-import { u128, u32 } from "@polkadot/types"
-import { PoolToken } from "@galacticcouncil/sdk"
+import { u32 } from "@polkadot/types"
+import { PoolBase } from "@galacticcouncil/sdk"
 import { Fragment } from "react"
 import { PoolJoinFarmDeposit } from "./PoolJoinFarmDeposit"
 import { PoolJoinFarmItem } from "./PoolJoinFarmItem"
@@ -15,9 +15,7 @@ import { PoolJoinFarmWithdraw } from "./PoolJoinFarmWithdraw"
 import { PalletLiquidityMiningYieldFarmEntry } from "@polkadot/types/lookup"
 
 export function PoolJoinFarmSectionList(props: {
-  poolId: string
-  assetIn: PoolToken
-  assetOut: PoolToken
+  pool: PoolBase
   onSelect: (
     value: {
       yieldFarmId: u32
@@ -27,8 +25,10 @@ export function PoolJoinFarmSectionList(props: {
   ) => void
 }) {
   const { t } = useTranslation()
-  const apr = useAPR(props.poolId)
-  const deposits = useDeposits(props.poolId)
+  const apr = useAPR(props.pool.address)
+  const deposits = useDeposits(props.pool.address)
+
+  const [assetIn, assetOut] = props.pool.tokens
 
   const { account } = useAccountStore()
 
@@ -36,8 +36,8 @@ export function PoolJoinFarmSectionList(props: {
     <Fragment key="list">
       <ModalMeta
         title={t("pools.allFarms.modal.title", {
-          symbol1: props.assetIn.symbol,
-          symbol2: props.assetOut.symbol,
+          symbol1: assetIn.symbol,
+          symbol2: assetOut.symbol,
         })}
       />
 
@@ -46,7 +46,9 @@ export function PoolJoinFarmSectionList(props: {
           <Text fs={18} fw={700} mb={16}>
             {t("pools.allFarms.modal.list.positions")}
           </Text>
-          <PoolJoinFarmClaim poolId={props.poolId} />
+
+          <PoolJoinFarmClaim pool={props.pool} />
+
           {deposits.data?.map((deposit) => {
             return (
               <Fragment key={deposit.id.toString()}>
@@ -62,11 +64,8 @@ export function PoolJoinFarmSectionList(props: {
                     <PoolJoinFarmItem
                       key={farm.yieldFarm.id.toString()}
                       farm={farm}
-                      deposit={{
-                        assetA: props.assetIn,
-                        assetB: props.assetOut,
-                        data: deposit,
-                      }}
+                      pool={props.pool}
+                      deposit={deposit}
                       onSelect={() =>
                         props.onSelect({
                           globalFarmId: farm.globalFarm.id,
@@ -83,11 +82,7 @@ export function PoolJoinFarmSectionList(props: {
 
           {!!deposits.data?.length && (
             <Box flex css={{ justifyContent: "center" }}>
-              <PoolJoinFarmWithdraw
-                poolId={props.poolId}
-                assetIn={props.assetIn}
-                assetOut={props.assetOut}
-              />
+              <PoolJoinFarmWithdraw pool={props.pool} />
             </Box>
           )}
 
@@ -101,6 +96,7 @@ export function PoolJoinFarmSectionList(props: {
         <PoolJoinFarmItem
           key={[farm.globalFarm.id, farm.yieldFarm.id].join(",")}
           farm={farm}
+          pool={props.pool}
           onSelect={() =>
             props.onSelect({
               globalFarmId: farm.globalFarm.id,
@@ -110,11 +106,7 @@ export function PoolJoinFarmSectionList(props: {
         />
       ))}
 
-      <PoolJoinFarmDeposit
-        poolId={props.poolId}
-        assetIn={props.assetIn}
-        assetOut={props.assetOut}
-      />
+      <PoolJoinFarmDeposit pool={props.pool} />
     </Fragment>
   )
 }

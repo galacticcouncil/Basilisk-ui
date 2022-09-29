@@ -87,6 +87,7 @@
   "pools.allFarms.modal.position.joinedDate.label": "Joined on:",
   "pools.allFarms.modal.position.joinedDate.value": "{{ date, dd.MM.yyyy }}",
   "pools.allFarms.modal.position.value.label": "Value:",
+  "pools.allFarms.modal.position.value.value": "{{ amountA, bignumber(decimalPlaces: 4) }} {{ symbolA }} | {{ amountB, bignumber(decimalPlaces: 4) }} {{ symbolB }}",
   "pools.allFarms.modal.position.mined.label": "Mined:",
   "pools.allFarms.modal.position.mined.value": "{{ value, bignumber(decimalPlaces: 4) }}",
   "pools.reviewTransaction.modal.title": "Review Transaction Details ",
