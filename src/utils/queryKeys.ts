@@ -8,7 +8,7 @@ import type BigNumber from "bignumber.js"
 export const QUERY_KEY_PREFIX = "@block"
 
 export const QUERY_KEYS = {
-  bestNumber: ["bestNumber"],
+  bestNumber: [QUERY_KEY_PREFIX, "bestNumber"],
   pools: [QUERY_KEY_PREFIX, "pools"],
   poolShareToken: (poolId: AccountId32 | string) => [
     QUERY_KEY_PREFIX,

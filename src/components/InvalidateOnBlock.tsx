@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query"
 import { ReactNode, useEffect } from "react"
 import { useApiPromise } from "utils/network"
-import { QUERY_KEYS, QUERY_KEY_PREFIX } from "utils/queryKeys"
+import { QUERY_KEY_PREFIX } from "utils/queryKeys"
 
 export const InvalidateOnBlock = (props: { children: ReactNode }) => {
   const api = useApiPromise()
@@ -12,7 +12,7 @@ export const InvalidateOnBlock = (props: { children: ReactNode }) => {
 
     api.rpc.chain
       .subscribeNewHeads(() => {
-        queryClient.invalidateQueries([QUERY_KEY_PREFIX, QUERY_KEYS.bestNumber])
+        queryClient.invalidateQueries([QUERY_KEY_PREFIX])
       })
       .then((newCancel) => (cancel = newCancel))
 
