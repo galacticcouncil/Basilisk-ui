@@ -1,19 +1,14 @@
-import { ReactComponent as ChevronDown } from "assets/icons/ChevronDown.svg"
 import { MarginProps } from "utils/styles"
 import { AssetInput } from "components/AssetInput/AssetInput"
 import { Box } from "components/Box/Box"
-import { Icon } from "components/Icon/Icon"
 import { Text } from "components/Typography/Text/Text"
 import { FC, ReactNode } from "react"
 import { Trans, useTranslation } from "react-i18next"
-import {
-  SContainer,
-  SMaxButton,
-  SSelectAssetButton,
-} from "./PoolAddLiquidityAssetSelect.styled"
+import { SContainer, SMaxButton } from "./PoolAddLiquidityAssetSelect.styled"
 import { u32 } from "@polkadot/types"
 import BigNumber from "bignumber.js"
 import { getFloatingPointAmount } from "utils/balance"
+import { Select } from "../../../../../../components/Select/Select"
 
 type Props = {
   name: string
@@ -70,18 +65,17 @@ export const PoolAddLiquidityAssetSelect: FC<Props> = ({
         </Box>
       </Box>
       <Box flex spread acenter>
-        <SSelectAssetButton size="small">
-          <Icon icon={p.assetIcon} mr={10} />
-          <Box mr={6}>
-            <Text fw={700} color="white">
-              {p.currency.short}
-            </Text>
-            <Text color="neutralGray400" fs={12} lh={14}>
-              {p.currency.full}
-            </Text>
-          </Box>
-          <Icon icon={<ChevronDown />} />
-        </SSelectAssetButton>
+        <Select
+          value={asset}
+          options={[
+            {
+              icon: p.assetIcon,
+              label: p.currency.short,
+              value: asset,
+              subLabel: p.currency.full,
+            },
+          ]}
+        />
         <AssetInput
           value={value}
           name={name}
