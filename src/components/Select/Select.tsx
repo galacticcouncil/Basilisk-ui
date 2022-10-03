@@ -1,4 +1,4 @@
-import { FC, ReactNode, useCallback, useRef, useState } from "react"
+import { FC, useCallback, useRef, useState } from "react"
 import { Icon } from "../Icon/Icon"
 import { Box } from "../Box/Box"
 import { Text } from "../Typography/Text/Text"
@@ -8,15 +8,11 @@ import {
   SChevron,
   SSelectOptionsWrapper,
 } from "./Select.styled"
+import { SelectOption, SOption } from "./SelectOption"
 import { u32 } from "@polkadot/types"
 
-interface SelectProps {
-  options: {
-    label: string
-    subLabel?: string
-    value: string | u32
-    icon?: ReactNode
-  }[]
+export interface SelectProps {
+  options: SelectOption[]
   value?: string | u32
   onChange?: (value: string) => void
 }
@@ -34,7 +30,11 @@ export const Select: FC<SelectProps> = ({ options, value }) => {
 
   return (
     <SSelectWrapper ref={selectWrapperRef}>
-      <SSelectButton size="small" onClick={handleToggleOpen}>
+      <SSelectButton
+        size="small"
+        onClick={handleToggleOpen}
+        isOpened={isOpened}
+      >
         {selectedOption && (
           <>
             {selectedOption.icon && <Icon icon={selectedOption.icon} mr={10} />}
@@ -51,7 +51,20 @@ export const Select: FC<SelectProps> = ({ options, value }) => {
 
         <Icon icon={<SChevron direction={isOpened ? "up" : "down"} />} />
       </SSelectButton>
-      {isOpened && <SSelectOptionsWrapper>Test</SSelectOptionsWrapper>}
+      {isOpened && (
+        <SSelectOptionsWrapper>
+          {options
+            .filter((option) => option.value !== selectedOption?.value)
+            .map((option) => (
+              <SOption
+                onSelect={() => setSelected(option.value)}
+                label={option.label}
+                icon={option.icon}
+                value={option.value}
+              />
+            ))}
+        </SSelectOptionsWrapper>
+      )}
     </SSelectWrapper>
   )
 }

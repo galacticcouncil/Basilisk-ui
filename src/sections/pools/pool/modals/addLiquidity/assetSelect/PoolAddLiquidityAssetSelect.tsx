@@ -9,6 +9,8 @@ import { u32 } from "@polkadot/types"
 import BigNumber from "bignumber.js"
 import { getFloatingPointAmount } from "utils/balance"
 import { Select } from "../../../../../../components/Select/Select"
+import { useFilteredPools } from "../../../../PoolsPage.utils"
+import { getAssetLogo } from "../../../../../../components/AssetIcon/AssetIcon"
 
 type Props = {
   name: string
@@ -31,6 +33,10 @@ export const PoolAddLiquidityAssetSelect: FC<Props> = ({
   ...p
 }) => {
   const { t } = useTranslation()
+
+  const pools = useFilteredPools({
+    showMyPositions: false,
+  })
 
   return (
     <SContainer {...p}>
@@ -67,14 +73,16 @@ export const PoolAddLiquidityAssetSelect: FC<Props> = ({
       <Box flex spread acenter>
         <Select
           value={asset}
-          options={[
-            {
-              icon: p.assetIcon,
-              label: p.currency.short,
-              value: asset,
-              subLabel: p.currency.full,
-            },
-          ]}
+          options={
+            pools.data?.map((pool) => {
+              const assetIcon = getAssetLogo(pool.tokens[0].symbol)
+              return {
+                label: pool.tokens[0].symbol,
+                value: pool.tokens[0].id,
+                icon: assetIcon,
+              }
+            }) ?? []
+          }
         />
         <AssetInput
           value={value}
