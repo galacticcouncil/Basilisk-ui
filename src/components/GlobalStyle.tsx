@@ -1,10 +1,9 @@
-import { createGlobalStyle } from "styled-components"
 import { normalize } from "styled-normalize"
 import SatoshiVariable from "assets/fonts/SatoshiVariable.ttf"
 
 import { theme } from "theme"
 
-export const GlobalStyle = createGlobalStyle`
+export const GlobalStyle = `
   @font-face {
     font-family: 'SatoshiVariable';
     src: local("SatoshiVariable"),

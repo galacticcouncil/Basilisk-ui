@@ -1,5 +1,5 @@
 import { ColorProps, colors, margins } from "utils/styles"
-import styled from "styled-components"
+import styled from "@emotion/styled"
 import { theme } from "theme"
 
 export const SIconButton = styled.button<{ round?: boolean } & ColorProps>`
