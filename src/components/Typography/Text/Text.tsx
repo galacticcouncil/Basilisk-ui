@@ -1,14 +1,11 @@
-import { ColorProps, FontProps, MarginProps } from "utils/styles"
-import { FC, ReactNode } from "react"
+import { ComponentProps, FC, ReactNode } from "react"
 import { SText } from "./Text.styled"
 
 export type TextProps = {
   children?: ReactNode
   text?: string | number
   className?: string
-} & ColorProps &
-  MarginProps &
-  FontProps
+} & ComponentProps<typeof SText>
 
 export const Text: FC<TextProps> = ({
   children,
