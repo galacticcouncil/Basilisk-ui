@@ -48,7 +48,7 @@ export const PoolsHeader: FC<Props> = ({
           <Text color="neutralGray300" sx={{ mb: 14 }}>
             {t("pools.header.valueLocked")}
           </Text>
-          <div sx={{ flex: "row", items: "baseline" }}>
+          <div sx={{ flex: "row", align: "baseline" }}>
             <Heading as="h3" sx={{ fontSize: 42, fontWeight: 900 }}>
               {t("value.usd", { amount: totalInPools.data })}
             </Heading>
@@ -58,7 +58,7 @@ export const PoolsHeader: FC<Props> = ({
           <Text color="neutralGray300" sx={{ mb: 14 }}>
             {t("pools.header.valueFarms")}
           </Text>
-          <div sx={{ flex: "row", items: "baseline" }}>
+          <div sx={{ flex: "row", align: "baseline" }}>
             <Heading as="h3" sx={{ fontSize: 42, fontWeight: 900 }}>
               {t("value.usd", { amount: totalInFarms.data })}
             </Heading>

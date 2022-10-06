@@ -115,7 +115,7 @@ export const PoolJoinFarmDeposit = (props: {
         <div
           sx={{
             flex: "row",
-            items: "center",
+            align: "center",
             mb: 11,
             justify: "space-between",
           }}
@@ -123,7 +123,7 @@ export const PoolJoinFarmDeposit = (props: {
           <Text fw={600} lh={22} color="primary200">
             {t("farms.deposit.title")}
           </Text>
-          <div sx={{ flex: "row", items: "center" }}>
+          <div sx={{ flex: "row", align: "center" }}>
             <Text fs={12} lh={16} sx={{ mr: 5 }} color="white">
               <Trans
                 t={t}
@@ -149,7 +149,7 @@ export const PoolJoinFarmDeposit = (props: {
             />
           </div>
         </div>
-        <div sx={{ flex: "row", items: "center" }}>
+        <div sx={{ flex: "row", align: "center" }}>
           <DualAssetIcons
             firstIcon={{ icon: getAssetLogo(assetIn.symbol) }}
             secondIcon={{ icon: getAssetLogo(assetOut.symbol) }}

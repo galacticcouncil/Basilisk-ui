@@ -17,7 +17,7 @@ export const PoolAddLiquidityConversion: FC<Props> = ({
   const { t } = useTranslation()
   return (
     <div
-      sx={{ flex: "row", height: 35, my: 16, items: "center" }}
+      sx={{ flex: "row", height: 35, my: 16, align: "center" }}
       css={{ position: "relative" }}
     >
       <Separator color="backgroundGray800" />

@@ -25,12 +25,12 @@ export const ReviewTransactionSuccess = (props: { onClose: () => void }) => {
   }
 
   return (
-    <div sx={{ flex: "column", items: "center" }}>
+    <div sx={{ flex: "column", align: "center" }}>
       <SuccessIcon />
       <GradientText fs={24} fw={600} tAlign="center" sx={{ mt: 20 }}>
         {t("pools.reviewTransaction.modal.success.title")}
       </GradientText>
-      <div sx={{ flex: "column", items: "center", px: 20, mt: 20, mb: 40 }}>
+      <div sx={{ flex: "column", align: "center", px: 20, mt: 20, mb: 40 }}>
         <Text tAlign="center" fs={16} color="neutralGray200" fw={400} lh={22}>
           {t("pools.reviewTransaction.modal.success.description")}
         </Text>

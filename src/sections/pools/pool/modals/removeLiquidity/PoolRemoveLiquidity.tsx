@@ -186,11 +186,11 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
         </STradingPairContainer>
 
         <div sx={{ mt: 16, mb: 32 }}>
-          <div sx={{ flex: "row", items: "center", justify: "space-between" }}>
+          <div sx={{ flex: "row", align: "center", justify: "space-between" }}>
             <Text color="neutralGray500" fs={15}>
               {t("pools.removeLiquidity.modal.cost")}
             </Text>
-            <div sx={{ flex: "row", items: "center", gap: 4 }}>
+            <div sx={{ flex: "row", align: "center", gap: 4 }}>
               <Text fs={14}>
                 {t("pools.removeLiquidity.modal.row.transactionCostValue", {
                   amount: paymentInfoEstimate.data?.partialFee,
@@ -201,7 +201,7 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
             </div>
           </div>
           <Separator sx={{ my: 8 }} size={2} />
-          <div sx={{ flex: "row", items: "center", justify: "space-between" }}>
+          <div sx={{ flex: "row", align: "center", justify: "space-between" }}>
             <Text fs={15} color="neutralGray500">
               {t("pools.removeLiquidity.modal.price")}
             </Text>

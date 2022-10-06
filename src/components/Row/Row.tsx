@@ -12,7 +12,7 @@ export const Row: FC<RowProps> = ({ left, right }) => (
     sx={{
       flex: "row",
       justify: "space-between",
-      items: "center",
+      align: "center",
       mb: 6,
       mt: 6,
     }}

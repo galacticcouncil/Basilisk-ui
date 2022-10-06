@@ -20,11 +20,11 @@ export const WalletConnectAccountSelectAddress: FC<Props> = ({
   return (
     <div
       onClick={onClick}
-      sx={{ flex: "row", items: "center", gap: 10 }}
+      sx={{ flex: "row", align: "center", gap: 10 }}
       css={{ position: "relative" }}
     >
       <div
-        sx={{ p: 5, flex: "row", items: "center", bg: "backgroundGray1000" }}
+        sx={{ p: 5, flex: "row", align: "center", bg: "backgroundGray1000" }}
         css={{ borderRadius: "9999px" }}
       >
         <AccountAvatar address={address} theme={theme} size={32} />

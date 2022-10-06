@@ -49,7 +49,7 @@ export const PoolJoinFarmItem = (props: {
         sx={{
           flex: "column",
           gap: 8,
-          items: "flex-start",
+          align: "flex-start",
           justify: "space-between",
           height: "100%",
         }}
@@ -57,7 +57,7 @@ export const PoolJoinFarmItem = (props: {
         {props.deposit && <Tag>{t("pools.allFarms.modal.joined")}</Tag>}
 
         <div sx={{ flex: "column", gap: 8 }}>
-          <div sx={{ flex: "row", items: "center", gap: 8 }}>
+          <div sx={{ flex: "row", align: "center", gap: 8 }}>
             {asset.data?.icon}
             <Text fw={700}>{asset.data?.name}</Text>
           </div>

@@ -45,8 +45,8 @@ export function WalletConnectActiveFooter(props: {
         `}
         onClick={props.onSwitch}
       >
-        <div sx={{ flex: "row", gap: 22, items: "center" }}>
-          <div sx={{ flex: "row", gap: 12, items: "center" }}>
+        <div sx={{ flex: "row", gap: 22, align: "center" }}>
+          <div sx={{ flex: "row", gap: 12, align: "center" }}>
             <img
               src={wallet?.logo.src}
               alt={wallet?.logo.alt}

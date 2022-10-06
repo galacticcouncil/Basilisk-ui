@@ -15,7 +15,7 @@ const WalletActiveButton = (props: {
 }) => {
   return (
     <SContainer className={props.className} onClick={props.onOpen}>
-      <div sx={{ flex: "row", gap: 12, items: "center", justify: "center" }}>
+      <div sx={{ flex: "row", gap: 12, align: "center", justify: "center" }}>
         <div sx={{ flex: "column", gap: 4 }}>
           <Text color="neutralGray100" fs={14} lh={14} fw={700}>
             {props.account.name}
@@ -27,7 +27,7 @@ const WalletActiveButton = (props: {
         <div
           sx={{
             flex: "row",
-            items: "center",
+            align: "center",
             justify: "center",
             gap: 2,
             color: "neutralGray300",

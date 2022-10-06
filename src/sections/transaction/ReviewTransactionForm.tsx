@@ -51,7 +51,7 @@ export const ReviewTransactionForm = (
           <Text color="neutralGray300">
             {t("pools.reviewTransaction.modal.detail.cost")}
           </Text>
-          <div sx={{ flex: "column", items: "end" }}>
+          <div sx={{ flex: "column", align: "end" }}>
             {paymentInfoData && (
               <>
                 <Text color="white">

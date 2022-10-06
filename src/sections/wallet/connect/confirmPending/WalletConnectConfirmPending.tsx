@@ -13,7 +13,7 @@ export const WalletConnectConfirmPending: FC<Props> = ({ provider }) => {
   const wallet = getWalletBySource(provider)
 
   return (
-    <div sx={{ flex: "column", items: "center" }}>
+    <div sx={{ flex: "column", align: "center" }}>
       <div
         css={css`
           display: grid;

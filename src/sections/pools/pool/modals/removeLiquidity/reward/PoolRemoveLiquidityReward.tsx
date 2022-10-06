@@ -15,8 +15,8 @@ export const PoolRemoveLiquidityReward: FC<Props> = ({
   amount,
 }) => {
   return (
-    <div sx={{ flex: "row", justify: "space-between", items: "center" }}>
-      <div sx={{ flex: "row", items: "center", gap: 8 }}>
+    <div sx={{ flex: "row", justify: "space-between", align: "center" }}>
+      <div sx={{ flex: "row", align: "center", gap: 8 }}>
         {getAssetLogo(symbol)}
         <div sx={{ flex: "column" }}>
           <Text fs={16}>{symbol}</Text>

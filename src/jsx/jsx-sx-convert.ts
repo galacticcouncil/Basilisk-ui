@@ -141,7 +141,7 @@ interface DisplayProps {
   flexShrink?: ResponsiveValue<Properties["flexShrink"]>
 
   flex?: ResponsiveValue<Properties["flexDirection"]>
-  items?: ResponsiveValue<Properties["alignItems"]>
+  align?: ResponsiveValue<Properties["alignItems"]>
   justify?: ResponsiveValue<Properties["justifyContent"]>
 }
 const display: FunctionInterpolation<DisplayProps> = (p) => [
@@ -151,7 +151,7 @@ const display: FunctionInterpolation<DisplayProps> = (p) => [
   getResponsiveStyles(p.flexGrow, (flexGrow) => ({ flexGrow })),
   getResponsiveStyles(p.flexShrink, (flexShrink) => ({ flexShrink })),
 
-  getResponsiveStyles(p.items, (alignItems) => ({ alignItems })),
+  getResponsiveStyles(p.align, (alignItems) => ({ alignItems })),
   getResponsiveStyles(p.flex, (flexDirection) => ({
     display: "flex",
     flexDirection,

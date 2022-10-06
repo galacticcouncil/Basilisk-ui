@@ -30,7 +30,7 @@ export const PoolPositionFarm: FC<Props> = ({
           <Text fs={12} lh={16} color="neutralGray500">
             {t("pools.pool.positions.farms.joinedFarms")}
           </Text>
-          <div sx={{ flex: "row", items: "center", gap: 6 }}>
+          <div sx={{ flex: "row", align: "center", gap: 6 }}>
             {asset.data.icon}
             <Text fs={14} lh={16} color="primary200">
               {t("value.APR", { apr: apr.apr })}

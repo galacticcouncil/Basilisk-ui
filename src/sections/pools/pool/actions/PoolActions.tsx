@@ -28,28 +28,28 @@ export const PoolActions: FC<Props> = ({ pool, isExpanded, onExpandClick }) => {
         sx={{
           flex: "row",
           justify: "space-between",
-          items: "center",
+          align: "center",
           m: 24,
           width: 280,
         }}
       >
         <div sx={{ width: 214, flex: "column", gap: 10 }}>
           <Button fullWidth size="small" onClick={() => setOpenAdd(true)}>
-            <div sx={{ flex: "row", items: "center", justify: "center" }}>
+            <div sx={{ flex: "row", align: "center", justify: "center" }}>
               <Icon icon={<PlusIcon />} sx={{ mr: 11 }} />
               {t("pools.pool.actions.addLiquidity")}
             </div>
           </Button>
 
           <Button fullWidth size="small" onClick={() => setOpenRemove(true)}>
-            <div sx={{ flex: "row", items: "center", justify: "center" }}>
+            <div sx={{ flex: "row", align: "center", justify: "center" }}>
               <Icon icon={<MinusIcon />} sx={{ mr: 11 }} />
               {t("pools.pool.actions.removeLiquidity")}
             </div>
           </Button>
 
           <Button fullWidth size="small" onClick={() => setOpenFarms(true)}>
-            <div sx={{ flex: "row", items: "center", justify: "center" }}>
+            <div sx={{ flex: "row", align: "center", justify: "center" }}>
               <Icon icon={<WindMillIcon />} sx={{ mr: 11 }} />
               {t("pools.pool.actions.joinFarm")}
             </div>

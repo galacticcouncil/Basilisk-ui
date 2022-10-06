@@ -17,7 +17,7 @@ export const LoadingPage = () => {
         height: 100vh;
       `}
     >
-      <div sx={{ flex: "row", gap: 16, items: "center" }}>
+      <div sx={{ flex: "row", gap: 16, align: "center" }}>
         <BasiliskIcon width={72} height={72} />
         <BasiliskLogo width={148} height={44} />
       </div>

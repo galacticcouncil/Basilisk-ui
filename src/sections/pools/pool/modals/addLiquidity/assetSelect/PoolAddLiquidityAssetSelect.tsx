@@ -31,12 +31,12 @@ export const PoolAddLiquidityAssetSelect: FC<Props> = (props) => {
   return (
     <SContainer className={props.className}>
       <div
-        sx={{ flex: "row", items: "center", justify: "space-between", mb: 11 }}
+        sx={{ flex: "row", align: "center", justify: "space-between", mb: 11 }}
       >
         <Text fw={600} lh={22} color="primary200">
           {t("selectAsset.title")}
         </Text>
-        <div sx={{ flex: "row", items: "center" }}>
+        <div sx={{ flex: "row", align: "center" }}>
           <Text fs={12} lh={16} color="white" sx={{ mr: 5 }}>
             <Trans
               t={t}
@@ -66,7 +66,7 @@ export const PoolAddLiquidityAssetSelect: FC<Props> = (props) => {
           />
         </div>
       </div>
-      <div sx={{ flex: "row", items: "center", justify: "space-between" }}>
+      <div sx={{ flex: "row", align: "center", justify: "space-between" }}>
         <SSelectAssetButton size="small">
           <Icon icon={props.assetIcon} sx={{ mr: 10 }} />
           <div sx={{ mr: 6 }}>

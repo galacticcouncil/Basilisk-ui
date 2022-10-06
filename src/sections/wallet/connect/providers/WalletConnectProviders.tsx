@@ -14,7 +14,7 @@ export const WalletConnectProviders: FC<Props> = ({
   const wallets = getWallets()
 
   return (
-    <div sx={{ flex: "column", items: "stretch", mt: 8, gap: 8 }}>
+    <div sx={{ flex: "column", align: "stretch", mt: 8, gap: 8 }}>
       {wallets.map((wallet) => {
         return (
           <WalletConnectProvidersButton

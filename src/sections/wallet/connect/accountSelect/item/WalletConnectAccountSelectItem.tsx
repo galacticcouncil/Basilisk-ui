@@ -40,7 +40,7 @@ export const WalletConnectAccountSelectItem: FC<Props> = ({
   return (
     <SContainer isActive={isActive}>
       <SSelectItem isActive={isActive} onClick={setAccount}>
-        <div sx={{ flex: "row", items: "center", justify: "space-between" }}>
+        <div sx={{ flex: "row", align: "center", justify: "space-between" }}>
           <Text>{name}</Text>
           <Text>
             {t("value.bsx", {

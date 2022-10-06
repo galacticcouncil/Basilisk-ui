@@ -12,12 +12,12 @@ export const ReviewTransactionError = (props: {
   const { t } = useTranslation()
 
   return (
-    <div sx={{ flex: "column", items: "center" }}>
+    <div sx={{ flex: "column", align: "center" }}>
       <FailIcon />
       <Text color="red400" fs={24} fw={600} tAlign="center" sx={{ mt: 20 }}>
         {t("pools.reviewTransaction.modal.error.title")}
       </Text>
-      <div sx={{ flex: "column", items: "center", px: 20, mt: 20, mb: 40 }}>
+      <div sx={{ flex: "column", align: "center", px: 20, mt: 20, mb: 40 }}>
         <Text tAlign="center" fs={16} color="neutralGray200" fw={400} lh={22}>
           {t("pools.reviewTransaction.modal.error.description")}
         </Text>

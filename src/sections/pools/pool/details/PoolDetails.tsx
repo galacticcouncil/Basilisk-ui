@@ -20,7 +20,7 @@ export const PoolDetails: FC<Props> = ({ pool }) => {
           <Text fs={14} lh={26} color="neutralGray400">
             {t("pools.pool.title", { type: pool.type })}
           </Text>
-          <div sx={{ flex: "row", items: "center" }}>
+          <div sx={{ flex: "row", align: "center" }}>
             <DualAssetIcons
               firstIcon={{ icon: getAssetLogo(pool.tokens[0].symbol) }}
               secondIcon={{ icon: getAssetLogo(pool.tokens[1].symbol) }}
@@ -35,7 +35,7 @@ export const PoolDetails: FC<Props> = ({ pool }) => {
             </div>
           </div>
         </div>
-        <div sx={{ flex: "column", width: 120, items: "start" }}>
+        <div sx={{ flex: "column", width: 120, align: "start" }}>
           <Text fs={14} color="neutralGray400" lh={26}>
             {t("pools.pool.poolDetails.fee")}
           </Text>
@@ -54,7 +54,7 @@ export const PoolDetails: FC<Props> = ({ pool }) => {
             {t("value.usd", { amount: data })}
           </Text>
         </div>
-        <div sx={{ flex: "column", width: 120, items: "start" }}>
+        <div sx={{ flex: "column", width: 120, align: "start" }}>
           <Text fs={14} color="neutralGray400" lh={26}>
             {t("pools.pool.poolDetails.24hours")}
           </Text>
