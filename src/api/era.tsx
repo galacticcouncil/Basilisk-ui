@@ -47,6 +47,11 @@ export const useEra = (
         })
       }
     }
+
+    return () => {
+      setBlocksDates(undefined)
+      setBlocks(undefined)
+    }
   }, [enabled, api, era, hexBlockNumber])
 
   return {
