@@ -12,10 +12,17 @@ export const useEra = (
   hexBlockNumber?: string,
   enabled = true,
 ) => {
-  const [birthDate, setBirthDate] = useState<Date | null>(null)
-  const [deathDate, setDeathDate] = useState<Date | null>(null)
-  const [birthBlock, setBirthBlock] = useState<BN | null>(null)
-  const [deathBlock, setDeathBlock] = useState<BN | null>(null)
+  const [blocks, setBlocks] =
+    useState<{
+      birth: BN
+      death: BN
+    }>()
+
+  const [blocksDates, setBlocksDates] =
+    useState<{
+      birth: Date
+      death: Date
+    }>()
 
   const api = useApiPromise()
 
@@ -27,23 +34,23 @@ export const useEra = (
       if (hexBlockNumber) {
         const birth = new BN(mortal.birth(blockNumber))
         const death = new BN(mortal.death(blockNumber))
-        setBirthBlock(birth)
-        setDeathBlock(death)
+        setBlocks({
+          birth,
+          death,
+        })
         getTimestamp(api, birth).then((birthTimestamp) => {
           const birthDate = new Date(birthTimestamp)
-          setBirthDate(birthDate)
-          setDeathDate(
-            addSeconds(birthDate, period.times(BLOCK_TIME).toNumber()),
-          )
+          setBlocksDates({
+            birth: birthDate,
+            death: addSeconds(birthDate, period.times(BLOCK_TIME).toNumber()),
+          })
         })
       }
     }
   }, [enabled, api, era, hexBlockNumber])
 
   return {
-    birthDate,
-    deathDate,
-    birthBlock,
-    deathBlock,
+    blocksDates,
+    blocks,
   }
 }

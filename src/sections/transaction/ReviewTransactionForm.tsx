@@ -85,7 +85,7 @@ export const ReviewTransactionForm = (
           <Text color="white">
             {props.tx.era.isMortalEra
               ? t("transaction.mortal.expire", {
-                  date: era.deathDate,
+                  date: era.blocksDates?.death,
                 })
               : t("transaction.immortal.expire")}
           </Text>
