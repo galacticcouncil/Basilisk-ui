@@ -1,8 +1,11 @@
 import { useTranslation } from "react-i18next"
 import { AprFarm } from "utils/apr"
-import { useLoyaltyRates, useMockLoyaltyCurve } from "utils/loyalty"
 import { Graph } from "components/Graph/Graph"
 import { Spinner } from "components/Spinner/Spinner.styled"
+import {
+  useLoyaltyRates,
+  useMockLoyaltyCurve,
+} from "./PoolJoinFarmLoyaltyGraph.utils"
 
 export function PoolJoinFarmLoyaltyGraph(props: { farm: AprFarm }) {
   const { t } = useTranslation()

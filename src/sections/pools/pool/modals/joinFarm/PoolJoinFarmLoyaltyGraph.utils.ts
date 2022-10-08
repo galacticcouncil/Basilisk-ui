@@ -1,15 +1,17 @@
 import { BN_QUINTILL } from "utils/constants"
-import { AprFarm } from "./apr"
 import { PalletLiquidityMiningLoyaltyCurve } from "@polkadot/types/lookup"
-import { Maybe } from "./types"
 
-import type { worker as WorkerType } from "./loyalty.worker"
-import Worker from "./loyalty.worker?worker"
+import type { worker as WorkerType } from "./PoolJoinFarmLoyaltyGraph.worker"
+import Worker from "./PoolJoinFarmLoyaltyGraph.worker?worker"
+
 import { wrap } from "comlink"
 import { useQuery } from "@tanstack/react-query"
-import { undefinedNoop } from "./helpers"
-import { useApiPromise } from "./network"
 import { Struct, u128 } from "@polkadot/types"
+import { useApiPromise } from "utils/network"
+import { AprFarm } from "utils/apr"
+import { Maybe } from "utils/types"
+import { undefinedNoop } from "utils/helpers"
+import { QUERY_KEYS } from "utils/queryKeys"
 
 const worker = wrap<typeof WorkerType>(new Worker())
 
@@ -33,7 +35,11 @@ export const useLoyaltyRates = (
   loyaltyCurve: Maybe<PalletLiquidityMiningLoyaltyCurve>,
 ) => {
   return useQuery(
-    ["loyaltyRewards"],
+    QUERY_KEYS.mathLoyaltyRates(
+      farm.globalFarm.plannedYieldingPeriods,
+      loyaltyCurve?.initialRewardPercentage,
+      loyaltyCurve?.scaleCoef,
+    ),
     loyaltyCurve != null
       ? async () => {
           const periods = farm.globalFarm.plannedYieldingPeriods.toNumber()
