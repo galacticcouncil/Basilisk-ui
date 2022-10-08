@@ -9,9 +9,6 @@ export default defineConfig({
   build: {
     target: "esnext",
     outDir: "build",
-    rollupOptions: {
-      makeAbsoluteExternalsRelative: true,
-    },
   },
   optimizeDeps: {
     esbuildOptions: {
