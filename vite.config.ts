@@ -9,6 +9,9 @@ export default defineConfig({
   build: {
     target: "esnext",
     outDir: "build",
+    rollupOptions: {
+      makeAbsoluteExternalsRelative: true,
+    },
   },
   optimizeDeps: {
     esbuildOptions: {
@@ -21,7 +24,7 @@ export default defineConfig({
   plugins: [
     tsconfigPaths(),
     react({
-      jsxImportSource: "/src/jsx",
+      jsxImportSource: "@basilisk/jsx",
       babel: {
         plugins: ["@emotion/babel-plugin"],
       },

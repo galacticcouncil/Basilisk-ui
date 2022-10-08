@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@basilisk/jsx": "link:./src/jsx",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@galacticcouncil/math": "https://github.com/galacticcouncil/HydraDX-wasm",
