@@ -17,6 +17,8 @@ export function PoolJoinFarmSectionDetail(props: {
 }) {
   const { t } = useTranslation()
 
+  const loyaltyCurve = props.farm.yieldFarm.loyaltyCurve.unwrapOr(null)
+
   return (
     <>
       <ModalMeta
@@ -28,19 +30,27 @@ export function PoolJoinFarmSectionDetail(props: {
         }}
       />
 
-      <PoolJoinFarmItem pool={props.pool} farm={props.farm} />
+      <div sx={{ flex: "column", gap: 32 }}>
+        <PoolJoinFarmItem pool={props.pool} farm={props.farm} />
 
-      <PoolJoinFarmLoyaltyGraph farm={props.farm} />
+        {loyaltyCurve && (
+          <PoolJoinFarmLoyaltyGraph
+            farm={props.farm}
+            loyaltyCurve={loyaltyCurve}
+            showDisclaimer={!props.position}
+          />
+        )}
 
-      {props.position ? (
-        <PoolJoinFarmPosition
-          pool={props.pool}
-          farm={props.farm}
-          position={props.position}
-        />
-      ) : (
-        <PoolJoinFarmDeposit pool={props.pool} farm={props.farm} />
-      )}
+        {props.position ? (
+          <PoolJoinFarmPosition
+            pool={props.pool}
+            farm={props.farm}
+            position={props.position}
+          />
+        ) : (
+          <PoolJoinFarmDeposit pool={props.pool} farm={props.farm} />
+        )}
+      </div>
     </>
   )
 }

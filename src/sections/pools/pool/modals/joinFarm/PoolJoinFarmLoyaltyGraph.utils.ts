@@ -6,29 +6,12 @@ import Worker from "./PoolJoinFarmLoyaltyGraph.worker?worker"
 
 import { wrap } from "comlink"
 import { useQuery } from "@tanstack/react-query"
-import { Struct, u128 } from "@polkadot/types"
-import { useApiPromise } from "utils/network"
 import { AprFarm } from "utils/apr"
 import { Maybe } from "utils/types"
 import { undefinedNoop } from "utils/helpers"
 import { QUERY_KEYS } from "utils/queryKeys"
 
 const worker = wrap<typeof WorkerType>(new Worker())
-
-// TODO: remove in production, keep this for demo for now
-export const useMockLoyaltyCurve = () => {
-  const api = useApiPromise()
-  const instance = new (Struct.with({
-    initialRewardPercentage: u128,
-    scaleCoef: u128,
-  }))(api.registry, {
-    initialRewardPercentage: "100000000000000000",
-    scaleCoef: "50",
-  })
-
-  // @ts-expect-error Struct.with will add new getters to Struct, their TS is wrong
-  return instance as PalletLiquidityMiningLoyaltyCurve
-}
 
 export const useLoyaltyRates = (
   farm: AprFarm,

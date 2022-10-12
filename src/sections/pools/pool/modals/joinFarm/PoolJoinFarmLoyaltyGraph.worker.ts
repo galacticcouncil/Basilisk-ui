@@ -1,6 +1,7 @@
 import { expose } from "comlink"
 
-const EPS = 0.1
+// If 99% and more, exit the loop prematurely
+const EPS = 1
 
 export const worker = {
   getLoyaltyFactor(
