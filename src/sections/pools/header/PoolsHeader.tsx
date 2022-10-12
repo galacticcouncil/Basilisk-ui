@@ -1,3 +1,4 @@
+import { Separator } from "components/Separator/Separator"
 import { Switch } from "components/Switch/Switch"
 import { GradientText } from "components/Typography/GradientText/GradientText"
 import { Heading } from "components/Typography/Heading/Heading"
@@ -9,6 +10,7 @@ import {
   useTotalInPools,
 } from "sections/pools/header/PoolsHeader.utils"
 import { useAccountStore } from "state/store"
+import { theme } from "theme"
 
 // TODO: show switch once requested changes to total values in top section are done
 const showSwitch = false
@@ -46,23 +48,32 @@ export const PoolsHeader: FC<Props> = ({
           />
         )}
       </div>
-      <div sx={{ flex: "row", mb: 40 }} css={{ "> *": { flex: 1 } }}>
-        <div>
+      <div
+        sx={{ flex: ["column", "row"], mb: 40 }}
+        css={{ "> *:not([role='separator'])": { flex: 1 } }}
+      >
+        <div sx={{ flex: ["row", "column"], justify: "space-between" }}>
           <Text color="neutralGray300" sx={{ mb: 14 }}>
             {t("pools.header.valueLocked")}
           </Text>
           <div sx={{ flex: "row", align: "baseline" }}>
-            <Heading as="h3" sx={{ fontSize: 42, fontWeight: 900 }}>
+            <Heading as="h3" sx={{ fontSize: [16, 42], fontWeight: 900 }}>
               {t("value.usd", { amount: totalInPools.data })}
             </Heading>
           </div>
         </div>
-        <div>
+        <Separator
+          sx={{ mb: 12 }}
+          css={{
+            [`@media (${theme.viewport.gte.sm})`]: { display: "none" },
+          }}
+        />
+        <div sx={{ flex: ["row", "column"], justify: "space-between" }}>
           <Text color="neutralGray300" sx={{ mb: 14 }}>
             {t("pools.header.valueFarms")}
           </Text>
           <div sx={{ flex: "row", align: "baseline" }}>
-            <Heading as="h3" sx={{ fontSize: 42, fontWeight: 900 }}>
+            <Heading as="h3" sx={{ fontSize: [16, 42], fontWeight: 900 }}>
               {t("value.usd", { amount: totalInFarms.data })}
             </Heading>
           </div>
