@@ -72,7 +72,7 @@ export function formatBigNumber(
     prefix: options?.numberPrefix ?? "",
     suffix: options?.numberSuffix ?? "",
     decimalSeparator: localeOptions.decimal ?? ".",
-    groupSeparator: " ",
+    groupSeparator: String.fromCharCode(160), // non-breaking space
     groupSize: 3,
   }
 
