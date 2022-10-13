@@ -26,7 +26,7 @@ export const PoolsPage = () => {
         }
       />
       <div sx={{ display: "flex", flexDirection: "column", gap: 20 }}>
-        {pools.data?.slice(0, 1)?.map((pool) => (
+        {pools.data?.map((pool) => (
           <Pool key={pool.address} pool={pool} />
         ))}
       </div>

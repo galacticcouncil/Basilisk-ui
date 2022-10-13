@@ -79,9 +79,19 @@ export const PoolDetails: FC<Props> = ({ pool }) => {
             {t("pools.pool.poolDetails.24hours")}
           </Text>
 
-          {volume.map(({ assetId, sum }) => (
-            <PoolDetailTradeVolume key={assetId} assetId={assetId} sum={sum} />
-          ))}
+          {volume.length > 0 ? (
+            volume.map(({ assetId, sum }) => (
+              <PoolDetailTradeVolume
+                key={assetId}
+                assetId={assetId}
+                sum={sum}
+              />
+            ))
+          ) : (
+            <Text lh={22} color="white">
+              {t("value.na")}
+            </Text>
+          )}
         </div>
       </div>
     </div>
