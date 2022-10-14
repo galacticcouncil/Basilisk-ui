@@ -42,10 +42,10 @@ export const PoolAddLiquidityAssetSelect: FC<Props> = (props) => {
   const spotPrice = useSpotPrice(props.asset, aUSD.data?.id)
 
   const aUSDValue = useMemo(() => {
-    if (!props.value || props.asset === aUSD.data?.id) return null
+    if (!props.value) return null
     if (spotPrice.data?.spotPrice == null) return null
     return spotPrice.data.spotPrice.times(props.value)
-  }, [aUSD.data?.id, props.asset, props.value, spotPrice.data])
+  }, [props.value, spotPrice.data])
 
   return (
     <>
