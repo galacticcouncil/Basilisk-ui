@@ -9,9 +9,9 @@ export const Header = () => {
   return (
     <SHeader>
       <div sx={{ flex: "row", justify: "space-between", align: "center" }}>
-        <div className="menuList" sx={{ flex: "row", align: "center" }}>
+        <div sx={{ flex: "row", align: "center" }}>
           <Icon size={32} icon={<BasiliskIcon />} sx={{ mr: 11 }} />
-          <Icon sx={{ mr: 60 }}>
+          <Icon sx={{ mr: 60, display: ["none", "inherit"] }}>
             <BasiliskLogo />
           </Icon>
           <HeaderMenu />

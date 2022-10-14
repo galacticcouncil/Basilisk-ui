@@ -5,7 +5,7 @@ import { ReactComponent as PoolsAndFarms } from "assets/icons/PoolsAndFarms.svg"
 import { ReactComponent as Trade } from "assets/icons/Trade.svg"
 import { ReactComponent as Wallet } from "assets/icons/Wallet.svg"
 import { ReactComponent as Minus } from "assets/icons/FailIcon.svg"
-import { menuItems, TabKeys } from "utils/tabs"
+import { MENU_ITEMS, TabKeys } from "utils/tabs"
 import { SMobileNavBar, SNavBarItem } from "./MobileNavBar.styled"
 
 export const MobileNavBar = () => {
@@ -21,7 +21,7 @@ export const MobileNavBar = () => {
 
   return (
     <SMobileNavBar>
-      {menuItems.map((item, index) => (
+      {MENU_ITEMS.map((item, index) => (
         <SNavBarItem key={index} active={item.active} href={item.href}>
           <Icon size={20} icon={getIcon(item.key)} />
           {t(item.translationKey)}

@@ -1,6 +1,6 @@
 import { EXTERNAL_LINKS } from "./links"
 
-export const menuItems = [
+export const MENU_ITEMS = [
   {
     key: "lbp",
     translationKey: "header.lbp",
@@ -28,4 +28,4 @@ export const menuItems = [
   },
 ] as const
 
-export type TabKeys = typeof menuItems[number]["key"]
+export type TabKeys = typeof MENU_ITEMS[number]["key"]

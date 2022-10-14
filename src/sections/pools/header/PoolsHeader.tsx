@@ -10,7 +10,6 @@ import {
   useTotalInPools,
 } from "sections/pools/header/PoolsHeader.utils"
 import { useAccountStore } from "state/store"
-import { theme } from "theme"
 
 // TODO: show switch once requested changes to total values in top section are done
 const showSwitch = false
@@ -62,12 +61,7 @@ export const PoolsHeader: FC<Props> = ({
             </Heading>
           </div>
         </div>
-        <Separator
-          sx={{ mb: 12 }}
-          css={{
-            [`@media (${theme.viewport.gte.sm})`]: { display: "none" },
-          }}
-        />
+        <Separator sx={{ mb: 12, display: ["inherit", "none"] }} />
         <div sx={{ flex: ["row", "column"], justify: "space-between" }}>
           <Text color="neutralGray300" sx={{ mb: 14 }}>
             {t("pools.header.valueFarms")}
