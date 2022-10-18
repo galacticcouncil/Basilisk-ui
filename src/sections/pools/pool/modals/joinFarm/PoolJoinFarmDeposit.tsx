@@ -128,7 +128,8 @@ export const PoolJoinFarmDeposit = (props: {
                 t={t}
                 i18nKey="farms.deposit.balance"
                 tOptions={{
-                  balance: shareTokenBalance.data?.balance.div(BN_BILL) ?? "-",
+                  balance: shareTokenBalance.data?.balance ?? "-",
+                  fixedPointScale: 12,
                 }}
               >
                 <span css={{ opacity: 0.7 }} />
@@ -142,7 +143,7 @@ export const PoolJoinFarmDeposit = (props: {
                 const balance = shareTokenBalance.data?.balance
 
                 if (balance != null) {
-                  form.setValue("value", balance.div(BN_BILL).toString())
+                  form.setValue("value", balance.toString())
                 }
               }}
             />
