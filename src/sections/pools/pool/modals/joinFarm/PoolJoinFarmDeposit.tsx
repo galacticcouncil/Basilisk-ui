@@ -129,7 +129,6 @@ export const PoolJoinFarmDeposit = (props: {
                 i18nKey="farms.deposit.balance"
                 tOptions={{
                   balance: shareTokenBalance.data?.balance ?? "-",
-                  fixedPointScale: 12,
                 }}
               >
                 <span css={{ opacity: 0.7 }} />

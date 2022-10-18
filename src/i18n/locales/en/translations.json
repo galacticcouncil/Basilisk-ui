@@ -23,7 +23,7 @@
   "value.percentage": "{{ value, bignumber(numberSuffix: '%') }}",
   "value.APR": "{{ apr, bignumber(numberSuffix: '% APR'; decimalPlaces: 2) }}",
   "farms.deposit.title": "Amount to deposit",
-  "farms.deposit.balance": "<0>Share token balance:</0> {{ balance, bignumber(decimalPlaces: 2) }}",
+  "farms.deposit.balance": "<0>Share token balance:</0> {{ balance, bignumber(decimalPlaces: 2; fixedPointScale: 12) }}",
   "farms.deposit.assetType": "Token/Token",
   "farms.deposit.submit": "Join farm",
   "farms.deposit.error.minDeposit": "Must be at least {{ minDeposit }}",
