@@ -2,7 +2,6 @@ import { FC } from "react"
 import { Text } from "components/Typography/Text/Text"
 import { useTranslation } from "react-i18next"
 import BigNumber from "bignumber.js"
-import { BN_BILL } from "utils/constants"
 
 type Props = { balance?: BigNumber }
 
