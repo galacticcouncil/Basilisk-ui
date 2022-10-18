@@ -2,6 +2,7 @@ import { FC } from "react"
 import { Text } from "components/Typography/Text/Text"
 import { useTranslation } from "react-i18next"
 import BigNumber from "bignumber.js"
+import { BN_BILL } from "utils/constants"
 
 type Props = { balance?: BigNumber }
 
@@ -14,7 +15,7 @@ export const PoolSharesUnstaked: FC<Props> = ({ balance }) => {
         {t("pools.pool.liquidity.unstakedShares")}
       </Text>
       <Text fs={14} lh={18} color="white">
-        {t("value", { value: balance })}
+        {t("value", { value: balance?.div(BN_BILL), decimalPlaces: 2 })}
       </Text>
     </div>
   )
