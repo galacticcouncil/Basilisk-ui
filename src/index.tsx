@@ -9,6 +9,17 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { GlobalStyle } from "components/GlobalStyle"
 import { Global } from "@emotion/react"
 
+import "virtual:vite-plugin-sentry/sentry-config"
+import * as Sentry from "@sentry/react"
+
+if (import.meta.env.VITE_SENTRY_DSN) {
+  Sentry.init({
+    dsn: import.meta.env.VITE_SENTRY_DSN,
+    dist: import.meta.env.VITE_PLUGIN_SENTRY_CONFIG.dist,
+    release: import.meta.env.VITE_PLUGIN_SENTRY_CONFIG.release,
+  })
+}
+
 const root = createRoot(document.getElementById("root")!)
 const client = new QueryClient()
 
