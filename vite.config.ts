@@ -34,23 +34,19 @@ export default defineConfig(({ mode }) => {
       }),
       wasm(),
       svgr(),
-      ...(sentryEnabled
-        ? [
-            vitePluginSentry({
-              authToken: process.env.SENTRY_AUTH_TOKEN,
-              url: process.env.SENTRY_URL,
-              project: process.env.SENTRY_PROJECT,
-              org: process.env.SENTRY_ORG,
-              deploy: { env: mode },
-              setCommits: { auto: true },
-              sourceMaps: {
-                include: ["./build/assets"],
-                ignore: ["node_modules"],
-                urlPrefix: "~/assets",
-              },
-            }),
-          ]
-        : []),
+      vitePluginSentry({
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+        url: process.env.SENTRY_URL,
+        project: process.env.SENTRY_PROJECT,
+        org: process.env.SENTRY_ORG,
+        deploy: { env: mode },
+        setCommits: { auto: true },
+        sourceMaps: {
+          include: ["./build/assets"],
+          ignore: ["node_modules"],
+          urlPrefix: "~/assets",
+        },
+      }),
     ],
   }
 })

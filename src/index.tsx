@@ -12,6 +12,9 @@ import { Global } from "@emotion/react"
 import "virtual:vite-plugin-sentry/sentry-config"
 import * as Sentry from "@sentry/react"
 
+// At the moment, tree-shaking does not work as expected
+// thus, Sentry is bundled anyway
+// See: https://github.com/vitejs/vite/issues/5676
 if (import.meta.env.VITE_SENTRY_DSN) {
   Sentry.init({
     dsn: import.meta.env.VITE_SENTRY_DSN,
