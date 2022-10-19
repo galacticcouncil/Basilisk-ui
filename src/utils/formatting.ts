@@ -120,7 +120,7 @@ export function formatBigNumber(
       : 4
 
     let [integerPart, fractionPart] = num
-      .toFormat({ ...fmtConfig, prefix: "", suffix: "" })
+      .toFormat({ decimalSeparator: fmtConfig.decimalSeparator })
       .split(fmtConfig.decimalSeparator)
 
     if (decimalPlaces === 0 || new BigNumber(integerPart).gt(0))
@@ -135,7 +135,7 @@ export function formatBigNumber(
       numZeroes = 0;
       numZeroes < fractionPart.length && fractionPart[numZeroes] === "0";
       numZeroes++
-    ) {}
+    ) { }
 
     const formatted =
       integerPart +
