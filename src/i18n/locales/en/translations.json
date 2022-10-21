@@ -149,6 +149,6 @@
   "wallet.header.transactions": "Transactions",
   "wallet.header.vesting": "Vesting",
   "wallet.header.switchAccount": "Switch account",
-  "wallet.vesting.total_balance": "Total Balance",
-  "wallet.vesting.transferable_balance": "Transferable Balance"
+  "wallet.vesting.claimable": "Claimable",
+  "wallet.vesting.total_vested": "Total Vested"
 }
