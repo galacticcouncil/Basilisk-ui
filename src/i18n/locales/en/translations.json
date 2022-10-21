@@ -140,7 +140,7 @@
   "walletConnect.accountSelect.title": "Select Account",
   "walletConnect.accountSelect.description": "Pick one of your accounts to connect to Basilisk",
   "walletConnect.accountSelect.asset.parachain": "Kusama",
-  "walletConnect.accountSelect.assest.network": "Basilisk",
+  "walletConnect.accountSelect.asset.network": "Basilisk",
   "walletConnect.pending.title": "Waiting for Authorization",
   "walletConnect.pending.description": "Please sign into {{name}} to connect to Basilisk",
   "walletConnect.logout": "Log Out",
