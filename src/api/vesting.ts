@@ -58,7 +58,6 @@ export type ScheduleType = Awaited<
 const getScheduleClaimableBalance = (
   schedule: ScheduleType,
   blockNumber: u32,
-  lockedBalance: BigNumber,
 ) => {
   const start = schedule.start.toBigNumber()
   const period = schedule.period.toBigNumber()
@@ -68,9 +67,8 @@ const getScheduleClaimableBalance = (
   const numOfPeriods = blockNumberAsBigNumber.minus(start).div(period)
   const vestedOverPeriods = numOfPeriods.times(schedule.perPeriod)
   const originalLock = periodCount.times(schedule.perPeriod)
-  const futureLock = originalLock.minus(vestedOverPeriods)
 
-  return lockedBalance.minus(futureLock)
+  return originalLock.minus(vestedOverPeriods)
 }
 
 export const useVestingClaimableBalance = () => {
@@ -84,16 +82,17 @@ export const useVestingClaimableBalance = () => {
     bestNumberQuery.data &&
     vestingLockBalanceQuery.data
   ) {
-    return vestingSchedulesQuery.data.reduce((acc, cur) => {
+    const futureLocks = vestingSchedulesQuery.data.reduce((acc, cur) => {
       acc.plus(
         getScheduleClaimableBalance(
           cur,
           bestNumberQuery.data.relaychainBlockNumber,
-          vestingLockBalanceQuery.data ?? BN_0,
         ),
       )
       return acc
     }, BN_0)
+
+    return futureLocks.minus(vestingLockBalanceQuery.data)
   }
 
   return BN_0

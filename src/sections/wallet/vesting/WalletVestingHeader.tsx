@@ -32,7 +32,7 @@ export const WalletVestingHeader = () => {
         <Text color="neutralGray300" sx={{ mb: 14 }}>
           {t("wallet.vesting.claimable")}
         </Text>
-        <div sx={{ flex: "row", align: "baseline" }}>
+        <div sx={{ flex: "row", align: "start" }}>
           <Heading as="h3" sx={{ fontSize: [16, 42], fontWeight: 900 }}>
             {t("value", { value: claimableBalance, decimalPlaces: 2 })}
           </Heading>
@@ -41,6 +41,7 @@ export const WalletVestingHeader = () => {
           sx={{
             mt: 10,
           }}
+          color="neutralGray300"
           fs={16}
           lh={18}
         >
@@ -48,11 +49,11 @@ export const WalletVestingHeader = () => {
         </Text>
       </div>
       <Separator sx={{ mb: 12, display: ["inherit", "none"] }} />
-      <div sx={{ flex: ["row", "column"], justify: "space-between" }}>
+      <div sx={{ flex: ["row", "column"], justify: "start" }}>
         <Text color="neutralGray300" sx={{ mb: 14 }}>
           {t("wallet.vesting.total_vested")}
         </Text>
-        <div sx={{ flex: "row", align: "baseline" }}>
+        <div sx={{ flex: "row", align: "start" }}>
           <Heading as="h3" sx={{ fontSize: [16, 42], fontWeight: 900 }}>
             {t("value.usd", { amount: "2" })}
           </Heading>
