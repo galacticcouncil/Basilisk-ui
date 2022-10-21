@@ -134,7 +134,8 @@ export const SButton = styled.button<ButtonProps>`
             color: ${theme.colors.primary300};
             border: 1px solid rgba(${theme.rgbColors.primary300}, 0.12);
 
-            :hover, :active {
+            :hover,
+            :active {
               background: ${theme.colors.primary450};
               color: ${theme.colors.black};
               border: 1px solid ${theme.colors.primary450};
