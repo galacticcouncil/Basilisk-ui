@@ -11,8 +11,15 @@ type TabLinkProps = ButtonProps & {
 export const TabLink: FC<TabLinkProps> = ({ to, children, icon }) => (
   <Link to={to}>
     {({ isActive }) => (
-      <Button variant="outline" active={isActive}>
-        {icon && icon}
+      <Button
+        variant="outline"
+        active={isActive}
+        sx={{
+          p: "12px 34px",
+        }}
+        transform="none"
+      >
+        {icon}
         {children}
       </Button>
     )}

@@ -9,7 +9,7 @@ export const SButton = styled.button<ButtonProps>`
   font-weight: 500;
   border: none;
   cursor: pointer;
-  text-transform: uppercase;
+  text-transform: ${({ transform }) => (transform ? transform : "uppercase")};
   line-height: 18px;
 
   transition: background ${theme.transitions.default};
@@ -134,15 +134,11 @@ export const SButton = styled.button<ButtonProps>`
             color: ${theme.colors.primary300};
             border: 1px solid rgba(${theme.rgbColors.primary300}, 0.12);
 
-            :hover {
-              background: rgba(${theme.rgbColors.primary450}, 0.3);
-              transition: background ${theme.transitions.default};
-            }
-
-            :active {
+            :hover, :active {
               background: ${theme.colors.primary450};
               color: ${theme.colors.black};
               border: 1px solid ${theme.colors.primary450};
+              transition: all ${theme.transitions.default};
             }
           `
       : ``}

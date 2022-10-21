@@ -21,7 +21,7 @@ export const WalletHeader = () => {
       <div
         sx={{ flex: "row", justify: "space-between", align: "center", pb: 25 }}
       >
-        <GradientText fs={30} fw={700}>
+        <GradientText fs={20} fw={600} lh={20}>
           {account?.name}
         </GradientText>
         {account?.address ? (

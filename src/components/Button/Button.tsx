@@ -21,6 +21,7 @@ export type ButtonProps = {
   type?: "button" | "submit" | "reset"
   onClick?: (e: SyntheticEvent) => void
   size?: "small" | "medium" | "micro"
+  transform?: "uppercase" | "lowercase" | "none"
   fullWidth?: boolean
   isLoading?: boolean
   capitalize?: boolean
