@@ -19,7 +19,7 @@ export const WalletHeader = () => {
   return (
     <>
       <div
-        sx={{ flex: "row", justify: "space-between", align: "center", pb: 25 }}
+        sx={{ flex: "row", justify: "space-between", align: "center", pb: 16 }}
       >
         <GradientText fs={20} fw={600} lh={20}>
           {account?.name}
