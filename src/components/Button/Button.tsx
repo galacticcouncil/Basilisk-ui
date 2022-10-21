@@ -14,12 +14,11 @@ import {
 } from "./Button.styled"
 
 export type ButtonProps = {
-  variant?: "primary" | "secondary" | "gradient" | "transparent"
+  variant?: "primary" | "secondary" | "gradient" | "transparent" | "outline"
   disabled?: boolean
   text?: string
   to?: string
   type?: "button" | "submit" | "reset"
-  icon?: SVGElement
   onClick?: (e: SyntheticEvent) => void
   size?: "small" | "medium" | "micro"
   fullWidth?: boolean
@@ -27,6 +26,7 @@ export type ButtonProps = {
   capitalize?: boolean
   children?: ReactNode
   className?: string
+  active?: boolean
 }
 
 export const Button: FC<ButtonProps> = ({

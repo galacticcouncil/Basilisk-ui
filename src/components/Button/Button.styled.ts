@@ -122,6 +122,32 @@ export const SButton = styled.button<ButtonProps>`
       : ``}
 
   ${(p) =>
+    p.variant === "outline"
+      ? p.active
+        ? css`
+            background: ${theme.colors.primary450};
+            color: ${theme.colors.black};
+            border: 1px solid ${theme.colors.primary450};
+          `
+        : css`
+            background: transparent;
+            color: ${theme.colors.primary300};
+            border: 1px solid rgba(${theme.rgbColors.primary300}, 0.12);
+
+            :hover {
+              background: rgba(${theme.rgbColors.primary450}, 0.3);
+              transition: background ${theme.transitions.default};
+            }
+
+            :active {
+              background: ${theme.colors.primary450};
+              color: ${theme.colors.black};
+              border: 1px solid ${theme.colors.primary450};
+            }
+          `
+      : ``}
+
+  ${(p) =>
     p.capitalize &&
     css`
       text-transform: capitalize;
