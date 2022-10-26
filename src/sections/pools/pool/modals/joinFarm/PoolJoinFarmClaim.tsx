@@ -37,7 +37,7 @@ export function PoolJoinFarmClaim(props: { pool: PoolBase }) {
         ++index
         return (
           <PoolPositionMobile
-            key={`${i}-${j}`}
+            key={index}
             pool={props.pool}
             position={entry}
             index={index}
