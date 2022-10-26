@@ -1,12 +1,10 @@
 import { PoolBase } from "@galacticcouncil/sdk"
-import { useAccountStore, useStore } from "state/store"
+import { useAccountStore } from "state/store"
 import { useCurrentSharesValue } from "sections/pools/pool/shares/value/PoolSharesValue.utils"
 import { usePoolShareToken } from "api/pools"
 import { useTokenBalance } from "api/balances"
-import { useApiPromise } from "utils/network"
-import { useMutation } from "@tanstack/react-query"
-import { useClaimableAmount } from "utils/totals"
-import { useUserDeposits } from "utils/deposits"
+import { useClaimableAmount, useClaimAllMutation } from "utils/farms/claiming"
+import { useUserDeposits } from "utils/farms/deposits"
 
 export const usePoolFooterValues = (pool: PoolBase) => {
   const { account } = useAccountStore()
@@ -20,34 +18,15 @@ export const usePoolFooterValues = (pool: PoolBase) => {
     shareTokenBalance: balance.data?.balance,
     pool,
   })
+  const claimAll = useClaimAllMutation(pool.address)
 
-  const queries = [deposits, claimable, shares]
+  const queries = [deposits, claimable, shares, claimAll]
   const isLoading = queries.some((q) => q.isLoading)
-
-  const api = useApiPromise()
-  const { createTransaction } = useStore()
-
-  const claim = useMutation(async () => {
-    const txs =
-      deposits.data
-        ?.map((i) =>
-          i.deposit.yieldFarmEntries.map((entry) => {
-            return api.tx.liquidityMining.claimRewards(i.id, entry.yieldFarmId)
-          }),
-        )
-        .flat(2) ?? []
-
-    if (txs.length) {
-      return await createTransaction({
-        tx: api.tx.utility.batch(txs),
-      })
-    }
-  })
 
   return {
     locked: shares.dollarValue,
     claimable: claimable.data?.ausd,
-    claim,
+    claimAll: claimAll.mutation,
     isLoading,
   }
 }

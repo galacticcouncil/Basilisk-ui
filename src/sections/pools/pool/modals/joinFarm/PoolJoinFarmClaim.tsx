@@ -5,12 +5,10 @@ import { Text } from "components/Typography/Text/Text"
 import { Button } from "components/Button/Button"
 import { css } from "@emotion/react"
 import { theme } from "theme"
-import { useApiPromise } from "utils/network"
-import { useMutation } from "@tanstack/react-query"
-import { useStore } from "state/store"
 import { SContainer } from "./PoolJoinFarmClaim.styled"
 import { getFormatSeparators } from "utils/formatting"
 import { PoolBase } from "@galacticcouncil/sdk"
+import { useClaimableAmount, useClaimAllMutation } from "utils/farms/claiming"
 import { Modal } from "components/Modal/Modal"
 import { ReactComponent as WalletIcon } from "assets/icons/Wallet.svg"
 import { PoolPositionMobile } from "../../position/PoolPositionMobile"
@@ -21,8 +19,8 @@ export function PoolJoinFarmClaim(props: { pool: PoolBase }) {
   const { t, i18n } = useTranslation()
   const [openMyPositions, setOpenMyPositions] = useState(false)
 
-  const positions = useUserDeposits(props.pool.address)
   const claimable = useClaimableAmount(props.pool)
+  const claimAll = useClaimAllMutation(props.pool.address)
 
   let index = 0
   const separators = getFormatSeparators(i18n.languages[0])
@@ -32,26 +30,6 @@ export function PoolJoinFarmClaim(props: { pool: PoolBase }) {
     numberPrefix: "≈",
     decimalPlaces: 4,
   }).split(separators.decimal ?? ".")
-
-  const api = useApiPromise()
-  const { createTransaction } = useStore()
-
-  const claimMutation = useMutation(async () => {
-    const txs =
-      positions.data
-        ?.map((i) =>
-          i.deposit.yieldFarmEntries.map((entry) => {
-            return api.tx.liquidityMining.claimRewards(i.id, entry.yieldFarmId)
-          }),
-        )
-        .flat(2) ?? []
-
-    if (txs.length) {
-      return await createTransaction({
-        tx: api.tx.utility.batch(txs),
-      })
-    }
-  })
 
   return (
     <SContainer>
@@ -98,8 +76,8 @@ export function PoolJoinFarmClaim(props: { pool: PoolBase }) {
             p: "10px 16px",
             display: ["inherit", "none"],
           }}
-          disabled={!!rewards?.bsx.isZero()}
-          isLoading={claimMutation.isLoading}
+          disabled={!!claimable.data?.bsx.isZero()}
+          isLoading={claimAll.mutation.isLoading}
           onClick={() => setOpenMyPositions(true)}
         >
           <WalletIcon />
@@ -114,8 +92,8 @@ export function PoolJoinFarmClaim(props: { pool: PoolBase }) {
             width: "max-content",
           }}
           disabled={!!claimable.data?.bsx.isZero()}
-          isLoading={claimMutation.isLoading}
-          onClick={() => claimMutation.mutate()}
+          isLoading={claimAll.mutation.isLoading}
+          onClick={() => claimAll.mutation.mutate()}
         >
           {t("pools.allFarms.modal.claim.submit")}
         </Button>

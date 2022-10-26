@@ -2,13 +2,15 @@ import { useMemo } from "react"
 import { BN_0, BN_1 } from "utils/constants"
 import BN from "bignumber.js"
 import { useBestNumber } from "api/chain"
-import { useAPR } from "utils/apr"
+import { useAPR } from "utils/farms/apr"
 import { useMath } from "utils/math"
 import { useAUSD } from "api/asset"
 import { useSpotPrices } from "api/spotPrice"
 import { PoolBase } from "@galacticcouncil/sdk"
-import { useUserDeposits } from "utils/deposits"
-import { NATIVE_ASSET_ID } from "utils/network"
+import { useUserDeposits } from "utils/farms/deposits"
+import { NATIVE_ASSET_ID, useApiPromise } from "utils/network"
+import { useStore } from "state/store"
+import { useMutation } from "@tanstack/react-query"
 
 export const useClaimableAmount = (pool: PoolBase) => {
   const bestNumber = useBestNumber()
@@ -109,4 +111,29 @@ export const useClaimableAmount = (pool: PoolBase) => {
   ])
 
   return { data, isLoading }
+}
+
+export const useClaimAllMutation = (poolId: string) => {
+  const api = useApiPromise()
+  const { createTransaction } = useStore()
+  const deposits = useUserDeposits(poolId)
+
+  const claim = useMutation(async () => {
+    const txs =
+      deposits.data
+        ?.map((i) =>
+          i.deposit.yieldFarmEntries.map((entry) => {
+            return api.tx.liquidityMining.claimRewards(i.id, entry.yieldFarmId)
+          }),
+        )
+        .flat(2) ?? []
+
+    if (txs.length) {
+      return await createTransaction({
+        tx: api.tx.utility.batch(txs),
+      })
+    }
+  })
+
+  return { mutation: claim, isLoading: deposits.isLoading }
 }

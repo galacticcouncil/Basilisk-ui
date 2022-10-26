@@ -15,7 +15,7 @@ import { WalletConnectButton } from "sections/wallet/connect/modal/WalletConnect
 import { getAssetLogo } from "components/AssetIcon/AssetIcon"
 import { useActiveYieldFarms, useGlobalFarms } from "api/farms"
 import { BN_0, BN_BILL } from "utils/constants"
-import { AprFarm } from "utils/apr"
+import { AprFarm } from "utils/farms/apr"
 import BigNumber from "bignumber.js"
 import { SGridContainer } from "./PoolJoinFarmDeposit.styled"
 import BN from "bignumber.js"
