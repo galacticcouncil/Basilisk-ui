@@ -1,4 +1,4 @@
-export const Navigation = {
+export const LINKS = {
   home: "/",
   pools_and_farms: "/pools-and-farms",
   wallet: "/wallet",
@@ -34,14 +34,14 @@ export const MENU_ITEMS = [
   {
     key: "pools",
     translationKey: "header.pools",
-    href: Navigation.pools_and_farms,
+    href: LINKS.pools_and_farms,
     external: false,
     mobVisible: true,
   },
   {
     key: "wallet",
     translationKey: "header.wallet",
-    href: isWalletPageEnabled ? Navigation.wallet : EXTERNAL_LINKS.wallet,
+    href: isWalletPageEnabled ? LINKS.wallet : EXTERNAL_LINKS.wallet,
     external: !isWalletPageEnabled,
     mobVisible: true,
   },
