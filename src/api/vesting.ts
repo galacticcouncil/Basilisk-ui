@@ -45,7 +45,7 @@ export const getVestingSchedules =
       return {
         start: value.start,
         period: value.period,
-        periodCount: value.periodCount,
+        periodCount: new BigNumber(value.periodCount.toHex()),
         perPeriod: new BigNumber(value.perPeriod.toHex()),
       }
     })
@@ -61,12 +61,11 @@ const getScheduleClaimableBalance = (
 ) => {
   const start = schedule.start.toBigNumber()
   const period = schedule.period.toBigNumber()
-  const periodCount = schedule.periodCount.toBigNumber()
   const blockNumberAsBigNumber = blockNumber.toBigNumber()
 
   const numOfPeriods = blockNumberAsBigNumber.minus(start).div(period)
   const vestedOverPeriods = numOfPeriods.times(schedule.perPeriod)
-  const originalLock = periodCount.times(schedule.perPeriod)
+  const originalLock = schedule.periodCount.times(schedule.perPeriod)
 
   return originalLock.minus(vestedOverPeriods)
 }
@@ -93,6 +92,20 @@ export const useVestingClaimableBalance = () => {
     }, BN_0)
 
     return futureLocks.minus(vestingLockBalanceQuery.data)
+  }
+
+  return BN_0
+}
+
+export const useVestingTotalVestedAmount = () => {
+  const { account } = useAccountStore()
+  const vestingSchedulesQuery = useVestingSchedules(account?.address)
+
+  if (vestingSchedulesQuery.data) {
+    return vestingSchedulesQuery.data.reduce((acc, cur) => {
+      acc.plus(cur.perPeriod.times(cur.periodCount))
+      return acc
+    }, BN_0)
   }
 
   return BN_0
