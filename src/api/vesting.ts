@@ -9,7 +9,8 @@ import { useBestNumber } from "./chain"
 import { u32 } from "@polkadot/types"
 import BigNumber from "bignumber.js"
 import { useAccountStore } from "../state/store"
-import { BN_0 } from "../utils/constants"
+import { BN_0, ORLMVEST } from "../utils/constants"
+import { useMemo } from "react"
 
 export const useVestingSchedules = (address: Maybe<AccountId32 | string>) => {
   const api = useApiPromise()
@@ -25,6 +26,9 @@ export const useVestingLockBalance = (address: Maybe<AccountId32 | string>) => {
   return useQuery(
     QUERY_KEYS.vestingLockBalance(address),
     address != null ? getVestingLockBalance(api, address) : undefinedNoop,
+    {
+      enabled: !!address,
+    },
   )
 }
 
@@ -33,22 +37,14 @@ const getVestingLockBalance =
     const data = await api.query.balances.locks(address)
     return (
       data
-        .find((lock) => lock.id.toString() === "ormlvest")
+        .find((lock) => lock.id.toString() === ORLMVEST)
         ?.amount.toBigNumber() ?? BN_0
     )
   }
 
 export const getVestingSchedules =
   (api: ApiPromise, address: AccountId32 | string) => async () => {
-    const data = await api.query.vesting.vestingSchedules(address)
-    return data.map((value) => {
-      return {
-        start: value.start,
-        period: value.period,
-        periodCount: value.periodCount,
-        perPeriod: new BigNumber(value.perPeriod.toHex()),
-      }
-    })
+    return api.query.vesting.vestingSchedules(address)
   }
 
 export type ScheduleType = Awaited<
@@ -65,8 +61,12 @@ const getScheduleClaimableBalance = (
   const blockNumberAsBigNumber = blockNumber.toBigNumber()
 
   const numOfPeriods = blockNumberAsBigNumber.minus(start).div(period)
-  const vestedOverPeriods = numOfPeriods.times(schedule.perPeriod)
-  const originalLock = periodCount.times(schedule.perPeriod)
+  const vestedOverPeriods = numOfPeriods.times(
+    new BigNumber(schedule.perPeriod.toHex()),
+  )
+  const originalLock = periodCount.times(
+    new BigNumber(schedule.perPeriod.toHex()),
+  )
 
   return originalLock.minus(vestedOverPeriods)
 }
@@ -77,23 +77,37 @@ export const useVestingClaimableBalance = () => {
   const vestingLockBalanceQuery = useVestingLockBalance(account?.address)
   const bestNumberQuery = useBestNumber()
 
-  if (
-    vestingSchedulesQuery.data &&
-    bestNumberQuery.data &&
-    vestingLockBalanceQuery.data
-  ) {
-    const futureLocks = vestingSchedulesQuery.data.reduce((acc, cur) => {
-      acc.plus(
-        getScheduleClaimableBalance(
-          cur,
-          bestNumberQuery.data.relaychainBlockNumber,
-        ),
-      )
-      return acc
-    }, BN_0)
+  const queries = [vestingSchedulesQuery, vestingLockBalanceQuery]
+  const isLoading = queries.some((query) => query.isLoading)
 
-    return futureLocks.minus(vestingLockBalanceQuery.data)
+  const claimableBalance = useMemo(() => {
+    if (
+      vestingSchedulesQuery.data &&
+      bestNumberQuery.data &&
+      vestingLockBalanceQuery.data
+    ) {
+      const futureLocks = vestingSchedulesQuery.data.reduce((acc, cur) => {
+        acc.plus(
+          getScheduleClaimableBalance(
+            cur,
+            bestNumberQuery.data.relaychainBlockNumber,
+          ),
+        )
+        return acc
+      }, BN_0)
+
+      return vestingLockBalanceQuery.data.minus(futureLocks)
+    }
+
+    return null
+  }, [
+    vestingSchedulesQuery.data,
+    bestNumberQuery.data,
+    vestingLockBalanceQuery.data,
+  ])
+
+  return {
+    data: claimableBalance,
+    isLoading,
   }
-
-  return BN_0
 }
