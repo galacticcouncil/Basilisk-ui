@@ -1,5 +1,4 @@
 import { Trans, useTranslation } from "react-i18next"
-import { useAPR } from "utils/apr"
 import { useMemo, useState } from "react"
 import { Text } from "components/Typography/Text/Text"
 import { Button } from "components/Button/Button"
@@ -12,17 +11,16 @@ import { useClaimableAmount, useClaimAllMutation } from "utils/farms/claiming"
 import { Modal } from "components/Modal/Modal"
 import { ReactComponent as WalletIcon } from "assets/icons/Wallet.svg"
 import { PoolPositionMobile } from "../../position/PoolPositionMobile"
-import { useClaimableAmount } from "utils/totals"
-import { useUserDeposits } from "utils/deposits"
+import { useUserDeposits } from "utils/farms/deposits"
 
 export function PoolJoinFarmClaim(props: { pool: PoolBase }) {
   const { t, i18n } = useTranslation()
   const [openMyPositions, setOpenMyPositions] = useState(false)
 
+  const positions = useUserDeposits(props.pool.address)
   const claimable = useClaimableAmount(props.pool)
   const claimAll = useClaimAllMutation(props.pool.address)
 
-  let index = 0
   const separators = getFormatSeparators(i18n.languages[0])
   const [num, denom] = t("value", {
     value: claimable.data?.bsx,
@@ -30,6 +28,24 @@ export function PoolJoinFarmClaim(props: { pool: PoolBase }) {
     numberPrefix: "≈",
     decimalPlaces: 4,
   }).split(separators.decimal ?? ".")
+
+  const positionsList = useMemo(() => {
+    let index = 0
+
+    return positions.data?.map((deposit, i) =>
+      deposit.deposit.yieldFarmEntries.map((entry, j) => {
+        ++index
+        return (
+          <PoolPositionMobile
+            key={`${i}-${j}`}
+            pool={props.pool}
+            position={entry}
+            index={index}
+          />
+        )
+      }),
+    )
+  }, [positions.data])
 
   return (
     <SContainer>
@@ -104,21 +120,7 @@ export function PoolJoinFarmClaim(props: { pool: PoolBase }) {
         titleDrawer={t("pools.allFarms.modal.list.positions")}
         onClose={() => setOpenMyPositions(false)}
       >
-        <div sx={{ flex: "column", gap: 10 }}>
-          {positions?.map((deposit, indexA) =>
-            deposit.deposit.yieldFarmEntries.map((entry) => {
-              index++
-              return (
-                <PoolPositionMobile
-                  key={index}
-                  pool={props.pool}
-                  position={entry}
-                  index={index}
-                />
-              )
-            }),
-          )}
-        </div>
+        <div sx={{ flex: "column", gap: 10 }}>{positionsList}</div>
       </Modal>
     </SContainer>
   )

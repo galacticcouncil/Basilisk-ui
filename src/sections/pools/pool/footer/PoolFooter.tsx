@@ -11,7 +11,7 @@ type Props = { pool: PoolBase }
 export const PoolFooter = ({ pool }: Props) => {
   const { t } = useTranslation()
 
-  const { locked, claimable, claim } = usePoolFooterValues(pool)
+  const { locked, claimable, claimAll } = usePoolFooterValues(pool)
 
   if (!locked || locked.isZero()) return null
 
@@ -35,8 +35,8 @@ export const PoolFooter = ({ pool }: Props) => {
             variant="gradient"
             size="small"
             sx={{ p: "12px 21px" }}
-            isLoading={claim.isLoading}
-            onClick={() => claim.mutate()}
+            isLoading={claimAll.isLoading}
+            onClick={() => claimAll.mutate()}
           >
             <FlagIcon />
             {t("pools.pool.claim.button")}
