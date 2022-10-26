@@ -7,8 +7,7 @@ import Worker from "./PoolJoinFarmLoyaltyGraph.worker?worker"
 import { wrap } from "comlink"
 import { useQuery } from "@tanstack/react-query"
 import { AprFarm } from "utils/farms/apr"
-import { Maybe } from "utils/types"
-import { undefinedNoop } from "utils/helpers"
+import { Maybe, undefinedNoop } from "utils/helpers"
 import { QUERY_KEYS } from "utils/queryKeys"
 
 const worker = wrap<typeof WorkerType>(new Worker())

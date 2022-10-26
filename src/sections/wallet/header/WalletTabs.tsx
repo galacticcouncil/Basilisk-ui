@@ -1,4 +1,4 @@
-import { LINKS } from "utils/links"
+import { Navigation } from "utils/navigation"
 import { TabLink } from "components/Tabs/TabLink"
 import { useTranslation } from "react-i18next"
 
@@ -17,13 +17,13 @@ export const WalletTabs = () => {
         gap: 10,
       }}
     >
-      <TabLink to={LINKS.walletAssets} icon={<AssetsIcon />}>
+      <TabLink to={Navigation.walletAssets} icon={<AssetsIcon />}>
         {t("wallet.header.assets")}
       </TabLink>
-      <TabLink to={LINKS.walletTransactions} icon={<TransactionsIcon />}>
+      <TabLink to={Navigation.walletTransactions} icon={<TransactionsIcon />}>
         {t("wallet.header.transactions")}
       </TabLink>
-      <TabLink to={LINKS.walletVesting} icon={<PositionsIcon />}>
+      <TabLink to={Navigation.walletVesting} icon={<PositionsIcon />}>
         {t("wallet.header.vesting")}
       </TabLink>
     </div>

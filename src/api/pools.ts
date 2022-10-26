@@ -1,6 +1,6 @@
 import { useQueries, useQuery } from "@tanstack/react-query"
 import { QUERY_KEYS } from "utils/queryKeys"
-import { useApiPromise, useTradeRouter } from "utils/network"
+import { useApiPromise, useTradeRouter } from "utils/api"
 import { ApiPromise } from "@polkadot/api"
 import { TradeRouter } from "@galacticcouncil/sdk"
 

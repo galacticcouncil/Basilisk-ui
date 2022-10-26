@@ -2,10 +2,10 @@ import { useQueries, useQuery } from "@tanstack/react-query"
 import { QUERY_KEYS } from "utils/queryKeys"
 import { u32 } from "@polkadot/types"
 import { TradeRouter } from "@galacticcouncil/sdk"
-import { Maybe } from "utils/types"
 import { BN_1, BN_10 } from "utils/constants"
 import BN from "bignumber.js"
-import { useTradeRouter } from "utils/network"
+import { useTradeRouter } from "utils/api"
+import { Maybe } from "utils/helpers"
 
 export const useSpotPrice = (
   assetA: Maybe<u32 | string>,
