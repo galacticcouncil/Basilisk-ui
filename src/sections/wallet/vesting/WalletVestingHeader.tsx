@@ -23,7 +23,6 @@ export const WalletVestingHeader = () => {
   const spotPrice = useSpotPrice(NATIVE_ASSET_ID, AUSD.data?.id)
   const { data: nativeAsset } = useAssetMeta(NATIVE_ASSET_ID)
 
-
   const claimableUSD = useMemo(() => {
     if (claimableBalance && spotPrice.data) {
       return claimableBalance.times(spotPrice.data.spotPrice)
@@ -67,7 +66,11 @@ export const WalletVestingHeader = () => {
         </Text>
         <div sx={{ flex: "row", align: "start" }}>
           <Heading as="h3" sx={{ fontSize: [16, 28], fontWeight: 900 }}>
-            {t("value.bsx", { value: totalVestedAmount, decimalPlaces: 2, fixedPointScale: nativeAsset?.data?.decimals })}
+            {t("value.bsx", {
+              value: totalVestedAmount,
+              decimalPlaces: 2,
+              fixedPointScale: nativeAsset?.data?.decimals,
+            })}
           </Heading>
         </div>
         <Text
