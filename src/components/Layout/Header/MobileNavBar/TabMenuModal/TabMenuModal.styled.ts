@@ -27,4 +27,6 @@ export const SBackdrop = styled.div`
   position: fixed;
   bottom: 54px;
   left: 0;
+
+  background: rgba(7, 8, 14, 0.7);
 `

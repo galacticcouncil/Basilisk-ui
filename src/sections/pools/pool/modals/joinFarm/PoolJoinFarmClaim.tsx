@@ -20,7 +20,7 @@ import { getFormatSeparators } from "utils/formatting"
 import { PoolBase } from "@galacticcouncil/sdk"
 import { Modal } from "components/Modal/Modal"
 import { ReactComponent as WalletIcon } from "assets/icons/Wallet.svg"
-import { MobPoolPosition } from "../../position/MobPoolPosition"
+import { PoolPositionMobile } from "../../position/PoolPositionMobile"
 
 export function PoolJoinFarmClaim(props: { pool: PoolBase }) {
   const { t, i18n } = useTranslation()
@@ -236,7 +236,7 @@ export function PoolJoinFarmClaim(props: { pool: PoolBase }) {
             deposit.deposit.yieldFarmEntries.map((entry) => {
               index++
               return (
-                <MobPoolPosition
+                <PoolPositionMobile
                   key={index}
                   pool={props.pool}
                   position={entry}

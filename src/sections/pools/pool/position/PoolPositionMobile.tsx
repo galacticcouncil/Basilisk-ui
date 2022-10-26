@@ -4,8 +4,6 @@ import { Text } from "components/Typography/Text/Text"
 import { SMobContiner } from "./PoolPosition.styled"
 import { PalletLiquidityMiningYieldFarmEntry } from "@polkadot/types/lookup"
 import { PoolBase } from "@galacticcouncil/sdk"
-import { normalizeBigNumber } from "utils/balance"
-import { formatNum } from "utils/formatting"
 import { Separator } from "components/Separator/Separator"
 import { GradientText } from "components/Typography/GradientText/GradientText"
 import { AssetIcon } from "components/AssetIcon/AssetIcon"
@@ -16,7 +14,7 @@ type Props = {
   pool: PoolBase
 }
 
-export const MobPoolPosition = ({ position, index, pool }: Props) => {
+export const PoolPositionMobile = ({ position, index, pool }: Props) => {
   const { t } = useTranslation()
 
   const { positionValue, assetA, assetB, rewardAsset } = usePoolPositionData({
@@ -24,12 +22,6 @@ export const MobPoolPosition = ({ position, index, pool }: Props) => {
     pool,
   })
 
-  const lockedSharesValue = formatNum(
-    normalizeBigNumber(position.valuedShares.toBigNumber()).toFixed(),
-    {
-      notation: "compact",
-    },
-  )
   return (
     <SMobContiner sx={{ flex: "column", gap: 10 }}>
       <div sx={{ flex: "row", justify: "space-between", align: "center" }}>
@@ -43,7 +35,9 @@ export const MobPoolPosition = ({ position, index, pool }: Props) => {
           {t("pools.pool.positions.position.lockedShares")}
         </Text>
         <Text fs={14} lh={18} color="white">
-          {lockedSharesValue}
+          {t("pools.pool.positions.position.lockedSharesValue", {
+            shares: position.valuedShares,
+          })}
         </Text>
       </div>
       <Separator />

@@ -6,7 +6,7 @@ import { ReactComponent as TradeIcon } from "assets/icons/Trade.svg"
 import { ReactComponent as WalletIcon } from "assets/icons/Wallet.svg"
 import { ReactComponent as LBPIcon } from "assets/icons/LBPIcon.svg"
 import { ReactComponent as BridgeIcon } from "assets/icons/BridgeIcon.svg"
-import { MENU_ITEMS, TabKeys } from "utils/tabs"
+import { MENU_ITEMS, TabKeys, TabObject } from "utils/tabs"
 import {
   SMobileNavBar,
   SNavBarItem,
@@ -27,8 +27,16 @@ export const MobileNavBar = () => {
     return null
   }
 
-  const visibleTabs = MENU_ITEMS.slice(0, 3)
-  const hiddenTabs = MENU_ITEMS.slice(3).map((hiddenTab, index) => (
+  const [visibleTabs, hiddenTabs] = MENU_ITEMS.reduce(
+    (result, value) => {
+      const isVisible = value.mobVisible
+      result[isVisible ? 0 : 1].push(value)
+      return result
+    },
+    [[], []] as [TabObject[], TabObject[]],
+  )
+
+  const hiddenTabItems = hiddenTabs.map((hiddenTab, index) => (
     <SNavBarItemHidden href={hiddenTab.href} key={index}>
       <Icon size={20} icon={getIcon(hiddenTab.key)} />
       {t(hiddenTab.translationKey)}
@@ -60,7 +68,7 @@ export const MobileNavBar = () => {
           </Link>
         )
       })}
-      <MoreButton tabs={hiddenTabs} />
+      <MoreButton tabs={hiddenTabItems} />
     </SMobileNavBar>
   )
 }
