@@ -66,7 +66,7 @@ export const useTokenBalance = (
   )
 }
 
-export function useTokensBalances(tokenIds: string[]) {
+export function useTokensBalances(tokenIds: (string | u32)[]) {
   const { account } = useAccountStore()
   const api = useApiPromise()
 

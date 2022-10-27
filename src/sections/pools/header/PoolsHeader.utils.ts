@@ -16,6 +16,8 @@ import { QUERY_KEYS } from "utils/queryKeys"
 import { useApiPromise } from "utils/api"
 import { useTotalIssuances } from "api/totalIssuance"
 import { PoolToken } from "@galacticcouncil/sdk"
+import { useTokensBalances } from "api/balances"
+import { u32 } from "@polkadot/types"
 
 export const useTotalInPools = () => {
   const pools = usePools()
@@ -42,6 +44,79 @@ export const useTotalInPools = () => {
 
     return total ?? BN_0
   }, [isLoading, pools.data, spotPrices])
+
+  return { data, isLoading }
+}
+
+export const useUsersTotalInPools = () => {
+  const pools = usePools()
+  const assets = useAssets()
+  const aUSD = useAUSD()
+  const spotPrices = useSpotPrices(
+    assets.data?.map((asset) => asset.id) ?? [],
+    aUSD.data?.id,
+  )
+  const shareTokens = usePoolShareTokens(
+    pools.data?.map((p) => p.address) ?? [],
+  )
+  const totalIssuances = useTotalIssuances(
+    shareTokens.map((q) => q.data?.token),
+  )
+  const balances = useTokensBalances(
+    shareTokens.map((st) => st.data?.token).filter((x): x is u32 => !!x) ?? [],
+  )
+
+  const queries = [
+    pools,
+    assets,
+    aUSD,
+    ...spotPrices,
+    ...shareTokens,
+    ...totalIssuances,
+  ]
+  const isLoading = queries.some((q) => q.isLoading)
+
+  const data = useMemo(() => {
+    if (
+      !pools.data ||
+      !assets.data ||
+      !aUSD.data ||
+      spotPrices.some((q) => !q.data) ||
+      shareTokens.some((q) => !q.data) ||
+      totalIssuances.some((q) => !q.data)
+    )
+      return undefined
+
+    const total = pools.data
+      .map((pool) => {
+        const token = shareTokens.find((st) => st.data?.poolId === pool.address)
+          ?.data?.token
+        const issuance = totalIssuances.find((ti) => ti.data?.token.eq(token))
+          ?.data?.total
+        const balance = balances.find((b) => token?.eq(b?.assetId))?.balance
+
+        if (!balance || balance.isZero() || !issuance || issuance.isZero())
+          return BN_0
+
+        const ratio = balance.div(issuance)
+        const poolTotal = getPoolTotal(
+          pool.tokens,
+          spotPrices.map((q) => q.data),
+        )
+
+        return poolTotal.times(ratio)
+      })
+      .reduce((acc, n) => acc.plus(n), BN_0)
+
+    return total
+  }, [
+    pools.data,
+    assets.data,
+    aUSD.data,
+    spotPrices,
+    shareTokens,
+    totalIssuances,
+  ])
 
   return { data, isLoading }
 }
