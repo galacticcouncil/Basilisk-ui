@@ -50,6 +50,7 @@ const colors = {
   darkGreen: "#1D2D26",
   darkGray: "#1A171B",
   error: "#FF8A8A",
+  iconGray: "#BDCCD4",
   graphGradient0: "#4FFFB0",
   graphGradient50: "#B3FF8F",
   graphGradient100: "#FF984E",
