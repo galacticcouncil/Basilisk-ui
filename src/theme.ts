@@ -70,6 +70,7 @@ const gradients = {
 const zIndices = {
   chainedIcon: 1,
   boxSwitch: 1,
+  tablePlaceholder: 2,
   header: 5,
   backdrop: 9,
   modal: 10,

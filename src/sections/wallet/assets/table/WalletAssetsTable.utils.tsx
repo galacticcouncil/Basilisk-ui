@@ -68,7 +68,7 @@ export const useAssetsTable = () => {
   })
 }
 
-export const useAssetsTableSkeleton = () => {
+export const useAssetsTableSkeleton = (enableAnimation = true) => {
   const { t } = useTranslation()
   const { display } = createColumnHelper()
 
@@ -77,8 +77,18 @@ export const useAssetsTableSkeleton = () => {
       header: t("wallet.assets.table.header.name"),
       cell: () => (
         <div sx={{ flex: "row", gap: 8 }}>
-          <Skeleton circle width={32} height={32} />
-          <Skeleton width={90} height={32} borderRadius={9999} />
+          <Skeleton
+            circle
+            width={32}
+            height={32}
+            enableAnimation={enableAnimation}
+          />
+          <Skeleton
+            width={90}
+            height={32}
+            borderRadius={9999}
+            enableAnimation={enableAnimation}
+          />
         </div>
       ),
     }),
@@ -86,7 +96,12 @@ export const useAssetsTableSkeleton = () => {
       header: t("wallet.assets.table.header.transferable"),
       cell: () => (
         <div>
-          <Skeleton width={134} height={32} borderRadius={9999} />
+          <Skeleton
+            width={134}
+            height={32}
+            borderRadius={9999}
+            enableAnimation={enableAnimation}
+          />
         </div>
       ),
     }),
@@ -94,7 +109,12 @@ export const useAssetsTableSkeleton = () => {
       header: t("wallet.assets.table.header.total"),
       cell: () => (
         <div>
-          <Skeleton width={134} height={32} borderRadius={9999} />
+          <Skeleton
+            width={134}
+            height={32}
+            borderRadius={9999}
+            enableAnimation={enableAnimation}
+          />
         </div>
       ),
     }),
@@ -102,9 +122,24 @@ export const useAssetsTableSkeleton = () => {
       id: "actions",
       cell: () => (
         <div sx={{ flex: "row", gap: 8, mr: 32 }}>
-          <Skeleton width={72} height={32} borderRadius={9999} />
-          <Skeleton width={72} height={32} borderRadius={9999} />
-          <Skeleton width={32} height={32} circle />
+          <Skeleton
+            width={72}
+            height={32}
+            borderRadius={9999}
+            enableAnimation={enableAnimation}
+          />
+          <Skeleton
+            width={72}
+            height={32}
+            borderRadius={9999}
+            enableAnimation={enableAnimation}
+          />
+          <Skeleton
+            width={32}
+            height={32}
+            circle
+            enableAnimation={enableAnimation}
+          />
         </div>
       ),
     }),

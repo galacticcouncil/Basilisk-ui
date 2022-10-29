@@ -4,17 +4,18 @@ import {
   STableContainer,
   STableData,
   STableHeaderContent,
+  STablePlaceholderContent,
   STableRow,
   STableTitle,
 } from "components/Table/Table.styled"
 import { Text } from "components/Typography/Text/Text"
 import { flexRender, Table } from "@tanstack/react-table"
-import { Fragment } from "react"
+import { Fragment, ReactNode } from "react"
 import { TableHeader } from "components/Table/Table"
 
-type Props = { table: Table<unknown>; title: string }
+type Props = { table: Table<unknown>; title: string; placeholder?: ReactNode }
 
-export const TableSkeleton = ({ table, title }: Props) => {
+export const TableSkeleton = ({ table, title, placeholder }: Props) => {
   return (
     <STableContainer>
       <STableTitle>
@@ -38,6 +39,9 @@ export const TableSkeleton = ({ table, title }: Props) => {
           ))}
         </STableHeaderContent>
         <STableBodyContent>
+          {placeholder && (
+            <STablePlaceholderContent>{placeholder}</STablePlaceholderContent>
+          )}
           {table.getRowModel().rows.map((row, i) => (
             <Fragment key={row.id}>
               <STableRow isOdd={!(i % 2)}>
