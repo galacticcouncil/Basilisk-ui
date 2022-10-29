@@ -14,7 +14,7 @@ import { Switch } from "components/Switch/Switch"
 import { Fragment, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { WalletAssetsTableDetails } from "sections/wallet/assets/table/details/WalletAssetsTableDetails"
-import { TableHeader } from "components/Table/TableHeader"
+import { TableHeader } from "components/Table/Table"
 
 export const WalletAssetsTable = () => {
   const { t } = useTranslation()

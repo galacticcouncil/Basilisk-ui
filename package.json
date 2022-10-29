@@ -52,6 +52,7 @@
     "react-i18next": "^11.18.3",
     "react-is": "^18.2.0",
     "react-json-view": "^1.21.3",
+    "react-loading-skeleton": "^3.1.0",
     "react-remove-scroll": "^2.5.5",
     "react-use": "^17.4.0",
     "recharts": "^2.1.13",
