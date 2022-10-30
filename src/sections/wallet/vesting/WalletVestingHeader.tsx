@@ -2,7 +2,10 @@ import { Text } from "components/Typography/Text/Text"
 import { Heading } from "components/Typography/Heading/Heading"
 import { Separator } from "components/Separator/Separator"
 import { Trans, useTranslation } from "react-i18next"
-import { useVestingClaimableBalance } from "api/vesting"
+import {
+  useVestingClaimableBalance,
+  useVestingTotalVestedAmount,
+} from "api/vesting"
 import { useSpotPrice } from "api/spotPrice"
 import { useAUSD } from "api/asset"
 import { useMemo } from "react"
@@ -11,13 +14,17 @@ import i18n from "i18next"
 import { css } from "@emotion/react"
 import { theme } from "theme"
 import { NATIVE_ASSET_ID } from "utils/api"
+import { useAssetMeta } from "../../../api/assetMeta"
 
 export const WalletVestingHeader = () => {
   const { t } = useTranslation()
 
   const { data: claimableBalance } = useVestingClaimableBalance()
+  const { data: totalVestedAmount } = useVestingTotalVestedAmount()
+
   const AUSD = useAUSD()
   const spotPrice = useSpotPrice(NATIVE_ASSET_ID, AUSD.data?.id)
+  const { data: nativeAsset } = useAssetMeta(NATIVE_ASSET_ID)
 
   const claimableUSD = useMemo(() => {
     if (claimableBalance && spotPrice.data) {
@@ -33,6 +40,13 @@ export const WalletVestingHeader = () => {
     fixedPointScale: 12,
     decimalPlaces: 2,
   }).split(separators.decimal ?? ".")
+
+  const totalVestedUSD = useMemo(() => {
+    if (totalVestedAmount && spotPrice.data) {
+      return totalVestedAmount.times(spotPrice.data.spotPrice)
+    }
+    return null
+  }, [totalVestedAmount, spotPrice])
 
   return (
     <div
@@ -73,15 +87,29 @@ export const WalletVestingHeader = () => {
         </Text>
       </div>
       <Separator sx={{ mb: 12, display: ["inherit", "none"] }} />
-      <div sx={{ flex: ["row", "column"], justify: "start" }}>
+      <div sx={{ flex: ["row", "column"], justify: ["start", "center"] }}>
         <Text color="neutralGray300" sx={{ mb: 14 }}>
           {t("wallet.vesting.total_vested")}
         </Text>
         <div sx={{ flex: "row", align: "start" }}>
-          <Heading as="h3" sx={{ fontSize: [16, 58], fontWeight: 900 }}>
-            {t("value.usd", { amount: "2" })}
+          <Heading as="h3" sx={{ fontSize: [16, 28], fontWeight: 900 }}>
+            {t("value.bsx", {
+              value: totalVestedAmount,
+              decimalPlaces: 2,
+              fixedPointScale: nativeAsset?.data?.decimals,
+            })}
           </Heading>
         </div>
+        <Text
+          sx={{
+            mt: 10,
+          }}
+          color="neutralGray300"
+          fs={16}
+          lh={18}
+        >
+          {t("value.usd", { amount: totalVestedUSD })}
+        </Text>
       </div>
     </div>
   )
