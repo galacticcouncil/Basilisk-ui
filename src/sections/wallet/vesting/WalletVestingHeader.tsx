@@ -41,6 +41,12 @@ export const WalletVestingHeader = () => {
     decimalPlaces: 2,
   }).split(separators.decimal ?? ".")
 
+  const totalVestedValue = t("value", {
+    value: totalVestedAmount,
+    fixedPointScale: nativeAsset?.data?.decimals ?? 12,
+    decimalPlaces: 2,
+  }).split(separators.decimal ?? ".")
+
   const totalVestedUSD = useMemo(() => {
     if (totalVestedAmount && spotPrice.data) {
       return totalVestedAmount.times(spotPrice.data.spotPrice)
@@ -92,17 +98,27 @@ export const WalletVestingHeader = () => {
           {t("wallet.vesting.total_vested")}
         </Text>
         <div sx={{ flex: "row", align: "start" }}>
-          <Heading as="h3" sx={{ fontSize: [16, 28], fontWeight: 900 }}>
-            {t("value.bsx", {
-              value: totalVestedAmount,
-              decimalPlaces: 2,
-              fixedPointScale: nativeAsset?.data?.decimals,
-            })}
+          <Heading as="h3" sx={{ fontSize: [16, 34], fontWeight: 900 }}>
+            <Trans
+              t={t}
+              i18nKey="wallet.vesting.total_vested.value"
+              tOptions={{
+                num: totalVestedValue[0],
+                denom: totalVestedValue[1],
+              }}
+            >
+              <span
+                css={css`
+                  color: rgba(${theme.rgbColors.white}, 0.4);
+                  font-size: 16px;
+                `}
+              />
+            </Trans>
           </Heading>
         </div>
         <Text
           sx={{
-            mt: 10,
+            mt: 3,
           }}
           color="neutralGray300"
           fs={16}
