@@ -20,7 +20,7 @@ export const WalletAssetsTableDetails = ({
     <div sx={{ flex: "row" }}>
       <div sx={{ flex: "column", align: "end", m: "auto", gap: 8 }}>
         <Text fs={12} lh={14} fw={500} color="neutralGray300">
-          Origin Chain:
+          {t("wallet.assets.table.details.origin")}
         </Text>
         <Text fs={14} lh={18} fw={500} color="white">
           {origin}
@@ -28,13 +28,13 @@ export const WalletAssetsTableDetails = ({
       </div>
       <div
         css={{
-          width: "1px",
+          width: 1,
           background: `rgba(${theme.rgbColors.white}, 0.06)`,
         }}
       />
       <div sx={{ m: "auto" }}>
         <Text fs={12} lh={14} fw={500} color="neutralGray300">
-          Locked:
+          {t("wallet.assets.table.details.locked")}
         </Text>
         <Text fs={14} lh={18} fw={500} color="white" sx={{ mt: 8 }}>
           {t("value", { value: locked })}
