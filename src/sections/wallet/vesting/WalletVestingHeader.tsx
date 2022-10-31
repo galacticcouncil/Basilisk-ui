@@ -15,6 +15,7 @@ import { css } from "@emotion/react"
 import { theme } from "theme"
 import { NATIVE_ASSET_ID } from "utils/api"
 import { useAssetMeta } from "../../../api/assetMeta"
+import { STable} from "./WalletVestingHeader.styled"
 
 export const WalletVestingHeader = () => {
   const { t } = useTranslation()
@@ -127,6 +128,27 @@ export const WalletVestingHeader = () => {
           {t("value.usd", { amount: totalVestedUSD })}
         </Text>
       </div>
+
+      <STable>
+        <div>
+          <Text color="neutralGray300" sx={{ mb: 10 }}>
+            {t("wallet.vesting.vesting_schedule_end")}
+          </Text>
+          <Text color="white" fs={18} fw={700}>
+            ≈30.08.2022
+          </Text>
+        </div>
+        <Separator color="neutralGray500" orientation="vertical" />
+        <div>
+          <Text color="neutralGray300" sx={{ mb: 10 }}>
+            {t("wallet.vesting.vesting_days_left")}
+          </Text>
+          <Text color="white" fs={18} fw={700}>
+            ≈47 Days
+          </Text>
+        </div>
+      </STable>
+
     </div>
   )
 }
