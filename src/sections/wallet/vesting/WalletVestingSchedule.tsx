@@ -78,6 +78,7 @@ export const WalletVestingSchedule: FC<WalletVestingScheduleProps> = ({
           <Button
             variant="gradient"
             transform="uppercase"
+            disabled
             sx={{
               fontWeight: 800,
             }}
