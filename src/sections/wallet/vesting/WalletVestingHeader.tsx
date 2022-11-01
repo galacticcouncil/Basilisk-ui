@@ -132,12 +132,12 @@ export const WalletVestingHeader = () => {
         </Text>
       </div>
 
-      <STable>
-        <div>
-          <Text color="neutralGray300" sx={{ mb: 10 }}>
-            {t("wallet.vesting.vesting_schedule_end")}
-          </Text>
-          {vestingScheduleEnd && (
+      {vestingScheduleEnd && (
+        <STable>
+          <div>
+            <Text color="neutralGray300" sx={{ mb: 10 }}>
+              {t("wallet.vesting.vesting_schedule_end")}
+            </Text>
             <Text color="white" fs={18} fw={700}>
               ≈
               {format(
@@ -148,23 +148,23 @@ export const WalletVestingHeader = () => {
                 "dd.MM.yyyy",
               )}
             </Text>
-          )}
-        </div>
-        <Separator color="neutralGray500" orientation="vertical" />
-        <div>
-          <Text color="neutralGray300" sx={{ mb: 10 }}>
-            {t("wallet.vesting.vesting_days_left")}
-          </Text>
-          <Text color="white" fs={18} fw={700}>
-            ≈{" "}
-            {t("value", {
-              value: vestingScheduleEnd?.div(86400000),
-              fixedPointScale: 0,
-              decimalPlaces: 2,
-            })}
-          </Text>
-        </div>
-      </STable>
+          </div>
+          <Separator color="neutralGray500" orientation="vertical" />
+          <div>
+            <Text color="neutralGray300" sx={{ mb: 10 }}>
+              {t("wallet.vesting.vesting_days_left")}
+            </Text>
+            <Text color="white" fs={18} fw={700}>
+              ≈{" "}
+              {t("value", {
+                value: vestingScheduleEnd.div(86400000),
+                fixedPointScale: 0,
+                decimalPlaces: 2,
+              })}
+            </Text>
+          </div>
+        </STable>
+      )}
     </div>
   )
 }
