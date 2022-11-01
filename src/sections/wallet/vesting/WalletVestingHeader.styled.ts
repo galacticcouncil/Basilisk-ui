@@ -9,4 +9,5 @@ export const STable = styled.div`
   padding: 29px;
   box-sizing: border-box;
   justify-content: space-between;
+  align-self: center;
 `

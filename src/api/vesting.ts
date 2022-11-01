@@ -187,8 +187,8 @@ export const useVestingScheduleEnd = () => {
 
         return blocksToEnd.times(BLOCK_TIME.times(1000))
       })
-
-      return BigNumber.max(...endings)
+      const mostFuture = BigNumber.max(...endings)
+      return mostFuture.isNaN() ? null : mostFuture
     }
 
     return null
