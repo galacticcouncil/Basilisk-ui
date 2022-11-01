@@ -7,7 +7,7 @@ import { useBestNumber } from "./chain"
 import { u32 } from "@polkadot/types"
 import BigNumber from "bignumber.js"
 import { useAccountStore } from "state/store"
-import { BN_0, ORLMVEST } from "utils/constants"
+import { BLOCK_TIME, BN_0, ORLMVEST } from "utils/constants"
 import { useMemo } from "react"
 import { useApiPromise } from "utils/api"
 
@@ -130,6 +130,41 @@ export const useVestingTotalVestedAmount = () => {
 
   return {
     data: totalVestedAmount,
+    isLoading,
+  }
+}
+
+/**
+ * Returns vesting time to end in milliseconds
+ **/
+export const useVestingScheduleEnd = () => {
+  const { account } = useAccountStore()
+  const schedulesQuery = useVestingSchedules(account?.address)
+  const bestNumberQuery = useBestNumber()
+
+  const queries = [schedulesQuery, bestNumberQuery]
+  const isLoading = queries.some((query) => query.isLoading)
+
+  const estimatedEnds = useMemo(() => {
+    if (schedulesQuery.data?.[0] && bestNumberQuery.data) {
+      const schedule = schedulesQuery.data[0]
+      const start = schedule.start.toBigNumber()
+      const period = schedule.period.toBigNumber()
+      const periodCount = schedule.periodCount.toBigNumber()
+      const currentBlock =
+        bestNumberQuery.data.relaychainBlockNumber.toBigNumber()
+
+      const end = start.plus(period.times(periodCount))
+      const blocksToEnd = end.minus(currentBlock)
+
+      return blocksToEnd.times(BLOCK_TIME.times(1000))
+    }
+
+    return null
+  }, [schedulesQuery, bestNumberQuery])
+
+  return {
+    data: estimatedEnds,
     isLoading,
   }
 }

@@ -4,6 +4,7 @@ import { Separator } from "components/Separator/Separator"
 import { Trans, useTranslation } from "react-i18next"
 import {
   useVestingClaimableBalance,
+  useVestingScheduleEnd,
   useVestingTotalVestedAmount,
 } from "api/vesting"
 import { useSpotPrice } from "api/spotPrice"
@@ -15,13 +16,15 @@ import { css } from "@emotion/react"
 import { theme } from "theme"
 import { NATIVE_ASSET_ID } from "utils/api"
 import { useAssetMeta } from "../../../api/assetMeta"
-import { STable} from "./WalletVestingHeader.styled"
+import { STable } from "./WalletVestingHeader.styled"
+import { addDays, format } from "date-fns"
 
 export const WalletVestingHeader = () => {
   const { t } = useTranslation()
 
   const { data: claimableBalance } = useVestingClaimableBalance()
   const { data: totalVestedAmount } = useVestingTotalVestedAmount()
+  const { data: vestingScheduleEnd } = useVestingScheduleEnd()
 
   const AUSD = useAUSD()
   const spotPrice = useSpotPrice(NATIVE_ASSET_ID, AUSD.data?.id)
@@ -134,9 +137,18 @@ export const WalletVestingHeader = () => {
           <Text color="neutralGray300" sx={{ mb: 10 }}>
             {t("wallet.vesting.vesting_schedule_end")}
           </Text>
-          <Text color="white" fs={18} fw={700}>
-            ≈30.08.2022
-          </Text>
+          {vestingScheduleEnd && (
+            <Text color="white" fs={18} fw={700}>
+              ≈
+              {format(
+                addDays(
+                  new Date(),
+                  vestingScheduleEnd.div(86400000).toNumber(),
+                ),
+                "dd.MM.yyyy",
+              )}
+            </Text>
+          )}
         </div>
         <Separator color="neutralGray500" orientation="vertical" />
         <div>
@@ -144,11 +156,15 @@ export const WalletVestingHeader = () => {
             {t("wallet.vesting.vesting_days_left")}
           </Text>
           <Text color="white" fs={18} fw={700}>
-            ≈47 Days
+            ≈{" "}
+            {t("value", {
+              value: vestingScheduleEnd?.div(86400000),
+              fixedPointScale: 0,
+              decimalPlaces: 2,
+            })}
           </Text>
         </div>
       </STable>
-
     </div>
   )
 }
