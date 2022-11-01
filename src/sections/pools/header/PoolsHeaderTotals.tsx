@@ -1,7 +1,6 @@
 import {
   useTotalInFarms,
-  useTotalInPools,
-  useUsersTotalInPools,
+  useTotalsInPools,
 } from "sections/pools/header/PoolsHeader.utils"
 import { Text } from "components/Typography/Text/Text"
 import { Heading } from "components/Typography/Heading/Heading"
@@ -10,7 +9,7 @@ import { Separator } from "components/Separator/Separator"
 
 export const PoolsHeaderTotals = () => {
   const { t } = useTranslation()
-  const totalInPools = useTotalInPools()
+  const totalInPools = useTotalsInPools()
   const totalInFarms = useTotalInFarms()
 
   return (
@@ -25,7 +24,7 @@ export const PoolsHeaderTotals = () => {
         <div sx={{ flex: "row", align: "baseline" }}>
           <Heading as="h3" sx={{ fontSize: [16, 42], fontWeight: 900 }}>
             {t("value.usd", {
-              amount: totalInPools.data,
+              amount: totalInPools.data?.poolTotal,
             })}
           </Heading>
         </div>
@@ -47,7 +46,7 @@ export const PoolsHeaderTotals = () => {
 
 export const PoolsHeaderUserTotals = () => {
   const { t } = useTranslation()
-  const totalInPools = useUsersTotalInPools()
+  const totalInPools = useTotalsInPools()
   const totalInFarms = useTotalInFarms()
 
   return (
@@ -62,7 +61,7 @@ export const PoolsHeaderUserTotals = () => {
         <div sx={{ flex: "row", align: "baseline" }}>
           <Heading as="h3" sx={{ fontSize: [16, 42], fontWeight: 900 }}>
             {t("value.usd", {
-              amount: totalInPools.data,
+              amount: totalInPools.data?.userTotal,
             })}
           </Heading>
         </div>

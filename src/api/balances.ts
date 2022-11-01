@@ -70,13 +70,11 @@ export function useTokensBalances(tokenIds: (string | u32)[]) {
   const { account } = useAccountStore()
   const api = useApiPromise()
 
-  const queries = useQueries({
+  return useQueries({
     queries: tokenIds.map((id) => ({
       queryKey: QUERY_KEYS.tokenBalance(id),
       queryFn: () => getTokenBalance(api, account?.address ?? "", id)(),
       enabled: !!account,
     })),
   })
-
-  return queries.map((balance) => balance.data)
 }

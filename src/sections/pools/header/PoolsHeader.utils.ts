@@ -19,36 +19,7 @@ import { PoolToken } from "@galacticcouncil/sdk"
 import { useTokensBalances } from "api/balances"
 import { u32 } from "@polkadot/types"
 
-export const useTotalInPools = () => {
-  const pools = usePools()
-  const assets = useAssets()
-  const aUSD = useAUSD()
-  const spotPrices = useSpotPrices(
-    assets.data?.map((asset) => asset.id) ?? [],
-    aUSD.data?.id,
-  )
-
-  const queries = [pools, assets, aUSD, ...spotPrices]
-  const isLoading = queries.some((q) => q.isLoading)
-
-  const data = useMemo(() => {
-    if (isLoading) return undefined
-
-    const totals = pools.data?.map((pool) =>
-      getPoolTotal(
-        pool.tokens,
-        spotPrices.map((q) => q.data),
-      ),
-    )
-    const total = totals?.reduce((acc, total) => acc.plus(total), BN_0)
-
-    return total ?? BN_0
-  }, [isLoading, pools.data, spotPrices])
-
-  return { data, isLoading }
-}
-
-export const useUsersTotalInPools = () => {
+export const useTotalsInPools = () => {
   const pools = usePools()
   const assets = useAssets()
   const aUSD = useAUSD()
@@ -70,6 +41,7 @@ export const useUsersTotalInPools = () => {
     pools,
     assets,
     aUSD,
+    ...balances,
     ...spotPrices,
     ...shareTokens,
     ...totalIssuances,
@@ -87,28 +59,40 @@ export const useUsersTotalInPools = () => {
     )
       return undefined
 
-    const total = pools.data
-      .map((pool) => {
-        const token = shareTokens.find((st) => st.data?.poolId === pool.address)
-          ?.data?.token
-        const issuance = totalIssuances.find((ti) => ti.data?.token.eq(token))
-          ?.data?.total
-        const balance = balances.find((b) => token?.eq(b?.assetId))?.balance
+    const totals = pools.data.map((pool) => {
+      const token = shareTokens.find((st) => st.data?.poolId === pool.address)
+        ?.data?.token
+      const issuance = totalIssuances.find((ti) => ti.data?.token.eq(token))
+        ?.data?.total
+      const balance = balances.find((b) => token?.eq(b.data?.assetId))?.data
+        ?.balance
 
-        if (!balance || balance.isZero() || !issuance || issuance.isZero())
-          return BN_0
+      if (!balance || balance.isZero() || !issuance || issuance.isZero())
+        return { poolTotal: BN_0, userTotal: BN_0 }
 
-        const ratio = balance.div(issuance)
-        const poolTotal = getPoolTotal(
-          pool.tokens,
-          spotPrices.map((q) => q.data),
-        )
+      const ratio = balance.div(issuance)
 
-        return poolTotal.times(ratio)
-      })
-      .reduce((acc, n) => acc.plus(n), BN_0)
+      const poolTotal = getPoolTotal(
+        pool.tokens,
+        spotPrices.map((q) => q.data),
+      )
+      const userTotal = poolTotal.times(ratio)
 
-    return total
+      return { poolTotal, userTotal }
+    })
+
+    const sum = totals.reduce(
+      (acc, curr) => ({
+        poolTotal: acc.poolTotal.plus(curr.poolTotal),
+        userTotal: acc.userTotal.plus(curr.userTotal),
+      }),
+      {
+        poolTotal: BN_0,
+        userTotal: BN_0,
+      },
+    )
+
+    return sum
   }, [
     pools.data,
     assets.data,
@@ -198,12 +182,15 @@ export const useTotalInFarms = () => {
         const totalIssuance = totalIssuances.find((ti) =>
           ti.data?.token?.eq(shareToken?.data?.token),
         )
+
         const farmIssuance = farm.yieldFarm.totalShares
         const ratio = farmIssuance
           .toBigNumber()
           .div(totalIssuance?.data?.total ?? BN_1)
 
-        return poolTotal.times(ratio)
+        const farmTotal = poolTotal.times(ratio)
+
+        return farmTotal
       })
       .reduce((acc, t) => acc.plus(t), BN_0)
 
