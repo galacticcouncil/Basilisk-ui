@@ -163,7 +163,7 @@ export const useVestingTotalVestedAmount = () => {
 }
 
 /**
- * Returns vesting time to end in milliseconds
+ * Returns the most future vesting time ending in milliseconds
  **/
 export const useVestingScheduleEnd = () => {
   const { account } = useAccountStore()
@@ -174,18 +174,21 @@ export const useVestingScheduleEnd = () => {
   const isLoading = queries.some((query) => query.isLoading)
 
   const estimatedEnds = useMemo(() => {
-    if (schedulesQuery.data?.[0] && bestNumberQuery.data) {
-      const schedule = schedulesQuery.data[0]
-      const start = schedule.start.toBigNumber()
-      const period = schedule.period.toBigNumber()
-      const periodCount = schedule.periodCount.toBigNumber()
-      const currentBlock =
-        bestNumberQuery.data.relaychainBlockNumber.toBigNumber()
+    if (schedulesQuery.data && bestNumberQuery.data) {
+      const endings = schedulesQuery.data.map((schedule) => {
+        const start = schedule.start.toBigNumber()
+        const period = schedule.period.toBigNumber()
+        const periodCount = schedule.periodCount.toBigNumber()
+        const currentBlock =
+          bestNumberQuery.data.relaychainBlockNumber.toBigNumber()
 
-      const end = start.plus(period.times(periodCount))
-      const blocksToEnd = end.minus(currentBlock)
+        const end = start.plus(period.times(periodCount))
+        const blocksToEnd = end.minus(currentBlock)
 
-      return blocksToEnd.times(BLOCK_TIME.times(1000))
+        return blocksToEnd.times(BLOCK_TIME.times(1000))
+      })
+
+      return BigNumber.max(...endings)
     }
 
     return null
