@@ -3,7 +3,7 @@ import { Heading } from "components/Typography/Heading/Heading"
 import { Separator } from "components/Separator/Separator"
 import { Trans, useTranslation } from "react-i18next"
 import {
-  useVestingClaimableBalance,
+  useVestingTotalClaimableBalance,
   useVestingScheduleEnd,
   useVestingTotalVestedAmount,
 } from "api/vesting"
@@ -22,7 +22,7 @@ import { addDays, format } from "date-fns"
 export const WalletVestingHeader = () => {
   const { t } = useTranslation()
 
-  const { data: claimableBalance } = useVestingClaimableBalance()
+  const { data: claimableBalance } = useVestingTotalClaimableBalance()
   const { data: totalVestedAmount } = useVestingTotalVestedAmount()
   const { data: vestingScheduleEnd } = useVestingScheduleEnd()
 

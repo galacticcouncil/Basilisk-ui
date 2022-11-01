@@ -70,7 +70,32 @@ const getScheduleClaimableBalance = (
   return originalLock.minus(vestedOverPeriods)
 }
 
-export const useVestingClaimableBalance = () => {
+/**
+ * Returns Bignumber of claimable balance in one schedule
+ **/
+export const useVestingScheduleClaimableBalance = (schedule: ScheduleType) => {
+  const bestNumberQuery = useBestNumber()
+
+  const claimableBalance = useMemo(() => {
+    if (bestNumberQuery.data) {
+      return getScheduleClaimableBalance(
+        schedule,
+        bestNumberQuery.data.relaychainBlockNumber,
+      )
+    }
+    return null
+  }, [schedule, bestNumberQuery])
+
+  return {
+    data: claimableBalance,
+    isLoading: bestNumberQuery.isLoading,
+  }
+}
+
+/**
+ * Returns Bignumber of total claimable balance
+ **/
+export const useVestingTotalClaimableBalance = () => {
   const { account } = useAccountStore()
   const vestingSchedulesQuery = useVestingSchedules(account?.address)
   const vestingLockBalanceQuery = useVestingLockBalance(account?.address)
@@ -111,6 +136,9 @@ export const useVestingClaimableBalance = () => {
   }
 }
 
+/**
+ * Returns BigNumber of totalVestedAmount
+ **/
 export const useVestingTotalVestedAmount = () => {
   const { account } = useAccountStore()
   const { data, isLoading } = useVestingSchedules(account?.address)

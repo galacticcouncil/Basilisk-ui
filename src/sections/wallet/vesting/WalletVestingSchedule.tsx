@@ -1,4 +1,5 @@
 import { SSchedule, SInner } from "./WalletVestingSchedule.styled"
+import { FC, useMemo } from "react"
 import { Text } from "../../../components/Typography/Text/Text"
 import { Trans, useTranslation } from "react-i18next"
 import { getFormatSeparators } from "../../../utils/formatting"
@@ -7,13 +8,37 @@ import { css } from "@emotion/react"
 import { theme } from "../../../theme"
 import { Heading } from "../../../components/Typography/Heading/Heading"
 import { Button } from "../../../components/Button/Button"
+import {
+  ScheduleType,
+  useVestingScheduleClaimableBalance,
+} from "../../../api/vesting"
+import { useAUSD } from "../../../api/asset"
+import { useSpotPrice } from "../../../api/spotPrice"
+import { NATIVE_ASSET_ID } from "../../../utils/api"
 
-export const WalletVestingSchedule = () => {
+interface WalletVestingScheduleProps {
+  schedule: ScheduleType
+}
+
+export const WalletVestingSchedule: FC<WalletVestingScheduleProps> = ({
+  schedule,
+}) => {
   const { t } = useTranslation()
   const separators = getFormatSeparators(i18n.languages[0])
+  const { data: claimableBalance } =
+    useVestingScheduleClaimableBalance(schedule)
+  const AUSD = useAUSD()
+  const spotPrice = useSpotPrice(NATIVE_ASSET_ID, AUSD.data?.id)
+
+  const claimableUSD = useMemo(() => {
+    if (claimableBalance && spotPrice.data) {
+      return claimableBalance.times(spotPrice.data.spotPrice)
+    }
+    return null
+  }, [claimableBalance, spotPrice])
 
   const [num, denom] = t("value", {
-    value: 0,
+    value: claimableBalance,
     fixedPointScale: 12,
     decimalPlaces: 2,
   }).split(separators.decimal ?? ".")
@@ -46,7 +71,7 @@ export const WalletVestingSchedule = () => {
             </Trans>
           </Heading>
           <Text color="neutralGray300" fs={16} lh={18}>
-            {t("value.usd", { amount: 0 })}
+            {t("value.usd", { amount: claimableUSD })}
           </Text>
         </div>
         <div>
