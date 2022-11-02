@@ -9,6 +9,11 @@ export const QUERY_KEY_PREFIX = "@block"
 
 export const QUERY_KEYS = {
   bestNumber: [QUERY_KEY_PREFIX, "bestNumber"],
+  accountBalances: (id: Maybe<AccountId32 | string>) => [
+    QUERY_KEY_PREFIX,
+    "accountBalances",
+    id?.toString(),
+  ],
   pools: [QUERY_KEY_PREFIX, "pools"],
   poolShareToken: (poolId: AccountId32 | string) => [
     QUERY_KEY_PREFIX,
