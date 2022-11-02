@@ -164,5 +164,16 @@
   "testnet.modal.description.3.text": "This is required by <0>Sentry.io</0> which collects certain non-sensitive data such as OS and browser info.",
   "testnet.modal.description.4.text": "If you agree to this, please click Yess, let me enter, otherwise click No, take me back.",
   "testnet.modal.back": "No, take me back",
-  "testnet.modal.enter": "Yess, let me enter"
+  "testnet.modal.enter": "Yess, let me enter",
+  "wallet.assets.table.title": "Available Assets",
+  "wallet.assets.table.toggle": "Show All Assets",
+  "wallet.assets.table.placeholder": "Please connect your wallet to view your assets.",
+  "wallet.assets.table.header.name": "Asset Name",
+  "wallet.assets.table.header.transferable": "Transferable Balance",
+  "wallet.assets.table.header.total": "Total Balance",
+  "wallet.assets.table.actions.buy": "Buy",
+  "wallet.assets.table.actions.sell": "Sell",
+  "wallet.assets.table.actions.transfer": "Transfer",
+  "wallet.assets.table.details.origin": "Origin Chain:",
+  "wallet.assets.table.details.locked": "Locked:"
 }
