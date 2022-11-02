@@ -43,20 +43,28 @@ export const useAllUserDeposits = () => {
           (x): x is { id: u128; deposit: PalletLiquidityMiningDepositData }[] =>
             x !== undefined,
         )
-        .flat(2) ?? []
+        .flat(2)
+        .filter((deposit) =>
+          depositIds.data?.some((id) => id.instanceId.eq(deposit?.id)),
+        ) ?? []
     )
-  }, [allDeposits])
+  }, [allDeposits, depositIds.data])
 
-  const userDeposits = useMemo(
+  const positions = useMemo(
     () =>
-      deposits?.filter((deposit) =>
-        depositIds.data?.some((id) => id.instanceId.eq(deposit?.id)),
-      ),
-    [deposits, depositIds.data],
+      deposits
+        ?.map(({ deposit }) =>
+          deposit.yieldFarmEntries.map((position) => ({
+            position,
+            poolId: deposit.ammPoolId,
+          })),
+        )
+        .flat(2),
+    [deposits],
   )
 
   return {
-    data: userDeposits,
+    data: { deposits, positions },
     isLoading,
   }
 }

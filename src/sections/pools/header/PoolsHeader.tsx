@@ -4,13 +4,13 @@ import { FC } from "react"
 import { useTranslation } from "react-i18next"
 import { useAccountStore } from "state/store"
 import { Text } from "components/Typography/Text/Text"
-import { Heading } from "components/Typography/Heading/Heading"
 import { Separator } from "components/Separator/Separator"
 import {
-  useTotalInFarms,
-  useTotalsInPools,
-} from "sections/pools/header/PoolsHeader.utils"
-import { useUsersPositionsValue } from "utils/farms/positions"
+  PoolsHeaderTotalFarms,
+  PoolsHeaderTotalFarmsUser,
+  PoolsHeaderTotalPools,
+  PoolsHeaderTotalPoolsUser,
+} from "sections/pools/header/PoolsHeaderTotal"
 
 type Props = {
   showMyPositions: boolean
@@ -24,9 +24,6 @@ export const PoolsHeader: FC<Props> = ({
   const { t } = useTranslation()
 
   const { account } = useAccountStore()
-  const totalInPools = useTotalsInPools()
-  const totalInFarms = useTotalInFarms()
-  const totalInPositions = useUsersPositionsValue()
 
   return (
     <>
@@ -53,13 +50,11 @@ export const PoolsHeader: FC<Props> = ({
             {t("pools.header.totalLocked")}
           </Text>
           <div sx={{ flex: "row", align: "baseline" }}>
-            <Heading as="h3" sx={{ fontSize: [16, 42], fontWeight: 900 }}>
-              {t("value.usd", {
-                amount: showMyPositions
-                  ? totalInPools.data?.userTotal
-                  : totalInPools.data?.poolTotal,
-              })}
-            </Heading>
+            {showMyPositions ? (
+              <PoolsHeaderTotalPoolsUser />
+            ) : (
+              <PoolsHeaderTotalPools />
+            )}
           </div>
         </div>
         <Separator sx={{ mb: 12, display: ["inherit", "none"] }} />
@@ -68,13 +63,11 @@ export const PoolsHeader: FC<Props> = ({
             {t("pools.header.totalFarms")}
           </Text>
           <div sx={{ flex: "row", align: "baseline" }}>
-            <Heading as="h3" sx={{ fontSize: [16, 42], fontWeight: 900 }}>
-              {t("value.usd", {
-                amount: showMyPositions
-                  ? totalInPositions.data
-                  : totalInFarms.data,
-              })}
-            </Heading>
+            {showMyPositions ? (
+              <PoolsHeaderTotalFarmsUser />
+            ) : (
+              <PoolsHeaderTotalFarms />
+            )}
           </div>
         </div>
       </div>

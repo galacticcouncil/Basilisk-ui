@@ -10,29 +10,19 @@ import { useAllUserDeposits } from "utils/farms/deposits"
 
 export const useUsersPositionsValue = () => {
   const deposits = useAllUserDeposits()
-  const positions = useMemo(
-    () =>
-      deposits.data
-        ?.map(({ deposit }) =>
-          deposit.yieldFarmEntries.map((position) => ({
-            position,
-            poolId: deposit.ammPoolId,
-          })),
-        )
-        .flat(2) ?? [],
-    [deposits.data],
-  )
 
   const pools = usePools()
   const yieldFarms = useYieldFarms(
-    positions.map(({ position: { yieldFarmId, globalFarmId }, poolId }) => ({
-      yieldFarmId: yieldFarmId,
-      globalFarmId: globalFarmId,
-      poolId,
-    })),
+    deposits.data?.positions?.map(
+      ({ position: { yieldFarmId, globalFarmId }, poolId }) => ({
+        yieldFarmId: yieldFarmId,
+        globalFarmId: globalFarmId,
+        poolId,
+      }),
+    ) ?? [],
   )
   const shareTokens = usePoolShareTokens(
-    deposits.data?.map(({ deposit }) => deposit.ammPoolId) ?? [],
+    deposits.data?.deposits?.map(({ deposit }) => deposit.ammPoolId) ?? [],
   )
   const totalIssuances = useTotalIssuances(
     shareTokens.map((st) => st.data?.token),
@@ -57,7 +47,8 @@ export const useUsersPositionsValue = () => {
 
   const data = useMemo(() => {
     if (
-      !deposits.data ||
+      !deposits.data.deposits ||
+      !deposits.data.positions ||
       !pools.data ||
       !yieldFarms.data ||
       !aUSD.data ||
@@ -67,7 +58,7 @@ export const useUsersPositionsValue = () => {
     )
       return undefined
 
-    const values = positions
+    const values = deposits.data.positions
       .map(({ position, poolId }) => {
         const yieldFarm = yieldFarms.data?.find((yf) =>
           yf.id.eq(position.yieldFarmId),
@@ -104,8 +95,8 @@ export const useUsersPositionsValue = () => {
 
     return values
   }, [
-    deposits.data,
-    positions,
+    deposits.data.deposits,
+    deposits.data.positions,
     pools.data,
     aUSD.data,
     yieldFarms,

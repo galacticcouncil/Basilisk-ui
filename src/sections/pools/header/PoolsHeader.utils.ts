@@ -53,6 +53,7 @@ export const useTotalsInPools = () => {
       !pools.data ||
       !assets.data ||
       !aUSD.data ||
+      balances.some((q) => !q.data) ||
       spotPrices.some((q) => !q.data) ||
       shareTokens.some((q) => !q.data) ||
       totalIssuances.some((q) => !q.data)
@@ -97,6 +98,7 @@ export const useTotalsInPools = () => {
     pools.data,
     assets.data,
     aUSD.data,
+    balances,
     spotPrices,
     shareTokens,
     totalIssuances,
