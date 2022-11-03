@@ -1,26 +1,22 @@
-import { Modal, ModalMeta } from "components/Modal/Modal"
+import { ModalMeta } from "components/Modal/Modal"
 import { useTranslation } from "react-i18next"
 import { useAPR } from "utils/farms/apr"
 import { u128, u32 } from "@polkadot/types"
 import { PoolBase } from "@galacticcouncil/sdk"
-import { Fragment, useState } from "react"
-import { PoolJoinFarmNewDeposit } from "./deposit/PoolJoinFarmNewDeposit"
-import { PoolJoinFarmItem } from "./PoolJoinFarmItem"
+import { Fragment } from "react"
 import { useAccountDepositIds, useDeposits } from "api/deposits"
 import { useAccountStore } from "state/store"
-import { PoolJoinFarmClaim } from "./claim/PoolJoinFarmClaim"
-import { PoolJoinFarmWithdraw } from "./PoolJoinFarmWithdraw"
+import { PoolFarmClaim } from "sections/pools/farm/claim/PoolFarmClaim"
+import { PoolFarmWithdraw } from "sections/pools/farm/withdraw/PoolFarmWithdraw"
+import { PoolFarmRedeposit } from "sections/pools/farm/deposit/PoolFarmRedeposit"
+import { PoolFarmDetail } from "sections/pools/farm/detail/PoolFarmDetail"
 import {
   PalletLiquidityMiningDepositData,
   PalletLiquidityMiningYieldFarmEntry,
 } from "@polkadot/types/lookup"
-import { useMedia } from "react-use"
-import { theme } from "theme"
-import { Button } from "components/Button/Button"
 import { GradientText } from "components/Typography/GradientText/GradientText"
-import { PoolJoinFarmRedeposit } from "./deposit/PoolJoinFarmRedeposit"
 
-export function PoolJoinFarmSectionList(props: {
+export function PoolFarmPositionDetailSectionList(props: {
   pool: PoolBase
   onSelect: (
     value: {
@@ -32,8 +28,6 @@ export function PoolJoinFarmSectionList(props: {
   ) => void
 }) {
   const { t } = useTranslation()
-  const isDesktop = useMedia(theme.viewport.gte.sm)
-  const [openJoinFarm, setOpenJoinFarm] = useState(false)
 
   const { account } = useAccountStore()
   const apr = useAPR(props.pool.address)
@@ -74,7 +68,7 @@ export function PoolJoinFarmSectionList(props: {
             </GradientText>
           </div>
 
-          <PoolJoinFarmClaim pool={props.pool} />
+          <PoolFarmClaim pool={props.pool} />
 
           {depositNfts?.map((deposit) => {
             return (
@@ -88,7 +82,7 @@ export function PoolJoinFarmSectionList(props: {
 
                   if (farm == null) return null
                   return (
-                    <PoolJoinFarmItem
+                    <PoolFarmDetail
                       key={farm.yieldFarm.id.toString()}
                       farm={farm}
                       pool={props.pool}
@@ -110,13 +104,13 @@ export function PoolJoinFarmSectionList(props: {
 
           {!!depositNfts?.length && (
             <div sx={{ flex: "row", justify: "center", width: "100%" }}>
-              <PoolJoinFarmWithdraw pool={props.pool} />
+              <PoolFarmWithdraw pool={props.pool} />
             </div>
           )}
         </>
       )}
 
-      {availableYieldFarms.length > 0 && (
+      {depositNfts != null && availableYieldFarms.length > 0 && (
         <>
           <div>
             <GradientText fs={18} fw={700} sx={{ mt: 20, mb: 16 }}>
@@ -127,7 +121,7 @@ export function PoolJoinFarmSectionList(props: {
           <div sx={{ flex: "column", gap: 28 }}>
             <div sx={{ flex: "column", gap: 12 }}>
               {availableYieldFarms.map((farm) => (
-                <PoolJoinFarmItem
+                <PoolFarmDetail
                   key={[farm.globalFarm.id, farm.yieldFarm.id].join(",")}
                   farm={farm}
                   pool={props.pool}
@@ -141,41 +135,14 @@ export function PoolJoinFarmSectionList(props: {
               ))}
             </div>
 
-            {depositNfts && depositNfts.length > 0 ? (
-              <PoolJoinFarmRedeposit
-                pool={props.pool}
-                availableYieldFarms={availableYieldFarms}
-                depositNfts={depositNfts}
-              />
-            ) : (
-              <>
-                {isDesktop ? (
-                  <PoolJoinFarmNewDeposit
-                    pool={props.pool}
-                    isDrawer={!isDesktop}
-                  />
-                ) : (
-                  <Button
-                    variant="primary"
-                    sx={{ width: "inherit" }}
-                    onClick={() => setOpenJoinFarm(true)}
-                  >
-                    {t("farms.deposit.submit")}
-                  </Button>
-                )}
-              </>
-            )}
+            <PoolFarmRedeposit
+              pool={props.pool}
+              availableYieldFarms={availableYieldFarms}
+              depositNfts={depositNfts}
+            />
           </div>
         </>
       )}
-
-      <Modal
-        open={openJoinFarm}
-        isDrawer
-        onClose={() => setOpenJoinFarm(false)}
-      >
-        <PoolJoinFarmNewDeposit pool={props.pool} isDrawer={!isDesktop} />
-      </Modal>
     </Fragment>
   )
 }

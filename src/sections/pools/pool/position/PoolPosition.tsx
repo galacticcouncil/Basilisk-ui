@@ -6,21 +6,14 @@ import { PalletLiquidityMiningYieldFarmEntry } from "@polkadot/types/lookup"
 import { SContainer } from "sections/pools/pool/position/PoolPosition.styled"
 import { usePoolPositionData } from "sections/pools/pool/position/PoolPosition.utils"
 import { PoolBase } from "@galacticcouncil/sdk"
-import { DepositNftType } from "api/deposits"
 
 type Props = {
   index: number
   pool: PoolBase
   position: PalletLiquidityMiningYieldFarmEntry
-  depositNft: DepositNftType
 }
 
-export const PoolPosition: FC<Props> = ({
-  index,
-  pool,
-  position,
-  depositNft,
-}) => {
+export const PoolPosition: FC<Props> = ({ index, pool, position }) => {
   const { t } = useTranslation()
 
   const { enteredDate, positionValue, assetA, assetB } = usePoolPositionData({
@@ -66,11 +59,7 @@ export const PoolPosition: FC<Props> = ({
           </Text>
         </div>
       </div>
-      <PoolPositionFarm
-        pool={pool}
-        position={position}
-        depositNft={depositNft}
-      />
+      <PoolPositionFarm pool={pool} position={position} />
     </SContainer>
   )
 }

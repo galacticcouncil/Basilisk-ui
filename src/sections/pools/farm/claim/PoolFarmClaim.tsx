@@ -4,16 +4,16 @@ import { Text } from "components/Typography/Text/Text"
 import { Button } from "components/Button/Button"
 import { css } from "@emotion/react"
 import { theme } from "theme"
-import { SContainer } from "./PoolJoinFarmClaim.styled"
+import { SContainer } from "./PoolFarmClaim.styled"
 import { getFormatSeparators } from "utils/formatting"
 import { PoolBase } from "@galacticcouncil/sdk"
 import { useClaimableAmount, useClaimAllMutation } from "utils/farms/claiming"
 import { Modal } from "components/Modal/Modal"
 import { ReactComponent as WalletIcon } from "assets/icons/Wallet.svg"
-import { PoolPositionMobile } from "../../../position/PoolPositionMobile"
+import { PoolPositionMobile } from "../../pool/position/PoolPositionMobile"
 import { useUserDeposits } from "utils/farms/deposits"
 
-export function PoolJoinFarmClaim(props: { pool: PoolBase }) {
+export function PoolFarmClaim(props: { pool: PoolBase }) {
   const { t, i18n } = useTranslation()
   const [openMyPositions, setOpenMyPositions] = useState(false)
 

@@ -1,9 +1,5 @@
 import { Trans, useTranslation } from "react-i18next"
-import {
-  SFarm,
-  SFarmIcon,
-  SFarmRow,
-} from "sections/pools/pool/modals/joinFarm/PoolJoinFarm.styled"
+import { SFarm, SFarmIcon, SFarmRow } from "./PoolFarmDetail.styled"
 import { Text } from "components/Typography/Text/Text"
 import { FillBar } from "components/FillBar/FillBar"
 import { ReactComponent as ChevronDown } from "assets/icons/ChevronDown.svg"
@@ -18,7 +14,7 @@ import { DepositNftType } from "api/deposits"
 import { Tag } from "components/Tag/Tag"
 import { PoolBase } from "@galacticcouncil/sdk"
 
-export const PoolJoinFarmItem = (props: {
+export const PoolFarmDetail = (props: {
   pool: PoolBase
   farm: AprFarm
   depositNft?: DepositNftType

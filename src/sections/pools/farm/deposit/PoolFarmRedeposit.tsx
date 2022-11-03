@@ -13,7 +13,7 @@ type Props = {
   depositNfts: DepositNftType[]
 }
 
-export const PoolJoinFarmRedeposit = (props: Props) => {
+export const PoolFarmRedeposit = (props: Props) => {
   const { t } = useTranslation()
   const { createTransaction } = useStore()
   const api = useApiPromise()
