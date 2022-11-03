@@ -40,7 +40,7 @@ export function PoolJoinFarmSectionList(props: {
   const deposits = useDeposits(props.pool.address)
   const accountDepositIds = useAccountDepositIds(account?.address)
 
-  const positions = deposits.data?.filter((deposit) =>
+  const depositNfts = deposits.data?.filter((deposit) =>
     accountDepositIds.data?.some((ad) => ad.instanceId.eq(deposit.id)),
   )
 
@@ -48,7 +48,7 @@ export function PoolJoinFarmSectionList(props: {
 
   const availableYieldFarms = apr.data.filter(
     (farm) =>
-      !positions?.find((deposit) =>
+      !depositNfts?.find((deposit) =>
         deposit.deposit.yieldFarmEntries.find(
           (entry) =>
             entry.globalFarmId.eq(farm.globalFarm.id) &&
@@ -76,7 +76,7 @@ export function PoolJoinFarmSectionList(props: {
 
           <PoolJoinFarmClaim pool={props.pool} />
 
-          {positions?.map((deposit) => {
+          {depositNfts?.map((deposit) => {
             return (
               <Fragment key={deposit.id.toString()}>
                 {deposit.deposit.yieldFarmEntries.map((entry) => {
@@ -108,7 +108,7 @@ export function PoolJoinFarmSectionList(props: {
             )
           })}
 
-          {!!positions?.length && (
+          {!!depositNfts?.length && (
             <div sx={{ flex: "row", justify: "center", width: "100%" }}>
               <PoolJoinFarmWithdraw pool={props.pool} />
             </div>
@@ -141,11 +141,11 @@ export function PoolJoinFarmSectionList(props: {
               ))}
             </div>
 
-            {positions && positions.length > 0 ? (
+            {depositNfts && depositNfts.length > 0 ? (
               <PoolJoinFarmRedeposit
                 pool={props.pool}
                 availableYieldFarms={availableYieldFarms}
-                deposits={positions}
+                depositNfts={depositNfts}
               />
             ) : (
               <>
