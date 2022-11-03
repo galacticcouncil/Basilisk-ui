@@ -1,4 +1,4 @@
-import { defineConfig, loadEnv } from "vite"
+import { defineConfig, loadEnv, splitVendorChunkPlugin } from "vite"
 import react from "@vitejs/plugin-react"
 import wasm from "vite-plugin-wasm"
 import svgr from "vite-plugin-svgr"
@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
     build: {
       target: "esnext",
       outDir: "build",
-      sourcemap: false,
+      sourcemap: sentryEnabled,
     },
     optimizeDeps: {
       esbuildOptions: {
@@ -25,6 +25,7 @@ export default defineConfig(({ mode }) => {
       logOverride: { "this-is-undefined-in-esm": "silent" },
     },
     plugins: [
+      splitVendorChunkPlugin(),
       tsconfigPaths(),
       react({
         jsxImportSource: "@basilisk/jsx",
