@@ -37,9 +37,6 @@ export function PoolFarmPositionDetailSectionList(props: {
   const depositNfts = deposits.data?.filter((deposit) =>
     accountDepositIds.data?.some((ad) => ad.instanceId.eq(deposit.id)),
   )
-
-  const [assetIn, assetOut] = props.pool.tokens
-
   const availableYieldFarms = apr.data.filter(
     (farm) =>
       !depositNfts?.find((deposit) =>
@@ -50,6 +47,8 @@ export function PoolFarmPositionDetailSectionList(props: {
         ),
       ),
   )
+
+  const [assetIn, assetOut] = props.pool.tokens
 
   return (
     <Fragment key="list">

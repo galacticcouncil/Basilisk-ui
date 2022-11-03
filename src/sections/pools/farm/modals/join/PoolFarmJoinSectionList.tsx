@@ -75,6 +75,7 @@ export function PoolFarmJoinSectionList(props: {
         open={openJoinFarm}
         isDrawer
         onClose={() => setOpenJoinFarm(false)}
+        titleDrawer={t("farms.deposit.mobile.title")}
       >
         <PoolFarmDeposit pool={props.pool} isDrawer={!isDesktop} />
       </Modal>
