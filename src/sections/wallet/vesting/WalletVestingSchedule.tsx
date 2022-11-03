@@ -1,5 +1,5 @@
 import { SSchedule, SInner } from "./WalletVestingSchedule.styled"
-import { FC, useMemo } from "react"
+import { FC, useCallback, useMemo } from "react"
 import { Text } from "../../../components/Typography/Text/Text"
 import { Trans, useTranslation } from "react-i18next"
 import { getFormatSeparators } from "../../../utils/formatting"
@@ -17,7 +17,7 @@ import { useAUSD } from "../../../api/asset"
 import { useSpotPrice } from "../../../api/spotPrice"
 import { NATIVE_ASSET_ID, useApiPromise } from "../../../utils/api"
 import { useTokenBalance } from "../../../api/balances"
-import { useAccountStore } from "../../../state/store"
+import { useAccountStore, useStore } from "../../../state/store"
 import { usePaymentInfo } from "../../../api/transaction"
 
 interface WalletVestingScheduleProps {
@@ -29,6 +29,7 @@ export const WalletVestingSchedule: FC<WalletVestingScheduleProps> = ({
 }) => {
   const { t } = useTranslation()
   const api = useApiPromise()
+  const { createTransaction } = useStore()
   const { account } = useAccountStore()
   const separators = getFormatSeparators(i18n.languages[0])
   const { data: claimableBalance } =
@@ -63,6 +64,12 @@ export const WalletVestingSchedule: FC<WalletVestingScheduleProps> = ({
 
     return false
   }, [paymentInfoData, balance.data, claimableBalance])
+
+  const handleClaim = useCallback(async () => {
+    return await createTransaction({
+      tx: api.tx.vesting.claim(),
+    })
+  }, [api, createTransaction])
 
   return (
     <SSchedule>
@@ -104,6 +111,7 @@ export const WalletVestingSchedule: FC<WalletVestingScheduleProps> = ({
             <Button
               variant="gradient"
               transform="uppercase"
+              onClick={handleClaim}
               disabled={!isClaimAllowed}
               sx={{
                 fontWeight: 800,
