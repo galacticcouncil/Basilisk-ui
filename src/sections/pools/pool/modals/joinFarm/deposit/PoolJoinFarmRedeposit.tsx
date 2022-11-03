@@ -4,7 +4,6 @@ import { Button } from "components/Button/Button"
 import { useAccountStore, useStore } from "state/store"
 import { useApiPromise } from "utils/api"
 import { useForm } from "react-hook-form"
-import { WalletConnectButton } from "sections/wallet/connect/modal/WalletConnectButton"
 import { DepositNftType } from "api/deposits"
 import { AprFarm } from "utils/farms/apr"
 
@@ -52,20 +51,18 @@ export const PoolJoinFarmRedeposit = (props: Props) => {
     }
   }
 
+  if (!account) return null
+
   return (
     <form onSubmit={form.handleSubmit(handleSubmit)}>
-      {account ? (
-        <Button
-          type="submit"
-          variant="primary"
-          disabled={form.formState.isSubmitting}
-          sx={{ width: "100%" }}
-        >
-          {t("farms.redeposit.submit")}
-        </Button>
-      ) : (
-        <WalletConnectButton />
-      )}
+      <Button
+        type="submit"
+        variant="primary"
+        disabled={form.formState.isSubmitting}
+        sx={{ width: "100%" }}
+      >
+        {t("farms.redeposit.submit")}
+      </Button>
     </form>
   )
 }
