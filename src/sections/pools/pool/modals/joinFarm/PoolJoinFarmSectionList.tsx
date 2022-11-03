@@ -4,12 +4,11 @@ import { useAPR } from "utils/farms/apr"
 import { u128, u32 } from "@polkadot/types"
 import { PoolBase } from "@galacticcouncil/sdk"
 import { Fragment, useState } from "react"
-import { PoolJoinFarmDeposit } from "./PoolJoinFarmDeposit"
+import { PoolJoinFarmNewDeposit } from "./deposit/PoolJoinFarmNewDeposit"
 import { PoolJoinFarmItem } from "./PoolJoinFarmItem"
-import { Text } from "components/Typography/Text/Text"
 import { useAccountDepositIds, useDeposits } from "api/deposits"
 import { useAccountStore } from "state/store"
-import { PoolJoinFarmClaim } from "./PoolJoinFarmClaim"
+import { PoolJoinFarmClaim } from "./claim/PoolJoinFarmClaim"
 import { PoolJoinFarmWithdraw } from "./PoolJoinFarmWithdraw"
 import {
   PalletLiquidityMiningDepositData,
@@ -18,6 +17,8 @@ import {
 import { useMedia } from "react-use"
 import { theme } from "theme"
 import { Button } from "components/Button/Button"
+import { GradientText } from "components/Typography/GradientText/GradientText"
+import { PoolJoinFarmRedeposit } from "./deposit/PoolJoinFarmRedeposit"
 
 export function PoolJoinFarmSectionList(props: {
   pool: PoolBase
@@ -45,6 +46,17 @@ export function PoolJoinFarmSectionList(props: {
 
   const [assetIn, assetOut] = props.pool.tokens
 
+  const availableYieldFarms = apr.data.filter(
+    (farm) =>
+      !positions?.find((deposit) =>
+        deposit.deposit.yieldFarmEntries.find(
+          (entry) =>
+            entry.globalFarmId.eq(farm.globalFarm.id) &&
+            entry.yieldFarmId.eq(farm.yieldFarm.id),
+        ),
+      ),
+  )
+
   return (
     <Fragment key="list">
       <ModalMeta
@@ -56,9 +68,11 @@ export function PoolJoinFarmSectionList(props: {
 
       {account && (
         <>
-          <Text fs={18} fw={700} sx={{ mb: 16 }}>
-            {t("pools.allFarms.modal.list.positions")}
-          </Text>
+          <div>
+            <GradientText fs={18} fw={700} sx={{ mb: 16 }}>
+              {t("pools.allFarms.modal.list.positions")}
+            </GradientText>
+          </div>
 
           <PoolJoinFarmClaim pool={props.pool} />
 
@@ -78,7 +92,7 @@ export function PoolJoinFarmSectionList(props: {
                       key={farm.yieldFarm.id.toString()}
                       farm={farm}
                       pool={props.pool}
-                      deposit={deposit}
+                      depositNft={deposit}
                       onSelect={() =>
                         props.onSelect({
                           globalFarmId: farm.globalFarm.id,
@@ -99,43 +113,68 @@ export function PoolJoinFarmSectionList(props: {
               <PoolJoinFarmWithdraw pool={props.pool} />
             </div>
           )}
-
-          <Text fs={18} fw={700} sx={{ mt: 20, mb: 16 }}>
-            {t("pools.allFarms.modal.list.availableFarms")}
-          </Text>
         </>
       )}
 
-      {apr.data.map((farm) => (
-        <PoolJoinFarmItem
-          key={[farm.globalFarm.id, farm.yieldFarm.id].join(",")}
-          farm={farm}
-          pool={props.pool}
-          onSelect={() =>
-            props.onSelect({
-              globalFarmId: farm.globalFarm.id,
-              yieldFarmId: farm.yieldFarm.id,
-            })
-          }
-        />
-      ))}
-      {isDesktop ? (
-        <PoolJoinFarmDeposit pool={props.pool} isDrawer={!isDesktop} />
-      ) : (
-        <Button
-          variant="primary"
-          sx={{ width: "inherit" }}
-          onClick={() => setOpenJoinFarm(true)}
-        >
-          {t("farms.deposit.submit")}
-        </Button>
+      {availableYieldFarms.length > 0 && (
+        <>
+          <div>
+            <GradientText fs={18} fw={700} sx={{ mt: 20, mb: 16 }}>
+              {t("pools.allFarms.modal.list.availableFarms")}
+            </GradientText>
+          </div>
+
+          <div sx={{ flex: "column", gap: 28 }}>
+            <div sx={{ flex: "column", gap: 12 }}>
+              {availableYieldFarms.map((farm) => (
+                <PoolJoinFarmItem
+                  key={[farm.globalFarm.id, farm.yieldFarm.id].join(",")}
+                  farm={farm}
+                  pool={props.pool}
+                  onSelect={() =>
+                    props.onSelect({
+                      globalFarmId: farm.globalFarm.id,
+                      yieldFarmId: farm.yieldFarm.id,
+                    })
+                  }
+                />
+              ))}
+            </div>
+
+            {positions && positions.length > 0 ? (
+              <PoolJoinFarmRedeposit
+                pool={props.pool}
+                availableYieldFarms={availableYieldFarms}
+                deposits={positions}
+              />
+            ) : (
+              <>
+                {isDesktop ? (
+                  <PoolJoinFarmNewDeposit
+                    pool={props.pool}
+                    isDrawer={!isDesktop}
+                  />
+                ) : (
+                  <Button
+                    variant="primary"
+                    sx={{ width: "inherit" }}
+                    onClick={() => setOpenJoinFarm(true)}
+                  >
+                    {t("farms.deposit.submit")}
+                  </Button>
+                )}
+              </>
+            )}
+          </div>
+        </>
       )}
+
       <Modal
         open={openJoinFarm}
         isDrawer
         onClose={() => setOpenJoinFarm(false)}
       >
-        <PoolJoinFarmDeposit pool={props.pool} isDrawer={!isDesktop} />
+        <PoolJoinFarmNewDeposit pool={props.pool} isDrawer={!isDesktop} />
       </Modal>
     </Fragment>
   )

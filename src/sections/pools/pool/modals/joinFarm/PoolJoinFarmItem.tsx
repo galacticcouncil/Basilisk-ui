@@ -14,14 +14,14 @@ import { BLOCK_TIME } from "utils/constants"
 import { useBestNumber } from "api/chain"
 import { getFloatingPointAmount } from "utils/balance"
 import { GradientText } from "components/Typography/GradientText/GradientText"
-import { DepositType } from "api/deposits"
+import { DepositNftType } from "api/deposits"
 import { Tag } from "components/Tag/Tag"
 import { PoolBase } from "@galacticcouncil/sdk"
 
 export const PoolJoinFarmItem = (props: {
   pool: PoolBase
   farm: AprFarm
-  deposit?: DepositType
+  depositNft?: DepositNftType
   onSelect?: () => void
 }) => {
   const asset = useAsset(props.farm.assetId)
@@ -43,9 +43,9 @@ export const PoolJoinFarmItem = (props: {
       as={props.onSelect ? "button" : "div"}
       variant={props.onSelect ? "list" : "detail"}
       onClick={props.onSelect}
-      isJoined={!!props.deposit}
+      isJoined={!!props.depositNft}
     >
-      {props.deposit && <Tag>{t("pools.allFarms.modal.joined")}</Tag>}
+      {props.depositNft && <Tag>{t("pools.allFarms.modal.joined")}</Tag>}
       <div
         sx={{
           flex: ["row", "column"],
@@ -95,14 +95,14 @@ export const PoolJoinFarmItem = (props: {
             })}
           </Text>
         </SFarmRow>
-        {props.deposit && (
+        {props.depositNft && (
           <SFarmRow>
             <GradientText fs={14} fw={550}>
               {t("pools.allFarms.modal.lockedShares")}
             </GradientText>
             <Text fs={14} color="neutralGray100">
               {t("pools.allFarms.modal.lockedShares.value", {
-                value: props.deposit.deposit.shares,
+                value: props.depositNft.deposit.shares,
                 assetA: assetIn.symbol,
                 assetB: assetOut.symbol,
               })}

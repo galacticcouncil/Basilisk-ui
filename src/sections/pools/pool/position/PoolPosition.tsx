@@ -3,19 +3,24 @@ import { Text } from "components/Typography/Text/Text"
 import { PoolPositionFarm } from "sections/pools/pool/position/farm/PoolPositionFarm"
 import { useTranslation } from "react-i18next"
 import { PalletLiquidityMiningYieldFarmEntry } from "@polkadot/types/lookup"
-import { AccountId32 } from "@polkadot/types/interfaces"
 import { SContainer } from "sections/pools/pool/position/PoolPosition.styled"
 import { usePoolPositionData } from "sections/pools/pool/position/PoolPosition.utils"
 import { PoolBase } from "@galacticcouncil/sdk"
+import { DepositNftType } from "api/deposits"
 
 type Props = {
-  position: PalletLiquidityMiningYieldFarmEntry
   index: number
   pool: PoolBase
-  poolId: AccountId32
+  position: PalletLiquidityMiningYieldFarmEntry
+  depositNft: DepositNftType
 }
 
-export const PoolPosition: FC<Props> = ({ position, index, pool }) => {
+export const PoolPosition: FC<Props> = ({
+  index,
+  pool,
+  position,
+  depositNft,
+}) => {
   const { t } = useTranslation()
 
   const { enteredDate, positionValue, assetA, assetB } = usePoolPositionData({
@@ -63,8 +68,8 @@ export const PoolPosition: FC<Props> = ({ position, index, pool }) => {
       </div>
       <PoolPositionFarm
         pool={pool}
-        globalFarmId={position.globalFarmId}
-        yieldFarmId={position.yieldFarmId}
+        position={position}
+        depositNft={depositNft}
       />
     </SContainer>
   )
