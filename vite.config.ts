@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
     build: {
       target: "esnext",
       outDir: "build",
-      sourcemap: sentryEnabled,
+      sourcemap: false,
     },
     optimizeDeps: {
       esbuildOptions: {
