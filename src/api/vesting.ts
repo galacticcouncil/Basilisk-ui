@@ -10,6 +10,7 @@ import { useAccountStore } from "state/store"
 import { BLOCK_TIME, BN_0, ORLMVEST } from "utils/constants"
 import { useMemo } from "react"
 import { useApiPromise } from "utils/api"
+import { getExpectedBlockDate } from "../utils/block"
 
 export const useVestingSchedules = (address: Maybe<AccountId32 | string>) => {
   const api = useApiPromise()
@@ -68,6 +69,47 @@ const getScheduleClaimableBalance = (
   )
 
   return originalLock.minus(vestedOverPeriods)
+}
+
+/**
+ * Returns date of next available claim
+ **/
+export const useNextClaimableDate = (schedule: ScheduleType) => {
+  const bestNumberQuery = useBestNumber()
+  const start = schedule.start.toBigNumber()
+  const period = schedule.period.toBigNumber()
+
+  const periodNumber = useMemo(() => {
+    if (bestNumberQuery.data) {
+      const blockNumber =
+        bestNumberQuery.data.relaychainBlockNumber.toBigNumber()
+      return blockNumber.minus(start).div(period)
+    }
+    return null
+  }, [bestNumberQuery, start, period])
+
+  const nextClaimingBlock = useMemo(() => {
+    if (periodNumber) {
+      return new BigNumber(
+        Math.ceil(start.plus(periodNumber).times(period).toNumber()),
+      )
+    }
+    return null
+  }, [periodNumber, start, period])
+
+  const nextClaimableDate = useMemo(() => {
+    if (bestNumberQuery.data && nextClaimingBlock) {
+      const currentBlockNumber =
+        bestNumberQuery.data.relaychainBlockNumber.toBigNumber()
+      return getExpectedBlockDate(currentBlockNumber, nextClaimingBlock)
+    }
+    return null
+  }, [bestNumberQuery, nextClaimingBlock])
+
+  return {
+    data: nextClaimableDate,
+    isLoading: bestNumberQuery.isLoading,
+  }
 }
 
 /**

@@ -10,11 +10,15 @@ import { Heading } from "../../../components/Typography/Heading/Heading"
 import { Button } from "../../../components/Button/Button"
 import {
   ScheduleType,
+  useNextClaimableDate,
   useVestingScheduleClaimableBalance,
 } from "../../../api/vesting"
 import { useAUSD } from "../../../api/asset"
 import { useSpotPrice } from "../../../api/spotPrice"
-import { NATIVE_ASSET_ID } from "../../../utils/api"
+import { NATIVE_ASSET_ID, useApiPromise } from "../../../utils/api"
+import { useTokenBalance } from "../../../api/balances"
+import { useAccountStore } from "../../../state/store"
+import { usePaymentInfo } from "../../../api/transaction"
 
 interface WalletVestingScheduleProps {
   schedule: ScheduleType
@@ -24,11 +28,18 @@ export const WalletVestingSchedule: FC<WalletVestingScheduleProps> = ({
   schedule,
 }) => {
   const { t } = useTranslation()
+  const api = useApiPromise()
+  const { account } = useAccountStore()
   const separators = getFormatSeparators(i18n.languages[0])
   const { data: claimableBalance } =
     useVestingScheduleClaimableBalance(schedule)
+
+  const { data: nextClaimableDate } = useNextClaimableDate(schedule)
+  const { data: paymentInfoData } = usePaymentInfo(api.tx.vesting.claim())
+
   const AUSD = useAUSD()
   const spotPrice = useSpotPrice(NATIVE_ASSET_ID, AUSD.data?.id)
+  const balance = useTokenBalance(NATIVE_ASSET_ID, account?.address)
 
   const claimableUSD = useMemo(() => {
     if (claimableBalance && spotPrice.data) {
@@ -42,6 +53,16 @@ export const WalletVestingSchedule: FC<WalletVestingScheduleProps> = ({
     fixedPointScale: 12,
     decimalPlaces: 2,
   }).split(separators.decimal ?? ".")
+
+  const isClaimAllowed = useMemo(() => {
+    if (paymentInfoData && balance.data && claimableBalance) {
+      return claimableBalance.isGreaterThan(
+        balance.data.balance.plus(paymentInfoData.partialFee.toBigNumber()),
+      )
+    }
+
+    return false
+  }, [paymentInfoData, balance.data, claimableBalance])
 
   return (
     <SSchedule>
@@ -74,17 +95,36 @@ export const WalletVestingSchedule: FC<WalletVestingScheduleProps> = ({
             {t("value.usd", { amount: claimableUSD })}
           </Text>
         </div>
-        <div>
-          <Button
-            variant="gradient"
-            transform="uppercase"
-            disabled
-            sx={{
-              fontWeight: 800,
-            }}
-          >
-            {t("wallet.vesting.claim_assets")}
-          </Button>
+        <div
+          sx={{
+            textAlign: "center",
+          }}
+        >
+          {balance.data && claimableBalance && (
+            <Button
+              variant="gradient"
+              transform="uppercase"
+              disabled={!isClaimAllowed}
+              sx={{
+                fontWeight: 800,
+              }}
+            >
+              {t("wallet.vesting.claim_assets")}
+            </Button>
+          )}
+          {nextClaimableDate && (
+            <Text
+              color="neutralGray300"
+              tAlign="center"
+              sx={{
+                mt: 15,
+              }}
+            >
+              {t("wallet.vesting.estimated_claim_date", {
+                date: nextClaimableDate,
+              })}
+            </Text>
+          )}
         </div>
       </SInner>
     </SSchedule>

@@ -156,10 +156,8 @@ export const WalletVestingHeader = () => {
             </Text>
             <Text color="white" fs={18} fw={700}>
               ≈{" "}
-              {t("value", {
-                value: vestingScheduleEnd.div(86400000),
-                fixedPointScale: 0,
-                decimalPlaces: 2,
+              {t("wallet.vesting.vesting_days_left_value", {
+                count: Math.round(vestingScheduleEnd.div(86400000).toNumber()),
               })}
             </Text>
           </div>

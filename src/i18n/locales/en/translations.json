@@ -156,6 +156,8 @@
   "wallet.header.switchAccount": "Switch account",
   "wallet.vesting.vesting_schedule_end": "Vesting schedule End",
   "wallet.vesting.vesting_days_left": "Days Left:",
+  "wallet.vesting.vesting_days_left_value_one": "{{ count }} Day",
+  "wallet.vesting.vesting_days_left_value_other": "{{ count }} Days",
   "wallet.vesting.claimable": "Claimable",
   "wallet.vesting.claimable.value": "{{num}}.<0>{{denom}}</0>",
   "wallet.vesting.total_vested": "Total Vested",
@@ -164,5 +166,6 @@
   "wallet.vesting.claimable_now": "Claimable now",
   "wallet.vesting.claimable_now_value": "≈{{num}}.<0>{{denom}} BSX</0>",
   "wallet.vesting.claim_assets": "Claim assets",
+  "wallet.vesting.estimated_claim_date": "Available for claim on {{ date, dd.MM.yyyy }}",
   "wallet.vesting.empty": "You don’t have actually any vesting schedule  active <br /> If you had vesting schedule you claimed already all your assets."
 }
