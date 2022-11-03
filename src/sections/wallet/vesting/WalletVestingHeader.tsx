@@ -17,7 +17,7 @@ import { theme } from "theme"
 import { NATIVE_ASSET_ID } from "utils/api"
 import { useAssetMeta } from "../../../api/assetMeta"
 import { STable } from "./WalletVestingHeader.styled"
-import { addDays, format } from "date-fns"
+import { addDays } from "date-fns"
 
 export const WalletVestingHeader = () => {
   const { t } = useTranslation()
@@ -139,14 +139,12 @@ export const WalletVestingHeader = () => {
               {t("wallet.vesting.vesting_schedule_end")}
             </Text>
             <Text color="white" fs={18} fw={700}>
-              ≈
-              {format(
-                addDays(
+              {t("wallet.vesting.vesting_schedule_end_value", {
+                date: addDays(
                   new Date(),
                   vestingScheduleEnd.div(86400000).toNumber(),
                 ),
-                "dd.MM.yyyy",
-              )}
+              })}
             </Text>
           </div>
           <Separator color="neutralGray500" orientation="vertical" />
@@ -155,9 +153,8 @@ export const WalletVestingHeader = () => {
               {t("wallet.vesting.vesting_days_left")}
             </Text>
             <Text color="white" fs={18} fw={700}>
-              ≈{" "}
               {t("wallet.vesting.vesting_days_left_value", {
-                count: Math.round(vestingScheduleEnd.div(86400000).toNumber()),
+                count: Math.ceil(vestingScheduleEnd.div(86400000).toNumber()),
               })}
             </Text>
           </div>

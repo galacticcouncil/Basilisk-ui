@@ -76,8 +76,7 @@ export const WalletVestingSchedule: FC<WalletVestingScheduleProps> = ({
       <SInner>
         <div
           sx={{
-            display: "flex",
-            flexDirection: "column",
+            flex: "column",
             gap: 10,
           }}
         >

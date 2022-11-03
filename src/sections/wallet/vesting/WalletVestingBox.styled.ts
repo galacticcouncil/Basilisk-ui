@@ -9,5 +9,4 @@ export const SBox = styled.div`
     #16171c;
   border-radius: 20px;
   padding: 22px 20px;
-  box-sizing: border-box;
 `

@@ -19,8 +19,8 @@ export const WalletVestingBox = () => {
     if (data) {
       return !!data.length ? (
         <>
-          {data.map((schedule) => (
-            <WalletVestingSchedule schedule={schedule} />
+          {data.map((schedule, key) => (
+            <WalletVestingSchedule schedule={schedule} key={key} />
           ))}
         </>
       ) : (
