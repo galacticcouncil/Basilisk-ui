@@ -11,10 +11,10 @@ interface AddLiquidityAsset {
 
 export function useAddLiquidity(assetA: string, assetB: string) {
   const api = useApiPromise()
-  const { createTransaction } = useStore()
+  const { createTransaction, transactions } = useStore()
   const { account } = useAccountStore()
 
-  const [pendingTx, setPendingTx] = useState(false)
+  const [pendingTx, setPendingTx] = useState(!!transactions?.length)
 
   const { data: paymentInfoData } = usePaymentInfo(
     api.tx.xyk.addLiquidity(assetA, assetB, "0", "0"),
