@@ -1,8 +1,8 @@
 import { useApiPromise } from "utils/api"
 import { useAccountStore, useStore } from "../state/store"
-import { useCallback, useState } from "react"
 import BigNumber from "bignumber.js"
 import { usePaymentInfo } from "./transaction"
+import { useMutation } from "@tanstack/react-query"
 
 interface AddLiquidityAsset {
   id: string
@@ -11,43 +11,29 @@ interface AddLiquidityAsset {
 
 export function useAddLiquidity(assetA: string, assetB: string) {
   const api = useApiPromise()
-  const { createTransaction, transactions } = useStore()
+  const { createTransaction } = useStore()
   const { account } = useAccountStore()
-
-  const [pendingTx, setPendingTx] = useState(!!transactions?.length)
 
   const { data: paymentInfoData } = usePaymentInfo(
     api.tx.xyk.addLiquidity(assetA, assetB, "0", "0"),
   )
 
-  const handleAddLiquidity = useCallback(
+  const handleAddLiquidity = useMutation(
     async ([assetA, assetB]: [AddLiquidityAsset, AddLiquidityAsset]) => {
-      if (account) {
-        try {
-          setPendingTx(true)
-
-          await createTransaction({
-            tx: api.tx.xyk.addLiquidity(
-              assetA.id,
-              assetB.id,
-              assetA.amount.toFixed(),
-              assetB.amount.toFixed(),
-            ),
-          })
-
-          setPendingTx(false)
-        } catch (err) {
-          console.log(err)
-          setPendingTx(false)
-        }
-      }
+      if (!account) throw new Error("Missing account")
+      return await createTransaction({
+        tx: api.tx.xyk.addLiquidity(
+          assetA.id,
+          assetB.id,
+          assetA.amount.toFixed(),
+          assetB.amount.toFixed(),
+        ),
+      })
     },
-    [createTransaction, account, api],
   )
 
   return {
     handleAddLiquidity,
     paymentInfo: paymentInfoData,
-    pendingTx,
   }
 }
