@@ -144,16 +144,8 @@ export const useAssetsTableSkeleton = (enableAnimation = true) => {
       id: "actions",
       cell: () => (
         <div sx={{ flex: "row", gap: 8, mr: 32, display: ["none", "flex"] }}>
-          <Skeleton
-            width={72}
-            height={32}
-            enableAnimation={enableAnimation}
-          />
-          <Skeleton
-            width={72}
-            height={32}
-            enableAnimation={enableAnimation}
-          />
+          <Skeleton width={72} height={32} enableAnimation={enableAnimation} />
+          <Skeleton width={72} height={32} enableAnimation={enableAnimation} />
           <Skeleton
             width={32}
             height={32}
