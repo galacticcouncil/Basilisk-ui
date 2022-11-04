@@ -5,12 +5,7 @@ import { useTranslation } from "react-i18next"
 import { useAccountStore } from "state/store"
 import { Text } from "components/Typography/Text/Text"
 import { Separator } from "components/Separator/Separator"
-import {
-  PoolsHeaderTotalFarms,
-  PoolsHeaderTotalFarmsUser,
-  PoolsHeaderTotalPools,
-  PoolsHeaderTotalPoolsUser,
-} from "sections/pools/header/PoolsHeaderTotal"
+import { PoolsHeaderTotal } from "sections/pools/header/PoolsHeaderTotal"
 
 type Props = {
   showMyPositions: boolean
@@ -50,11 +45,7 @@ export const PoolsHeader: FC<Props> = ({
             {t("pools.header.totalLocked")}
           </Text>
           <div sx={{ flex: "row", align: "baseline" }}>
-            {showMyPositions ? (
-              <PoolsHeaderTotalPoolsUser />
-            ) : (
-              <PoolsHeaderTotalPools />
-            )}
+            <PoolsHeaderTotal variant="pools" myPositions={showMyPositions} />
           </div>
         </div>
         <Separator sx={{ mb: 12, display: ["inherit", "none"] }} />
@@ -63,11 +54,7 @@ export const PoolsHeader: FC<Props> = ({
             {t("pools.header.totalFarms")}
           </Text>
           <div sx={{ flex: "row", align: "baseline" }}>
-            {showMyPositions ? (
-              <PoolsHeaderTotalFarmsUser />
-            ) : (
-              <PoolsHeaderTotalFarms />
-            )}
+            <PoolsHeaderTotal variant="farms" myPositions={showMyPositions} />
           </div>
         </div>
       </div>

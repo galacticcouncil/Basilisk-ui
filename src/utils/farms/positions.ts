@@ -8,7 +8,7 @@ import { useAUSD } from "api/asset"
 import { useSpotPrices } from "api/spotPrice"
 import { useAllUserDeposits } from "utils/farms/deposits"
 
-export const useUsersPositionsValue = () => {
+export const useTotalInPositions = () => {
   const deposits = useAllUserDeposits()
 
   const pools = usePools()
@@ -64,10 +64,8 @@ export const useUsersPositionsValue = () => {
           yf.id.eq(position.yieldFarmId),
         )
         const pool = pools.data?.find((p) => poolId.eq(p.address))
-        const shareToken = shareTokens.find((st) =>
-          typeof st.data?.poolId === "string"
-            ? st.data.poolId === pool?.address
-            : st.data?.poolId.eq(pool?.address),
+        const shareToken = shareTokens.find(
+          (st) => st.data?.poolId.toString() === pool?.address,
         )
         const totalIssuance = totalIssuances.find((ti) =>
           ti.data?.token.eq(shareToken?.data?.token),

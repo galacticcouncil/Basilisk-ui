@@ -4,10 +4,28 @@ import {
 } from "sections/pools/header/PoolsHeader.utils"
 import { Heading } from "components/Typography/Heading/Heading"
 import { useTranslation } from "react-i18next"
-import { useUsersPositionsValue } from "utils/farms/positions"
+import { useTotalInPositions } from "utils/farms/positions"
 import Skeleton from "react-loading-skeleton"
 
-export const PoolsHeaderTotalPools = () => {
+type Props = { myPositions: boolean; variant: "pools" | "farms" }
+
+export const PoolsHeaderTotal = ({ myPositions, variant }: Props) => {
+  if (myPositions && variant === "pools") {
+    return <PoolsHeaderTotalPoolsUser />
+  }
+  if (!myPositions && variant === "pools") {
+    return <PoolsHeaderTotalPools />
+  }
+  if (myPositions && variant === "farms") {
+    return <PoolsHeaderTotalFarmsUser />
+  }
+  if (!myPositions && variant === "farms") {
+    return <PoolsHeaderTotalFarms />
+  }
+  return null
+}
+
+const PoolsHeaderTotalPools = () => {
   const { t } = useTranslation()
   const { data, isLoading } = useTotalsInPools()
 
@@ -24,7 +42,7 @@ export const PoolsHeaderTotalPools = () => {
   )
 }
 
-export const PoolsHeaderTotalPoolsUser = () => {
+const PoolsHeaderTotalPoolsUser = () => {
   const { t } = useTranslation()
   const { data, isLoading } = useTotalsInPools()
 
@@ -41,7 +59,7 @@ export const PoolsHeaderTotalPoolsUser = () => {
   )
 }
 
-export const PoolsHeaderTotalFarms = () => {
+const PoolsHeaderTotalFarms = () => {
   const { t } = useTranslation()
   const { data, isLoading } = useTotalInFarms()
 
@@ -58,9 +76,9 @@ export const PoolsHeaderTotalFarms = () => {
   )
 }
 
-export const PoolsHeaderTotalFarmsUser = () => {
+const PoolsHeaderTotalFarmsUser = () => {
   const { t } = useTranslation()
-  const { data, isLoading } = useUsersPositionsValue()
+  const { data, isLoading } = useTotalInPositions()
 
   return (
     <Heading as="h3" sx={{ fontSize: [16, 42], fontWeight: 900 }}>
