@@ -77,7 +77,11 @@ export const QUERY_KEYS = {
     ...ids,
   ],
   assets: [QUERY_KEY_PREFIX, "assets"],
-  assetDetails: (id: Maybe<string>) => [QUERY_KEY_PREFIX, "assetDetails", id],
+  assetDetails: (id: Maybe<u32 | string>) => [
+    QUERY_KEY_PREFIX,
+    "assetDetails",
+    id?.toString(),
+  ],
   assetMeta: (id: Maybe<u32 | string>) => [
     QUERY_KEY_PREFIX,
     "assetMeta",
