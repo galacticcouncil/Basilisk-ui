@@ -10,3 +10,9 @@ export const STable = styled.div`
   justify-content: space-between;
   align-self: center;
 `
+
+export const SSeparator = styled.div`
+  height: auto;
+  width: 1px;
+  background: rgba(${theme.rgbColors.white}, 0.12);
+`

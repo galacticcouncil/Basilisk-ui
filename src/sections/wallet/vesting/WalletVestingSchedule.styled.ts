@@ -16,7 +16,6 @@ export const SSchedule = styled.div`
 
 export const SInner = styled.div`
   padding: 46px 74px;
-  box-sizing: border-box;
   display: flex;
   flex-direction: row;
   justify-content: space-between;

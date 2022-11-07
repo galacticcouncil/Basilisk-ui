@@ -1,7 +1,7 @@
 import { Text } from "components/Typography/Text/Text"
 import { Heading } from "components/Typography/Heading/Heading"
-import { Separator } from "components/Separator/Separator"
 import { Trans, useTranslation } from "react-i18next"
+import { Separator } from "../../../components/Separator/Separator"
 import {
   useVestingTotalClaimableBalance,
   useVestingScheduleEnd,
@@ -16,7 +16,7 @@ import { css } from "@emotion/react"
 import { theme } from "theme"
 import { NATIVE_ASSET_ID } from "utils/api"
 import { useAssetMeta } from "../../../api/assetMeta"
-import { STable } from "./WalletVestingHeader.styled"
+import { STable, SSeparator } from "./WalletVestingHeader.styled"
 import { addDays } from "date-fns"
 import { DAY_IN_MILLISECONDS } from "../../../utils/constants"
 
@@ -148,14 +148,16 @@ export const WalletVestingHeader = () => {
               })}
             </Text>
           </div>
-          <Separator color="neutralGray500" orientation="vertical" />
+          <SSeparator />
           <div>
             <Text color="neutralGray300" sx={{ mb: 10 }}>
               {t("wallet.vesting.vesting_days_left")}
             </Text>
             <Text color="white" fs={18} fw={700}>
               {t("wallet.vesting.vesting_days_left_value", {
-                count: Math.ceil(vestingScheduleEnd.div(DAY_IN_MILLISECONDS).toNumber()),
+                count: Math.ceil(
+                  vestingScheduleEnd.div(DAY_IN_MILLISECONDS).toNumber(),
+                ),
               })}
             </Text>
           </div>
