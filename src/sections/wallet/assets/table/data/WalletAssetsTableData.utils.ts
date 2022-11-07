@@ -118,7 +118,7 @@ const useAssetsBalances = () => {
   return { data, isLoading }
 }
 
-export const getNativeBalances = (
+const getNativeBalances = (
   balance: PalletBalancesAccountData,
   decimals?: BN,
   spotPrice?: BN,

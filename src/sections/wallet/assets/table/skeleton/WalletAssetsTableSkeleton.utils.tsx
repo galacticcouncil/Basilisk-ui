@@ -38,7 +38,6 @@ export const useAssetsTableSkeleton = (enableAnimation = true) => {
           <Skeleton
             width={64}
             height="100%"
-            borderRadius={9999}
             enableAnimation={enableAnimation}
           />
         </div>
@@ -49,12 +48,7 @@ export const useAssetsTableSkeleton = (enableAnimation = true) => {
       header: t("wallet.assets.table.header.transferable"),
       cell: () => (
         <div>
-          <Skeleton
-            width={134}
-            height={32}
-            borderRadius={9999}
-            enableAnimation={enableAnimation}
-          />
+          <Skeleton width={134} height={32} enableAnimation={enableAnimation} />
         </div>
       ),
     }),
@@ -68,7 +62,6 @@ export const useAssetsTableSkeleton = (enableAnimation = true) => {
           <Skeleton
             width="100%"
             height="100%"
-            borderRadius={9999}
             enableAnimation={enableAnimation}
           />
         </div>
@@ -78,18 +71,8 @@ export const useAssetsTableSkeleton = (enableAnimation = true) => {
       id: "actions",
       cell: () => (
         <div sx={{ flex: "row", gap: 8, mr: 32, display: ["none", "flex"] }}>
-          <Skeleton
-            width={72}
-            height={32}
-            borderRadius={9999}
-            enableAnimation={enableAnimation}
-          />
-          <Skeleton
-            width={72}
-            height={32}
-            borderRadius={9999}
-            enableAnimation={enableAnimation}
-          />
+          <Skeleton width={72} height={32} enableAnimation={enableAnimation} />
+          <Skeleton width={72} height={32} enableAnimation={enableAnimation} />
           <Skeleton
             width={32}
             height={32}

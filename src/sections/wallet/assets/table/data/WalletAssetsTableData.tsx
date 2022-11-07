@@ -40,7 +40,7 @@ export const WalletAssetsTableBalance = (props: {
       <Text fs={14} lh={18} fw={500} color="white">
         {t("value", { value: props.balance, decimalPlaces: 4 })}
       </Text>
-      <Text fs={12} lh={16} fw={500} color="neutralGray500">
+      <Text fs={[11, 12]} lh={[14, 16]} fw={500} color="neutralGray500">
         {t("value.usd", { amount: props.balanceUSD })}
       </Text>
     </div>
