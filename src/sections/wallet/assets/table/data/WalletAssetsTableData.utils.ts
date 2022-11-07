@@ -6,7 +6,7 @@ import { useAccountStore } from "state/store"
 import { useAccountBalances } from "api/accountBalances"
 import { useSpotPrices } from "api/spotPrice"
 import { NATIVE_ASSET_ID } from "utils/api"
-import { BN_10 } from "utils/constants"
+import { ASSET_TYPE_TOKEN, BN_10 } from "utils/constants"
 import { AssetsTableData } from "sections/wallet/assets/table/WalletAssetsTable.utils"
 import { PalletBalancesAccountData } from "@polkadot/types/lookup"
 import { u32 } from "@polkadot/types"
@@ -21,7 +21,9 @@ export const useAssetsTableData = () => {
     : []
   const balances = useAssetsBalances()
   const assetDetails = useAssetDetailsList(tokenIds)
-  const assets = assetDetails.filter((ad) => ad.data?.assetType === "Token")
+  const assets = assetDetails.filter(
+    (ad) => ad.data?.assetType === ASSET_TYPE_TOKEN,
+  )
 
   const queries = [...assetDetails, balances]
   const isLoading = queries.some((q) => q.isLoading)
@@ -43,8 +45,8 @@ export const useAssetsTableData = () => {
         transferableUSD: balance.transferableUSD,
         total: balance.total,
         totalUSD: balance.totalUSD,
-        locked: new BN(999999999),
-        lockedUSD: new BN(999999999),
+        locked: new BN(999999999), // TODO
+        lockedUSD: new BN(999999999), // TODO
         origin: "TODO",
       }
     })
