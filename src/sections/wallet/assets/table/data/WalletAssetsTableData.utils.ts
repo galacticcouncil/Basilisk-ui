@@ -6,7 +6,7 @@ import { useAccountStore } from "state/store"
 import { useAccountBalances } from "api/accountBalances"
 import { useSpotPrices } from "api/spotPrice"
 import { NATIVE_ASSET_ID } from "utils/api"
-import { BN_0, BN_10 } from "utils/constants"
+import { BN_10 } from "utils/constants"
 import { AssetsTableData } from "sections/wallet/assets/table/WalletAssetsTable.utils"
 import { PalletBalancesAccountData } from "@polkadot/types/lookup"
 import { u32 } from "@polkadot/types"
@@ -39,10 +39,10 @@ export const useAssetsTableData = () => {
       return {
         symbol: asset.data?.name,
         name: getAssetName(asset.data?.name),
-        transferable: balance?.transferable ?? BN_0,
-        transferableUSD: balance?.transferableUSD ?? BN_0,
-        total: balance?.total ?? BN_0,
-        totalUSD: balance?.totalUSD ?? BN_0,
+        transferable: balance.transferable,
+        transferableUSD: balance.transferableUSD,
+        total: balance.total,
+        totalUSD: balance.totalUSD,
         locked: new BN(999999999),
         lockedUSD: new BN(999999999),
         origin: "TODO",
