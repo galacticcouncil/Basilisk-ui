@@ -7,7 +7,7 @@ import { useBestNumber } from "./chain"
 import { u32 } from "@polkadot/types"
 import BigNumber from "bignumber.js"
 import { useAccountStore } from "state/store"
-import { BLOCK_TIME, BN_0, ORLMVEST } from "utils/constants"
+import { BLOCK_TIME, BN_0, ORMLVEST } from "utils/constants"
 import { useMemo } from "react"
 import { useApiPromise } from "utils/api"
 import { getExpectedBlockDate } from "../utils/block"
@@ -37,7 +37,7 @@ const getVestingLockBalance =
     const data = await api.query.balances.locks(address)
     return (
       data
-        .find((lock) => lock.id.toString() === ORLMVEST)
+        .find((lock) => lock.id.toString() === ORMLVEST)
         ?.amount.toBigNumber() ?? BN_0
     )
   }
