@@ -77,16 +77,7 @@ export const QUERY_KEYS = {
     ...ids,
   ],
   assets: [QUERY_KEY_PREFIX, "assets"],
-  assetDetails: (id: Maybe<u32 | string>) => [
-    QUERY_KEY_PREFIX,
-    "assetDetails",
-    id?.toString(),
-  ],
-  assetMeta: (id: Maybe<u32 | string>) => [
-    QUERY_KEY_PREFIX,
-    "assetMeta",
-    id?.toString(),
-  ],
+  assetsMeta: [QUERY_KEY_PREFIX, "assetsMeta"],
   exchangeFee: [QUERY_KEY_PREFIX, "exchangeFee"],
   calculateTotalLiqInPools: [QUERY_KEY_PREFIX, "totalLiqInPools"],
   spotPrice: (assetA: string, assetB: string) => [

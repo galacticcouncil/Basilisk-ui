@@ -3,7 +3,7 @@ import { getFloatingPointAmount } from "utils/balance"
 import { BN_0, BN_1 } from "utils/constants"
 import { useMemo } from "react"
 import BN from "bignumber.js"
-import { useAssets, useAUSD } from "api/asset"
+import { useAUSD } from "api/asset"
 import { SpotPrice, useSpotPrices } from "api/spotPrice"
 import {
   FarmIds,
@@ -18,10 +18,11 @@ import { useTotalIssuances } from "api/totalIssuance"
 import { PoolToken } from "@galacticcouncil/sdk"
 import { useTokensBalances } from "api/balances"
 import { u32 } from "@polkadot/types"
+import { useAssetDetailsList } from "api/assetDetails"
 
 export const useTotalsInPools = () => {
   const pools = usePools()
-  const assets = useAssets()
+  const assets = useAssetDetailsList()
   const aUSD = useAUSD()
   const spotPrices = useSpotPrices(
     assets.data?.map((asset) => asset.id) ?? [],

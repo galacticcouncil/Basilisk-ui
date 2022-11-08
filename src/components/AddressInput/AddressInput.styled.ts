@@ -29,8 +29,7 @@ export const SInputWrapper = styled.span<{
 
   background: ${theme.colors.backgroundGray800};
   border-radius: 9px;
-  border: 1px solid
-    ${(p) => (p.error ? theme.colors.error : theme.colors.backgroundGray600)};
+  border: 1px solid ${theme.colors.backgroundGray600};
 
   color: ${theme.colors.white};
   font-size: 14px;
@@ -53,7 +52,7 @@ export const SInputWrapper = styled.span<{
     border-color: ${theme.colors.primary300};
   }
 
-  ${({ disabled }) => {
+  ${({ disabled, error }) => {
     if (disabled) {
       return css`
         &,
@@ -66,6 +65,24 @@ export const SInputWrapper = styled.span<{
       `
     }
 
+    if (error) {
+      return css`
+        &,
+        &:focus-within,
+        &:hover {
+          border-color: ${theme.colors.error};
+        }
+      `
+    }
+
     return null
   }}
+`
+
+export const SErrorMessage = styled.p`
+  color: ${theme.colors.error};
+  font-size: 12px;
+  line-height: 16px;
+  margin-top: 2px;
+  text-transform: capitalize;
 `

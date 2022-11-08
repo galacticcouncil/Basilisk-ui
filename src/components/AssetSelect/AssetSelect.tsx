@@ -2,7 +2,7 @@ import { ReactComponent as ChevronDown } from "assets/icons/ChevronDown.svg"
 import { AssetInput } from "components/AssetInput/AssetInput"
 import { Icon } from "components/Icon/Icon"
 import { Text } from "components/Typography/Text/Text"
-import { FC, ReactNode, useMemo } from "react"
+import { ReactNode, useMemo } from "react"
 import { Trans, useTranslation } from "react-i18next"
 import {
   SContainer,

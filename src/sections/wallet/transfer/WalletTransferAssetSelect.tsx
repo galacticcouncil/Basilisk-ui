@@ -2,9 +2,10 @@ import { u32 } from "@polkadot/types"
 import { useAsset } from "api/asset"
 import { useTokenBalance } from "api/balances"
 import { AssetSelect } from "components/AssetSelect/AssetSelect"
+import { useAssetsModal } from "sections/assets/AssetsModal.utils"
 import { useAccountStore } from "state/store"
 
-export const WalletTransferAssetInput = (props: {
+export const WalletTransferAssetSelect = (props: {
   name: string
 
   value: string
@@ -17,15 +18,16 @@ export const WalletTransferAssetInput = (props: {
   className?: string
 }) => {
   const { account } = useAccountStore()
-
   const asset = useAsset(props.asset)
-
   const balance = useTokenBalance(props.asset, account?.address)
 
-  console.log("assetInput", props.asset, asset.data)
+  const { openModal, modal } = useAssetsModal({
+    onSelect: props.onAssetChange,
+  })
 
   return (
     <>
+      {modal}
       <AssetSelect
         name={props.name}
         title={props.title}
@@ -37,7 +39,7 @@ export const WalletTransferAssetInput = (props: {
         decimals={asset.data?.decimals?.toNumber()}
         balance={balance.data?.balance}
         assetName={asset.data?.name?.toString()}
-        onSelectAssetClick={() => console.log("Asset Select")}
+        onSelectAssetClick={openModal}
       />
     </>
   )

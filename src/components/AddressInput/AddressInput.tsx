@@ -1,10 +1,11 @@
-import { decodeAddress, encodeAddress } from "@polkadot/util-crypto"
 import { useAsset } from "api/asset"
 import { Text } from "components/Typography/Text/Text"
 import { InputHTMLAttributes, forwardRef } from "react"
+import { useTranslation } from "react-i18next"
 import { BASILISK_ADDRESS_PREFIX, NATIVE_ASSET_ID } from "utils/api"
+import { safeConvertAddressSS58 } from "utils/formatting"
 import { Maybe } from "utils/helpers"
-import { SInput, SInputWrapper } from "./AddressInput.styled"
+import { SErrorMessage, SInput, SInputWrapper } from "./AddressInput.styled"
 
 type InputProps = {
   onChange?: (value: string) => void
@@ -23,14 +24,12 @@ type InputProps = {
 export const AddressInput = forwardRef<HTMLInputElement, InputProps>(
   (props, ref) => {
     const asset = useAsset(NATIVE_ASSET_ID)
+    const { t } = useTranslation()
 
-    let validAddress: string | null = null
-    try {
-      validAddress = encodeAddress(
-        decodeAddress(props.value),
-        BASILISK_ADDRESS_PREFIX,
-      )
-    } catch {}
+    const nativeAddress = safeConvertAddressSS58(
+      props.value,
+      BASILISK_ADDRESS_PREFIX,
+    )
 
     return (
       <label id={props.name} className={props.className}>
@@ -45,12 +44,17 @@ export const AddressInput = forwardRef<HTMLInputElement, InputProps>(
             disabled={props.disabled}
             placeholder={props.placeholder}
           />
-          {validAddress && validAddress !== props.value && (
+          {nativeAddress && nativeAddress !== props.value && (
             <Text color="primary300" fs={12} lh={16}>
-              {asset.data?.symbol.toString()}: {validAddress}
+              {t("address.input.native", {
+                symbol: asset.data?.name,
+                address: nativeAddress,
+              })}
             </Text>
           )}
         </SInputWrapper>
+
+        {props.error && <SErrorMessage>{props.error}</SErrorMessage>}
       </label>
     )
   },

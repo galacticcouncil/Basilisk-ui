@@ -112,8 +112,8 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
   }
 
   const shareTokenDecimals = useMemo(() => {
-    if (shareTokenMeta?.data?.decimals) {
-      return shareTokenMeta.data?.decimals.toNumber()
+    if (shareTokenMeta?.decimals) {
+      return shareTokenMeta.decimals.toNumber()
     }
 
     return DEFAULT_DECIMALS.toNumber()
