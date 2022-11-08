@@ -14,7 +14,10 @@ export const WalletAssets = () => {
       {!account ? (
         <WalletAssetsTablePlaceholder />
       ) : isLoading ? (
-        <WalletAssetsTableSkeleton />
+        <>
+          <WalletAssetsHeader isLoading={isLoading} />
+          <WalletAssetsTableSkeleton />
+        </>
       ) : (
         data && (
           <>

@@ -8,12 +8,17 @@ import { BN_0 } from "../../../utils/constants"
 import { separateBalance } from "../../../utils/balance"
 import { css } from "@emotion/react"
 import { theme } from "../../../theme"
+import Skeleton from "react-loading-skeleton"
 
 interface WalletAssetsHeaderProps {
-  data: AssetsTableData[]
+  data?: AssetsTableData[]
+  isLoading?: boolean
 }
 
-export const WalletAssetsHeader: FC<WalletAssetsHeaderProps> = ({ data }) => {
+export const WalletAssetsHeader: FC<WalletAssetsHeaderProps> = ({
+  data,
+  isLoading,
+}) => {
   const { t } = useTranslation()
 
   const totalUsd = useMemo(() => {
@@ -53,28 +58,37 @@ export const WalletAssetsHeader: FC<WalletAssetsHeaderProps> = ({ data }) => {
           {t("wallet.assets.header.total")}
         </Text>
 
-        {totalUsd && (
-          <Heading as="h3" sx={{ fontSize: [16, 52], fontWeight: 900 }}>
-            <Trans
-              t={t}
-              i18nKey="wallet.assets.header.value"
-              tOptions={{
-                ...separateBalance(totalUsd, {
-                  numberPrefix: "$",
-                  decimalPlaces: 2,
-                }),
-              }}
-            >
-              <span
-                sx={{
-                  fontSize: [16, 26],
+        {isLoading ? (
+          <Skeleton
+            sx={{
+              width: [97, 208],
+              height: [27, 42],
+            }}
+          />
+        ) : (
+          totalUsd && (
+            <Heading as="h3" sx={{ fontSize: [16, 52], fontWeight: 900 }}>
+              <Trans
+                t={t}
+                i18nKey="wallet.assets.header.value"
+                tOptions={{
+                  ...separateBalance(totalUsd, {
+                    numberPrefix: "$",
+                    decimalPlaces: 2,
+                  }),
                 }}
-                css={css`
-                  color: rgba(${theme.rgbColors.white}, 0.4);
-                `}
-              />
-            </Trans>
-          </Heading>
+              >
+                <span
+                  sx={{
+                    fontSize: [16, 26],
+                  }}
+                  css={css`
+                    color: rgba(${theme.rgbColors.white}, 0.4);
+                  `}
+                />
+              </Trans>
+            </Heading>
+          )
         )}
       </div>
       <Separator sx={{ mb: 15, display: ["inherit", "none"] }} />
@@ -91,28 +105,37 @@ export const WalletAssetsHeader: FC<WalletAssetsHeaderProps> = ({ data }) => {
           {t("wallet.assets.header.transferable")}
         </Text>
 
-        {transferableUsd && (
-          <Heading as="h3" sx={{ fontSize: [16, 52], fontWeight: 900 }}>
-            <Trans
-              t={t}
-              i18nKey="wallet.assets.header.value"
-              tOptions={{
-                ...separateBalance(transferableUsd, {
-                  numberPrefix: "$",
-                  decimalPlaces: 2,
-                }),
-              }}
-            >
-              <span
-                sx={{
-                  fontSize: [16, 26],
+        {isLoading ? (
+          <Skeleton
+            sx={{
+              width: [97, 168],
+              height: [27, 42],
+            }}
+          />
+        ) : (
+          transferableUsd && (
+            <Heading as="h3" sx={{ fontSize: [16, 52], fontWeight: 900 }}>
+              <Trans
+                t={t}
+                i18nKey="wallet.assets.header.value"
+                tOptions={{
+                  ...separateBalance(transferableUsd, {
+                    numberPrefix: "$",
+                    decimalPlaces: 2,
+                  }),
                 }}
-                css={css`
-                  color: rgba(${theme.rgbColors.white}, 0.4);
-                `}
-              />
-            </Trans>
-          </Heading>
+              >
+                <span
+                  sx={{
+                    fontSize: [16, 26],
+                  }}
+                  css={css`
+                    color: rgba(${theme.rgbColors.white}, 0.4);
+                  `}
+                />
+              </Trans>
+            </Heading>
+          )
         )}
       </div>
     </div>
