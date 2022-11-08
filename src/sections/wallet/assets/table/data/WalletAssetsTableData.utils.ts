@@ -39,6 +39,7 @@ export const useAssetsTableData = () => {
       if (!balance) return null
 
       return {
+        id: asset.data?.id?.toString(),
         symbol: asset.data?.name,
         name: getAssetName(asset.data?.name),
         transferable: balance.transferable,

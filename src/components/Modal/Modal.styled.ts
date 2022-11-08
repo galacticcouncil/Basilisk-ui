@@ -57,10 +57,6 @@ export const ModalWindow = styled(DialogContent)<{
   z-index: ${theme.zIndices.modal};
   width: 100%;
 
-  border: 1px solid rgba(${theme.rgbColors.white}, 0.06);
-  box-shadow: 0px 38px 46px rgba(0, 0, 0, 0.03);
-  background: ${theme.colors.backgroundGray900};
-
   animation: 150ms cubic-bezier(0.16, 1, 0.3, 1)
     ${({ isDrawer }) => (isDrawer ? drawerKeyFrames : mobFadeInKeyframes)};
 
@@ -78,6 +74,18 @@ export const ModalWindow = styled(DialogContent)<{
     max-width: ${(props) => `${props.maxWidth ?? 610}px`};
     border-radius: 16px;
     animation: 150ms cubic-bezier(0.16, 1, 0.3, 1) ${fadeInKeyframes};
+  }
+`
+
+export const ModalWindowContainer = styled.div<{ isDrawer?: boolean }>`
+  border: 1px solid rgba(${theme.rgbColors.white}, 0.06);
+  box-shadow: 0px 38px 46px rgba(0, 0, 0, 0.03);
+  background: ${theme.colors.backgroundGray900};
+
+  ${({ isDrawer }) => (isDrawer ? { borderRadius: "20px 20px 0px 0px" } : {})}
+
+  @media ${theme.viewport.gte.sm} {
+    border-radius: 16px;
   }
 `
 

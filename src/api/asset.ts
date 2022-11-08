@@ -26,7 +26,8 @@ export const useAsset = (id: Maybe<u32 | string>) => {
     isLoading,
     data: {
       ...detail.data,
-      ...meta.data.data,
+      symbol: meta.data.data.symbol,
+      decimals: meta.data.data.decimals,
       icon,
     },
   }
