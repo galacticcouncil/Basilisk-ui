@@ -1,10 +1,7 @@
 import { BN } from "@polkadot/util"
 import { BN_10 } from "./constants"
 import BigNumber from "bignumber.js"
-import {
-  BigNumberFormatOptionsSchema,
-  formatBigNumber,
-} from "./formatting"
+import { BigNumberFormatOptionsSchema, formatBigNumber } from "./formatting"
 import { z } from "zod"
 
 export type BigNumberLikeType = BN | BigNumber | number | string
