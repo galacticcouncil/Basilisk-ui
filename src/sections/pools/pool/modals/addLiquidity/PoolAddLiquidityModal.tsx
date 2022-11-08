@@ -1,7 +1,7 @@
 import { PoolAddLiquidityAssetSelect } from "./assetSelect/PoolAddLiquidityAssetSelect"
 import { getAssetLogo } from "../../../../../components/AssetIcon/AssetIcon"
 import { PoolAddLiquidityConversion } from "./conversion/PoolAddLiquidityConversion"
-import { BN_1, BN_100, BN_12 } from "../../../../../utils/constants"
+import { BN_1, BN_100, DEFAULT_DECIMALS } from "../../../../../utils/constants"
 import { Row } from "../../../../../components/Row/Row"
 import { Separator } from "../../../../../components/Separator/Separator"
 import { Text } from "../../../../../components/Typography/Text/Text"
@@ -116,7 +116,7 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
       return shareTokenMeta.data?.decimals.toNumber()
     }
 
-    return BN_12.toNumber()
+    return DEFAULT_DECIMALS.toNumber()
   }, [shareTokenMeta])
 
   const calculatedShares = useMemo(() => {
