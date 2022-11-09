@@ -40,16 +40,9 @@ export const WalletAssetsTableActions = (props: Props) => {
         >
           {t("wallet.assets.table.actions.sell")}
         </TableAction>
-        {
-          <>
-            <TableAction
-              icon={<TransferIcon />}
-              onClick={props.onTransferClick}
-            >
-              {t("wallet.assets.table.actions.transfer")}
-            </TableAction>
-          </>
-        }
+        <TableAction icon={<TransferIcon />} onClick={props.onTransferClick}>
+          {t("wallet.assets.table.actions.transfer")}
+        </TableAction>
         <ButtonTransparent
           onClick={props.toggleExpanded}
           css={{ color: theme.colors.iconGray }}
