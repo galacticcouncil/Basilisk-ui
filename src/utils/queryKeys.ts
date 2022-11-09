@@ -64,12 +64,10 @@ export const QUERY_KEYS = {
     "totalLiquidities",
     ...ids,
   ],
-  tokenBalance: (id: Maybe<string | u32>, address?: AccountId32 | string) => [
-    QUERY_KEY_PREFIX,
-    "tokenBalance",
-    id?.toString(),
-    address,
-  ],
+  tokenBalance: (
+    id: Maybe<string | u32>,
+    address: Maybe<AccountId32 | string>,
+  ) => [QUERY_KEY_PREFIX, "tokenBalance", id?.toString(), address],
   tokensBalances: (ids: string[], address?: string) => [
     QUERY_KEY_PREFIX,
     "tokenBalances",

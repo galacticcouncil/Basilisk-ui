@@ -29,7 +29,7 @@ export const useAsset = (id: Maybe<u32 | string>) => {
 }
 
 export const useAUSD = () => {
-  const { data, isLoading } = useAssetDetailsList()
+  const { data, ...rest } = useAssetDetailsList()
 
   const aUSD = useMemo(
     () =>
@@ -39,5 +39,5 @@ export const useAUSD = () => {
     [data],
   )
 
-  return { data: aUSD, isLoading }
+  return { data: aUSD, ...rest }
 }
