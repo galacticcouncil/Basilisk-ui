@@ -19,6 +19,7 @@ import { PoolToken } from "@galacticcouncil/sdk"
 import { useTokensBalances } from "api/balances"
 import { u32 } from "@polkadot/types"
 import { useAssetDetailsList } from "api/assetDetails"
+import { useAccountStore } from "state/store"
 
 export const useTotalsInPools = () => {
   const pools = usePools()
@@ -34,8 +35,11 @@ export const useTotalsInPools = () => {
   const totalIssuances = useTotalIssuances(
     shareTokens.map((q) => q.data?.token),
   )
+
+  const { account } = useAccountStore()
   const balances = useTokensBalances(
     shareTokens.map((st) => st.data?.token).filter((x): x is u32 => !!x) ?? [],
+    account?.address,
   )
 
   const queries = [
@@ -47,14 +51,13 @@ export const useTotalsInPools = () => {
     ...shareTokens,
     ...totalIssuances,
   ]
-  const isLoading = queries.some((q) => q.isLoading)
+  const isLoading = queries.some((q) => q.isInitialLoading)
 
   const data = useMemo(() => {
     if (
       !pools.data ||
       !assets.data ||
       !aUSD.data ||
-      balances.some((q) => !q.data) ||
       spotPrices.some((q) => !q.data) ||
       shareTokens.some((q) => !q.data) ||
       totalIssuances.some((q) => !q.data)
@@ -62,6 +65,11 @@ export const useTotalsInPools = () => {
       return undefined
 
     const totals = pools.data.map((pool) => {
+      const poolTotal = getPoolTotal(
+        pool.tokens,
+        spotPrices.map((q) => q.data),
+      )
+
       const token = shareTokens.find((st) => st.data?.poolId === pool.address)
         ?.data?.token
       const issuance = totalIssuances.find((ti) => ti.data?.token.eq(token))
@@ -70,14 +78,9 @@ export const useTotalsInPools = () => {
         ?.balance
 
       if (!balance || balance.isZero() || !issuance || issuance.isZero())
-        return { poolTotal: BN_0, userTotal: BN_0 }
+        return { poolTotal, userTotal: BN_0 }
 
       const ratio = balance.div(issuance)
-
-      const poolTotal = getPoolTotal(
-        pool.tokens,
-        spotPrices.map((q) => q.data),
-      )
       const userTotal = poolTotal.times(ratio)
 
       return { poolTotal, userTotal }
