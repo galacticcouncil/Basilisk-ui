@@ -67,6 +67,7 @@ export const AssetsModal: FC<AssetsModalProps> = ({
           </SAssetsModalHeader>
           {mainAssets?.map((asset) => (
             <AssetsModalRow
+              key={asset.id}
               id={asset.id}
               onClick={() => onSelect?.(asset.id)}
             />
@@ -87,6 +88,7 @@ export const AssetsModal: FC<AssetsModalProps> = ({
           </SAssetsModalHeader>
           {otherAssets?.map((asset) => (
             <AssetsModalRow
+              key={asset.id}
               id={asset.id}
               onClick={() => onSelect?.(asset.id)}
             />
