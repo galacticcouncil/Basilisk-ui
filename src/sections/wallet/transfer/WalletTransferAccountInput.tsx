@@ -4,12 +4,14 @@ import { Maybe } from "utils/helpers"
 import { decodeAddress, encodeAddress } from "@polkadot/util-crypto"
 import { ReactComponent as GuestIcon } from "assets/icons/GuestIcon.svg"
 
-export const WalletTransferAccountInput = (props: {
+interface Props {
   name: string
   value: Maybe<string>
   onChange?: (value: string) => void
   error?: string
-}) => {
+}
+
+export const WalletTransferAccountInput = (props: Props) => {
   let validAddress: string | null = null
   try {
     validAddress = encodeAddress(decodeAddress(props.value))

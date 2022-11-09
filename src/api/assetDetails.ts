@@ -17,9 +17,10 @@ export const useAssetDetails = (id: Maybe<u32 | string>) => {
 export const useAssetDetailsList = (ids?: Maybe<u32 | string>[]) => {
   const api = useApiPromise()
 
-  const normalizedIds = ids
-    ?.filter((x): x is u32 | string => x != null)
-    .map((i) => i?.toString())
+  const normalizedIds = ids?.reduce<string[]>((memo, item) => {
+    if (item != null) memo.push(item.toString())
+    return memo
+  }, [])
 
   return useQuery(QUERY_KEYS.assets, getAssetDetails(api), {
     select: (data) => {
