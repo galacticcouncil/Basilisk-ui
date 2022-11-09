@@ -62,9 +62,78 @@ export const useAPR = (poolId: AccountId32 | string) => {
         blockTime.times(blocksPerPeriod),
       )
 
+      console.log("----------------------------------------")
+      console.table([
+        ["Yield Farm (id)", yieldFarm.id.toString(), yieldFarm.toHuman()],
+        ["Global Farm (id)", globalFarm.id.toString(), globalFarm.toHuman()],
+        [
+          "Total Shares Z (Global Farm)",
+          globalFarm.id.toString(),
+          totalSharesZ.toFixed(),
+        ],
+        [
+          "Planned Yielding Periods (Global Farm)",
+          globalFarm.id.toString(),
+          plannedYieldingPeriods.toFixed(),
+        ],
+        [
+          "Yield Per Period (Global Farm) [18dp]",
+          globalFarm.id.toString(),
+          yieldPerPeriod.toFixed(),
+        ],
+        [
+          "Max Reward Per Period (Global Farm)",
+          globalFarm.id.toString(),
+          maxRewardPerPeriod.toFixed(),
+        ],
+        [
+          "Blocks Per Period (Global Farm)",
+          globalFarm.id.toString(),
+          blocksPerPeriod.toFixed(),
+        ],
+        [
+          "Relaychain Block Number (Best Number)",
+          "",
+          bestNumber.data.relaychainBlockNumber.toBigNumber().toFixed(),
+        ],
+        [
+          "Current Period (Relaychain Block Number / Blocks Per Period)",
+          `${bestNumber.data.relaychainBlockNumber
+            .toBigNumber()
+            .toFixed()} / ${blocksPerPeriod.toFixed()}`,
+          currentPeriod.toFixed(),
+        ],
+        [
+          "Multiplier (Yield Farm) [18dp]",
+          yieldFarm.id.toString(),
+          multiplier.toFixed(),
+        ],
+        ["Block Time (constant)", "", BLOCK_TIME.toFixed()],
+        ["Seconds Per Year (constant)", "", secondsPerYear.toFixed()],
+        [
+          "Periods Per Year (Seconds Per Year / (Block Time * Blocks Per Period) )",
+          `${secondsPerYear.toFixed()} / (${blockTime.toFixed()} * ${blocksPerPeriod.toFixed()})`,
+          periodsPerYear.toFixed(),
+        ],
+      ])
+
+      console.table([
+        [
+          "Total Shares Z === 0",
+          `${totalSharesZ.toFixed()} === 0`,
+          totalSharesZ.isZero().toString(),
+        ],
+      ])
       let apr
       if (totalSharesZ.isZero()) {
         apr = yieldPerPeriod.times(multiplier).times(periodsPerYear)
+        console.table([
+          [
+            "APR (Yield Per Period * Multiplier * Periods Per Year)",
+            `${yieldPerPeriod.toFixed()} * ${multiplier.toFixed()} * ${periodsPerYear.toFixed()}`,
+            apr.toFixed(),
+          ],
+        ])
       } else {
         const globalRewardPerPeriod = getGlobalRewardPerPeriod(
           totalSharesZ,
@@ -77,10 +146,18 @@ export const useAPR = (poolId: AccountId32 | string) => {
           totalSharesZ,
         )
         apr = poolYieldPerPeriod.times(periodsPerYear)
+        console.table([
+          [
+            "APR (Pool Yield Per Period * Periods Per Year)",
+            `${poolYieldPerPeriod.toFixed()} * ${periodsPerYear.toFixed()}`,
+            apr.toFixed(),
+          ],
+        ])
       }
 
       // multiply by 100 since APR should be a percentage
       apr = apr.times(100)
+      console.warn(`Final APR: ${apr.toFixed()}%`)
 
       // max distribution of rewards
       // https://www.notion.so/Screen-elements-mapping-Farms-baee6acc456542ca8d2cccd1cc1548ae?p=4a2f16a9f2454095945dbd9ce0eb1b6b&pm=s
@@ -139,6 +216,26 @@ export const getGlobalRewardPerPeriod = (
   const globalRewardPerPeriod = totalSharesZ.times(yieldPerPeriod)
   const isFarmFull = globalRewardPerPeriod.gte(maxRewardPerPeriod)
 
+  console.table([
+    [
+      "Global Reward Per Period (Total Shares Z * Yield Per Period)",
+      `${totalSharesZ.toFixed()} * ${yieldPerPeriod.toFixed()}`,
+      globalRewardPerPeriod.toFixed(),
+    ],
+    [
+      "Is Farm Full (Global Reward Per Period >= Max Reward Per Period)",
+      `${globalRewardPerPeriod.toFixed()} >= ${maxRewardPerPeriod.toFixed()}`,
+      isFarmFull.toString(),
+    ],
+    [
+      "If (Is Farm Full) return Max Reward Per Period else Global Reward Per Period",
+      `If (${isFarmFull.toString()}) return ${maxRewardPerPeriod.toFixed()} else ${globalRewardPerPeriod.toFixed()}`,
+      isFarmFull
+        ? maxRewardPerPeriod.toFixed()
+        : globalRewardPerPeriod.toFixed(),
+    ],
+  ])
+
   return isFarmFull ? maxRewardPerPeriod : globalRewardPerPeriod
 }
 
@@ -147,6 +244,14 @@ export const getPoolYieldPerPeriod = (
   multiplier: BN,
   totalSharesZ: BN,
 ) => {
+  console.table([
+    [
+      "Pool Yield Per Period ((Global Reward Per Period * Multiplier) / Total Shares Z)",
+      `(${globalRewardPerPeriod.toFixed()} * ${multiplier.toFixed()}) / ${totalSharesZ.toFixed()}`,
+      globalRewardPerPeriod.times(multiplier).div(totalSharesZ).toFixed(),
+    ],
+  ])
+
   return globalRewardPerPeriod.times(multiplier).div(totalSharesZ)
 }
 
