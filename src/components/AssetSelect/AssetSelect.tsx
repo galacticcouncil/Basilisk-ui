@@ -47,10 +47,13 @@ export const AssetSelect = (props: {
   return (
     <>
       <SContainer className={props.className}>
-        <Text fw={500} lh={22} color="primary200">
+        <Text fw={500} lh={22} color="primary200" css={{ gridArea: "title" }}>
           {props.title}
         </Text>
-        <div sx={{ flex: "row", align: "center", pt: [5, 0], justify: "end" }}>
+        <div
+          sx={{ flex: "row", align: "center", pt: [5, 0], justify: "end" }}
+          css={{ gridArea: "balance" }}
+        >
           <Text fs={12} lh={16} color="white" sx={{ mr: 5 }}>
             <Trans
               t={t}
@@ -79,7 +82,10 @@ export const AssetSelect = (props: {
             }}
           />
         </div>
-        <div sx={{ flex: "row", align: "center", justify: "space-between" }}>
+        <div
+          sx={{ flex: "row", align: "center", justify: "space-between" }}
+          css={{ gridArea: "input" }}
+        >
           <SSelectAssetButton size="small" onClick={props.onSelectAssetClick}>
             <Icon icon={props.assetIcon} />
             {props.assetName && (

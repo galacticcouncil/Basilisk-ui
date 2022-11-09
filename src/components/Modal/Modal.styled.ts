@@ -4,6 +4,7 @@ import { GradientText } from "components/Typography/GradientText/GradientText"
 import styled from "@emotion/styled"
 import { keyframes } from "@emotion/react"
 import { theme } from "theme"
+import isPropValid from "@emotion/is-prop-valid"
 
 const fadeInKeyframes = keyframes`
   0% {
@@ -49,7 +50,10 @@ export const ModalContainer = styled.div`
   z-index: ${theme.zIndices.backdrop};
 `
 
-export const ModalWindow = styled(DialogContent)<{
+export const ModalWindow = styled(DialogContent, {
+  shouldForwardProp: (prop) =>
+    isPropValid(prop) && prop !== "maxWidth" && prop !== "isDrawer",
+})<{
   maxWidth?: number
   isDrawer?: boolean
 }>`
