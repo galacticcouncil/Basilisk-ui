@@ -1,6 +1,4 @@
-import {
-  AssetsTableData,
-} from "sections/wallet/assets/table/WalletAssetsTable.utils"
+import { AssetsTableData } from "sections/wallet/assets/table/WalletAssetsTable.utils"
 import { flexRender } from "@tanstack/react-table"
 import {
   Table,

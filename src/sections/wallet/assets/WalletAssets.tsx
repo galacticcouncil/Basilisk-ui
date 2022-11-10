@@ -6,10 +6,16 @@ import { WalletAssetsTableSkeleton } from "sections/wallet/assets/table/skeleton
 import { WalletAssetsHeader } from "./WalletAssetsHeader"
 import { WalletLiquidityPositionsSkeleton } from "./table/skeleton/WalletLiquidityPositionsSkeleton"
 import { WalletLiquidityPositionsTable } from "./table/WalletLiquidityPositionsTable"
+import { useLiquidityPositionsTableData } from "./table/data/WalletLiquidityPositionsData.utils"
 
 export const WalletAssets = () => {
   const { account } = useAccountStore()
-  const { data, isLoading } = useAssetsTableData()
+  const assetTableQuery = useAssetsTableData()
+  const liquidityPositionsQuery = useLiquidityPositionsTableData()
+
+  const queries = [assetTableQuery, liquidityPositionsQuery]
+  const isLoading = queries.some((query) => query.isLoading)
+  const hasData = queries.every((query) => query.data)
 
   return (
     <div sx={{ mt: [34, 56] }}>
@@ -18,26 +24,32 @@ export const WalletAssets = () => {
       ) : isLoading ? (
         <>
           <WalletAssetsHeader isLoading={isLoading} />
-          <div sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 20
-          }}>
-          <WalletAssetsTableSkeleton />
-          <WalletLiquidityPositionsSkeleton />
+          <div
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 20,
+            }}
+          >
+            <WalletAssetsTableSkeleton />
+            <WalletLiquidityPositionsSkeleton />
           </div>
         </>
       ) : (
-        data && (
+        hasData && (
           <>
-            <WalletAssetsHeader data={data} />
-            <div sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 20
-            }}>
-            <WalletAssetsTable data={data} />
-              <WalletLiquidityPositionsTable data={data} />
+            <WalletAssetsHeader data={assetTableQuery.data} />
+            <div
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 20,
+              }}
+            >
+              <WalletAssetsTable data={assetTableQuery.data} />
+              {/*<WalletLiquidityPositionsTable*/}
+              {/*  data={liquidityPositionsQuery.data}*/}
+              {/*/>*/}
             </div>
           </>
         )

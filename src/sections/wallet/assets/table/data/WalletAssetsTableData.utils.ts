@@ -46,6 +46,7 @@ export const useAssetsTableData = () => {
         locked: new BN(999999999), // TODO
         lockedUSD: new BN(999999999), // TODO
         origin: "TODO",
+        assetType: asset.assetType,
       }
     })
 
