@@ -4,10 +4,10 @@ import { useApiPromise, useTradeRouter } from "utils/api"
 import { ApiPromise } from "@polkadot/api"
 import { TradeRouter } from "@galacticcouncil/sdk"
 import { AccountId32 } from "@polkadot/types/interfaces"
+import { useMemo } from "react"
 
 export const usePools = () => {
   const tradeRouter = useTradeRouter()
-
   return useQuery(QUERY_KEYS.pools, getPools(tradeRouter))
 }
 
@@ -18,6 +18,32 @@ export const usePoolShareToken = (poolId: string) => {
     QUERY_KEYS.poolShareToken(poolId),
     getPoolShareToken(api, poolId),
   )
+}
+
+export const usePoolsWithShareTokens = () => {
+  const pools = usePools()
+  const shareTokens = usePoolShareTokens(
+    pools.data?.map((pool) => pool.address) ?? [],
+  )
+  const queries = [pools, ...shareTokens]
+  const isLoading = queries.some((query) => query.isLoading)
+
+  const data = useMemo(() => {
+    if (pools.data && shareTokens.every((query) => query.data)) {
+      return pools.data.map((pool) => ({
+        ...pool,
+        shareToken: shareTokens.find((shareToken) => {
+          if (shareToken.data) {
+            return shareToken.data.poolId === pool.address
+          }
+          return null
+        })?.data,
+      }))
+    }
+    return []
+  }, [shareTokens, pools.data])
+
+  return { isLoading, data }
 }
 
 export const usePoolShareTokens = (poolIds: (string | AccountId32)[]) => {

@@ -1,4 +1,3 @@
-import { AssetsTableData } from "sections/wallet/assets/table/WalletAssetsTable.utils"
 import { flexRender } from "@tanstack/react-table"
 import {
   Table,
@@ -12,21 +11,21 @@ import {
 import { Text } from "components/Typography/Text/Text"
 import { Fragment, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { WalletAssetsTableDetails } from "sections/wallet/assets/table/details/WalletAssetsTableDetails"
 import { TableSortHeader } from "components/Table/Table"
 import { assetsTableStyles } from "sections/wallet/assets/table/WalletAssetsTable.styled"
 import { WalletTransferModal } from "sections/wallet/transfer/WalletTransferModal"
-import { useLiquidityPositionsTable } from "./WalletLiquidityPositionsTable.utils"
+import {
+  LiquidityPositionsTableData,
+  useLiquidityPositionsTable,
+} from "./WalletLiquidityPositionsTable.utils"
 
-type Props = { data: AssetsTableData[] }
+type Props = { data: LiquidityPositionsTableData[] }
 
 export const WalletLiquidityPositionsTable = ({ data }: Props) => {
   const { t } = useTranslation()
 
   const [transferAsset, setTransferAsset] = useState<string | null>(null)
-  const table = useLiquidityPositionsTable(data, {
-    onTransfer: setTransferAsset,
-  })
+  const table = useLiquidityPositionsTable(data)
 
   return (
     <TableContainer css={assetsTableStyles}>
@@ -65,17 +64,17 @@ export const WalletLiquidityPositionsTable = ({ data }: Props) => {
                   </TableData>
                 ))}
               </TableRow>
-              {row.getIsExpanded() && (
-                <TableRow isSub>
-                  <TableData colSpan={table.getAllColumns().length}>
-                    <WalletAssetsTableDetails
-                      origin={row.original.origin}
-                      locked={row.original.locked}
-                      lockedUSD={row.original.lockedUSD}
-                    />
-                  </TableData>
-                </TableRow>
-              )}
+              {/*{row.getIsExpanded() && (*/}
+              {/*  <TableRow isSub>*/}
+              {/*    <TableData colSpan={table.getAllColumns().length}>*/}
+              {/*      <WalletAssetsTableDetails*/}
+              {/*        origin={row.original.origin}*/}
+              {/*        locked={row.original.locked}*/}
+              {/*        lockedUSD={row.original.lockedUSD}*/}
+              {/*      />*/}
+              {/*    </TableData>*/}
+              {/*  </TableRow>*/}
+              {/*)}*/}
             </Fragment>
           ))}
         </TableBodyContent>

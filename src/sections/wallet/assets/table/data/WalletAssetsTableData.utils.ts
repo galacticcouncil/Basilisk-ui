@@ -56,7 +56,7 @@ export const useAssetsTableData = () => {
   return { data, isLoading }
 }
 
-const useAssetsBalances = () => {
+export const useAssetsBalances = () => {
   const { account } = useAccountStore()
   const accountBalances = useAccountBalances(account?.address)
   const tokenIds = accountBalances.data?.balances

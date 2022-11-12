@@ -1,11 +1,9 @@
-import { useAccountStore } from "../../../../../state/store"
-import { useAccountBalances } from "../../../../../api/accountBalances"
-import { NATIVE_ASSET_ID } from "../../../../../utils/api"
-import {
-  useAssetDetails,
-  useAssetDetailsList,
-} from "../../../../../api/assetDetails"
+import { useAccountStore } from "state/store"
+import { useAccountBalances } from "api/accountBalances"
+import { NATIVE_ASSET_ID } from "utils/api"
+import { useAssetDetailsList } from "api/assetDetails"
 import { useMemo } from "react"
+import { usePoolsWithShareTokens } from "api/pools"
 import BN from "bignumber.js"
 
 export const useLiquidityPositionsTableData = () => {
@@ -20,26 +18,38 @@ export const useLiquidityPositionsTableData = () => {
     assetType: ["PoolShare"],
   })
 
-  const data = useMemo(() => {
-    return assets.data?.map((asset) => ({
-      id: asset.id,
-    }))
-  }, [assets.data])
+  const poolsWithShareTokens = usePoolsWithShareTokens()
 
-  console.log(data)
+  const queries = [accountBalances, assets, poolsWithShareTokens]
+  const isLoading = queries.some((query) => query.isLoading)
 
-  return { data, isLoading: assets.isLoading }
-}
+  const participatedLiquidityPools = useMemo(() => {
+    if (assets.data && poolsWithShareTokens.data) {
+      const shareAssetsIds = assets.data.map((asset) => asset.id)
+      return poolsWithShareTokens.data
+        .filter((pool) => {
+          if (pool.shareToken) {
+            return shareAssetsIds.includes(pool.shareToken.token.toString())
+          }
+          return false
+        })
+        .map((pool) => {
+          const shareTokenId = pool.shareToken?.token.toString()
+          const name = assets.data.find(
+            (shareToken) => shareToken.id === shareTokenId,
+          )?.name
 
-export interface WalletLiquidityPositionsData {
-  id: string
-  symbol: string
-  name: string
-  transferable: BN
-  transferableUSD: BN
-  total: BN
-  totalUSD: BN
-  locked: BN
-  lockedUSD: BN
-  origin: string
+          return {
+            name,
+            symbolA: pool.tokens[0].symbol,
+            symbolB: pool.tokens[1].symbol,
+            transferable: new BN(0), // TODO: Transferable balance
+            transferableUSD: new BN(0), // TODO: Transferable USD
+          }
+        })
+    }
+    return []
+  }, [poolsWithShareTokens.data, assets.data])
+
+  return { data: participatedLiquidityPools, isLoading }
 }
