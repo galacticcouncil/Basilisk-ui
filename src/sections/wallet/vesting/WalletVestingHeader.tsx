@@ -10,20 +10,19 @@ import {
 import { useSpotPrice } from "api/spotPrice"
 import { useAUSD } from "api/asset"
 import { useMemo } from "react"
-import { getFormatSeparators } from "utils/formatting"
-import i18n from "i18next"
 import { css } from "@emotion/react"
 import { theme } from "theme"
 import { NATIVE_ASSET_ID } from "utils/api"
 import { useAssetMeta } from "../../../api/assetMeta"
 import { STable, SSeparator } from "./WalletVestingHeader.styled"
 import { addDays } from "date-fns"
-import { DAY_IN_MILLISECONDS } from "../../../utils/constants"
+import { BN_0, DAY_IN_MILLISECONDS } from "../../../utils/constants"
+import { separateBalance } from "../../../utils/balance"
 
 export const WalletVestingHeader = () => {
   const { t } = useTranslation()
 
-  const { data: claimableBalance } = useVestingTotalClaimableBalance()
+  const { data: claimableBalanceAmount } = useVestingTotalClaimableBalance()
   const { data: totalVestedAmount } = useVestingTotalVestedAmount()
   const { data: vestingScheduleEnd } = useVestingScheduleEnd()
 
@@ -31,33 +30,22 @@ export const WalletVestingHeader = () => {
   const spotPrice = useSpotPrice(NATIVE_ASSET_ID, AUSD.data?.id)
   const { data: nativeAsset } = useAssetMeta(NATIVE_ASSET_ID)
 
+  const claimableValue = claimableBalanceAmount ?? BN_0
+  const totalVestedValue = totalVestedAmount ?? BN_0
+
   const claimableUSD = useMemo(() => {
-    if (claimableBalance && spotPrice.data) {
-      return claimableBalance.times(spotPrice.data.spotPrice)
+    if (claimableValue && spotPrice.data) {
+      return claimableValue.times(spotPrice.data.spotPrice)
     }
     return null
-  }, [claimableBalance, spotPrice])
-
-  const separators = getFormatSeparators(i18n.languages[0])
-
-  const [num, denom] = t("value", {
-    value: claimableBalance,
-    fixedPointScale: 12,
-    decimalPlaces: 2,
-  }).split(separators.decimal ?? ".")
-
-  const totalVestedValue = t("value", {
-    value: totalVestedAmount,
-    fixedPointScale: nativeAsset?.decimals ?? 12,
-    decimalPlaces: 2,
-  }).split(separators.decimal ?? ".")
+  }, [claimableValue, spotPrice])
 
   const totalVestedUSD = useMemo(() => {
-    if (totalVestedAmount && spotPrice.data) {
-      return totalVestedAmount.times(spotPrice.data.spotPrice)
+    if (totalVestedValue && spotPrice.data) {
+      return totalVestedValue.times(spotPrice.data.spotPrice)
     }
     return null
-  }, [totalVestedAmount, spotPrice])
+  }, [totalVestedValue, spotPrice])
 
   return (
     <div
@@ -75,7 +63,12 @@ export const WalletVestingHeader = () => {
             <Trans
               t={t}
               i18nKey="wallet.vesting.claimable.value"
-              tOptions={{ num, denom }}
+              tOptions={{
+                ...separateBalance(claimableValue, {
+                  fixedPointScale: 12,
+                  decimalPlaces: 2,
+                }),
+              }}
             >
               <span
                 css={css`
@@ -108,8 +101,10 @@ export const WalletVestingHeader = () => {
               t={t}
               i18nKey="wallet.vesting.total_vested.value"
               tOptions={{
-                num: totalVestedValue[0],
-                denom: totalVestedValue[1],
+                ...separateBalance(totalVestedValue, {
+                  fixedPointScale: nativeAsset?.decimals ?? 12,
+                  decimalPlaces: 2,
+                }),
               }}
             >
               <span
