@@ -5,6 +5,10 @@ import { ApiPromise } from "@polkadot/api"
 import { TradeRouter } from "@galacticcouncil/sdk"
 import { AccountId32 } from "@polkadot/types/interfaces"
 import { useMemo } from "react"
+import { u32 } from "@polkadot/types"
+import { useTotalIssuance } from "./totalIssuance"
+import { useTokenBalance } from "./balances"
+import { useAccountStore } from "../state/store"
 
 export const usePools = () => {
   const tradeRouter = useTradeRouter()
@@ -66,3 +70,26 @@ const getPoolShareToken =
     const token = await api.query.xyk.shareToken(poolId)
     return { poolId, token }
   }
+
+
+export const useShareOfPool = (asset: u32) => {
+
+  const { account } = useAccountStore()
+  const totalIssuance = useTotalIssuance(asset)
+  const totalBalance = useTokenBalance(asset, account?.address)
+
+  const queries = [totalIssuance, totalBalance]
+  const isLoading = queries.some(query => query.isLoading)
+
+  const shareOfPool = useMemo(() => {
+
+    if(totalIssuance.data && totalBalance.data) {
+      return totalBalance.data.balance.div(totalIssuance.data.total).multipliedBy(100)
+    }
+
+    return null
+  }, [totalBalance, totalIssuance])
+
+
+  return { data: shareOfPool, isLoading}
+}
