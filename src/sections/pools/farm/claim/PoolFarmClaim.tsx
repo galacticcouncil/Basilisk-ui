@@ -61,7 +61,11 @@ export function PoolFarmClaim(props: { pool: PoolBase }) {
           <Trans
             t={t}
             i18nKey="pools.allFarms.modal.claim.bsx"
-            tOptions={{ num, denom }}
+            tOptions={
+              !claimable.data?.bsx.isNaN()
+                ? { num, denom }
+                : { num: "-", denom: "-" }
+            }
           >
             <span
               css={css`
