@@ -33,6 +33,8 @@ export const SItem = styled(DropdownMenu.Item)`
 
   transition: all ${theme.transitions.default};
 
+  cursor: pointer;
+
   &:not(:last-of-type) {
     border-bottom: 1px solid rgba(${theme.rgbColors.white}, 0.06);
   }
