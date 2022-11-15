@@ -2,7 +2,7 @@ import { Page } from "components/Layout/Page/Page"
 
 import * as React from "react"
 import { createComponent } from "@lit-labs/react"
-import { App as LitTradeApp } from "trade-app"
+import { App as LitTradeApp } from "@galacticcouncil/trade-app"
 import { useAccountStore } from "state/store"
 
 export const TradeApp = createComponent({
