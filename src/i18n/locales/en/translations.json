@@ -109,6 +109,7 @@
   "pools.allFarms.modal.lockedShares": "Locked shares",
   "pools.allFarms.modal.claim.title": "Claimable now",
   "pools.allFarms.modal.claim.bsx": "{{num}}<0>.{{denom}} BSX</0>",
+  "pools.allFarms.modal.claim.bsx.nan": "- BSX",
   "pools.allFarms.modal.claim.submit": "Claim all",
   "pools.allFarms.modal.myPositions": "My positions",
   "pools.allFarms.modal.lockedShares.value": "{{ value, compact }} {{ assetA }}/{{ assetB }}",
