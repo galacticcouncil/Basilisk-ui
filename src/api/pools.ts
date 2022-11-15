@@ -6,9 +6,10 @@ import { TradeRouter } from "@galacticcouncil/sdk"
 import { AccountId32 } from "@polkadot/types/interfaces"
 import { useMemo } from "react"
 import { u32 } from "@polkadot/types"
-import { useTotalIssuance } from "./totalIssuance"
-import { useTokenBalance } from "./balances"
+import { useTotalIssuances } from "./totalIssuance"
+import { useTokensBalances } from "./balances"
 import { useAccountStore } from "../state/store"
+import { undefinedNoop } from "../utils/helpers"
 
 export const usePools = () => {
   const tradeRouter = useTradeRouter()
@@ -71,25 +72,73 @@ const getPoolShareToken =
     return { poolId, token }
   }
 
-
-export const useShareOfPool = (asset: u32) => {
-
+export const useShareOfPools = (assets: (u32 | string)[]) => {
   const { account } = useAccountStore()
-  const totalIssuance = useTotalIssuance(asset)
-  const totalBalance = useTokenBalance(asset, account?.address)
 
-  const queries = [totalIssuance, totalBalance]
-  const isLoading = queries.some(query => query.isLoading)
+  const totalIssuances = useTotalIssuances(assets)
+  const totalBalances = useTokensBalances(assets, account?.address)
 
-  const shareOfPool = useMemo(() => {
+  const queries = [...totalIssuances, ...totalBalances]
+  const isLoading = queries.some((query) => query.isLoading)
 
-    if(totalIssuance.data && totalBalance.data) {
-      return totalBalance.data.balance.div(totalIssuance.data.total).multipliedBy(100)
+  const data = useMemo(() => {
+    if (!!totalIssuances.length && !!totalBalances.length) {
+      return assets.map((asset) => {
+        const totalBalance = totalBalances.find(
+          (balance) => balance.data?.assetId === asset,
+        )
+        const totalIssuance = totalIssuances.find(
+          (issuance) => issuance.data?.token === asset,
+        )
+
+        const calculateTotalShare = () => {
+          if (totalBalance?.data && totalIssuance?.data) {
+            return totalBalance.data.total
+              .div(totalIssuance.data.total)
+              .multipliedBy(100)
+          }
+          return null
+        }
+
+        const calculateTransferableShare = () => {
+          if (totalBalance?.data && totalIssuance?.data) {
+            return totalBalance.data.balance
+              .div(totalIssuance.data.total)
+              .multipliedBy(100)
+          }
+          return null
+        }
+
+        return {
+          asset,
+          totalShare: calculateTotalShare(),
+          transferableShare: calculateTransferableShare(),
+        }
+      })
     }
 
     return null
-  }, [totalBalance, totalIssuance])
+  }, [assets, totalIssuances, totalBalances])
 
+  return { isLoading, data }
+}
 
-  return { data: shareOfPool, isLoading}
+const useAssetsInPool = (address: string) => {
+  const api = useApiPromise()
+  return useQuery(QUERY_KEYS.poolAssets(address), getAssetsInPool(api, address))
+}
+
+const getAssetsInPool = (api: ApiPromise, address?: string) => async () => {
+  if (!address) {
+    return undefinedNoop()
+  }
+
+  const poolsAssets = await api.query.xyk.poolAssets(address)
+  return poolsAssets.unwrap()
+}
+
+export const usePoolAssetsBalances = (address: string) => {
+  const assetPair = useAssetsInPool(address)
+
+  console.log(assetPair.data?.map((x) => x.toString()))
 }

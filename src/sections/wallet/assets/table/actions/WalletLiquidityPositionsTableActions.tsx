@@ -10,7 +10,7 @@ import { TableAction } from "components/Table/Table"
 type Props = {
   toggleExpanded: () => void
   symbol: string
-  onTransferClick: () => void
+  onTransferClick?: () => void
 }
 
 export const WalletLiquidityPositionsTableActions = (props: Props) => {
@@ -27,7 +27,10 @@ export const WalletLiquidityPositionsTableActions = (props: Props) => {
         </ButtonTransparent>
       </div>
       <div sx={{ flex: "row", gap: 10, display: ["none", "flex"] }}>
-        <TableAction icon={<TransferIcon />} onClick={props.onTransferClick}>
+        <TableAction
+          icon={<TransferIcon />}
+          onClick={() => props.onTransferClick?.()}
+        >
           {t("wallet.assets.liquidityPositions.table.actions.transfer")}
         </TableAction>
         <TableAction

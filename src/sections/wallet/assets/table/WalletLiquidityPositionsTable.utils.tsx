@@ -34,7 +34,10 @@ export const useLiquidityPositionsTable = (
       id: "name",
       header: t("wallet.assets.table.header.name"),
       cell: ({ row }) => (
-        <WalletLiquidityPositionsTableName {...row.original} />
+        <WalletLiquidityPositionsTableName
+          symbolA={row.original.assetA.symbol}
+          symbolB={row.original.assetB.symbol}
+        />
       ),
     }),
     accessor("transferable", {
@@ -45,27 +48,26 @@ export const useLiquidityPositionsTable = (
       cell: ({ row }) => (
         <WalletAssetsTableBalance
           balance={row.original.transferable}
-          balanceUSD={row.original.transferableUSD}
+          balanceUSD={row.original.transferableUsd}
         />
       ),
     }),
-    // accessor("total", {
-    //   id: "total",
-    //   header: t("wallet.assets.table.header.total"),
-    //   sortingFn: (a, b) => (a.original.total.gt(b.original.total) ? 1 : -1),
-    //   cell: ({ row }) => (
-    //     <WalletAssetsTableBalance
-    //       balance={row.original.total}
-    //       balanceUSD={row.original.totalUSD}
-    //     />
-    //   ),
-    // }),
+    accessor("total", {
+      id: "total",
+      header: t("wallet.assets.table.header.total"),
+      sortingFn: (a, b) => (a.original.total.gt(b.original.total) ? 1 : -1),
+      cell: ({ row }) => (
+        <WalletAssetsTableBalance
+          balance={row.original.total}
+          balanceUSD={row.original.totalUsd}
+        />
+      ),
+    }),
     // display({
     //   id: "actions",
     //   cell: ({ row }) => (
     //     <WalletLiquidityPositionsTableActions
     //       toggleExpanded={() => row.toggleExpanded()}
-    //       onTransferClick={() => actions.onTransfer(row.original.id)}
     //       symbol={row.original.symbol}
     //     />
     //   ),
@@ -86,8 +88,14 @@ export const useLiquidityPositionsTable = (
 
 export type LiquidityPositionsTableData = {
   name?: string
-  symbolA: string
-  symbolB: string
+  assetA: {
+    symbol: string
+  }
+  assetB: {
+    symbol: string
+  }
+  total: BigNumber
+  totalUsd: BigNumber
   transferable: BigNumber
-  transferableUSD: BigNumber
+  transferableUsd: BigNumber
 }
