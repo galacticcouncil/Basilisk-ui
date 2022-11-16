@@ -6,7 +6,7 @@ import { Row } from "components/Row/Row"
 import { Separator } from "components/Separator/Separator"
 import { Text } from "components/Typography/Text/Text"
 import { Button } from "components/Button/Button"
-import { WalletConnectButton } from "../../../../wallet/connect/modal/WalletConnectButton"
+import { WalletConnectButton } from "sections/wallet/connect/modal/WalletConnectButton"
 import { usePools, usePoolShareToken } from "api/pools"
 import { FC, useCallback, useMemo, useState } from "react"
 import {
