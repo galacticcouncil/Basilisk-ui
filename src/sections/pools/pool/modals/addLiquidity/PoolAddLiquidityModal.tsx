@@ -113,7 +113,7 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
   const calculatedRatio =
     shareIssuance.data &&
     calculatedShares &&
-    calculatedShares.pow(shareIssuance.data.total).multipliedBy(100)
+    calculatedShares.div(shareIssuance.data.total).multipliedBy(100)
 
   const handleChange = useCallback(
     (value: string, currPosition: 0 | 1) => {
@@ -259,13 +259,12 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
         <Separator />
         <Row
           left={t("pools.addLiquidity.modal.row.sharePool")}
-          right={`${(calculatedRatio && calculatedRatio.isFinite()
-            ? calculatedRatio
-            : BN_100
-          ).toFixed()}%`}
+          right={t("value.percentage", {
+            value: calculatedRatio,
+            decimalPlaces: 4,
+          })}
         />
         <Separator />
-        {/*TODO add tooltip component afterwards */}
         <Row
           left={t("pools.addLiquidity.modal.row.shareTokens")}
           right={
