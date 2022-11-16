@@ -1,7 +1,7 @@
 import { PoolAddLiquidityAssetSelect } from "./assetSelect/PoolAddLiquidityAssetSelect"
 import { getAssetLogo } from "components/AssetIcon/AssetIcon"
 import { PoolAddLiquidityConversion } from "./conversion/PoolAddLiquidityConversion"
-import { BN_1, DEFAULT_DECIMALS } from "utils/constants"
+import { BN_1, BN_100, DEFAULT_DECIMALS } from "utils/constants"
 import { Row } from "components/Row/Row"
 import { Separator } from "components/Separator/Separator"
 import { Text } from "components/Typography/Text/Text"
@@ -110,10 +110,14 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
     pool.tokens,
   ])
 
-  const calculatedRatio =
+  let calculatedRatio =
     shareIssuance.data &&
     calculatedShares &&
     calculatedShares.div(shareIssuance.data.total).multipliedBy(100)
+
+  if (calculatedRatio && !calculatedRatio.isFinite()) {
+    calculatedRatio = BN_100
+  }
 
   const handleChange = useCallback(
     (value: string, currPosition: 0 | 1) => {
