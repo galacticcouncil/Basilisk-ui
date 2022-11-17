@@ -144,6 +144,7 @@ export const useLiquidityPositionsTableData = () => {
 
         return {
           name: pool.shareTokenName,
+          poolAddress: pool.address,
           assetA: {
             symbol: pool.assetA.symbol,
             balance: assetA?.total,

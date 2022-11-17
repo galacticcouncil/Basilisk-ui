@@ -10,6 +10,7 @@ import { TableAction } from "components/Table/Table"
 import { LINKS } from "../../../../../utils/navigation"
 
 type Props = {
+  address: string
   toggleExpanded: () => void
   onTransferClick?: () => void
 }
@@ -34,8 +35,8 @@ export const WalletLiquidityPositionsTableActions = (props: Props) => {
         >
           {t("wallet.assets.liquidityPositions.table.actions.transfer")}
         </TableAction>
-        <Link to={LINKS.pools_and_farms}>
-          <TableAction icon={<DocumentIcon />} onClick={console.log}>
+        <Link to={LINKS.pools_and_farms} hash={props.address}>
+          <TableAction icon={<DocumentIcon />}>
             {t("wallet.assets.liquidityPositions.table.actions.details")}
           </TableAction>
         </Link>

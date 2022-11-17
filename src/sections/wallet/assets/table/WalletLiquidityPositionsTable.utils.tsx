@@ -69,6 +69,7 @@ export const useLiquidityPositionsTable = (
       id: "actions",
       cell: ({ row }) => (
         <WalletLiquidityPositionsTableActions
+          address={row.original.poolAddress}
           toggleExpanded={() => row.toggleExpanded()}
         />
       ),
@@ -89,6 +90,7 @@ export const useLiquidityPositionsTable = (
 
 export type LiquidityPositionsTableData = {
   name?: string
+  poolAddress: string
   assetA: {
     symbol: string
     balance?: BigNumber

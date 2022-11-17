@@ -11,15 +11,16 @@ import { PoolFooter } from "sections/pools/pool/footer/PoolFooter"
 import { PositionChip } from "./position/chip/PoolPositionChip"
 import { useMedia } from "react-use"
 import { theme } from "theme"
+import { u32 } from "@polkadot/types"
 
-type Props = { pool: PoolBase }
+type Props = { pool: PoolBase & { shareToken?: { token: u32 } } }
 
 export const Pool: FC<Props> = ({ pool }) => {
   const [isExpanded, setIsExpanded] = useState(false)
   const isDesktop = useMedia(theme.viewport.gte.sm)
 
   return (
-    <SContainer>
+    <SContainer id={pool.address}>
       <PositionChip
         sx={{ display: ["inline-block", "none"] }}
         poolId={pool.address}
