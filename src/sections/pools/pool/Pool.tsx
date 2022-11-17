@@ -11,9 +11,8 @@ import { PoolFooter } from "sections/pools/pool/footer/PoolFooter"
 import { PositionChip } from "./position/chip/PoolPositionChip"
 import { useMedia } from "react-use"
 import { theme } from "theme"
-import { u32 } from "@polkadot/types"
 
-type Props = { pool: PoolBase & { shareToken?: { token: u32 } } }
+type Props = { pool: PoolBase }
 
 export const Pool: FC<Props> = ({ pool }) => {
   const [isExpanded, setIsExpanded] = useState(false)
