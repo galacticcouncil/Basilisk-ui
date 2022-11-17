@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-location"
 import { ReactComponent as TransferIcon } from "assets/icons/TransferIcon.svg"
 import { ReactComponent as DocumentIcon } from "assets/icons/DocumentIcon.svg"
 import { ButtonTransparent } from "components/Button/Button"
@@ -6,6 +7,7 @@ import { ReactComponent as ChevronDownIcon } from "assets/icons/ChevronDown.svg"
 import { ReactComponent as ChevronRightIcon } from "assets/icons/ChevronRight.svg"
 import { useTranslation } from "react-i18next"
 import { TableAction } from "components/Table/Table"
+import { LINKS } from "../../../../../utils/navigation"
 
 type Props = {
   toggleExpanded: () => void
@@ -32,9 +34,11 @@ export const WalletLiquidityPositionsTableActions = (props: Props) => {
         >
           {t("wallet.assets.liquidityPositions.table.actions.transfer")}
         </TableAction>
-        <TableAction icon={<DocumentIcon />} onClick={console.log}>
-          {t("wallet.assets.liquidityPositions.table.actions.details")}
-        </TableAction>
+        <Link to={LINKS.pools_and_farms}>
+          <TableAction icon={<DocumentIcon />} onClick={console.log}>
+            {t("wallet.assets.liquidityPositions.table.actions.details")}
+          </TableAction>
+        </Link>
 
         <ButtonTransparent
           onClick={props.toggleExpanded}
