@@ -146,11 +146,17 @@ export const useLiquidityPositionsTableData = () => {
           name: pool.shareTokenName,
           assetA: {
             symbol: pool.assetA.symbol,
+            balance: assetA?.total,
+            balanceUsd: totalAssetAUsd,
             decimals: pool.assetA.decimals,
+            chain: "Basilisk", // TODO: find out proper chain
           },
           assetB: {
             symbol: pool.assetB.symbol,
+            balance: assetB?.total,
+            balanceUsd: totalAssetBUsd,
             decimals: pool.assetB.decimals,
+            chain: "Basilisk", // TODO: find out proper chain
           },
           total: assetA?.total?.plus(assetB?.total ?? BN_0) ?? BN_0,
           totalUsd: totalAssetAUsd?.plus(totalAssetBUsd ?? BN_0) ?? BN_0,

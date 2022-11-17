@@ -18,6 +18,7 @@ import {
   LiquidityPositionsTableData,
   useLiquidityPositionsTable,
 } from "./WalletLiquidityPositionsTable.utils"
+import { WalletLiquidityPositionsTableDetails } from "./details/WalletLiquidityPositionsTableDetails"
 
 type Props = { data: LiquidityPositionsTableData[] }
 
@@ -64,17 +65,16 @@ export const WalletLiquidityPositionsTable = ({ data }: Props) => {
                   </TableData>
                 ))}
               </TableRow>
-              {/*{row.getIsExpanded() && (*/}
-              {/*  <TableRow isSub>*/}
-              {/*    <TableData colSpan={table.getAllColumns().length}>*/}
-              {/*      <WalletAssetsTableDetails*/}
-              {/*        origin={row.original.origin}*/}
-              {/*        locked={row.original.locked}*/}
-              {/*        lockedUSD={row.original.lockedUSD}*/}
-              {/*      />*/}
-              {/*    </TableData>*/}
-              {/*  </TableRow>*/}
-              {/*)}*/}
+              {row.getIsExpanded() && (
+                <TableRow isSub>
+                  <TableData colSpan={table.getAllColumns().length}>
+                    <WalletLiquidityPositionsTableDetails
+                      assetA={row.original.assetA}
+                      assetB={row.original.assetB}
+                    />
+                  </TableData>
+                </TableRow>
+              )}
             </Fragment>
           ))}
         </TableBodyContent>

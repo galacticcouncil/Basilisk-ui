@@ -221,5 +221,7 @@
   "wallet.assets.table.details.locked": "Locked:",
   "wallet.assets.liquidityPositions.table.title": "Liquidity Positions",
   "wallet.assets.liquidityPositions.table.actions.transfer": "Transfer",
-  "wallet.assets.liquidityPositions.table.actions.details": "Details"
+  "wallet.assets.liquidityPositions.table.actions.details": "Details",
+  "wallet.assets.liquidityPositions.table.details.balance": "{{ symbol }} Balance:",
+  "wallet.assets.liquidityPositions.table.details.chain": "{{ symbol }} Origin Chain:"
 }

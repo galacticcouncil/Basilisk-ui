@@ -13,12 +13,14 @@ import { useMedia } from "react-use"
 import { theme } from "theme"
 import { WalletLiquidityPositionsTableName } from "./data/WalletLiquidityPositionsData"
 import BigNumber from "bignumber.js"
+import { WalletLiquidityPositionsTableActions } from "./actions/WalletLiquidityPositionsTableActions"
 
 export const useLiquidityPositionsTable = (
   data: LiquidityPositionsTableData[],
 ) => {
   const { t } = useTranslation()
-  const { accessor } = createColumnHelper<LiquidityPositionsTableData>()
+  const { accessor, display } =
+    createColumnHelper<LiquidityPositionsTableData>()
   const [sorting, setSorting] = useState<SortingState>([])
 
   const isDesktop = useMedia(theme.viewport.gte.sm)
@@ -63,15 +65,14 @@ export const useLiquidityPositionsTable = (
         />
       ),
     }),
-    // display({
-    //   id: "actions",
-    //   cell: ({ row }) => (
-    //     <WalletLiquidityPositionsTableActions
-    //       toggleExpanded={() => row.toggleExpanded()}
-    //       symbol={row.original.symbol}
-    //     />
-    //   ),
-    // }),
+    display({
+      id: "actions",
+      cell: ({ row }) => (
+        <WalletLiquidityPositionsTableActions
+          toggleExpanded={() => row.toggleExpanded()}
+        />
+      ),
+    }),
   ]
 
   const table = useReactTable({
@@ -90,9 +91,15 @@ export type LiquidityPositionsTableData = {
   name?: string
   assetA: {
     symbol: string
+    balance?: BigNumber
+    balanceUsd?: BigNumber
+    chain: string
   }
   assetB: {
     symbol: string
+    balance?: BigNumber
+    balanceUsd?: BigNumber
+    chain: string
   }
   total: BigNumber
   totalUsd: BigNumber
