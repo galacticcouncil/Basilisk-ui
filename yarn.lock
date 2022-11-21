@@ -1607,8 +1607,9 @@
     capi "^0.1.0-beta.12"
     lodash.clonedeep "^4.5.0"
 
-"@galacticcouncil/trade-app@../Basilisk-trade-app":
+"@galacticcouncil/trade-app@https://github.com/galacticcouncil/trade-app#dc1d3a45b127e0cd824054417084c17eea2a3208":
   version "1.0.0"
+  resolved "https://github.com/galacticcouncil/trade-app#dc1d3a45b127e0cd824054417084c17eea2a3208"
   dependencies:
     "@lit/reactive-element" "^1.0.0"
     "@thi.ng/atom" "^5.1.3"
@@ -1618,6 +1619,17 @@
     lit-element "^3.0.0"
     lit-html "^2.0.0"
     short-uuid "^4.2.0"
+    ts-debounce "^4.0.0"
+
+"@galacticcouncil/ui@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@galacticcouncil/ui/-/ui-1.0.0.tgz#5896d4d67a9e601bd34c954ec8e6605be1047a0b"
+  integrity sha512-Tsy7fpDN0PHL0HI2/ncOCryyzgz23TEztyzgeDm6sTtWyFaolCraUHSnNcwVu8QKrgFqeoaOBxZRVaAUMs4fJA==
+  dependencies:
+    "@lit/reactive-element" "^1.0.0"
+    lit "^2.0.0"
+    lit-element "^3.0.0"
+    lit-html "^2.0.0"
     ts-debounce "^4.0.0"
 
 "@gar/promisify@^1.0.1":
