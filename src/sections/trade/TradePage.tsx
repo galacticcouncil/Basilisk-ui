@@ -2,12 +2,12 @@ import { Page } from "components/Layout/Page/Page"
 
 import * as React from "react"
 import { createComponent } from "@lit-labs/react"
-import { App as LitTradeApp } from "@galacticcouncil/trade-app"
+import { TradeSpa as LitTradeSpa } from "@galacticcouncil/trade-app"
 import { useAccountStore } from "state/store"
 
-export const TradeApp = createComponent({
-  tagName: "gc-trade-app",
-  elementClass: LitTradeApp,
+export const TradeSpa = createComponent({
+  tagName: "gc-trade-spa",
+  elementClass: LitTradeSpa,
   react: React,
 })
 
@@ -16,8 +16,10 @@ export function TradePage() {
 
   return (
     <Page>
-      <TradeApp
-        account={account}
+      <TradeSpa
+        accountName={account?.name}
+        accountProvider={account?.provider}
+        accountAddress={account?.address}
         apiAddress={import.meta.env.VITE_PROVIDER_URL}
       />
     </Page>
