@@ -9,7 +9,6 @@ import { u32 } from "@polkadot/types"
 import { useTotalIssuances } from "./totalIssuance"
 import { useTokensBalances } from "./balances"
 import { useAccountStore } from "../state/store"
-import { undefinedNoop } from "../utils/helpers"
 
 export const usePools = () => {
   const tradeRouter = useTradeRouter()
@@ -121,24 +120,4 @@ export const useShareOfPools = (assets: (u32 | string)[]) => {
   }, [assets, totalIssuances, totalBalances])
 
   return { isLoading, data }
-}
-
-const useAssetsInPool = (address: string) => {
-  const api = useApiPromise()
-  return useQuery(QUERY_KEYS.poolAssets(address), getAssetsInPool(api, address))
-}
-
-const getAssetsInPool = (api: ApiPromise, address?: string) => async () => {
-  if (!address) {
-    return undefinedNoop()
-  }
-
-  const poolsAssets = await api.query.xyk.poolAssets(address)
-  return poolsAssets.unwrap()
-}
-
-export const usePoolAssetsBalances = (address: string) => {
-  const assetPair = useAssetsInPool(address)
-
-  console.log(assetPair.data?.map((x) => x.toString()))
 }

@@ -22,7 +22,7 @@ export const WalletLiquidityPositionsTableActions = (props: Props) => {
     <>
       <div sx={{ display: ["block", "none"] }}>
         <ButtonTransparent
-          onClick={console.log}
+          onClick={props.toggleExpanded}
           css={{ color: theme.colors.iconGray }}
         >
           <ChevronRightIcon />
