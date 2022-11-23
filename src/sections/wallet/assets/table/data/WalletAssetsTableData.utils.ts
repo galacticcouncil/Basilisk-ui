@@ -12,6 +12,7 @@ import { PalletBalancesAccountData } from "@polkadot/types/lookup"
 import { u32 } from "@polkadot/types"
 import { useAssetDetailsList } from "api/assetDetails"
 import { getAssetName } from "components/AssetIcon/AssetIcon"
+import { useTokensLocks } from "../../../../../api/balances"
 
 export const useAssetsTableData = () => {
   const { account } = useAccountStore()
@@ -21,6 +22,10 @@ export const useAssetsTableData = () => {
     : []
   const balances = useAssetsBalances()
   const assets = useAssetDetailsList(tokenIds)
+  const locks = useTokensLocks(tokenIds)
+
+
+  console.log(locks)
 
   const queries = [assets, balances]
   const isLoading = queries.some((q) => q.isLoading)
