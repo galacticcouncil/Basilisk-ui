@@ -104,8 +104,6 @@ export function useExistentialDeposit() {
   })
 }
 
-
-
 export const useTokensLocks = (ids: Maybe<u32 | string>[]) => {
   const api = useApiPromise()
   const { account } = useAccountStore()
@@ -115,35 +113,50 @@ export const useTokensLocks = (ids: Maybe<u32 | string>[]) => {
     return memo
   }, [])
 
-  return useQueries({
+  const queries = useQueries({
     queries: normalizedIds?.map((id) => ({
       queryKey: QUERY_KEYS.lock(account?.address, id),
       queryFn:
-        account?.address != null ? getTokenLock(api, account.address, id) : undefinedNoop,
+        account?.address != null
+          ? getTokenLock(api, account.address, id)
+          : undefinedNoop,
       enabled: !!account?.address,
     })),
   })
+
+  return {
+    isLoading: queries.some((query) => query.isLoading),
+    data: queries.reduce(
+      (
+        acc: {
+          id: string
+          amount: BigNumber
+        }[],
+        cur,
+      ) => {
+        if (cur.data) {
+          acc.push(...cur.data)
+        }
+        return acc
+      },
+      [],
+    ),
+  }
 }
 
 export const getTokenLock =
-  (api: ApiPromise, address: AccountId32 | string, id: string) =>
-    async () => {
-      if (id === NATIVE_ASSET_ID) {
-        const res = await api.query.balances.locks(address)
-        return res.map(lock => ({
-          id,
-          amount: lock.amount.toBigNumber()
-        }))
-      }
-
-      const res = await api.query.tokens.locks(address, id)
-      console.log(res.map(lock => ({
-        id: lock.id,
-        amount: lock.amount
-      })))
-
-      return res.map(lock => ({
-        id: lock.id,
-        amount: lock.amount
+  (api: ApiPromise, address: AccountId32 | string, id: string) => async () => {
+    if (id === NATIVE_ASSET_ID) {
+      const res = await api.query.balances.locks(address)
+      return res.map((lock) => ({
+        id: id.toString(),
+        amount: lock.amount.toBigNumber(),
       }))
     }
+
+    const res = await api.query.tokens.locks(address, id)
+    return res.map((lock) => ({
+      id: lock.id.toString(),
+      amount: lock.amount.toBigNumber(),
+    }))
+  }
