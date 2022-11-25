@@ -1,16 +1,28 @@
 import { Page } from "components/Layout/Page/Page"
 
 import * as React from "react"
+import * as Trade from "@galacticcouncil/trade-app"
 import { createComponent, EventName } from "@lit-labs/react"
-import { TradeApp as LitTradeApp } from "@galacticcouncil/trade-app"
 import { useAccountStore } from "state/store"
 import { MakeGenerics, useSearch } from "@tanstack/react-location"
 import { z } from "zod"
 import { Spinner } from "components/Spinner/Spinner.styled"
 
+const NotificationCenter = createComponent({
+  tagName: "gc-notification-center",
+  elementClass: Trade.NotificationCenter,
+  react: React,
+})
+
+const TransactionCenter = createComponent({
+  tagName: "gc-transaction-center",
+  elementClass: Trade.TransactionCenter,
+  react: React,
+})
+
 export const TradeApp = createComponent({
   tagName: "gc-trade-app",
-  elementClass: LitTradeApp,
+  elementClass: Trade.TradeApp,
   react: React,
   events: {
     onInit: "gc:init" as EventName<CustomEvent>,
@@ -32,31 +44,36 @@ export function TradePage() {
   const search = useSearch<SearchGenerics>()
 
   const [loaded, setLoaded] = React.useState(false)
-  const ref = React.useRef<LitTradeApp>(null)
+  const ref = React.useRef<Trade.TradeApp>(null)
 
   return (
     <Page>
       <div sx={{ flex: "column", align: "center" }}>
         {!loaded && <Spinner width={64} height={64} />}
-        <TradeApp
-          ref={ref}
-          css={{ display: loaded ? "block" : "none" }}
-          accountName={account?.name}
-          accountProvider={account?.provider}
-          accountAddress={account?.address}
-          apiAddress={import.meta.env.VITE_PROVIDER_URL}
-          onInit={() => {
-            const app = ref.current
-            const safeSearch = TradeAppSearch.safeParse(search)
 
-            if (app != null && safeSearch.success) {
-              const asset = safeSearch.data
-              app.setInitialAssets(asset.type, asset.id)
-            }
+        <NotificationCenter>
+          <TransactionCenter>
+            <TradeApp
+              ref={ref}
+              css={{ display: loaded ? "block" : "none" }}
+              accountName={account?.name}
+              accountProvider={account?.provider}
+              accountAddress={account?.address}
+              apiAddress={import.meta.env.VITE_PROVIDER_URL}
+              onInit={() => {
+                const app = ref.current
+                const safeSearch = TradeAppSearch.safeParse(search)
 
-            setLoaded(true)
-          }}
-        />
+                if (app != null && safeSearch.success) {
+                  const asset = safeSearch.data
+                  app.setInitialAssets(asset.type, asset.id)
+                }
+
+                setLoaded(true)
+              }}
+            />
+          </TransactionCenter>
+        </NotificationCenter>
       </div>
     </Page>
   )
