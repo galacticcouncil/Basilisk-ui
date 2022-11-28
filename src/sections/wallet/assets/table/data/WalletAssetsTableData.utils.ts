@@ -12,22 +12,66 @@ import { PalletBalancesAccountData } from "@polkadot/types/lookup"
 import { u32 } from "@polkadot/types"
 import { useAssetDetailsList } from "api/assetDetails"
 import { getAssetName } from "components/AssetIcon/AssetIcon"
+import {
+  useAcceptedCurrencies,
+  useAccountCurrency,
+} from "../../../../../api/payments"
 
 export const useAssetsTableData = () => {
+  const { account } = useAccountStore()
   const tradeAssets = useTradeAssets()
   const balances = useAssetsBalances()
   const assets = useAssetDetailsList()
 
-  const queries = [assets, tradeAssets, balances]
+  const acceptedCurrenciesQuery = useAcceptedCurrencies(
+    assets.data?.map((asset) => asset.id) ?? [],
+  )
+  const accountCurrency = useAccountCurrency(account?.address)
+
+  const queries = [
+    assets,
+    tradeAssets,
+    balances,
+    accountCurrency,
+    ...acceptedCurrenciesQuery,
+  ]
   const isLoading = queries.some((q) => q.isLoading)
 
   const data = useMemo(() => {
-    if (isLoading || !tradeAssets.data || !assets.data || !balances.data)
+    if (
+      isLoading ||
+      !tradeAssets.data ||
+      !assets.data ||
+      !balances.data ||
+      acceptedCurrenciesQuery.some((q) => !q.data)
+    )
       return []
+
+    const acceptedCurrencies = acceptedCurrenciesQuery
+      .reduce(
+        (
+          acc: {
+            id: string
+            accepted: boolean
+          }[],
+          cur,
+        ) => {
+          if (cur.data) {
+            acc.push(cur.data)
+          }
+          return acc
+        },
+        [],
+      )
+      .filter((currency) => currency.accepted)
 
     const res = assets.data.map((asset) => {
       const balance = balances.data?.find(
         (b) => b.id.toString() === asset.id.toString(),
+      )
+
+      const couldBeSetAsPaymentFee = acceptedCurrencies.some(
+        (currency) => currency.id === asset.id?.toString(),
       )
 
       return {
@@ -44,6 +88,8 @@ export const useAssetsTableData = () => {
         lockedUSD: BN_0, // TODO
         origin: "TODO",
         assetType: asset.assetType,
+        isPaymentFee: asset.id?.toString() === accountCurrency.data,
+        couldBeSetAsPaymentFee,
       }
     })
 
@@ -52,7 +98,14 @@ export const useAssetsTableData = () => {
       .sort((a, b) => a.symbol.localeCompare(b.symbol))
       .sort((a, b) => b.transferable.minus(a.transferable).toNumber())
       .sort((a) => (a.id === NATIVE_ASSET_ID ? -1 : 1)) // native asset first
-  }, [assets.data, balances.data, isLoading, tradeAssets.data])
+  }, [
+    assets.data,
+    balances.data,
+    isLoading,
+    tradeAssets.data,
+    acceptedCurrenciesQuery,
+    accountCurrency.data,
+  ])
 
   return { data, isLoading }
 }

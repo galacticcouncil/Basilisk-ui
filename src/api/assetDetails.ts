@@ -7,6 +7,8 @@ import { Maybe } from "utils/helpers"
 import { useAccountBalances } from "./accountBalances"
 import { AccountId32 } from "@polkadot/types/interfaces"
 import { PalletAssetRegistryAssetType } from "@polkadot/types/lookup"
+import { normalizeId } from "../utils/assets"
+import { isNotNil } from "../utils/types"
 
 export const useAssetDetails = (id: Maybe<u32 | string>) => {
   const api = useApiPromise()
@@ -27,10 +29,7 @@ export const useAssetDetailsList = (
 ) => {
   const api = useApiPromise()
 
-  const normalizedIds = ids?.reduce<string[]>((memo, item) => {
-    if (item != null) memo.push(item.toString())
-    return memo
-  }, [])
+  const normalizedIds = ids?.filter(isNotNil).map(normalizeId)
 
   return useQuery(QUERY_KEYS.assets, getAssetDetails(api), {
     select: (data) => {
