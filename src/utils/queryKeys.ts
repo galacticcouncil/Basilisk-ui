@@ -141,6 +141,7 @@ export const QUERY_KEYS = {
   provider: (url: string) => ["provider", url],
   math: ["@galacticcouncil/math"],
   existentialDeposit: ["existentialDeposit"],
+  metadataVersion: ["metadataVersion"],
   acceptedCurrencies: (address: Maybe<u32 | string>) => [
     "acceptedCurrencies",
     address,
