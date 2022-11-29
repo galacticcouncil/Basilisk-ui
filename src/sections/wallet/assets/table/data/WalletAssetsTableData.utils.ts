@@ -95,8 +95,13 @@ export const useAssetsBalances = () => {
         }[],
         cur,
       ) => {
-        if (cur.data) {
-          acc.push(...cur.data)
+        if (!!cur.data?.length) {
+          acc.push(
+            ...cur?.data?.map((cur) => ({
+              id: cur.id,
+              amount: cur.amount.toBigNumber(),
+            })),
+          )
         }
         return acc
       },
