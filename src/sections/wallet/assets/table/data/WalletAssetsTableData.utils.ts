@@ -47,8 +47,8 @@ export const useAssetsTableData = () => {
           tradeAssets.data.find((i) => i.id === asset.id?.toString()) != null,
         total: balance?.total ?? BN_0,
         totalUSD: balance?.totalUSD ?? BN_0,
-        locked: balance.locked,
-        lockedUSD: balance.lockedUsd,
+        locked: balance?.locked,
+        lockedUSD: balance?.lockedUsd,
         origin: "TODO",
         assetType: asset.assetType,
       }
