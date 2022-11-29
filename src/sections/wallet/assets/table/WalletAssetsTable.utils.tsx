@@ -17,13 +17,13 @@ import { WalletAssetsTableActions } from "sections/wallet/assets/table/actions/W
 import { useMedia } from "react-use"
 import { theme } from "theme"
 import { PalletAssetRegistryAssetType } from "@polkadot/types/lookup"
+import { useNavigate } from "@tanstack/react-location"
 
 export const useAssetsTable = (
   data: AssetsTableData[],
-  actions: {
-    onTransfer: (assetId: string) => void
-  },
+  actions: { onTransfer: (assetId: string) => void },
 ) => {
+  const navigate = useNavigate()
   const { t } = useTranslation()
   const { accessor, display } = createColumnHelper<AssetsTableData>()
   const [sorting, setSorting] = useState<SortingState>([])
@@ -40,6 +40,7 @@ export const useAssetsTable = (
     accessor("symbol", {
       id: "name",
       header: t("wallet.assets.table.header.name"),
+      sortingFn: (a, b) => a.original.symbol.localeCompare(b.original.symbol),
       cell: ({ row }) => <WalletAssetsTableName {...row.original} />,
     }),
     accessor("transferable", {
@@ -69,6 +70,24 @@ export const useAssetsTable = (
       id: "actions",
       cell: ({ row }) => (
         <WalletAssetsTableActions
+          onBuyClick={
+            row.original.inTradeRouter
+              ? () =>
+                  navigate({
+                    to: "/trade",
+                    search: { type: "assetOut", id: row.original.id },
+                  })
+              : undefined
+          }
+          onSellClick={
+            row.original.inTradeRouter
+              ? () =>
+                  navigate({
+                    to: "/trade",
+                    search: { type: "assetIn", id: row.original.id },
+                  })
+              : undefined
+          }
           toggleExpanded={() => row.toggleExpanded()}
           onTransferClick={() => actions.onTransfer(row.original.id)}
           symbol={row.original.symbol}
@@ -100,5 +119,6 @@ export type AssetsTableData = {
   locked: BN
   lockedUSD: BN
   origin: string
+  inTradeRouter: boolean
   assetType: PalletAssetRegistryAssetType["type"]
 }

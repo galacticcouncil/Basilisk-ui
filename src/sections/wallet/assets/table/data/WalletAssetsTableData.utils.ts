@@ -1,4 +1,4 @@
-import { useAUSD } from "api/asset"
+import { useTradeAssets, useUsdPeggedAsset } from "api/asset"
 import { useMemo } from "react"
 import BN from "bignumber.js"
 import { useAssetMetaList } from "api/assetMeta"
@@ -17,6 +17,7 @@ import BigNumber from "bignumber.js"
 
 export const useAssetsTableData = () => {
   const { account } = useAccountStore()
+  const tradeAssets = useTradeAssets()
   const accountBalances = useAccountBalances(account?.address)
   const tokenIds = accountBalances.data?.balances
     ? [NATIVE_ASSET_ID, ...accountBalances.data.balances.map((b) => b.id)]
@@ -24,27 +25,28 @@ export const useAssetsTableData = () => {
   const balances = useAssetsBalances()
   const assets = useAssetDetailsList(tokenIds)
 
-  const queries = [assets, balances]
+  const queries = [assets, tradeAssets, balances]
   const isLoading = queries.some((q) => q.isLoading)
 
   const data = useMemo(() => {
-    if (isLoading || !assets.data || !balances.data) return []
+    if (isLoading || !tradeAssets.data || !assets.data || !balances.data)
+      return []
 
     const res = assets.data.map((asset) => {
       const balance = balances.data?.find(
         (b) => b.id.toString() === asset.id.toString(),
       )
 
-      if (!balance) return null
-
       return {
         id: asset.id?.toString(),
         symbol: asset.name,
         name: getAssetName(asset.name),
-        transferable: balance.transferable,
-        transferableUSD: balance.transferableUSD,
-        total: balance.total,
-        totalUSD: balance.totalUSD,
+        transferable: balance?.transferable ?? BN_0,
+        transferableUSD: balance?.transferableUSD ?? BN_0,
+        inTradeRouter:
+          tradeAssets.data.find((i) => i.id === asset.id?.toString()) != null,
+        total: balance?.total ?? BN_0,
+        totalUSD: balance?.totalUSD ?? BN_0,
         locked: balance.locked,
         lockedUSD: balance.lockedUsd,
         origin: "TODO",
@@ -52,8 +54,12 @@ export const useAssetsTableData = () => {
       }
     })
 
-    return res.filter((x): x is AssetsTableData => x !== null)
-  }, [assets.data, balances.data, isLoading])
+    return res
+      .filter((x): x is AssetsTableData => x !== null)
+      .sort((a, b) => a.symbol.localeCompare(b.symbol))
+      .sort((a, b) => b.transferable.minus(a.transferable).toNumber())
+      .sort((a) => (a.id === NATIVE_ASSET_ID ? -1 : 1)) // native asset first
+  }, [assets.data, balances.data, isLoading, tradeAssets.data])
 
   return { data, isLoading }
 }
@@ -65,17 +71,11 @@ export const useAssetsBalances = () => {
     ? [NATIVE_ASSET_ID, ...accountBalances.data.balances.map((b) => b.id)]
     : []
   const assetMetas = useAssetMetaList(tokenIds)
-  const aUSD = useAUSD()
-  const spotPrices = useSpotPrices(tokenIds, aUSD.data?.id)
+  const usd = useUsdPeggedAsset()
+  const spotPrices = useSpotPrices(tokenIds, usd.data?.id)
   const locksQueries = useTokensLocks(tokenIds)
 
-  const queries = [
-    accountBalances,
-    assetMetas,
-    aUSD,
-    ...spotPrices,
-    ...locksQueries,
-  ]
+  const queries = [accountBalances, assetMetas, usd, ...spotPrices]
   const isLoading = queries.some((q) => q.isLoading)
 
   const data = useMemo(() => {
