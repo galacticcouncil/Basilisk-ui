@@ -23,8 +23,6 @@ export const SContainer = styled.div<{ isActive: boolean }>`
 
           border-radius: 12px;
 
-          padding: 1px; // a width of the border
-
           background: linear-gradient(
               90deg,
               #4fffb0 1.27%,
@@ -39,10 +37,6 @@ export const SContainer = styled.div<{ isActive: boolean }>`
             ),
             linear-gradient(90deg, #ffce4f 1.27%, #4fffb0 104.14%);
 
-          -webkit-mask: linear-gradient(#fff 0 0) content-box,
-            linear-gradient(#fff 0 0);
-          -webkit-mask-composite: xor;
-          mask-composite: exclude;
           pointer-events: none;
         }
       `
@@ -88,7 +82,7 @@ export const SSelectItem = styled.div<{ isActive: boolean }>`
               rgba(73, 228, 159, 0) 25.46%,
               rgba(228, 175, 73, 0.2) 98.29%
             ),
-            rgba(76, 243, 168, 0.3);
+            rgb(46, 104, 81);
         }
 
         position: relative;
