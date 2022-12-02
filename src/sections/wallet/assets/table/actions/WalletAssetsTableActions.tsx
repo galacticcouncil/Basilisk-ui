@@ -13,7 +13,7 @@ import { ReactComponent as DollarIcon } from "assets/icons/DollarIcon.svg"
 import { ReactComponent as PlusIcon } from "assets/icons/PlusIcon.svg"
 import { ReactComponent as MoreDotsIcon } from "assets/icons/MoreDotsIcon.svg"
 
-import { isNotNil } from "utils/types"
+import { isNotNil } from "utils/helpers"
 
 type Props = {
   toggleExpanded: () => void

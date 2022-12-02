@@ -47,23 +47,16 @@ export const useAssetsTableData = () => {
     )
       return []
 
-    const acceptedCurrencies = acceptedCurrenciesQuery
-      .reduce(
-        (
-          acc: {
-            id: string
-            accepted: boolean
-          }[],
-          cur,
-        ) => {
-          if (cur.data) {
-            acc.push(cur.data)
-          }
-          return acc
-        },
-        [],
-      )
-      .filter((currency) => currency.accepted)
+    const acceptedCurrencies = [
+      {
+        id: NATIVE_ASSET_ID,
+        accepted: true,
+      },
+      ...acceptedCurrenciesQuery.reduce(
+        (acc, curr) => (curr.data?.accepted ? [...acc, curr.data] : acc),
+        [] as { id: string; accepted: boolean }[],
+      ),
+    ]
 
     const res = assets.data.map((asset) => {
       const balance = balances.data?.find(

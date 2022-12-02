@@ -3,12 +3,10 @@ import { useQuery } from "@tanstack/react-query"
 import { QUERY_KEYS } from "utils/queryKeys"
 import { ApiPromise } from "@polkadot/api"
 import { u32 } from "@polkadot/types"
-import { Maybe } from "utils/helpers"
+import { Maybe, normalizeId, isNotNil } from "utils/helpers"
 import { useAccountBalances } from "./accountBalances"
 import { AccountId32 } from "@polkadot/types/interfaces"
 import { PalletAssetRegistryAssetType } from "@polkadot/types/lookup"
-import { normalizeId } from "../utils/assets"
-import { isNotNil } from "../utils/types"
 
 export const useAssetDetails = (id: Maybe<u32 | string>) => {
   const api = useApiPromise()
