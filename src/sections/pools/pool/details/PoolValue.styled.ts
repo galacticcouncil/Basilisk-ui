@@ -20,7 +20,7 @@ export const SInfoIcon = styled(InfoIcon)`
 
   border-radius: 9999px;
 
-  :hover {
+  [data-state*="open"] > & {
     color: ${theme.colors.primary400};
     background: rgba(${theme.rgbColors.primary450}, 0.38);
     border-color: rgba(${theme.rgbColors.primary400}, 0.41);
