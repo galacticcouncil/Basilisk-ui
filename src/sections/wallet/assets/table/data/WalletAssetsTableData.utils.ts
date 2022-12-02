@@ -70,7 +70,9 @@ export const useAssetsTableData = () => {
       )
 
       const couldBeSetAsPaymentFee = acceptedCurrencies.some(
-        (currency) => currency.id === asset.id?.toString(),
+        (currency) =>
+          currency.id === asset.id?.toString() &&
+          currency.id !== accountCurrency.data,
       )
 
       return {
