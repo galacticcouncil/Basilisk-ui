@@ -25,6 +25,7 @@ export function PoolFarmClaim(props: { pool: PoolBase }) {
     fixedPointScale: 12,
     numberPrefix: "≈",
     decimalPlaces: 4,
+    type: "token",
   })
 
   const positionsList = useMemo(() => {

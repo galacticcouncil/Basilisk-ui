@@ -47,6 +47,7 @@ export const WalletConnectAccountSelectItem: FC<Props> = ({
               value: data?.balance,
               fixedPointScale: meta?.decimals,
               decimalPlaces: 4,
+              type: "token",
             })}
           </Text>
         </div>

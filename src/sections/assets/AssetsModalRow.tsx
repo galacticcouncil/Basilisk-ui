@@ -66,6 +66,7 @@ export const AssetsModalRow: FC<AssetsModalRowProps> = ({ id, onClick }) => {
                 decimalPlaces: 4,
                 fixedPointScale: asset.data.decimals,
                 numberSuffix: ` ${asset.data.name}`,
+                type: "token",
               }}
             >
               <Text color="white" fs={14} lh={18} tAlign="right" />

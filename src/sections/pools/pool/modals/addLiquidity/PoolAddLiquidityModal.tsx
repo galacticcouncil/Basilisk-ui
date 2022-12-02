@@ -282,6 +282,7 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
                   value: calculatedShares,
                   decimalPlaces: 4,
                   fixedPointScale: shareTokenDecimals,
+                  type: "token",
                 })}
               </Text>
             )

@@ -79,6 +79,7 @@ export const WalletAssetsHeader: FC<WalletAssetsHeaderProps> = ({
                   ...separateBalance(totalUsd, {
                     numberPrefix: "$",
                     decimalPlaces: 2,
+                    type: "dollar",
                   }),
                 }}
               >
@@ -127,6 +128,7 @@ export const WalletAssetsHeader: FC<WalletAssetsHeaderProps> = ({
                   ...separateBalance(transferableUsd, {
                     numberPrefix: "$",
                     decimalPlaces: 2,
+                    type: "dollar",
                   }),
                 }}
               >

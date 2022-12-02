@@ -42,10 +42,11 @@ export const WalletVestingSchedule = () => {
     return null
   }, [claimableBalance, spotPrice])
 
-  const [num, denom] = t("value", {
+  const [num, denom = ""] = t("value", {
     value: claimableBalance,
     fixedPointScale: 12,
     decimalPlaces: 2,
+    type: "token",
   }).split(separators.decimal ?? ".")
 
   const isClaimAllowed = useMemo(() => {
@@ -80,7 +81,7 @@ export const WalletVestingSchedule = () => {
             <Trans
               t={t}
               i18nKey="wallet.vesting.claimable_now_value"
-              tOptions={{ num, denom }}
+              tOptions={{ num: `${num}${denom.length ? "," : ""}`, denom }}
             >
               <span
                 css={css`
