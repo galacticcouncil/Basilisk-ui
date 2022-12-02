@@ -27,7 +27,11 @@ export function InfoTooltip(props: { text: ReactNode; children: ReactNode }) {
       <Tooltip.Portal>
         <Tooltip.Content
           sx={{ bg: "black", p: 16 }}
-          css={{ borderRadius: 6, maxWidth: "calc(100vw - 12px * 2)" }}
+          css={{
+            borderRadius: 6,
+            maxWidth: "calc(100vw - 12px * 2)",
+            zIndex: 10,
+          }}
           side="bottom"
           align="start"
           sideOffset={3}

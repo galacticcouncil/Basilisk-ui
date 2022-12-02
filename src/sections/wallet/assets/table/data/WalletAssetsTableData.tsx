@@ -3,7 +3,7 @@ import { Text } from "components/Typography/Text/Text"
 import BN from "bignumber.js"
 import { useTranslation } from "react-i18next"
 import { SIcon } from "sections/wallet/assets/table/data/WalletAssetsTableData.styled"
-import { InfoTooltip } from "components/InfoTooltip/InfoTooltip"
+import { DollarAssetValue } from "components/DollarAssetValue/DollarAssetValue"
 
 export const WalletAssetsTableName = (props: {
   symbol: string
@@ -41,15 +41,17 @@ export const WalletAssetsTableBalance = (props: {
       <Text fs={14} lh={18} fw={500} color="white">
         {t("value", { value: props.balance, decimalPlaces: 4 })}
       </Text>
-      <Text fs={[11, 12]} lh={[14, 16]} fw={500} color="neutralGray500">
-        {!props.balanceUSD.isNaN() ? (
-          t("value.usd", { amount: props.balanceUSD })
-        ) : (
-          <InfoTooltip text={t("wallet.assets.table.details.noprice.tooltip")}>
-            <p>$ ⎯</p>
-          </InfoTooltip>
+
+      <DollarAssetValue
+        value={props.balanceUSD}
+        wrapper={(children) => (
+          <Text fs={[11, 12]} lh={[14, 16]} fw={500} color="neutralGray500">
+            {children}
+          </Text>
         )}
-      </Text>
+      >
+        {t("value.usd", { amount: props.balanceUSD })}
+      </DollarAssetValue>
     </div>
   )
 }
