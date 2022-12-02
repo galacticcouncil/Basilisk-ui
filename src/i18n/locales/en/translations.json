@@ -52,7 +52,7 @@
   "pools.header.totalFarms": "Total value in Farms",
   "pools.header.myLocked": "My balance in Pools",
   "pools.header.myFarms": "Total balance locked in Farms",
-  "pools.pool.title": "{{ type }} Pool",
+  "pools.pool.title": "{{ poolType }} Pool",
   "pools.pool.poolDetails.fee": "Trade Fee",
   "pools.pool.poolDetails.total": "Total Value",
   "pools.pool.poolDetails.24hours": "24h Volume",
