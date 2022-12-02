@@ -24,7 +24,6 @@ export function PoolFarmClaim(props: { pool: PoolBase }) {
   const balance = separateBalance(claimable.data?.bsx, {
     fixedPointScale: 12,
     numberPrefix: "≈",
-    decimalPlaces: 4,
     type: "token",
   })
 

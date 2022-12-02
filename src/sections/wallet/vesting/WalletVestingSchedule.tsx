@@ -45,7 +45,6 @@ export const WalletVestingSchedule = () => {
   const [num, denom = ""] = t("value", {
     value: claimableBalance,
     fixedPointScale: 12,
-    decimalPlaces: 2,
     type: "token",
   }).split(separators.decimal ?? ".")
 

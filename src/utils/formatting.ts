@@ -187,7 +187,7 @@ export function formatBigNumber(
 
   /* If the percentage number is bigger than 99.99% (2 digits) don’t show any decimals */
   if (options?.type === "percentage" && num.gt(99.99)) {
-    return num.toFormat(0, BigNumber.ROUND_UP, fmtConfig)
+    return num.toFormat(0, BigNumber.ROUND_HALF_UP, fmtConfig)
   }
 
   /* Display only 2 decimals, by cutting them not rounding */
@@ -235,7 +235,8 @@ export function safeConvertAddressSS58(
  * Format asset value by 3 digits
  */
 export const formatAssetValue = (value: string) => {
-  var parts = value.toString().split(".")
+  if (value == null) return ""
+  let parts = value.toString().split(".")
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ")
   return parts.join(".")
 }
