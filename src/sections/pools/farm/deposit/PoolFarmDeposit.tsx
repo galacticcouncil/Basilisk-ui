@@ -185,6 +185,7 @@ export const PoolFarmDeposit = (props: PoolJoinFarmDepositProps) => {
                 css={{ flexGrow: 1 }}
                 error={errors.value?.message}
                 onChange={onChange}
+                placeholder="0"
               />
             )}
           />
