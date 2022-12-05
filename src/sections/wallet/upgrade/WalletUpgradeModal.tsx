@@ -23,7 +23,7 @@ export function WalletUpgradeModal() {
 
   if (!state.data || !state.data.needsUpdate) return null
   return (
-    <Modal open={false} onClose={onClose} width={460}>
+    <Modal open={open} onClose={onClose} width={460}>
       <div sx={{ flex: "column", align: "center" }}>
         <UpdateMetadataIcon />
 
