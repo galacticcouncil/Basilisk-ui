@@ -6,11 +6,17 @@ import { ReactComponent as CaretIcon } from "assets/icons/CaretIcon.svg"
 
 export const TableAction = (props: {
   icon: ReactNode
-  onClick: () => void
+  onClick?: () => void
   children: ReactNode
+  disabled?: boolean
 }) => {
   return (
-    <Button size="small" sx={{ p: "9px 12px" }} onClick={props.onClick}>
+    <Button
+      disabled={props.disabled}
+      size="small"
+      sx={{ p: "9px 12px" }}
+      onClick={props.onClick}
+    >
       <div sx={{ flex: "row", align: "center" }}>
         {props.icon}
         {props.children}

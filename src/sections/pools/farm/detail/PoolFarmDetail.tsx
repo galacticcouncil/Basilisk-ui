@@ -87,7 +87,6 @@ export const PoolFarmDetail = (props: {
           <Text fs={14} color="neutralGray100">
             {t("pools.allFarms.modal.capacity", {
               capacity: props.farm.fullness.times(100),
-              decimalPlaces: 0,
             })}
           </Text>
         </SFarmRow>
@@ -98,7 +97,10 @@ export const PoolFarmDetail = (props: {
             </GradientText>
             <Text fs={14} color="neutralGray100">
               {t("pools.allFarms.modal.lockedShares.value", {
-                value: props.depositNft.deposit.shares,
+                value: getFloatingPointAmount(
+                  props.depositNft.deposit.shares,
+                  12,
+                ),
                 assetA: assetIn.symbol,
                 assetB: assetOut.symbol,
               })}

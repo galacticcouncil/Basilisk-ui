@@ -12,7 +12,7 @@ import {
 import { u32 } from "@polkadot/types"
 import BigNumber from "bignumber.js"
 import { getFloatingPointAmount } from "utils/balance"
-import { useAUSD } from "api/asset"
+import { useUsdPeggedAsset } from "api/asset"
 import { useSpotPrice } from "api/spotPrice"
 import { Maybe } from "utils/helpers"
 import { getAssetName } from "components/AssetIcon/AssetIcon"
@@ -32,14 +32,16 @@ export const AssetSelect = (props: {
 
   onChange: (v: string) => void
   onSelectAssetClick: () => void
+
+  error?: string
 }) => {
   const { t } = useTranslation()
 
-  const aUSD = useAUSD()
-  const spotPrice = useSpotPrice(props.asset, aUSD.data?.id)
+  const usd = useUsdPeggedAsset()
+  const spotPrice = useSpotPrice(props.asset, usd.data?.id)
 
   const aUSDValue = useMemo(() => {
-    if (!props.value) return null
+    if (!props.value) return 0
     if (spotPrice.data?.spotPrice == null) return null
     return spotPrice.data.spotPrice.times(props.value)
   }, [props.value, spotPrice.data])
@@ -60,8 +62,8 @@ export const AssetSelect = (props: {
               i18nKey="selectAsset.balance"
               tOptions={{
                 balance: props.balance,
-                decimalPlaces: 4,
                 fixedPointScale: props.decimals,
+                type: "token",
               }}
             >
               <span css={{ opacity: 0.7 }} />
@@ -112,6 +114,8 @@ export const AssetSelect = (props: {
             onChange={props.onChange}
             dollars={t("value.usd", { amount: aUSDValue })}
             unit={props.assetName}
+            error={props.error}
+            placeholder="0"
           />
         </div>
       </SContainer>

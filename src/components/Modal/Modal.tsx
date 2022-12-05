@@ -78,21 +78,25 @@ export const ModalMeta = (props: PropsOverride) => {
 
 export const Modal: FC<PropsWithChildren<Props>> = (props) => {
   const { t } = useTranslation()
-
   const [propsOverride, setPropsOverride] = useState<PropsOverride | null>(null)
+
   const mergedProps = { ...props, ...propsOverride }
   const { isDrawer, titleDrawer, secondaryIcon, title } = mergedProps
+
   return (
     <Dialog open={props.open}>
       <DialogPortal>
         <ModalContext.Provider value={setPropsOverride}>
           <ModalContainer>
-            <Backdrop variant={mergedProps.variant} />
+            <Backdrop variant={mergedProps.variant ?? "success"} />
 
             <ModalWindow
-              maxWidth={mergedProps.width}
-              onEscapeKeyDown={props.onClose}
               isDrawer={isDrawer}
+              maxWidth={mergedProps.width}
+              onEscapeKeyDown={!props.withoutClose ? props.onClose : undefined}
+              onInteractOutside={
+                !props.withoutClose ? props.onClose : undefined
+              }
             >
               {props.topContent}
 

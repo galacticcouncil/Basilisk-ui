@@ -1,5 +1,8 @@
 import { UseQueryResult } from "@tanstack/react-query"
+import { useEffect, useState } from "react"
 import { UseFormReturn } from "react-hook-form"
+
+import { u32 } from "@polkadot/types-codec"
 
 export const noop = () => {}
 export const undefinedNoop = () => undefined
@@ -54,4 +57,28 @@ export function useQuerySelect<TData, TError, TNewData>(
   })
 
   return trackedItem
+}
+
+export const useNow = (enabled: boolean) => {
+  const [now, setNow] = useState(new Date())
+
+  useEffect(() => {
+    if (!enabled) return
+    const interval = window.setInterval(() => setNow(new Date()), 500)
+    return () => window.clearInterval(interval)
+  }, [enabled])
+
+  return now
+}
+
+export function normalizeId(id: string | u32) {
+  return id.toString()
+}
+
+export function isNil<T>(val: T | null | undefined): val is null | undefined {
+  return val === undefined || val === null
+}
+
+export function isNotNil<T>(val: T | null | undefined): val is T {
+  return !isNil(val)
 }

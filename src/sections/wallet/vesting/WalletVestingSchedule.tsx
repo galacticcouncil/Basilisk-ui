@@ -2,8 +2,6 @@ import { SSchedule, SInner } from "./WalletVestingSchedule.styled"
 import { useCallback, useMemo } from "react"
 import { Text } from "../../../components/Typography/Text/Text"
 import { Trans, useTranslation } from "react-i18next"
-import { getFormatSeparators } from "../../../utils/formatting"
-import i18n from "i18next"
 import { css } from "@emotion/react"
 import { theme } from "../../../theme"
 import { Heading } from "../../../components/Typography/Heading/Heading"
@@ -12,27 +10,27 @@ import {
   useNextClaimableDate,
   useVestingTotalClaimableBalance,
 } from "../../../api/vesting"
-import { useAUSD } from "../../../api/asset"
+import { useUsdPeggedAsset } from "../../../api/asset"
 import { useSpotPrice } from "../../../api/spotPrice"
 import { NATIVE_ASSET_ID, useApiPromise } from "../../../utils/api"
 import { useExistentialDeposit, useTokenBalance } from "../../../api/balances"
 import { useAccountStore, useStore } from "../../../state/store"
 import { usePaymentInfo } from "../../../api/transaction"
+import { separateBalance } from "utils/balance"
 
 export const WalletVestingSchedule = () => {
   const { t } = useTranslation()
   const api = useApiPromise()
   const { createTransaction } = useStore()
   const { account } = useAccountStore()
-  const separators = getFormatSeparators(i18n.languages[0])
   const { data: claimableBalance } = useVestingTotalClaimableBalance()
 
   const { data: nextClaimableDate } = useNextClaimableDate()
   const { data: paymentInfoData } = usePaymentInfo(api.tx.vesting.claim())
   const { data: existentialDeposit } = useExistentialDeposit()
 
-  const AUSD = useAUSD()
-  const spotPrice = useSpotPrice(NATIVE_ASSET_ID, AUSD.data?.id)
+  const usd = useUsdPeggedAsset()
+  const spotPrice = useSpotPrice(NATIVE_ASSET_ID, usd.data?.id)
   const balance = useTokenBalance(NATIVE_ASSET_ID, account?.address)
 
   const claimableUSD = useMemo(() => {
@@ -41,12 +39,6 @@ export const WalletVestingSchedule = () => {
     }
     return null
   }, [claimableBalance, spotPrice])
-
-  const [num, denom] = t("value", {
-    value: claimableBalance,
-    fixedPointScale: 12,
-    decimalPlaces: 2,
-  }).split(separators.decimal ?? ".")
 
   const isClaimAllowed = useMemo(() => {
     if (paymentInfoData && existentialDeposit && claimableBalance) {
@@ -80,7 +72,12 @@ export const WalletVestingSchedule = () => {
             <Trans
               t={t}
               i18nKey="wallet.vesting.claimable_now_value"
-              tOptions={{ num, denom }}
+              tOptions={{
+                ...separateBalance(claimableBalance, {
+                  fixedPointScale: 12,
+                  type: "token",
+                }),
+              }}
             >
               <span
                 css={css`

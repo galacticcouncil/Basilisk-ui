@@ -18,6 +18,7 @@ import BigNumber from "bignumber.js"
 import { SGridContainer, SMaxButton } from "./PoolFarmDeposit.styled"
 import BN from "bignumber.js"
 import { FormValues } from "utils/helpers"
+import { getFloatingPointAmount } from "utils/balance"
 
 type PoolJoinFarmDepositProps = {
   pool: PoolBase
@@ -91,7 +92,7 @@ export const PoolFarmDeposit = (props: PoolJoinFarmDepositProps) => {
         const depositId = record.event.data.depositId
 
         const txs = restActive.map((item) =>
-          api.tx.xykLiquidityMining.redepositLpShares(
+          api.tx.xykLiquidityMining.redepositShares(
             item.globalFarmId,
             item.yieldFarmId,
             { assetIn: assetIn.id, assetOut: assetOut.id },
@@ -137,7 +138,10 @@ export const PoolFarmDeposit = (props: PoolJoinFarmDepositProps) => {
               const balance = shareTokenBalance.data?.balance
 
               if (balance != null) {
-                form.setValue("value", balance.toString())
+                form.setValue(
+                  "value",
+                  getFloatingPointAmount(balance, 12).toString(),
+                )
               }
             }}
           />
@@ -164,7 +168,7 @@ export const PoolFarmDeposit = (props: PoolJoinFarmDepositProps) => {
             rules={{
               validate: {
                 minDeposit: (value) => {
-                  return !minDeposit.lte(value)
+                  return !getFloatingPointAmount(minDeposit, 12).lte(value)
                     ? t("farms.deposit.error.minDeposit", { minDeposit })
                     : undefined
                 },
@@ -196,7 +200,7 @@ export const PoolFarmDeposit = (props: PoolJoinFarmDepositProps) => {
         }}
       >
         {account ? (
-          <Button type="submit" variant="primary" sx={{ width: "inherit" }}>
+          <Button type="submit" variant="primary" sx={{ width: "100%" }}>
             {props.isDrawer ? t("confirm") : t("farms.deposit.submit")}
           </Button>
         ) : (

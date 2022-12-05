@@ -20,6 +20,11 @@ export const QUERY_KEYS = {
     "poolShareToken",
     poolId.toString(),
   ],
+  poolAssets: (address: AccountId32 | string) => [
+    QUERY_KEY_PREFIX,
+    "poolAssets",
+    address.toString(),
+  ],
   deposit: (id: Maybe<u128>) => [QUERY_KEY_PREFIX, "deposit", id?.toString()],
   deposits: (poolId?: string) => [QUERY_KEY_PREFIX, "deposits", poolId],
   accountDepositIds: (accountId: Maybe<AccountId32 | string>) => [
@@ -76,6 +81,7 @@ export const QUERY_KEYS = {
   ],
   assets: [QUERY_KEY_PREFIX, "assets"],
   assetsMeta: [QUERY_KEY_PREFIX, "assetsMeta"],
+  tradeAssets: [QUERY_KEY_PREFIX, "tradeAssets"],
   exchangeFee: [QUERY_KEY_PREFIX, "exchangeFee"],
   calculateTotalLiqInPools: [QUERY_KEY_PREFIX, "totalLiqInPools"],
   spotPrice: (assetA: string, assetB: string) => [
@@ -132,7 +138,21 @@ export const QUERY_KEYS = {
     "vestingLock",
     address,
   ],
+  lock: (address: Maybe<AccountId32 | string>, asset: Maybe<u32 | string>) => [
+    "lock",
+    address,
+    asset,
+  ],
   provider: (url: string) => ["provider", url],
   math: ["@galacticcouncil/math"],
   existentialDeposit: ["existentialDeposit"],
+  metadataVersion: ["metadataVersion"],
+  acceptedCurrencies: (address: Maybe<u32 | string>) => [
+    "acceptedCurrencies",
+    address,
+  ],
+  accountCurrency: (address: Maybe<AccountId32 | string>) => [
+    "accountCurrency",
+    address,
+  ],
 } as const
