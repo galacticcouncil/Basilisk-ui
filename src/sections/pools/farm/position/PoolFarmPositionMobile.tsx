@@ -1,12 +1,12 @@
 import { useTranslation } from "react-i18next"
-import { usePoolPositionData } from "./PoolPosition.utils"
 import { Text } from "components/Typography/Text/Text"
-import { SMobContiner } from "./PoolPosition.styled"
+import { SMobContiner } from "./PoolFarmPositionMobile.styled"
 import { PalletLiquidityMiningYieldFarmEntry } from "@polkadot/types/lookup"
 import { PoolBase } from "@galacticcouncil/sdk"
 import { Separator } from "components/Separator/Separator"
 import { GradientText } from "components/Typography/GradientText/GradientText"
 import { AssetIcon } from "components/AssetIcon/AssetIcon"
+import { usePoolPosition } from "utils/farms/positions"
 
 type Props = {
   position: PalletLiquidityMiningYieldFarmEntry
@@ -17,7 +17,7 @@ type Props = {
 export const PoolPositionMobile = ({ position, index, pool }: Props) => {
   const { t } = useTranslation()
 
-  const { positionValue, assetA, assetB, rewardAsset } = usePoolPositionData({
+  const { usdValue, assetA, assetB, rewardAsset } = usePoolPosition({
     position,
     pool,
   })
@@ -55,7 +55,7 @@ export const PoolPositionMobile = ({ position, index, pool }: Props) => {
             })}
           </Text>
           <Text fs={14} lh={18} color="neutralGray500">
-            {t("value.usd", { amount: positionValue })}
+            {t("value.usd", { amount: usdValue })}
           </Text>
         </div>
       </div>

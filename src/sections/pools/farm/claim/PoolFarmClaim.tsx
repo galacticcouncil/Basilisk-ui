@@ -9,7 +9,7 @@ import { PoolBase } from "@galacticcouncil/sdk"
 import { useClaimableAmount, useClaimAllMutation } from "utils/farms/claiming"
 import { Modal } from "components/Modal/Modal"
 import { ReactComponent as WalletIcon } from "assets/icons/Wallet.svg"
-import { PoolPositionMobile } from "../../pool/position/PoolPositionMobile"
+import { PoolPositionMobile } from "sections/pools/farm/position/PoolFarmPositionMobile"
 import { useUserDeposits } from "utils/farms/deposits"
 import { separateBalance } from "utils/balance"
 

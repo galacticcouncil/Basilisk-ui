@@ -4,7 +4,7 @@ import { PoolBase } from "@galacticcouncil/sdk"
 import { Row } from "components/Row/Row"
 import { Separator } from "components/Separator/Separator"
 import { PalletLiquidityMiningYieldFarmEntry } from "@polkadot/types/lookup"
-import { usePoolPositionData } from "../../pool/position/PoolPosition.utils"
+import { usePoolPosition } from "utils/farms/positions"
 
 export function PoolFarmPosition(props: {
   pool: PoolBase
@@ -14,7 +14,7 @@ export function PoolFarmPosition(props: {
   const { t } = useTranslation()
 
   const { enteredDate, mined, rewardAsset, assetA, assetB } =
-    usePoolPositionData({ position: props.position, pool: props.pool })
+    usePoolPosition({ position: props.position, pool: props.pool })
 
   return (
     <div sx={{ flex: "column", gap: 8 }}>

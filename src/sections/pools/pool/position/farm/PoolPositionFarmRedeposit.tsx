@@ -72,7 +72,7 @@ export const PoolPositionFarmRedeposit = (props: {
   if (!availableYieldFarms.length) return null
   return (
     <SContainer isMultiple={isMultiple}>
-      <SInnerContainer>
+      <SInnerContainer isMultiple={isMultiple}>
         <GradientText fs={12} fw={400}>
           {t("pools.pool.positions.farms.redeposit.title")}
         </GradientText>
