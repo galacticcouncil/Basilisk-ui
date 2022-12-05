@@ -8,24 +8,43 @@ import { DollarAssetValue } from "components/DollarAssetValue/DollarAssetValue"
 export const WalletAssetsTableName = (props: {
   symbol: string
   name: string
+  isPaymentFee: boolean
 }) => {
+  const { t } = useTranslation()
+
   return (
-    <div sx={{ flex: "row", gap: 6, align: "center" }}>
-      <SIcon>{getAssetLogo(props.symbol)}</SIcon>
-      <div sx={{ flex: "column", width: "100%" }}>
-        <Text fs={14} lh={[16, 18]} fw={500} color="white">
-          {props.symbol}
-        </Text>
-        <Text
-          fs={[10, 12]}
-          lh={[14, 16]}
-          fw={500}
-          color="neutralGray400"
-          css={{ letterSpacing: "0.02em" }}
-        >
-          {props.name}
-        </Text>
+    <div>
+      <div sx={{ flex: "row", gap: 6, align: "center" }}>
+        <SIcon>{getAssetLogo(props.symbol)}</SIcon>
+        <div sx={{ flex: "column", width: "100%" }}>
+          <Text fs={14} lh={[16, 18]} fw={500} color="white">
+            {props.symbol}
+          </Text>
+          <Text
+            fs={[10, 12]}
+            lh={[14, 16]}
+            fw={500}
+            color="neutralGray400"
+            css={{ letterSpacing: "0.02em" }}
+          >
+            {props.name}
+          </Text>
+        </div>
       </div>
+      {props.isPaymentFee && (
+        <Text
+          fs={9}
+          fw={700}
+          sx={{
+            mt: 4,
+            ml: [32, 40],
+          }}
+          color="primary300"
+          tTransform="uppercase"
+        >
+          {t("wallet.assets.table.details.feePaymentAsset")}
+        </Text>
+      )}
     </div>
   )
 }
@@ -39,7 +58,7 @@ export const WalletAssetsTableBalance = (props: {
   return (
     <div sx={{ flex: "column", align: ["end", "start"], gap: 2 }}>
       <Text fs={14} lh={18} fw={500} color="white">
-        {t("value", { value: props.balance, decimalPlaces: 4 })}
+        {t("value", { value: props.balance, type: "token" })}
       </Text>
 
       <DollarAssetValue
@@ -50,7 +69,7 @@ export const WalletAssetsTableBalance = (props: {
           </Text>
         )}
       >
-        {t("value.usd", { amount: props.balanceUSD })}
+        {t("value.usd", { amount: props.balanceUSD, type: "dollar" })}
       </DollarAssetValue>
     </div>
   )

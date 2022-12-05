@@ -25,6 +25,7 @@ import { u32 } from "@polkadot/types"
 import { getTradeFee } from "sections/pools/pool/Pool.utils"
 import { useMath } from "utils/api"
 import { useAssetMeta } from "api/assetMeta"
+import { useAccountCurrency } from "../../../../../api/payments"
 
 interface PoolAddLiquidityModalProps {
   pool: PoolBase
@@ -42,6 +43,8 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
   const { account } = useAccountStore()
   const { data: shareToken } = usePoolShareToken(pool.address)
   const { data: shareTokenMeta } = useAssetMeta(shareToken?.token)
+  const accountCurrency = useAccountCurrency(account?.address)
+  const feeMeta = useAssetMeta(accountCurrency.data)
 
   const [input, setInput] = useState<{
     values: [string, string]
@@ -253,8 +256,8 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
               <Text>
                 {t("pools.addLiquidity.modal.row.transactionCostValue", {
                   amount: paymentInfo.data?.partialFee,
-                  fixedPointScale: 12,
-                  decimalPlaces: 2,
+                  symbol: feeMeta.data?.symbol,
+                  fixedPointScale: feeMeta.data?.decimals ?? 12,
                 })}
               </Text>
             )
@@ -265,7 +268,6 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
           left={t("pools.addLiquidity.modal.row.sharePool")}
           right={t("value.percentage", {
             value: calculatedRatio,
-            decimalPlaces: 4,
           })}
         />
         <Separator />
@@ -276,8 +278,8 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
               <Text color="primary400">
                 {t("value", {
                   value: calculatedShares,
-                  decimalPlaces: 4,
                   fixedPointScale: shareTokenDecimals,
+                  type: "token",
                 })}
               </Text>
             )

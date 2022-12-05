@@ -25,6 +25,8 @@ import { useApiPromise } from "utils/api"
 import { usePaymentInfo } from "api/transaction"
 import { useSpotPrice } from "api/spotPrice"
 import { FormValues } from "utils/helpers"
+import { useAccountCurrency } from "../../../../../api/payments"
+import { useAssetMeta } from "../../../../../api/assetMeta"
 
 const options = [
   { label: "25%", value: 25 },
@@ -92,6 +94,8 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
   const form = useForm<{ value: number }>({ defaultValues: { value: 25 } })
   const { createTransaction } = useStore()
   const { account } = useAccountStore()
+  const accountCurrency = useAccountCurrency(account?.address)
+  const feeMeta = useAssetMeta(accountCurrency.data)
 
   const api = useApiPromise()
 
@@ -179,7 +183,7 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
               amount={t("value", {
                 value: removeAmount[0],
                 fixedPointScale: pool.tokens[0].decimals,
-                decimalPlaces: 4,
+                type: "token",
               })}
             />
             <PoolRemoveLiquidityReward
@@ -188,7 +192,7 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
               amount={t("value", {
                 value: removeAmount[1],
                 fixedPointScale: pool.tokens[1].decimals,
-                decimalPlaces: 4,
+                type: "token",
               })}
             />
           </STradingPairContainer>
@@ -204,8 +208,8 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
                 <Text fs={14}>
                   {t("pools.removeLiquidity.modal.row.transactionCostValue", {
                     amount: paymentInfoEstimate.data?.partialFee,
-                    fixedPointScale: 12,
-                    decimalPlaces: 2,
+                    symbol: feeMeta.data?.symbol,
+                    fixedPointScale: feeMeta.data?.decimals ?? 12,
                   })}
                 </Text>
               </div>
@@ -226,6 +230,7 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
                     secondAmount: spotPrice.data?.spotPrice,
                     firstCurrency: pool.tokens[0].symbol,
                     secondCurrency: pool.tokens[1].symbol,
+                    type: "token",
                   }}
                 />
               </Text>
