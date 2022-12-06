@@ -1581,37 +1581,14 @@
     "@floating-ui/dom" "^0.5.3"
     use-isomorphic-layout-effect "^1.1.1"
 
-"@galacticcouncil/math-lbp@^0.0.0-beta-1":
-  version "0.0.0-beta-1"
-  resolved "https://registry.yarnpkg.com/@galacticcouncil/math-lbp/-/math-lbp-0.0.0-beta-1.tgz#196e82e5f4918d6922c918fa26bd4e261e2ec151"
-  integrity sha512-KIRqKg5XpqkUVuLe7puh4aemznR6TDeACYOkg9bpmNw0WyMAa0vK+Q952LbcWnppIGTwmvkIXRfUsrfYyKQQbw==
-
-"@galacticcouncil/math-xyk@^0.0.0-beta-1":
-  version "0.0.0-beta-1"
-  resolved "https://registry.yarnpkg.com/@galacticcouncil/math-xyk/-/math-xyk-0.0.0-beta-1.tgz#3da79f57098021bb2230bdf0774782cd5c799270"
-  integrity sha512-Y6KbtwUs7gVkoqpcnELT43d6y6xvTLVjGhzF4vG7uo5rpVhFfCH1mHQ0VyUy8XYojGR8mfTnDZ4YbATWcpmfQw==
-
-"@galacticcouncil/math@https://github.com/galacticcouncil/HydraDX-wasm":
-  version "0.0.0-beta-1"
-  resolved "https://github.com/galacticcouncil/HydraDX-wasm#c926d70e4df9d6ac26ec82d7d985fe60440d5d2a"
-
-"@galacticcouncil/sdk@^0.0.1-beta.12":
-  version "0.0.1-beta.12"
-  resolved "https://registry.yarnpkg.com/@galacticcouncil/sdk/-/sdk-0.0.1-beta.12.tgz#738a0dffc3b6f92e00d10f7e7112b9a8dae3cf96"
-  integrity sha512-UvrRoXb49yfeJElscmjVdTCpOk+0NFBcX3g0MzlkF8EFGRtkqiYdwzUDY6X0j2Ey109VQh2hcTfipNNihjUjUw==
+"@galacticcouncil/apps@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@galacticcouncil/apps/-/apps-1.0.3.tgz#e4ec5ffc3aae0173943363107c5739064c7974c2"
+  integrity sha512-NjE13VlKtHXrRyrejIuWZRChBsZwjs/cqRHF5e/id33bKqRgQPAq8jxz8BVO8/aubBihlvKRKHJkxZsCroXnxQ==
   dependencies:
-    "@galacticcouncil/math-lbp" "^0.0.0-beta-1"
-    "@galacticcouncil/math-xyk" "^0.0.0-beta-1"
-    "@polkadot/api" "^9.0.1"
-    bignumber.js "^9.1.0"
-    capi "^0.1.0-beta.12"
-    lodash.clonedeep "^4.5.0"
-
-"@galacticcouncil/trade-app@https://github.com/galacticcouncil/trade-app#b01f03484735be757b4633d77adf01883b0d11c5":
-  version "1.0.0"
-  resolved "https://github.com/galacticcouncil/trade-app#b01f03484735be757b4633d77adf01883b0d11c5"
-  dependencies:
+    "@galacticcouncil/ui" "1.0.16"
     "@lit/reactive-element" "^1.0.0"
+    "@talismn/connect-wallets" "^1.2.1"
     "@thi.ng/atom" "^5.1.3"
     "@vaadin/router" "^1.7.4"
     humanize-duration "^3.27.3"
@@ -1621,10 +1598,52 @@
     short-uuid "^4.2.0"
     ts-debounce "^4.0.0"
 
-"@galacticcouncil/ui@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@galacticcouncil/ui/-/ui-1.0.0.tgz#5896d4d67a9e601bd34c954ec8e6605be1047a0b"
-  integrity sha512-Tsy7fpDN0PHL0HI2/ncOCryyzgz23TEztyzgeDm6sTtWyFaolCraUHSnNcwVu8QKrgFqeoaOBxZRVaAUMs4fJA==
+"@galacticcouncil/math-lbp@^0.0.0-beta-1":
+  version "0.0.0-beta-1"
+  resolved "https://registry.yarnpkg.com/@galacticcouncil/math-lbp/-/math-lbp-0.0.0-beta-1.tgz#196e82e5f4918d6922c918fa26bd4e261e2ec151"
+  integrity sha512-KIRqKg5XpqkUVuLe7puh4aemznR6TDeACYOkg9bpmNw0WyMAa0vK+Q952LbcWnppIGTwmvkIXRfUsrfYyKQQbw==
+
+"@galacticcouncil/math-lbp@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@galacticcouncil/math-lbp/-/math-lbp-0.0.3.tgz#45021043b85024f6b3ba67ec21434f793ea8f467"
+  integrity sha512-g4JCjBEMHEXlwmIxJuIvzUYLkt3CgQQ5hmuiGMy24+2yIQE2ELeUNuERVaJWx9ezfqk5HLs8x2c+I1tgqLv7Jw==
+
+"@galacticcouncil/math-omnipool@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@galacticcouncil/math-omnipool/-/math-omnipool-0.0.3.tgz#c30c0d28091fc5d31709e4c77c25db1664fe33ae"
+  integrity sha512-zeIueQs92zP05Wx+ANJSXb0c9X3PTtUjK+EGxJ1Sg6CtDLgaIdcuYN4HGuOB5+JkVwJTXhSHIA7njsqeBumroQ==
+
+"@galacticcouncil/math-xyk@^0.0.0-beta-1":
+  version "0.0.0-beta-1"
+  resolved "https://registry.yarnpkg.com/@galacticcouncil/math-xyk/-/math-xyk-0.0.0-beta-1.tgz#3da79f57098021bb2230bdf0774782cd5c799270"
+  integrity sha512-Y6KbtwUs7gVkoqpcnELT43d6y6xvTLVjGhzF4vG7uo5rpVhFfCH1mHQ0VyUy8XYojGR8mfTnDZ4YbATWcpmfQw==
+
+"@galacticcouncil/math-xyk@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@galacticcouncil/math-xyk/-/math-xyk-0.0.3.tgz#42c48bd7754c41670bef63d7363cde808fda5081"
+  integrity sha512-u6Gyv6CLh66awBKpDyaKXxhmDVqEOvOb77uxD0EIgpXuijcVK8Pb7Y+ZejtfCeaEuTrAmwnVK4ClHbdVVTvHjA==
+
+"@galacticcouncil/math@https://github.com/galacticcouncil/HydraDX-wasm":
+  version "0.0.0-beta-1"
+  resolved "https://github.com/galacticcouncil/HydraDX-wasm#c926d70e4df9d6ac26ec82d7d985fe60440d5d2a"
+
+"@galacticcouncil/sdk@^0.0.1-beta.20":
+  version "0.0.1-beta.20"
+  resolved "https://registry.yarnpkg.com/@galacticcouncil/sdk/-/sdk-0.0.1-beta.20.tgz#1a09d8c4240b140d0fa44aff03167f71cabcf646"
+  integrity sha512-TCj9AN38IWA2s4KdBZ1+eK40Lrt/G+iT0IVYvtvATolJrUoME/Db5s3HgslqAKrs+UyL4PUfLuaIhr5nN7kaxQ==
+  dependencies:
+    "@galacticcouncil/math-lbp" "^0.0.3"
+    "@galacticcouncil/math-omnipool" "^0.0.3"
+    "@galacticcouncil/math-xyk" "^0.0.3"
+    "@polkadot/api" "^9.0.1"
+    bignumber.js "^9.1.0"
+    capi "^0.1.0-beta.12"
+    lodash.clonedeep "^4.5.0"
+
+"@galacticcouncil/ui@1.0.16":
+  version "1.0.16"
+  resolved "https://registry.yarnpkg.com/@galacticcouncil/ui/-/ui-1.0.16.tgz#a3b9aeab1f8f6e2ff2b1bae250bc298edaa16511"
+  integrity sha512-mmc4D2UqchuabPTy0twd0mZQqRFfG+cmSuSEat/TJ5C1BN/AALjB2jmHsaHU8IPUEg/U5nZkemiSq+n8cBJxpQ==
   dependencies:
     "@lit/reactive-element" "^1.0.0"
     lit "^2.0.0"
