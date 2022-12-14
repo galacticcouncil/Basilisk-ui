@@ -4,10 +4,11 @@ import { OmnipoolPool } from "sections/pools/PoolsPage.utils"
 import { InfoTooltip } from "components/InfoTooltip/InfoTooltip"
 import { SInfoIcon } from "./PoolValue.styled"
 import { DollarAssetValue } from "components/DollarAssetValue/DollarAssetValue"
+import BN from "bignumber.js"
 
-type PoolValueProps = { pool: OmnipoolPool }
+type PoolValueProps = { pool: OmnipoolPool; volume: BN }
 
-export const PoolValue = ({ pool }: PoolValueProps) => {
+export const PoolValue = ({ pool, volume }: PoolValueProps) => {
   const { t } = useTranslation()
 
   return (
@@ -33,7 +34,7 @@ export const PoolValue = ({ pool }: PoolValueProps) => {
             </InfoTooltip>
           </div>
           <DollarAssetValue
-            value={pool.volume24h}
+            value={volume}
             wrapper={(children) => (
               <Text lh={22} color="white" tAlign={["right", "left"]}>
                 {children}
