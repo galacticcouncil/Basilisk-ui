@@ -6,7 +6,7 @@ import { gql, request } from "graphql-request"
 import { Maybe, undefinedNoop } from "utils/helpers"
 import { QUERY_KEYS } from "utils/queryKeys"
 
-const getTradeVolume = (assetId: string) => async () => {
+export const getTradeVolume = (assetId: string) => async () => {
   const assetHex = u8aToHex(decodeAddress(assetId))
   const after = addDays(new Date(), -1).toISOString()
 

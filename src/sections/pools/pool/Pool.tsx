@@ -10,7 +10,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import { PoolFooter } from "./footer/PoolFooter"
 import { LiquidityPosition } from "sections/pools/pool/positions/LiquidityPosition"
 import { PoolIncentives } from "./details/PoolIncentives"
-import { useOmnipoolData } from "sections/pools/pool/Pool.utils"
+import { useOmnipoolPositions } from "sections/pools/pool/Pool.utils"
 import { Text } from "components/Typography/Text/Text"
 import { useTranslation } from "react-i18next"
 
@@ -21,24 +21,22 @@ export const Pool = ({ pool }: Props) => {
   const [isExpanded, setIsExpanded] = useState(false)
   const isDesktop = useMedia(theme.viewport.gte.sm)
 
-  const omnipoolData = useOmnipoolData(pool)
+  const omnipoolData = useOmnipoolPositions(pool)
 
   return (
     <SContainer id={pool.id.toString()}>
       <SGridContainer>
         <PoolDetails pool={pool} />
         <PoolIncentives />
-        <PoolValue pool={pool} volume={omnipoolData.data.volume} />
+        <PoolValue pool={pool} />
         <PoolActions
           pool={pool}
-          canExpand={
-            !omnipoolData.isLoading && !!omnipoolData.data?.positions.length
-          }
+          canExpand={!omnipoolData.isLoading && !!omnipoolData.data?.length}
           isExpanded={isExpanded}
           onExpandClick={() => setIsExpanded((prev) => !prev)}
         />
       </SGridContainer>
-      {isDesktop && omnipoolData.data?.positions.length && (
+      {isDesktop && omnipoolData.data?.length && (
         <AnimatePresence>
           {isExpanded && (
             <motion.div
@@ -53,7 +51,7 @@ export const Pool = ({ pool }: Props) => {
                   {t("pools.pool.nft.title")}
                 </Text>
                 <div sx={{ flex: "column", gap: 16 }}>
-                  {omnipoolData.data.positions.map((position, i) => (
+                  {omnipoolData.data.map((position, i) => (
                     <LiquidityPosition
                       key={position.id}
                       position={position}

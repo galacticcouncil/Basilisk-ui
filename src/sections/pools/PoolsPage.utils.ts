@@ -66,8 +66,6 @@ export const useOmnipoolPools = () => {
         )
         const totalUSD = !spotPrice ? BN_NAN : total.times(spotPrice)
 
-        const volume24h = BN_NAN // TODO
-
         const bits = asset.data.tradable.bits.toNumber()
         const canSell = is_sell_allowed(bits)
         const canBuy = is_buy_allowed(bits)
@@ -80,7 +78,6 @@ export const useOmnipoolPools = () => {
           tradeFee,
           total,
           totalUSD,
-          volume24h,
           canSell,
           canBuy,
           canAddLiquidity,
@@ -101,7 +98,6 @@ export type OmnipoolPool = {
   tradeFee: BN
   total: BN
   totalUSD: BN
-  volume24h: BN
   canSell: boolean
   canBuy: boolean
   canAddLiquidity: boolean

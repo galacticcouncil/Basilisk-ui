@@ -4,12 +4,16 @@ import { OmnipoolPool } from "sections/pools/PoolsPage.utils"
 import { InfoTooltip } from "components/InfoTooltip/InfoTooltip"
 import { SInfoIcon } from "./PoolValue.styled"
 import { DollarAssetValue } from "components/DollarAssetValue/DollarAssetValue"
-import BN from "bignumber.js"
+import { usePoolDetailsTradeVolume } from "sections/pools/pool/details/PoolDetails.utils"
+import { BN_NAN } from "utils/constants"
+import Skeleton from "react-loading-skeleton"
 
-type PoolValueProps = { pool: OmnipoolPool; volume: BN }
+type PoolValueProps = { pool: OmnipoolPool }
 
-export const PoolValue = ({ pool, volume }: PoolValueProps) => {
+export const PoolValue = ({ pool }: PoolValueProps) => {
   const { t } = useTranslation()
+
+  const { data, isLoading } = usePoolDetailsTradeVolume(pool.id.toString())
 
   return (
     <div sx={{ flex: "column", width: ["auto", 300], justify: "end" }}>
@@ -33,16 +37,20 @@ export const PoolValue = ({ pool, volume }: PoolValueProps) => {
               <SInfoIcon />
             </InfoTooltip>
           </div>
-          <DollarAssetValue
-            value={volume}
-            wrapper={(children) => (
-              <Text lh={22} color="white" tAlign={["right", "left"]}>
-                {children}
-              </Text>
-            )}
-          >
-            {t("value.usd", { amount: pool.volume24h })}
-          </DollarAssetValue>
+          {isLoading ? (
+            <Skeleton />
+          ) : (
+            <DollarAssetValue
+              value={data ?? BN_NAN}
+              wrapper={(children) => (
+                <Text lh={22} color="white" tAlign={["right", "left"]}>
+                  {children}
+                </Text>
+              )}
+            >
+              {t("value.usd", { amount: data })}
+            </DollarAssetValue>
+          )}
         </div>
       </div>
     </div>

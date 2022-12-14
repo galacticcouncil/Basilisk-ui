@@ -6,8 +6,8 @@ import { useSpotPrices } from "api/spotPrice"
 import { useAssetMetaList } from "api/assetMeta"
 import { useApiIds } from "api/consts"
 
-export function usePoolDetailsTradeVolume(poolAddress: string) {
-  const volume = useTradeVolume(poolAddress)
+export function usePoolDetailsTradeVolume(assetId: string) {
+  const volume = useTradeVolume(assetId)
 
   const values = useMemo(() => {
     // Assuming trade volume is the aggregate amount being
