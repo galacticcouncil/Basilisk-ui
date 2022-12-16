@@ -21,7 +21,7 @@ export function PoolFarmClaim(props: { pool: PoolBase }) {
   const claimable = useClaimableAmount(props.pool)
   const claimAll = useClaimAllMutation(props.pool.address)
 
-  const balance = separateBalance(claimable.data?.bsx, {
+  const balance = separateBalance(claimable.data, {
     fixedPointScale: 12,
     numberPrefix: "≈",
     type: "token",
@@ -59,7 +59,7 @@ export function PoolFarmClaim(props: { pool: PoolBase }) {
           <Trans
             t={t}
             i18nKey={
-              !claimable.data?.bsx.isNaN()
+              !claimable.data?.isNaN()
                 ? "pools.allFarms.modal.claim.bsx"
                 : "pools.allFarms.modal.claim.bsx.nan"
             }
@@ -73,14 +73,14 @@ export function PoolFarmClaim(props: { pool: PoolBase }) {
             />
           </Trans>
         </Text>
-        <Text
+        {/* <Text
           css={css`
             color: rgba(255, 255, 255, 0.4);
             word-break: break-all;
           `}
         >
           {t("value.usd", { amount: claimable.data?.ausd })}
-        </Text>
+        </Text> */}
       </div>
       <div
         sx={{
@@ -113,7 +113,7 @@ export function PoolFarmClaim(props: { pool: PoolBase }) {
             p: ["10px 16px", "16px 36px"],
             width: "max-content",
           }}
-          disabled={!!claimable.data?.bsx.isZero()}
+          disabled={!!claimable.data?.isZero()}
           isLoading={claimAll.mutation.isLoading}
           onClick={() => claimAll.mutation.mutate()}
         >

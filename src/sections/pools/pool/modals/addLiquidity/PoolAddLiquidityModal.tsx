@@ -23,9 +23,9 @@ import { useAccountStore } from "state/store"
 import { useTranslation } from "react-i18next"
 import { u32 } from "@polkadot/types"
 import { getTradeFee } from "sections/pools/pool/Pool.utils"
-import { useMath } from "utils/api"
 import { useAssetMeta } from "api/assetMeta"
-import { useAccountCurrency } from "../../../../../api/payments"
+import { useAccountCurrency } from "api/payments"
+import * as xyk from "@galacticcouncil/math-xyk"
 
 interface PoolAddLiquidityModalProps {
   pool: PoolBase
@@ -39,7 +39,6 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
   const { t } = useTranslation()
   const pools = usePools()
 
-  const { xyk } = useMath()
   const { account } = useAccountStore()
   const { data: shareToken } = usePoolShareToken(pool.address)
   const { data: shareTokenMeta } = useAssetMeta(shareToken?.token)
@@ -105,7 +104,6 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
 
     return null
   }, [
-    xyk,
     reserves,
     shareIssuance.data,
     shareTokenDecimals,
@@ -148,7 +146,7 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
         setInput({ values, lastUpdated: currPosition })
       }
     },
-    [pool.tokens, reserves, xyk],
+    [pool.tokens, reserves],
   )
 
   const handleSelectAsset = useCallback(

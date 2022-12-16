@@ -1,9 +1,10 @@
 import { AccountId32 } from "@polkadot/types/interfaces"
 import { useApiPromise } from "utils/api"
 import { useQuery } from "@tanstack/react-query"
-import { QUERY_KEYS } from "utils/queryKeys"
+import { QUERY_KEYS, QUERY_KEY_PREFIX } from "utils/queryKeys"
 import { ApiPromise } from "@polkadot/api"
 import { Maybe, undefinedNoop } from "utils/helpers"
+import { u32 } from "@polkadot/types"
 
 export const useAccountBalances = (id: Maybe<AccountId32 | string>) => {
   const api = useApiPromise()
@@ -27,3 +28,25 @@ const getAccountBalances =
 
     return { native, balances }
   }
+
+const getTokenAccountBalancesList =
+  (
+    api: ApiPromise,
+    pairs: Array<[address: AccountId32 | string, assetId: u32 | string]>,
+  ) =>
+  async () => {
+    const res = await api.query.tokens.accounts.multi(pairs)
+    return res
+  }
+
+export const useTokenAccountBalancesList = (
+  pairs: Array<[address: AccountId32 | string, assetId: u32 | string]>,
+) => {
+  const api = useApiPromise()
+
+  return useQuery(
+    [QUERY_KEY_PREFIX, "tokenAccountBalancesList", pairs],
+    getTokenAccountBalancesList(api, pairs),
+    { enabled: pairs.length > 0 },
+  )
+}

@@ -1917,9 +1917,9 @@
   resolved "https://registry.yarnpkg.com/@galacticcouncil/math-xyk/-/math-xyk-0.0.0-beta-1.tgz#3da79f57098021bb2230bdf0774782cd5c799270"
   integrity sha512-Y6KbtwUs7gVkoqpcnELT43d6y6xvTLVjGhzF4vG7uo5rpVhFfCH1mHQ0VyUy8XYojGR8mfTnDZ4YbATWcpmfQw==
 
-"@galacticcouncil/math@https://github.com/galacticcouncil/HydraDX-wasm":
+"@galacticcouncil/math@https://github.com/galacticcouncil/HydraDX-wasm#3889310b8f0d57f1a84fda32bc28fee9ec4100b3":
   version "0.0.0-beta-1"
-  resolved "https://github.com/galacticcouncil/HydraDX-wasm#c926d70e4df9d6ac26ec82d7d985fe60440d5d2a"
+  resolved "https://github.com/galacticcouncil/HydraDX-wasm#3889310b8f0d57f1a84fda32bc28fee9ec4100b3"
 
 "@galacticcouncil/sdk@^0.0.1-beta.12":
   version "0.0.1-beta.12"
@@ -4688,7 +4688,7 @@ acorn-walk@^7.2.0:
   resolved "https://registry.npmjs.org/acorn-walk/-/acorn-walk-7.2.0.tgz"
   integrity sha512-OPdCF6GsMIP+Az+aWfAAOEt2/+iVDKE7oy6lJ098aoe59oAmK76qV6Gw60SbZ8jHuG2wH058GF4pLFbYamYrVA==
 
-acorn-walk@^8.1.1:
+acorn-walk@^8.1.1, acorn-walk@^8.2.0:
   version "8.2.0"
   resolved "https://registry.yarnpkg.com/acorn-walk/-/acorn-walk-8.2.0.tgz#741210f2e2426454508853a2f44d0ab83b7f69c1"
   integrity sha512-k+iyHEuPgSw6SbuDpGQM+06HQUa04DZ3o+F6CSzXMvvI5KMvnaEqXe+YVe555R9nn6GPt404fos4wcgpw12SDA==
@@ -7236,6 +7236,11 @@ get-caller-file@^2.0.5:
   version "2.0.5"
   resolved "https://registry.npmjs.org/get-caller-file/-/get-caller-file-2.0.5.tgz"
   integrity sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==
+
+get-func-name@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/get-func-name/-/get-func-name-2.0.0.tgz#ead774abee72e20409433a066366023dd6887a41"
+  integrity sha512-Hm0ixYtaSZ/V7C8FJrtZIuBBI+iSgL+1Aq82zSu8VQNB4S3Gk8e7Qs3VwBDJAhmRZcFqkl3tQu36g/Foh5I5ig==
 
 get-intrinsic@^1.0.2, get-intrinsic@^1.1.0, get-intrinsic@^1.1.1:
   version "1.1.2"
@@ -11245,6 +11250,18 @@ vite-tsconfig-paths@^3.5.0:
     globrex "^0.1.2"
     recrawl-sync "^2.0.3"
     tsconfig-paths "^4.0.0"
+
+vite@^3.0.0:
+  version "3.2.4"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-3.2.4.tgz#d8c7892dd4268064e04fffbe7d866207dd24166e"
+  integrity sha512-Z2X6SRAffOUYTa+sLy3NQ7nlHFU100xwanq1WDwqaiFiCe+25zdxP1TfCS5ojPV2oDDcXudHIoPnI1Z/66B7Yw==
+  dependencies:
+    esbuild "^0.15.9"
+    postcss "^8.4.18"
+    resolve "^1.22.1"
+    rollup "^2.79.1"
+  optionalDependencies:
+    fsevents "~2.3.2"
 
 vite@^3.2.3:
   version "3.2.3"

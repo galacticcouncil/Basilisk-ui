@@ -25,7 +25,7 @@ export const usePoolFooterValues = (pool: PoolBase) => {
 
   return {
     locked: shares.dollarValue,
-    claimable: claimable.data?.ausd,
+    claimable: claimable.data,
     claimAll: claimAll.mutation,
     isLoading,
   }

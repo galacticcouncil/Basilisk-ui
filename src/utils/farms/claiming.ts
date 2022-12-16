@@ -1,113 +1,127 @@
-import { useMemo } from "react"
-import { BN_0, BN_1 } from "utils/constants"
+import { BN_0 } from "utils/constants"
 import BN from "bignumber.js"
 import { useBestNumber } from "api/chain"
-import { useAPR } from "utils/farms/apr"
 import { useUsdPeggedAsset } from "api/asset"
-import { useSpotPrices } from "api/spotPrice"
+import { usePoolFarms } from "utils/farms/apr"
 import { PoolBase } from "@galacticcouncil/sdk"
 import { useUserDeposits } from "utils/farms/deposits"
-import { NATIVE_ASSET_ID, useApiPromise, useMath } from "utils/api"
+import { useApiPromise } from "utils/api"
 import { useStore } from "state/store"
 import { useMutation } from "@tanstack/react-query"
+import { u32 } from "@polkadot/types"
+import { AccountId32 } from "@polkadot/types/interfaces"
+import { decodeAddress } from "@polkadot/util-crypto"
+import { u8aToHex } from "@polkadot/util"
+import { useTokenAccountBalancesList } from "api/accountBalances"
+import {
+  getAccountResolver,
+  MultiCurrencyContainer,
+  XYKLiquidityMiningClaimSim,
+  MutableYieldFarm,
+  MutableGlobalFarm,
+} from "./claiming.utils"
 
 export const useClaimableAmount = (pool: PoolBase) => {
-  const bestNumber = useBestNumber()
+  const bestNumberQuery = useBestNumber()
   const deposits = useUserDeposits(pool.address)
-  const apr = useAPR(pool.address)
-  const math = useMath()
+  const farms = usePoolFarms(pool.address)
   const usd = useUsdPeggedAsset()
-  const currencies = [
-    ...new Set(apr.data.map((i) => i.globalFarm.rewardCurrency.toString())),
-  ]
-  const bsxSpotPrices = useSpotPrices(currencies, NATIVE_ASSET_ID)
-  const ausdSpotPrices = useSpotPrices(currencies, usd.data?.id)
-
-  const queries = [deposits, bestNumber, apr, math, usd, ...ausdSpotPrices]
+  const queries = [deposits, bestNumberQuery, farms, usd]
   const isLoading = queries.some((q) => q.isLoading)
 
-  const data = useMemo(() => {
-    if (bestNumber.data == null) return null
+  const api = useApiPromise()
+  const accountResolver = getAccountResolver(api)
 
-    return deposits.data
-      ?.map((record) => {
-        return record.deposit.yieldFarmEntries.map((entry) => {
-          const aprEntry = apr.data.find(
-            (i) =>
-              i.globalFarm.id.eq(entry.globalFarmId) &&
-              i.yieldFarm.id.eq(entry.yieldFarmId),
-          )
-
-          const bsx = bsxSpotPrices.find((a) =>
-            aprEntry?.globalFarm.rewardCurrency.eq(a.data?.tokenIn),
-          )?.data
-
-          const usd = ausdSpotPrices.find((a) =>
-            aprEntry?.globalFarm.rewardCurrency.eq(a.data?.tokenIn),
-          )?.data
-
-          if (
-            aprEntry == null ||
-            bsx == null ||
-            usd == null ||
-            math.liquidityMining == null
-          )
-            return null
-
-          const currentPeriod = bestNumber.data.relaychainBlockNumber
-            .toBigNumber()
-            .dividedToIntegerBy(
-              aprEntry.globalFarm.blocksPerPeriod.toBigNumber(),
-            )
-          const periods = currentPeriod.minus(entry.enteredAt.toBigNumber())
-
-          let loyaltyMultiplier = BN_1.toString()
-
-          if (!aprEntry.yieldFarm.loyaltyCurve.isNone) {
-            const { initialRewardPercentage, scaleCoef } =
-              aprEntry.yieldFarm.loyaltyCurve.unwrap()
-
-            loyaltyMultiplier =
-              math.liquidityMining.calculate_loyalty_multiplier(
-                periods.toFixed(),
-                initialRewardPercentage.toBigNumber().toFixed(),
-                scaleCoef.toBigNumber().toFixed(),
-              )
-          }
-
-          const reward = new BN(
-            math.liquidityMining.calculate_user_reward(
-              entry.accumulatedRpvs.toBigNumber().toFixed(),
-              entry.valuedShares.toBigNumber().toFixed(),
-              entry.accumulatedClaimedRewards.toBigNumber().toFixed(),
-              aprEntry.yieldFarm.accumulatedRpvs.toBigNumber().toFixed(),
-              loyaltyMultiplier,
-            ),
-          )
-
-          // bsx reward
-          const bsxReward = reward.multipliedBy(bsx.spotPrice)
-          const ausdReward = reward.multipliedBy(usd.spotPrice)
-
-          return { ausd: ausdReward, bsx: bsxReward }
-        })
-      })
-      .flat(2)
-      .reduce<{ bsx: BN; ausd: BN }>(
-        (memo, item) => ({
-          ausd: memo.ausd.plus(item?.ausd ?? BN_0),
-          bsx: memo.bsx.plus(item?.bsx ?? BN_0),
-        }),
-        { bsx: BN_0, ausd: BN_0 },
+  const accountAddresses =
+    farms.data
+      ?.map(
+        ({ yieldFarm, globalFarm }) =>
+          [
+            [accountResolver(0), globalFarm.rewardCurrency],
+            [accountResolver(yieldFarm.id), globalFarm.rewardCurrency],
+            [accountResolver(globalFarm.id), globalFarm.rewardCurrency],
+          ] as [AccountId32, u32][],
       )
-  }, [
-    apr.data,
-    deposits.data,
-    ausdSpotPrices,
-    bestNumber.data,
-    bsxSpotPrices,
-    math.liquidityMining,
-  ])
+      .flat(1) ?? []
+
+  const accountBalances = useTokenAccountBalancesList(accountAddresses)
+
+  if (bestNumberQuery.data == null || accountBalances.data == null)
+    return { data: null, isLoading }
+
+  const bestNumber = bestNumberQuery.data
+
+  const multiCurrency = new MultiCurrencyContainer(
+    accountAddresses,
+    accountBalances.data,
+  )
+  const sim = new XYKLiquidityMiningClaimSim(
+    getAccountResolver(api),
+    multiCurrency,
+  )
+
+  const mutableYieldFarms: Record<string, MutableYieldFarm> = {}
+  const mutableGlobalFarms: Record<string, MutableGlobalFarm> = {}
+  farms.data?.forEach(({ globalFarm, yieldFarm }) => {
+    mutableGlobalFarms[globalFarm.id.toString()] = {
+      id: globalFarm.id,
+      incentivizedAsset: globalFarm.incentivizedAsset,
+      owner: globalFarm.owner,
+      rewardCurrency: globalFarm.rewardCurrency,
+      updatedAt: globalFarm.updatedAt.toBigNumber(),
+      totalSharesZ: globalFarm.totalSharesZ.toBigNumber(),
+      accumulatedRpz: globalFarm.accumulatedRpz.toBigNumber(),
+      accumulatedRewards: globalFarm.accumulatedRewards.toBigNumber(),
+      paidAccumulatedRewards: globalFarm.paidAccumulatedRewards.toBigNumber(),
+      yieldPerPeriod: globalFarm.yieldPerPeriod.toBigNumber(),
+      plannedYieldingPeriods: globalFarm.plannedYieldingPeriods.toBigNumber(),
+      blocksPerPeriod: globalFarm.blocksPerPeriod.toBigNumber(),
+      maxRewardPerPeriod: globalFarm.maxRewardPerPeriod.toBigNumber(),
+      minDeposit: globalFarm.minDeposit.toBigNumber(),
+      liveYieldFarmsCount: globalFarm.liveYieldFarmsCount.toBigNumber(),
+      totalYieldFarmsCount: globalFarm.totalYieldFarmsCount.toBigNumber(),
+      priceAdjustment: globalFarm.priceAdjustment.toBigNumber(),
+    }
+
+    mutableYieldFarms[yieldFarm.id.toString()] = {
+      id: yieldFarm.id,
+      updatedAt: yieldFarm.updatedAt.toBigNumber(),
+      totalShares: yieldFarm.totalShares.toBigNumber(),
+      totalValuedShares: yieldFarm.totalValuedShares.toBigNumber(),
+      accumulatedRpvs: yieldFarm.accumulatedRpvs.toBigNumber(),
+      accumulatedRpz: yieldFarm.accumulatedRpz.toBigNumber(),
+      multiplier: yieldFarm.multiplier.toBigNumber(),
+      entriesCount: yieldFarm.entriesCount.toBigNumber(),
+      loyaltyCurve: yieldFarm.loyaltyCurve,
+      state: yieldFarm.state,
+    }
+  })
+
+  const data = deposits.data
+    ?.map((record) => {
+      return record.deposit.yieldFarmEntries.map((farmEntry) => {
+        try {
+          const aprEntry = farms.data?.find(
+            (i) =>
+              i.globalFarm.id.eq(farmEntry.globalFarmId) &&
+              i.yieldFarm.id.eq(farmEntry.yieldFarmId),
+          )
+
+          if (!aprEntry) return null
+          return sim.claim_rewards(
+            mutableGlobalFarms[aprEntry.globalFarm.id.toString()],
+            mutableYieldFarms[aprEntry.yieldFarm.id.toString()],
+            farmEntry,
+            bestNumber.relaychainBlockNumber.toBigNumber(),
+          )
+        } catch (err) {
+          console.error(err)
+          return null
+        }
+      })
+    })
+    .flat(2)
+    .reduce<BN>((memo, item) => memo.plus(item ?? BN_0), BN_0)
 
   return { data, isLoading }
 }
@@ -139,3 +153,6 @@ export const useClaimAllMutation = (poolId: string) => {
 
   return { mutation: claim, isLoading: deposits.isLoading }
 }
+
+// @ts-expect-error
+window.decodeAddressToBytes = (bsx: string) => u8aToHex(decodeAddress(bsx))

@@ -19,7 +19,7 @@ export const PoolPositionFarm: FC<Props> = ({ pool, position }) => {
   const [openFarm, setOpenFarm] = useState(false)
 
   const APRs = useAPR(pool.address)
-  const apr = APRs.data.find(
+  const apr = APRs.data?.find(
     (apr) =>
       apr.yieldFarm.id.eq(position.yieldFarmId) &&
       apr.globalFarm.id.eq(position.globalFarmId),

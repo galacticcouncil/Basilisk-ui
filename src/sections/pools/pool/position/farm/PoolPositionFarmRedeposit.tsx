@@ -49,16 +49,17 @@ export const PoolPositionFarmRedeposit = (props: {
   const depositNfts = deposits.data?.filter((deposit) =>
     accountDepositIds.data?.some((ad) => ad.instanceId.eq(deposit.id)),
   )
-  let availableYieldFarms = apr.data.filter(
-    (farm) =>
-      !depositNfts?.find((deposit) =>
-        deposit.deposit.yieldFarmEntries.find(
-          (entry) =>
-            entry.globalFarmId.eq(farm.globalFarm.id) &&
-            entry.yieldFarmId.eq(farm.yieldFarm.id),
+  let availableYieldFarms =
+    apr.data?.filter(
+      (farm) =>
+        !depositNfts?.find((deposit) =>
+          deposit.deposit.yieldFarmEntries.find(
+            (entry) =>
+              entry.globalFarmId.eq(farm.globalFarm.id) &&
+              entry.yieldFarmId.eq(farm.yieldFarm.id),
+          ),
         ),
-      ),
-  )
+    ) ?? []
 
   const redeposit = useRedepositMutation(
     props.pool,
