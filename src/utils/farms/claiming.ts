@@ -20,6 +20,7 @@ import {
   MutableYieldFarm,
   MutableGlobalFarm,
 } from "./claiming.utils"
+import { useAssetDetails, useAssetDetailsList } from "api/assetDetails"
 
 export const useClaimableAmount = (pool: PoolBase) => {
   const bestNumberQuery = useBestNumber()
@@ -46,6 +47,10 @@ export const useClaimableAmount = (pool: PoolBase) => {
 
   const accountBalances = useTokenAccountBalancesList(accountAddresses)
 
+  const assetList = useAssetDetailsList(
+    farms.data?.map(({ globalFarm }) => globalFarm.rewardCurrency),
+  )
+
   if (bestNumberQuery.data == null || accountBalances.data == null)
     return { data: null, isLoading }
 
@@ -58,6 +63,7 @@ export const useClaimableAmount = (pool: PoolBase) => {
   const sim = new XYKLiquidityMiningClaimSim(
     getAccountResolver(api),
     multiCurrency,
+    assetList.data ?? [],
   )
 
   const mutableYieldFarms: Record<string, MutableYieldFarm> = {}
@@ -92,6 +98,7 @@ export const useClaimableAmount = (pool: PoolBase) => {
       accumulatedRpz: yieldFarm.accumulatedRpz.toBigNumber(),
       multiplier: yieldFarm.multiplier.toBigNumber(),
       entriesCount: yieldFarm.entriesCount.toBigNumber(),
+      leftToDistribute: yieldFarm.leftToDistribute.toBigNumber(),
       loyaltyCurve: yieldFarm.loyaltyCurve,
       state: yieldFarm.state,
     }

@@ -54,6 +54,7 @@ export class MultiCurrencyContainer {
     this.result.set(targetKey, targetValue.plus(amount))
   }
 }
+
 export interface MutableYieldFarm {
   readonly id: u32
   readonly loyaltyCurve: Option<PalletLiquidityMiningLoyaltyCurve>
@@ -65,7 +66,9 @@ export interface MutableYieldFarm {
   accumulatedRpz: BN
   multiplier: BN
   entriesCount: BN
+  leftToDistribute: BN
 }
+
 export interface MutableGlobalFarm {
   readonly id: u32
   readonly incentivizedAsset: u32
@@ -115,6 +118,10 @@ export class XYKLiquidityMiningClaimSim {
   constructor(
     addressResolver: (sub: u32 | number) => AccountId32,
     multiCurrency: MultiCurrencyContainer,
+    protected assetRegistry: Array<{
+      id: string
+      existentialDeposit: BN
+    }>,
   ) {
     this.get_account = addressResolver
     this.multiCurrency = multiCurrency
@@ -140,12 +147,17 @@ export class XYKLiquidityMiningClaimSim {
 
     let global_farm_account = this.get_account(global_farm.id)
 
-    let left_to_distribute = this.multiCurrency.free_balance(
-      global_farm.rewardCurrency,
-      global_farm_account,
-    )
+    let reward_currency_ed = this.assetRegistry.find(
+      (i) => i.id === global_farm.rewardCurrency.toString(),
+    )?.existentialDeposit
+    if (reward_currency_ed == null)
+      throw new Error("Missing reward currency asset list")
 
-    let reward = periods_since_last_update.multipliedBy(reward_per_period)
+    let left_to_distribute = this.multiCurrency
+      .free_balance(global_farm.rewardCurrency, global_farm_account)
+      .minus(reward_currency_ed)
+
+    let reward = reward_per_period.multipliedBy(periods_since_last_update)
     if (left_to_distribute.lt(reward)) reward = left_to_distribute
 
     if (!reward.isZero()) {
@@ -202,7 +214,6 @@ export class XYKLiquidityMiningClaimSim {
     yield_farm_rewards: BN,
     current_period: BN,
     global_farm_id: u32,
-    reward_currency: u32,
   ) {
     if (yield_farm.updatedAt.eq(current_period)) {
       return
@@ -222,19 +233,8 @@ export class XYKLiquidityMiningClaimSim {
 
     yield_farm.updatedAt = current_period
 
-    let pot = this.get_account(0)
-    let pot_balance = this.multiCurrency.free_balance(reward_currency, pot)
-
-    if (pot_balance.lt(yield_farm_rewards))
-      throw new Error("Insufficient pot balance")
-
-    let yield_farm_account = this.get_account(yield_farm.id)
-    this.multiCurrency.transfer(
-      reward_currency,
-      pot,
-      yield_farm_account,
-      yield_farm_rewards,
-    )
+    yield_farm.leftToDistribute =
+      yield_farm.leftToDistribute.plus(yield_farm_rewards)
   }
 
   maybe_update_farms(
@@ -270,15 +270,11 @@ export class XYKLiquidityMiningClaimSim {
         this.update_global_farm(global_farm, current_period, rewards)
       }
 
-      // TODO: missing in WASM
-      // let stake_in_global_farm = new BN(
-      //   liquidityMining.calculate_global_farm_shares(
-      //     yield_farm.totalValuedShares.toFixed(),
-      //     yield_farm.multiplier.toFixed(),
-      //   ),
-      // )
-      let stake_in_global_farm = yield_farm.multiplier.multipliedBy(
-        yield_farm.totalValuedShares,
+      let stake_in_global_farm = new BN(
+        liquidityMining.calculate_global_farm_shares(
+          yield_farm.totalValuedShares.toFixed(),
+          yield_farm.multiplier.toFixed(),
+        ),
       )
 
       let rewards = this.claim_from_global_farm(
@@ -292,7 +288,6 @@ export class XYKLiquidityMiningClaimSim {
         rewards,
         current_period,
         global_farm.id,
-        global_farm.rewardCurrency,
       )
     }
   }
@@ -320,8 +315,8 @@ export class XYKLiquidityMiningClaimSim {
     farmEntry: PalletLiquidityMiningYieldFarmEntry,
     relaychainBlockNumber: BN,
   ) {
-    // if yield farm is deleted, cannot claim
-    if (mutableYieldFarm.state.isDeleted) {
+    // if yield farm is terminated, cannot claim
+    if (mutableYieldFarm.state.isTerminated.valueOf()) {
       return null
     }
 
@@ -336,7 +331,7 @@ export class XYKLiquidityMiningClaimSim {
 
     let periods = currentPeriod.minus(farmEntry.enteredAt.toBigNumber())
 
-    if (mutableYieldFarm.state.isStopped) {
+    if (mutableYieldFarm.state.isStopped.valueOf()) {
       periods = mutableYieldFarm.updatedAt.minus(
         farmEntry.enteredAt.toBigNumber(),
       )
@@ -366,6 +361,15 @@ export class XYKLiquidityMiningClaimSim {
         loyaltyMultiplier,
       ),
     )
+
+    if (!reward.isZero()) {
+      mutableYieldFarm.leftToDistribute =
+        mutableYieldFarm.leftToDistribute.minus(reward)
+
+      // TODO: update farm entries, but it seems
+      // like we're not going to claim same
+      // farm entry multiple times
+    }
 
     return reward
   }

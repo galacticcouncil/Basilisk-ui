@@ -26,6 +26,7 @@ import type {
   AccountId32,
   H256,
   Perquintill,
+  Weight,
 } from "@polkadot/types/interfaces/runtime"
 import type {
   CommonRuntimeAssetLocation,
@@ -42,7 +43,6 @@ import type {
   PalletMultisigTimepoint,
   PalletNftCollectionType,
   PrimitivesAssetAssetPair,
-  PrimitivesIntentionType,
   SpRuntimeDispatchError,
   XcmV1MultiAsset,
   XcmV1MultiLocation,
@@ -577,16 +577,16 @@ declare module "@polkadot/api-base/types/events" {
        **/
       OverweightEnqueued: AugmentedEvent<
         ApiType,
-        [messageId: U8aFixed, overweightIndex: u64, requiredWeight: u64],
-        { messageId: U8aFixed; overweightIndex: u64; requiredWeight: u64 }
+        [messageId: U8aFixed, overweightIndex: u64, requiredWeight: Weight],
+        { messageId: U8aFixed; overweightIndex: u64; requiredWeight: Weight }
       >
       /**
        * Downward message from the overweight queue was executed.
        **/
       OverweightServiced: AugmentedEvent<
         ApiType,
-        [overweightIndex: u64, weightUsed: u64],
-        { overweightIndex: u64; weightUsed: u64 }
+        [overweightIndex: u64, weightUsed: Weight],
+        { overweightIndex: u64; weightUsed: Weight }
       >
       /**
        * Downward message is unsupported version of XCM.
@@ -601,8 +601,8 @@ declare module "@polkadot/api-base/types/events" {
        **/
       WeightExhausted: AugmentedEvent<
         ApiType,
-        [messageId: U8aFixed, remainingWeight: u64, requiredWeight: u64],
-        { messageId: U8aFixed; remainingWeight: u64; requiredWeight: u64 }
+        [messageId: U8aFixed, remainingWeight: Weight, requiredWeight: Weight],
+        { messageId: U8aFixed; remainingWeight: Weight; requiredWeight: Weight }
       >
       /**
        * Generic event
@@ -688,138 +688,6 @@ declare module "@polkadot/api-base/types/events" {
         ApiType,
         [seatHolder: AccountId32, amount: u128],
         { seatHolder: AccountId32; amount: u128 }
-      >
-      /**
-       * Generic event
-       **/
-      [key: string]: AugmentedEvent<ApiType>
-    }
-    exchange: {
-      /**
-       * Error event - insufficient balance of specified asset
-       **/
-      InsufficientAssetBalanceEvent: AugmentedEvent<
-        ApiType,
-        [
-          who: AccountId32,
-          assetId: u32,
-          intentionType: PrimitivesIntentionType,
-          intentionId: H256,
-          errorDetail: SpRuntimeDispatchError,
-        ],
-        {
-          who: AccountId32
-          assetId: u32
-          intentionType: PrimitivesIntentionType
-          intentionId: H256
-          errorDetail: SpRuntimeDispatchError
-        }
-      >
-      /**
-       * Intention registered event
-       **/
-      IntentionRegistered: AugmentedEvent<
-        ApiType,
-        [
-          who: AccountId32,
-          assetA: u32,
-          assetB: u32,
-          amount: u128,
-          intentionType: PrimitivesIntentionType,
-          intentionId: H256,
-        ],
-        {
-          who: AccountId32
-          assetA: u32
-          assetB: u32
-          amount: u128
-          intentionType: PrimitivesIntentionType
-          intentionId: H256
-        }
-      >
-      /**
-       * Intention resolved as AMM Trade
-       **/
-      IntentionResolvedAMMTrade: AugmentedEvent<
-        ApiType,
-        [
-          who: AccountId32,
-          intentionType: PrimitivesIntentionType,
-          intentionId: H256,
-          amount: u128,
-          amountSoldOrBought: u128,
-          poolAccountId: AccountId32,
-        ],
-        {
-          who: AccountId32
-          intentionType: PrimitivesIntentionType
-          intentionId: H256
-          amount: u128
-          amountSoldOrBought: u128
-          poolAccountId: AccountId32
-        }
-      >
-      /**
-       * Intention resolved as Direct Trade
-       **/
-      IntentionResolvedDirectTrade: AugmentedEvent<
-        ApiType,
-        [
-          accountIdA: AccountId32,
-          accountIdB: AccountId32,
-          intentionIdA: H256,
-          intentionIdB: H256,
-          amountA: u128,
-          amountB: u128,
-        ],
-        {
-          accountIdA: AccountId32
-          accountIdB: AccountId32
-          intentionIdA: H256
-          intentionIdB: H256
-          amountA: u128
-          amountB: u128
-        }
-      >
-      /**
-       * Paid fees event
-       **/
-      IntentionResolvedDirectTradeFees: AugmentedEvent<
-        ApiType,
-        [
-          who: AccountId32,
-          intentionId: H256,
-          feeReceiver: AccountId32,
-          assetId: u32,
-          feeAmount: u128,
-        ],
-        {
-          who: AccountId32
-          intentionId: H256
-          feeReceiver: AccountId32
-          assetId: u32
-          feeAmount: u128
-        }
-      >
-      /**
-       * Intention Error Event
-       **/
-      IntentionResolveErrorEvent: AugmentedEvent<
-        ApiType,
-        [
-          who: AccountId32,
-          assetIds: PrimitivesAssetAssetPair,
-          intentionType: PrimitivesIntentionType,
-          intentionId: H256,
-          errorDetail: SpRuntimeDispatchError,
-        ],
-        {
-          who: AccountId32
-          assetIds: PrimitivesAssetAssetPair
-          intentionType: PrimitivesIntentionType
-          intentionId: H256
-          errorDetail: SpRuntimeDispatchError
-        }
       >
       /**
        * Generic event
@@ -1330,8 +1198,8 @@ declare module "@polkadot/api-base/types/events" {
        **/
       DownwardMessagesProcessed: AugmentedEvent<
         ApiType,
-        [weightUsed: u64, dmqHead: H256],
-        { weightUsed: u64; dmqHead: H256 }
+        [weightUsed: Weight, dmqHead: H256],
+        { weightUsed: Weight; dmqHead: H256 }
       >
       /**
        * Some downward messages have been received and will be processed.
@@ -1441,7 +1309,7 @@ declare module "@polkadot/api-base/types/events" {
        *
        * \[ id, pallet index, call index, actual weight, max budgeted weight \]
        **/
-      NotifyOverweight: AugmentedEvent<ApiType, [u64, u8, u8, u64, u64]>
+      NotifyOverweight: AugmentedEvent<ApiType, [u64, u8, u8, Weight, Weight]>
       /**
        * A given location which had a version change subscription was dropped owing to an error
        * migrating the location to our new XCM format.
@@ -1623,15 +1491,14 @@ declare module "@polkadot/api-base/types/events" {
        **/
       [key: string]: AugmentedEvent<ApiType>
     }
-    session: {
+    router: {
       /**
-       * New session has happened. Note that the argument is the session index, not the
-       * block number as the type might suggest.
+       * The route with trades has been successfully executed
        **/
-      NewSession: AugmentedEvent<
+      RouteExecuted: AugmentedEvent<
         ApiType,
-        [sessionIndex: u32],
-        { sessionIndex: u32 }
+        [assetIn: u32, assetOut: u32, amountIn: u128, amountOut: u128],
+        { assetIn: u32; assetOut: u32; amountIn: u128; amountOut: u128 }
       >
       /**
        * Generic event
@@ -1692,30 +1559,15 @@ declare module "@polkadot/api-base/types/events" {
        **/
       [key: string]: AugmentedEvent<ApiType>
     }
-    sudo: {
+    session: {
       /**
-       * The \[sudoer\] just switched identity; the old key is supplied if one existed.
+       * New session has happened. Note that the argument is the session index, not the
+       * block number as the type might suggest.
        **/
-      KeyChanged: AugmentedEvent<
+      NewSession: AugmentedEvent<
         ApiType,
-        [oldSudoer: Option<AccountId32>],
-        { oldSudoer: Option<AccountId32> }
-      >
-      /**
-       * A sudo just took place. \[result\]
-       **/
-      Sudid: AugmentedEvent<
-        ApiType,
-        [sudoResult: Result<Null, SpRuntimeDispatchError>],
-        { sudoResult: Result<Null, SpRuntimeDispatchError> }
-      >
-      /**
-       * A sudo just took place. \[result\]
-       **/
-      SudoAsDone: AugmentedEvent<
-        ApiType,
-        [sudoResult: Result<Null, SpRuntimeDispatchError>],
-        { sudoResult: Result<Null, SpRuntimeDispatchError> }
+        [sessionIndex: u32],
+        { sessionIndex: u32 }
       >
       /**
        * Generic event
@@ -2345,14 +2197,6 @@ declare module "@polkadot/api-base/types/events" {
         { collection: u128; item: u128; data: Bytes; isFrozen: bool }
       >
       /**
-       * Event gets emmited when the `NextCollectionId` gets incremented.
-       **/
-      NextCollectionIdIncremented: AugmentedEvent<
-        ApiType,
-        [nextId: u128],
-        { nextId: u128 }
-      >
-      /**
        * The owner changed.
        **/
       OwnerChanged: AugmentedEvent<
@@ -2540,32 +2384,32 @@ declare module "@polkadot/api-base/types/events" {
        **/
       Fail: AugmentedEvent<
         ApiType,
-        [messageHash: Option<H256>, error: XcmV2TraitsError, weight: u64],
-        { messageHash: Option<H256>; error: XcmV2TraitsError; weight: u64 }
+        [messageHash: Option<H256>, error: XcmV2TraitsError, weight: Weight],
+        { messageHash: Option<H256>; error: XcmV2TraitsError; weight: Weight }
       >
       /**
        * An XCM exceeded the individual message weight budget.
        **/
       OverweightEnqueued: AugmentedEvent<
         ApiType,
-        [sender: u32, sentAt: u32, index: u64, required: u64],
-        { sender: u32; sentAt: u32; index: u64; required: u64 }
+        [sender: u32, sentAt: u32, index: u64, required: Weight],
+        { sender: u32; sentAt: u32; index: u64; required: Weight }
       >
       /**
        * An XCM from the overweight queue was executed with the given actual weight used.
        **/
       OverweightServiced: AugmentedEvent<
         ApiType,
-        [index: u64, used: u64],
-        { index: u64; used: u64 }
+        [index: u64, used: Weight],
+        { index: u64; used: Weight }
       >
       /**
        * Some XCM was executed ok.
        **/
       Success: AugmentedEvent<
         ApiType,
-        [messageHash: Option<H256>, weight: u64],
-        { messageHash: Option<H256>; weight: u64 }
+        [messageHash: Option<H256>, weight: Weight],
+        { messageHash: Option<H256>; weight: Weight }
       >
       /**
        * An upward message was sent to the relay chain.
@@ -2782,9 +2626,9 @@ declare module "@polkadot/api-base/types/events" {
         }
       >
       /**
-       * Global farm was destroyed.
+       * Global farm was terminated.
        **/
-      GlobalFarmDestroyed: AugmentedEvent<
+      GlobalFarmTerminated: AugmentedEvent<
         ApiType,
         [
           globalFarmId: u32,
@@ -2916,24 +2760,6 @@ declare module "@polkadot/api-base/types/events" {
         }
       >
       /**
-       * Yield farm was destroyed from global farm.
-       **/
-      YieldFarmDestroyed: AugmentedEvent<
-        ApiType,
-        [
-          globalFarmId: u32,
-          yieldFarmId: u32,
-          who: AccountId32,
-          assetPair: PrimitivesAssetAssetPair,
-        ],
-        {
-          globalFarmId: u32
-          yieldFarmId: u32
-          who: AccountId32
-          assetPair: PrimitivesAssetAssetPair
-        }
-      >
-      /**
        * Yield farm for asset pair was resumed.
        **/
       YieldFarmResumed: AugmentedEvent<
@@ -2957,6 +2783,24 @@ declare module "@polkadot/api-base/types/events" {
        * Yield farm for asset pair was stopped.
        **/
       YieldFarmStopped: AugmentedEvent<
+        ApiType,
+        [
+          globalFarmId: u32,
+          yieldFarmId: u32,
+          who: AccountId32,
+          assetPair: PrimitivesAssetAssetPair,
+        ],
+        {
+          globalFarmId: u32
+          yieldFarmId: u32
+          who: AccountId32
+          assetPair: PrimitivesAssetAssetPair
+        }
+      >
+      /**
+       * Yield farm was terminated from global farm.
+       **/
+      YieldFarmTerminated: AugmentedEvent<
         ApiType,
         [
           globalFarmId: u32,
