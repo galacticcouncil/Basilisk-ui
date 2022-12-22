@@ -20,7 +20,7 @@ import {
   MutableYieldFarm,
   MutableGlobalFarm,
 } from "./claiming.utils"
-import { useAssetDetails, useAssetDetailsList } from "api/assetDetails"
+import { useAssetDetailsList } from "api/assetDetails"
 
 export const useClaimableAmount = (pool: PoolBase) => {
   const bestNumberQuery = useBestNumber()
@@ -68,36 +68,58 @@ export const useClaimableAmount = (pool: PoolBase) => {
 
   const mutableYieldFarms: Record<string, MutableYieldFarm> = {}
   const mutableGlobalFarms: Record<string, MutableGlobalFarm> = {}
+
   farms.data?.forEach(({ globalFarm, yieldFarm }) => {
     mutableGlobalFarms[globalFarm.id.toString()] = {
       id: globalFarm.id,
       incentivizedAsset: globalFarm.incentivizedAsset,
       owner: globalFarm.owner,
       rewardCurrency: globalFarm.rewardCurrency,
+      // PeriodOf<T>
       updatedAt: globalFarm.updatedAt.toBigNumber(),
+      // Balance
       totalSharesZ: globalFarm.totalSharesZ.toBigNumber(),
+      // FixedU128
       accumulatedRpz: globalFarm.accumulatedRpz.toBigNumber(),
+      // Balance
       accumulatedRewards: globalFarm.accumulatedRewards.toBigNumber(),
+      // Balance
       paidAccumulatedRewards: globalFarm.paidAccumulatedRewards.toBigNumber(),
+      // Perquintill
       yieldPerPeriod: globalFarm.yieldPerPeriod.toBigNumber(),
+      // PeriodOf<T>
       plannedYieldingPeriods: globalFarm.plannedYieldingPeriods.toBigNumber(),
+      // BlockNumberFor<T>
       blocksPerPeriod: globalFarm.blocksPerPeriod.toBigNumber(),
+      // Balance
       maxRewardPerPeriod: globalFarm.maxRewardPerPeriod.toBigNumber(),
+      // Balance
       minDeposit: globalFarm.minDeposit.toBigNumber(),
+      // u32
       liveYieldFarmsCount: globalFarm.liveYieldFarmsCount.toBigNumber(),
+      // u32
       totalYieldFarmsCount: globalFarm.totalYieldFarmsCount.toBigNumber(),
+      // FixedU128
       priceAdjustment: globalFarm.priceAdjustment.toBigNumber(),
     }
 
     mutableYieldFarms[yieldFarm.id.toString()] = {
       id: yieldFarm.id,
+      // PeriodOf<T>
       updatedAt: yieldFarm.updatedAt.toBigNumber(),
+      // Balance
       totalShares: yieldFarm.totalShares.toBigNumber(),
+      // Balance
       totalValuedShares: yieldFarm.totalValuedShares.toBigNumber(),
+      // FixedU128
       accumulatedRpvs: yieldFarm.accumulatedRpvs.toBigNumber(),
+      // FixedU128
       accumulatedRpz: yieldFarm.accumulatedRpz.toBigNumber(),
+      // FarmMultiplier
       multiplier: yieldFarm.multiplier.toBigNumber(),
+      // u64
       entriesCount: yieldFarm.entriesCount.toBigNumber(),
+      // Balance
       leftToDistribute: yieldFarm.leftToDistribute.toBigNumber(),
       loyaltyCurve: yieldFarm.loyaltyCurve,
       state: yieldFarm.state,
