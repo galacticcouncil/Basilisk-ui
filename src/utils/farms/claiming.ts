@@ -21,6 +21,7 @@ import {
   MutableGlobalFarm,
 } from "./claiming.utils"
 import { useAssetDetailsList } from "api/assetDetails"
+import * as liquidityMining from "@galacticcouncil/math/build/liquidity-mining/bundler"
 
 export const useClaimableAmount = (pool: PoolBase) => {
   const bestNumberQuery = useBestNumber()
@@ -31,7 +32,7 @@ export const useClaimableAmount = (pool: PoolBase) => {
   const isLoading = queries.some((q) => q.isLoading)
 
   const api = useApiPromise()
-  const accountResolver = getAccountResolver(api)
+  const accountResolver = getAccountResolver(api.registry)
 
   const accountAddresses =
     farms.data
@@ -61,8 +62,9 @@ export const useClaimableAmount = (pool: PoolBase) => {
     accountBalances.data,
   )
   const sim = new XYKLiquidityMiningClaimSim(
-    getAccountResolver(api),
+    getAccountResolver(api.registry),
     multiCurrency,
+    liquidityMining,
     assetList.data ?? [],
   )
 
