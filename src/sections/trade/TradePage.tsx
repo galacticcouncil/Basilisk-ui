@@ -1,28 +1,28 @@
 import { Page } from "components/Layout/Page/Page"
 
 import * as React from "react"
-import * as Trade from "@galacticcouncil/trade-app"
+import * as Apps from "@galacticcouncil/apps"
 import { createComponent, EventName } from "@lit-labs/react"
 import { useAccountStore } from "state/store"
 import { MakeGenerics, useSearch } from "@tanstack/react-location"
 import { z } from "zod"
-import { Spinner } from "components/Spinner/Spinner.styled"
+import { PoolType } from "@galacticcouncil/sdk"
 
 const NotificationCenter = createComponent({
   tagName: "gc-notification-center",
-  elementClass: Trade.NotificationCenter,
+  elementClass: Apps.NotificationCenter,
   react: React,
 })
 
 const TransactionCenter = createComponent({
   tagName: "gc-transaction-center",
-  elementClass: Trade.TransactionCenter,
+  elementClass: Apps.TransactionCenter,
   react: React,
 })
 
 export const TradeApp = createComponent({
   tagName: "gc-trade-app",
-  elementClass: Trade.TradeApp,
+  elementClass: Apps.TradeApp,
   react: React,
   events: {
     onInit: "gc:init" as EventName<CustomEvent>,
@@ -30,8 +30,14 @@ export const TradeApp = createComponent({
 })
 
 const TradeAppSearch = z.object({
-  type: z.union([z.literal("assetIn"), z.literal("assetOut")]),
-  id: z.number().transform((value) => String(value)),
+  assetIn: z
+    .number()
+    .transform((value) => String(value))
+    .optional(),
+  assetOut: z
+    .number()
+    .transform((value) => String(value))
+    .optional(),
 })
 
 type SearchGenerics = MakeGenerics<{
@@ -41,40 +47,27 @@ type SearchGenerics = MakeGenerics<{
 export function TradePage() {
   const { account } = useAccountStore()
 
-  const search = useSearch<SearchGenerics>()
-
-  const [loaded, setLoaded] = React.useState(false)
-  const ref = React.useRef<Trade.TradeApp>(null)
+  const ref = React.useRef<Apps.TradeApp>(null)
+  const rawSearch = useSearch<SearchGenerics>()
+  const search = TradeAppSearch.safeParse(rawSearch)
 
   return (
     <Page>
-      <div sx={{ flex: "column", align: "center" }}>
-        {!loaded && <Spinner width={64} height={64} />}
-
-        <NotificationCenter>
-          <TransactionCenter>
-            <TradeApp
-              ref={ref}
-              css={{ display: loaded ? "block" : "none" }}
-              accountName={account?.name}
-              accountProvider={account?.provider}
-              accountAddress={account?.address}
-              apiAddress={import.meta.env.VITE_PROVIDER_URL}
-              onInit={() => {
-                const app = ref.current
-                const safeSearch = TradeAppSearch.safeParse(search)
-
-                if (app != null && safeSearch.success) {
-                  const asset = safeSearch.data
-                  app.setInitialAssets(asset.type, asset.id)
-                }
-
-                setLoaded(true)
-              }}
-            />
-          </TransactionCenter>
-        </NotificationCenter>
-      </div>
+      <NotificationCenter>
+        <TransactionCenter>
+          <TradeApp
+            ref={ref}
+            accountName={account?.name}
+            accountProvider={account?.provider}
+            accountAddress={account?.address}
+            apiAddress={import.meta.env.VITE_PROVIDER_URL}
+            stableCoinAssetId="4"
+            assetIn={search.success ? search.data.assetIn : undefined}
+            assetOut={search.success ? search.data.assetOut : undefined}
+            pools={PoolType.XYK}
+          />
+        </TransactionCenter>
+      </NotificationCenter>
     </Page>
   )
 }
