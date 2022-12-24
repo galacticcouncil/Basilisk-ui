@@ -5,7 +5,7 @@ import { useUsdPeggedAsset } from "api/asset"
 import { usePoolFarms } from "utils/farms/apr"
 import { PoolBase } from "@galacticcouncil/sdk"
 import { useUserDeposits } from "utils/farms/deposits"
-import { useApiPromise } from "utils/api"
+import { NATIVE_ASSET_ID, useApiPromise } from "utils/api"
 import { useStore } from "state/store"
 import { useMutation } from "@tanstack/react-query"
 import { u32 } from "@polkadot/types"
@@ -19,6 +19,7 @@ import { MultiCurrencyContainer } from "utils/farms/claiming/multiCurrency"
 import { createMutableFarmEntries } from "utils/farms/claiming/mutableFarms"
 import { useAssetDetailsList } from "api/assetDetails"
 import * as liquidityMining from "@galacticcouncil/math/build/liquidity-mining/bundler"
+import { useSpotPrices } from "api/spotPrice"
 
 export const useClaimableAmount = (pool: PoolBase) => {
   const bestNumberQuery = useBestNumber()
@@ -30,6 +31,15 @@ export const useClaimableAmount = (pool: PoolBase) => {
 
   const api = useApiPromise()
   const accountResolver = getAccountResolver(api.registry)
+
+  const assetIds = [
+    ...new Set(farms.data?.map((i) => i.globalFarm.rewardCurrency.toString())),
+  ]
+
+  const assetList = useAssetDetailsList(assetIds)
+
+  const bsxSpotPrices = useSpotPrices(assetIds, NATIVE_ASSET_ID)
+  const usdSpotPrices = useSpotPrices(assetIds, usd.data?.id)
 
   const accountAddresses =
     farms.data
@@ -43,10 +53,6 @@ export const useClaimableAmount = (pool: PoolBase) => {
       .flat(1) ?? []
 
   const accountBalances = useTokenAccountBalancesList(accountAddresses)
-
-  const assetList = useAssetDetailsList(
-    farms.data?.map(({ globalFarm }) => globalFarm.rewardCurrency),
-  )
 
   if (bestNumberQuery.data == null || accountBalances.data == null)
     return { data: null, isLoading }
@@ -66,33 +72,51 @@ export const useClaimableAmount = (pool: PoolBase) => {
 
   const { globalFarms, yieldFarms } = createMutableFarmEntries(farms.data ?? [])
 
-  const data = deposits.data
-    ?.map((record) => {
-      return record.deposit.yieldFarmEntries.map((farmEntry) => {
-        try {
-          const aprEntry = farms.data?.find(
-            (i) =>
-              i.globalFarm.id.eq(farmEntry.globalFarmId) &&
-              i.yieldFarm.id.eq(farmEntry.yieldFarmId),
-          )
+  const rewardSum = deposits.data
+    ?.map((record) =>
+      record.deposit.yieldFarmEntries.map((farmEntry) => {
+        const aprEntry = farms.data?.find(
+          (i) =>
+            i.globalFarm.id.eq(farmEntry.globalFarmId) &&
+            i.yieldFarm.id.eq(farmEntry.yieldFarmId),
+        )
+        if (!aprEntry) return null
 
-          if (!aprEntry) return null
-          return sim.claim_rewards(
-            globalFarms[aprEntry.globalFarm.id.toString()],
-            yieldFarms[aprEntry.yieldFarm.id.toString()],
-            farmEntry,
-            bestNumber.relaychainBlockNumber.toBigNumber(),
-          )
-        } catch (err) {
-          console.error(err)
-          return null
+        const reward = sim.claim_rewards(
+          globalFarms[aprEntry.globalFarm.id.toString()],
+          yieldFarms[aprEntry.yieldFarm.id.toString()],
+          farmEntry,
+          bestNumber.relaychainBlockNumber.toBigNumber(),
+        )
+
+        const bsx = bsxSpotPrices.find(
+          (spot) => spot.data?.tokenIn === reward?.assetId,
+        )?.data
+
+        const usd = usdSpotPrices.find(
+          (spot) => spot.data?.tokenIn === reward?.assetId,
+        )?.data
+
+        if (!reward || !bsx || !usd) return null
+
+        return {
+          bsx: reward.value.multipliedBy(bsx.spotPrice),
+          usd: reward.value.multipliedBy(usd.spotPrice),
         }
-      })
-    })
+      }),
+    )
     .flat(2)
-    .reduce<BN>((memo, item) => memo.plus(item ?? BN_0), BN_0)
+    .reduce<Record<"bsx" | "usd", BN>>(
+      (memo, item) => {
+        if (item == null) return memo
+        memo.bsx = memo.bsx.plus(item.bsx)
+        memo.usd = memo.usd.plus(item.usd)
+        return memo
+      },
+      { bsx: BN_0, usd: BN_0 },
+    )
 
-  return { data, isLoading }
+  return { data: rewardSum, isLoading }
 }
 
 export const useClaimAllMutation = (poolId: string) => {

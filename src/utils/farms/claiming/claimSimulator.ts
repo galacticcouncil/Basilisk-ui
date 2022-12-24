@@ -37,8 +37,8 @@ export class XYKLiquidityMiningClaimSim {
 
   update_global_farm(
     global_farm: MutableGlobalFarm,
-    current_period: BN, // PeriodOf, 0dp
-    reward_per_period: BN, // Balance, 12dp
+    current_period: BN,
+    reward_per_period: BN,
   ) {
     // Farm should be updated only once in the same period.
     if (global_farm.updatedAt.eq(current_period)) {
@@ -86,7 +86,7 @@ export class XYKLiquidityMiningClaimSim {
         this.liquidityMining.calculate_accumulated_rps(
           global_farm.accumulatedRpz.toFixed(),
           global_farm.totalSharesZ.toFixed(),
-          reward.toFixed(), // is negative
+          reward.toFixed(),
         )!,
       )
 
@@ -103,11 +103,10 @@ export class XYKLiquidityMiningClaimSim {
     yield_farm: MutableYieldFarm,
     stake_in_global_farm: BN,
   ) {
-    // TODO: make sure to shift the value
     let reward = new BN(
       this.liquidityMining.calculate_reward(
         yield_farm.accumulatedRpz.toFixed(),
-        global_farm.accumulatedRpz.toFixed(), // -1
+        global_farm.accumulatedRpz.toFixed(),
         stake_in_global_farm.toFixed(),
       )!,
     )
@@ -137,12 +136,11 @@ export class XYKLiquidityMiningClaimSim {
       return
     }
 
-    // TODO: make sure to shift the value
     yield_farm.accumulatedRpvs = new BN(
       this.liquidityMining.calculate_accumulated_rps(
         yield_farm.accumulatedRpvs.toFixed(),
         yield_farm.totalValuedShares.toFixed(),
-        yield_farm_rewards.toFixed(), // -1,
+        yield_farm_rewards.toFixed(),
       )!,
     )
 
@@ -167,7 +165,6 @@ export class XYKLiquidityMiningClaimSim {
         !global_farm.totalSharesZ.isZero() &&
         !global_farm.updatedAt.eq(current_period)
       ) {
-        // TODO: make sure to shift the value
         let total_shares_z_adjusted = new BN(
           this.liquidityMining.calculate_adjusted_shares(
             global_farm.totalSharesZ.toFixed(),
@@ -175,7 +172,6 @@ export class XYKLiquidityMiningClaimSim {
           )!,
         )
 
-        // TODO: make sure to shift the value
         let rewards = new BN(
           this.liquidityMining.calculate_global_farm_reward_per_period(
             global_farm.yieldPerPeriod
@@ -190,7 +186,6 @@ export class XYKLiquidityMiningClaimSim {
         this.update_global_farm(global_farm, current_period, rewards)
       }
 
-      // TODO: make sure to shift the value
       let stake_in_global_farm = new BN(
         this.liquidityMining.calculate_global_farm_shares(
           yield_farm.totalValuedShares.toFixed(),
@@ -221,7 +216,6 @@ export class XYKLiquidityMiningClaimSim {
     if (!loyaltyCurve.isNone) {
       const { initialRewardPercentage, scaleCoef } = loyaltyCurve.unwrap()
 
-      // TODO: make sure to shift the value
       loyaltyMultiplier = this.liquidityMining.calculate_loyalty_multiplier(
         periods.toFixed(),
         initialRewardPercentage.toBigNumber().toFixed(),
@@ -232,19 +226,18 @@ export class XYKLiquidityMiningClaimSim {
   }
 
   claim_rewards(
-    mutableGlobalFarm: MutableGlobalFarm,
-    mutableYieldFarm: MutableYieldFarm,
+    globalFarm: MutableGlobalFarm,
+    yieldFarm: MutableYieldFarm,
     farmEntry: PalletLiquidityMiningYieldFarmEntry,
     relaychainBlockNumber: BN,
   ) {
-    debugger
     // if yield farm is terminated, cannot claim
-    if (mutableYieldFarm.state.isTerminated.valueOf()) {
+    if (yieldFarm.state.isTerminated.valueOf()) {
       return null
     }
 
     const currentPeriod = relaychainBlockNumber.dividedToIntegerBy(
-      mutableGlobalFarm.blocksPerPeriod,
+      globalFarm.blocksPerPeriod,
     )
 
     // avoid double claiming, if possible
@@ -254,46 +247,33 @@ export class XYKLiquidityMiningClaimSim {
 
     let periods = currentPeriod.minus(farmEntry.enteredAt.toBigNumber())
 
-    if (mutableYieldFarm.state.isStopped.valueOf()) {
-      periods = mutableYieldFarm.updatedAt.minus(
-        farmEntry.enteredAt.toBigNumber(),
-      )
+    if (yieldFarm.state.isStopped.valueOf()) {
+      periods = yieldFarm.updatedAt.minus(farmEntry.enteredAt.toBigNumber())
     } else {
       // calculate possible values for entry farms
-      this.maybe_update_farms(
-        mutableGlobalFarm,
-        mutableYieldFarm,
-        currentPeriod,
-      )
+      this.maybe_update_farms(globalFarm, yieldFarm, currentPeriod)
     }
 
     // calculate loyalty multiplier
     let loyaltyMultiplier = this.get_loyalty_multiplier(
       periods,
-      mutableYieldFarm.loyaltyCurve,
+      yieldFarm.loyaltyCurve,
     )
 
-    // TODO: shouldn't we also get the unclaimable rewards?
-    // TODO: make sure to shift the value
     const reward = new BN(
       this.liquidityMining.calculate_user_reward(
         farmEntry.accumulatedRpvs.toBigNumber().toFixed(),
         farmEntry.valuedShares.toBigNumber().toFixed(),
         farmEntry.accumulatedClaimedRewards.toBigNumber().toFixed(),
-        mutableYieldFarm.accumulatedRpvs.toFixed(), // -1
+        yieldFarm.accumulatedRpvs.toFixed(),
         loyaltyMultiplier,
       ),
     )
 
     if (!reward.isZero()) {
-      mutableYieldFarm.leftToDistribute =
-        mutableYieldFarm.leftToDistribute.minus(reward)
-
-      // TODO: update farm entries, but it seems
-      // like we're not going to claim same
-      // farm entry multiple times
+      yieldFarm.leftToDistribute = yieldFarm.leftToDistribute.minus(reward)
     }
 
-    return reward
+    return { value: reward, assetId: globalFarm.rewardCurrency.toString() }
   }
 }

@@ -1,5 +1,5 @@
 import { AccountId32 } from "@polkadot/types/interfaces"
-import { useApiPromise } from "utils/api"
+import { NATIVE_ASSET_ID, useApiPromise } from "utils/api"
 import { useQuery } from "@tanstack/react-query"
 import { QUERY_KEYS, QUERY_KEY_PREFIX } from "utils/queryKeys"
 import { ApiPromise } from "@polkadot/api"
@@ -39,11 +39,13 @@ const getTokenAccountBalancesList =
     try {
       const [tokens, natives] = await Promise.all([
         api.query.tokens.accounts.multi(
-          pairs.filter(([_, assetId]) => assetId.toString() !== "0"),
+          pairs.filter(
+            ([_, assetId]) => assetId.toString() !== NATIVE_ASSET_ID,
+          ),
         ),
         api.query.system.account.multi(
           pairs
-            .filter(([_, assetId]) => assetId.toString() === "0")
+            .filter(([_, assetId]) => assetId.toString() === NATIVE_ASSET_ID)
             .map(([account]) => account),
         ),
       ])
@@ -62,7 +64,7 @@ const getTokenAccountBalancesList =
         const idx = tokenIdx + nativeIdx
         const [, assetId] = pairs[idx]
 
-        if (assetId.toString() === "0") {
+        if (assetId.toString() === NATIVE_ASSET_ID) {
           values.push({
             free: natives[nativeIdx].data.free,
             reserved: natives[nativeIdx].data.reserved,
