@@ -5,6 +5,7 @@ import { QUERY_KEYS, QUERY_KEY_PREFIX } from "utils/queryKeys"
 import { ApiPromise } from "@polkadot/api"
 import { Maybe, undefinedNoop } from "utils/helpers"
 import { u32 } from "@polkadot/types"
+import { BN } from "@polkadot/util"
 
 export const useAccountBalances = (id: Maybe<AccountId32 | string>) => {
   const api = useApiPromise()
@@ -35,8 +36,57 @@ const getTokenAccountBalancesList =
     pairs: Array<[address: AccountId32 | string, assetId: u32 | string]>,
   ) =>
   async () => {
-    const res = await api.query.tokens.accounts.multi(pairs)
-    return res
+    try {
+      const [tokens, natives] = await Promise.all([
+        api.query.tokens.accounts.multi(
+          pairs.filter(([_, assetId]) => assetId.toString() !== "0"),
+        ),
+        api.query.system.account.multi(
+          pairs
+            .filter(([_, assetId]) => assetId.toString() === "0")
+            .map(([account]) => account),
+        ),
+      ])
+
+      const values: Array<{
+        free: BN
+        reserved: BN
+        frozen: BN
+      }> = []
+
+      for (
+        let tokenIdx = 0, nativeIdx = 0;
+        tokenIdx + nativeIdx < pairs.length;
+
+      ) {
+        const idx = tokenIdx + nativeIdx
+        const [, assetId] = pairs[idx]
+
+        if (assetId.toString() === "0") {
+          values.push({
+            free: natives[nativeIdx].data.free,
+            reserved: natives[nativeIdx].data.reserved,
+            frozen: natives[nativeIdx].data.feeFrozen.add(
+              natives[nativeIdx].data.miscFrozen,
+            ),
+          })
+
+          nativeIdx += 1
+        } else {
+          values.push({
+            free: tokens[tokenIdx].free,
+            reserved: tokens[tokenIdx].reserved,
+            frozen: tokens[tokenIdx].frozen,
+          })
+
+          tokenIdx += 1
+        }
+      }
+
+      return values
+    } catch (err) {
+      console.error(err)
+    }
   }
 
 export const useTokenAccountBalancesList = (

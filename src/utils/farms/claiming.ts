@@ -13,12 +13,10 @@ import { AccountId32 } from "@polkadot/types/interfaces"
 import { decodeAddress } from "@polkadot/util-crypto"
 import { u8aToHex } from "@polkadot/util"
 import { useTokenAccountBalancesList } from "api/accountBalances"
-import {
-  getAccountResolver,
-  MultiCurrencyContainer,
-  XYKLiquidityMiningClaimSim,
-  createMutableFarmEntries,
-} from "./claiming.utils"
+import { XYKLiquidityMiningClaimSim } from "utils/farms/claiming/claimSimulator"
+import { getAccountResolver } from "utils/farms/claiming/accountResolver"
+import { MultiCurrencyContainer } from "utils/farms/claiming/multiCurrency"
+import { createMutableFarmEntries } from "utils/farms/claiming/mutableFarms"
 import { useAssetDetailsList } from "api/assetDetails"
 import * as liquidityMining from "@galacticcouncil/math/build/liquidity-mining/bundler"
 
@@ -36,10 +34,9 @@ export const useClaimableAmount = (pool: PoolBase) => {
   const accountAddresses =
     farms.data
       ?.map(
-        ({ yieldFarm, globalFarm }) =>
+        ({ globalFarm }) =>
           [
             [accountResolver(0), globalFarm.rewardCurrency],
-            [accountResolver(yieldFarm.id), globalFarm.rewardCurrency],
             [accountResolver(globalFarm.id), globalFarm.rewardCurrency],
           ] as [AccountId32, u32][],
       )

@@ -67,7 +67,7 @@
   "pools.pool.claim.button": "Claim all farms",
   "pools.pool.claim.total": "Total locked {{ locked, bignumber(numberPrefix: '$'; type: 'dollar') }}",
   "pools.pool.claim.totals": "Total locked {{ locked, bignumber(numberPrefix: '$'; type: 'dollar') }} of which {{ available, bignumber(numberPrefix: '$'; type: 'dollar') }} not farming.",
-  "pools.pool.claim.claimable": "{{ claimable, bignumber(numberPrefix: '$'; type: 'dollar') }} Claimable",
+  "pools.pool.claim.claimable": "{{ claimable, bignumber(numberSuffix: ' BSX'; type: 'token') }} Claimable",
   "pools.pool.liquidity.title": "Your Liquidity Shares",
   "pools.pool.liquidity.unstakedShares": "Unstaked shares",
   "pools.pool.liquidity.value": "Current value",

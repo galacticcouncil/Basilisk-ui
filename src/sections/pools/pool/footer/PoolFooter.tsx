@@ -25,7 +25,10 @@ export const PoolFooter = ({ pool }: Props) => {
       <div sx={{ flex: "row", justify: "center" }}>
         {!claimable?.isZero() && (
           <Text color="primary300" fs={16} fw={600} lh={22} tAlign="center">
-            {t("pools.pool.claim.claimable", { claimable })}
+            {t("pools.pool.claim.claimable", {
+              claimable,
+              fixedPointScale: 12,
+            })}
           </Text>
         )}
       </div>

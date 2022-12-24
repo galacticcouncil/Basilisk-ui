@@ -12,7 +12,7 @@ export const usePoolFooterValues = (pool: PoolBase) => {
   const balance = useTokenBalance(shareToken.data?.token, account?.address)
 
   const deposits = useUserDeposits(pool.address)
-  // const claimable = useClaimableAmount(pool)
+  const claimable = useClaimableAmount(pool)
   const shares = useCurrentSharesValue({
     shareToken: shareToken.data?.token,
     shareTokenBalance: balance.data?.balance,
@@ -25,7 +25,7 @@ export const usePoolFooterValues = (pool: PoolBase) => {
 
   return {
     locked: shares.dollarValue,
-    claimable: null,
+    claimable: claimable.data,
     claimAll: claimAll.mutation,
     isLoading,
   }

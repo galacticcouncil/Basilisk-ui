@@ -1,189 +1,22 @@
-import { BN_0, BN_1 } from "utils/constants"
+import { BN_0, BN_1, BN_QUINTILL } from "utils/constants"
 import BN from "bignumber.js"
-import { GenericAccountId32, Option, u32 } from "@polkadot/types"
+import { Option, u32 } from "@polkadot/types"
 import { AccountId32 } from "@polkadot/types/interfaces"
 import {
-  OrmlTokensAccountData,
-  PalletLiquidityMiningFarmState,
-  PalletLiquidityMiningGlobalFarmData,
   PalletLiquidityMiningLoyaltyCurve,
-  PalletLiquidityMiningYieldFarmData,
   PalletLiquidityMiningYieldFarmEntry,
 } from "@polkadot/types/lookup"
-import { u8aConcat } from "@polkadot/util"
-import { padEndU8a } from "utils/helpers"
-import { Registry } from "@polkadot/types/types"
 
+import {
+  MutableGlobalFarm,
+  MutableYieldFarm,
+} from "utils/farms/claiming/mutableFarms"
+
+import { MultiCurrencyContainer } from "utils/farms/claiming/multiCurrency"
+
+// Pass liquidity mining as an argument due to issues with vitest and import
 import type * as liquidityMining from "@galacticcouncil/math/build/liquidity-mining/nodejs"
 type LiquidityMining = typeof liquidityMining
-
-export class MultiCurrencyContainer {
-  result = new Map<string, BN>()
-
-  getKey(asset: u32, accountId: AccountId32): string {
-    return [accountId.toString(), asset.toString()].join(",")
-  }
-
-  constructor(keys: [AccountId32, u32][], values: OrmlTokensAccountData[]) {
-    for (let i = 0; i < keys.length; ++i) {
-      const [accountId, asset] = keys[i]
-      this.result.set(
-        this.getKey(asset, accountId),
-        values[i].free.toBigNumber(),
-      )
-    }
-  }
-
-  free_balance(asset: u32, accountId: AccountId32): BN {
-    // TODO: use existencial amounts as a placeholder
-    const result = this.result.get(this.getKey(asset, accountId)) ?? BN_0
-    return result
-  }
-
-  transfer(
-    asset: u32,
-    sourceAccount: AccountId32,
-    targetAccount: AccountId32,
-    amount: BN,
-  ) {
-    const sourceKey = this.getKey(asset, sourceAccount)
-    const targetKey = this.getKey(asset, targetAccount)
-
-    const sourceValue = this.result.get(sourceKey) ?? BN_0
-    const targetValue = this.result.get(targetKey) ?? BN_0
-
-    if (sourceValue.lt(amount))
-      throw new Error("Attempting to transfer more than is present")
-
-    this.result.set(sourceKey, sourceValue.minus(amount))
-    this.result.set(targetKey, targetValue.plus(amount))
-  }
-}
-
-export interface MutableYieldFarm {
-  readonly id: u32
-  readonly loyaltyCurve: Option<PalletLiquidityMiningLoyaltyCurve>
-  readonly state: PalletLiquidityMiningFarmState
-  updatedAt: BN
-  totalShares: BN
-  totalValuedShares: BN
-  accumulatedRpvs: BN
-  accumulatedRpz: BN
-  multiplier: BN
-  entriesCount: BN
-  leftToDistribute: BN
-}
-
-export interface MutableGlobalFarm {
-  readonly id: u32
-  readonly incentivizedAsset: u32
-  readonly owner: AccountId32
-  readonly rewardCurrency: u32
-  updatedAt: BN
-  totalSharesZ: BN
-  accumulatedRpz: BN
-  accumulatedRewards: BN
-  paidAccumulatedRewards: BN
-  yieldPerPeriod: BN
-  plannedYieldingPeriods: BN
-  blocksPerPeriod: BN
-  maxRewardPerPeriod: BN
-  minDeposit: BN
-  liveYieldFarmsCount: BN
-  totalYieldFarmsCount: BN
-  priceAdjustment: BN
-}
-
-export function createMutableFarmEntries(
-  farms: Array<{
-    globalFarm: PalletLiquidityMiningGlobalFarmData
-    yieldFarm: PalletLiquidityMiningYieldFarmData
-  }>,
-) {
-  const yieldFarms: Record<string, MutableYieldFarm> = {}
-  const globalFarms: Record<string, MutableGlobalFarm> = {}
-
-  farms.forEach(({ globalFarm, yieldFarm }) => {
-    globalFarms[globalFarm.id.toString()] = {
-      id: globalFarm.id,
-      incentivizedAsset: globalFarm.incentivizedAsset,
-      owner: globalFarm.owner,
-      rewardCurrency: globalFarm.rewardCurrency,
-      // PeriodOf<T>
-      updatedAt: globalFarm.updatedAt.toBigNumber(),
-      // Balance
-      totalSharesZ: globalFarm.totalSharesZ.toBigNumber(),
-      // FixedU128
-      accumulatedRpz: globalFarm.accumulatedRpz.toBigNumber(),
-      // Balance
-      accumulatedRewards: globalFarm.accumulatedRewards.toBigNumber(),
-      // Balance
-      paidAccumulatedRewards: globalFarm.paidAccumulatedRewards.toBigNumber(),
-      // Perquintill
-      yieldPerPeriod: globalFarm.yieldPerPeriod.toBigNumber(),
-      // PeriodOf<T>
-      plannedYieldingPeriods: globalFarm.plannedYieldingPeriods.toBigNumber(),
-      // BlockNumberFor<T>
-      blocksPerPeriod: globalFarm.blocksPerPeriod.toBigNumber(),
-      // Balance
-      maxRewardPerPeriod: globalFarm.maxRewardPerPeriod.toBigNumber(),
-      // Balance
-      minDeposit: globalFarm.minDeposit.toBigNumber(),
-      // u32
-      liveYieldFarmsCount: globalFarm.liveYieldFarmsCount.toBigNumber(),
-      // u32
-      totalYieldFarmsCount: globalFarm.totalYieldFarmsCount.toBigNumber(),
-      // FixedU128
-      priceAdjustment: globalFarm.priceAdjustment.toBigNumber(),
-    }
-
-    yieldFarms[yieldFarm.id.toString()] = {
-      id: yieldFarm.id,
-      // PeriodOf<T>
-      updatedAt: yieldFarm.updatedAt.toBigNumber(),
-      // Balance
-      totalShares: yieldFarm.totalShares.toBigNumber(),
-      // Balance
-      totalValuedShares: yieldFarm.totalValuedShares.toBigNumber(),
-      // FixedU128
-      accumulatedRpvs: yieldFarm.accumulatedRpvs.toBigNumber(),
-      // FixedU128
-      accumulatedRpz: yieldFarm.accumulatedRpz.toBigNumber(),
-      // FarmMultiplier
-      multiplier: yieldFarm.multiplier.toBigNumber(),
-      // u64
-      entriesCount: yieldFarm.entriesCount.toBigNumber(),
-      // Balance
-      leftToDistribute: yieldFarm.leftToDistribute.toBigNumber(),
-      loyaltyCurve: yieldFarm.loyaltyCurve,
-      state: yieldFarm.state,
-    }
-  })
-
-  return { yieldFarms, globalFarms }
-}
-
-export const getAccountResolver =
-  (registry: Registry) =>
-  (sub: u32 | number): AccountId32 => {
-    // TYPE_ID based on Substrate
-    const TYPE_ID = "modl"
-
-    // TODO: obtain the pallet ID from api.consts.xykWarehouseLM.palletId
-    const PALLET_ID = "0x57686f7573654c6d"
-
-    return new GenericAccountId32(
-      registry,
-      padEndU8a(
-        u8aConcat(
-          TYPE_ID,
-          PALLET_ID,
-          typeof sub !== "number" ? sub.toU8a() : [sub],
-        ),
-        32,
-      ),
-    )
-  }
 
 export class XYKLiquidityMiningClaimSim {
   protected get_account: (sub: u32 | number) => AccountId32
@@ -309,7 +142,7 @@ export class XYKLiquidityMiningClaimSim {
       this.liquidityMining.calculate_accumulated_rps(
         yield_farm.accumulatedRpvs.toFixed(),
         yield_farm.totalValuedShares.toFixed(),
-        yield_farm_rewards.toFixed(), // -1
+        yield_farm_rewards.toFixed(), // -1,
       )!,
     )
 
@@ -345,7 +178,10 @@ export class XYKLiquidityMiningClaimSim {
         // TODO: make sure to shift the value
         let rewards = new BN(
           this.liquidityMining.calculate_global_farm_reward_per_period(
-            global_farm.yieldPerPeriod.toFixed(),
+            global_farm.yieldPerPeriod
+              .multipliedBy(BN_QUINTILL)
+              .integerValue(BN.ROUND_FLOOR)
+              .toFixed(),
             total_shares_z_adjusted.toFixed(),
             global_farm.maxRewardPerPeriod.toFixed(),
           )!,
@@ -401,6 +237,7 @@ export class XYKLiquidityMiningClaimSim {
     farmEntry: PalletLiquidityMiningYieldFarmEntry,
     relaychainBlockNumber: BN,
   ) {
+    debugger
     // if yield farm is terminated, cannot claim
     if (mutableYieldFarm.state.isTerminated.valueOf()) {
       return null

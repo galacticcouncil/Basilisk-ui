@@ -38,7 +38,7 @@ import type {
   ContractCallRequest,
   ContractExecResult,
   ContractInstantiateResult,
-  InstantiateRequest,
+  InstantiateRequestV1,
 } from "@polkadot/types/interfaces/contracts"
 import type { BlockStats } from "@polkadot/types/interfaces/dev"
 import type { CreatedBlock } from "@polkadot/types/interfaces/engine"
@@ -71,7 +71,7 @@ import type {
 import type { StorageKind } from "@polkadot/types/interfaces/offchain"
 import type {
   FeeDetails,
-  RuntimeDispatchInfo,
+  RuntimeDispatchInfoV1,
 } from "@polkadot/types/interfaces/payment"
 import type { RpcMethods } from "@polkadot/types/interfaces/rpc"
 import type {
@@ -301,6 +301,7 @@ declare module "@polkadot/rpc-core/types/jsonrpc" {
     }
     contracts: {
       /**
+       * @deprecated Use the runtime interface `api.call.contractsApi.call` instead
        * Executes a call to a contract
        **/
       call: AugmentedRpc<
@@ -321,6 +322,7 @@ declare module "@polkadot/rpc-core/types/jsonrpc" {
         ) => Observable<ContractExecResult>
       >
       /**
+       * @deprecated Use the runtime interface `api.call.contractsApi.getStorage` instead
        * Returns the value under a specified storage key in a contract
        **/
       getStorage: AugmentedRpc<
@@ -331,17 +333,17 @@ declare module "@polkadot/rpc-core/types/jsonrpc" {
         ) => Observable<Option<Bytes>>
       >
       /**
+       * @deprecated Use the runtime interface `api.call.contractsApi.instantiate` instead
        * Instantiate a new contract
        **/
       instantiate: AugmentedRpc<
         (
           request:
-            | InstantiateRequest
+            | InstantiateRequestV1
             | {
                 origin?: any
                 value?: any
                 gasLimit?: any
-                storageDepositLimit?: any
                 code?: any
                 data?: any
                 salt?: any
@@ -352,6 +354,7 @@ declare module "@polkadot/rpc-core/types/jsonrpc" {
         ) => Observable<ContractInstantiateResult>
       >
       /**
+       * @deprecated Not available in newer versions of the contracts interfaces
        * Returns the projected time a given contract will be able to sustain paying its rent
        **/
       rentProjection: AugmentedRpc<
@@ -361,6 +364,7 @@ declare module "@polkadot/rpc-core/types/jsonrpc" {
         ) => Observable<Option<BlockNumber>>
       >
       /**
+       * @deprecated Use the runtime interface `api.call.contractsApi.uploadCode` instead
        * Upload new code without instantiating a contract from it
        **/
       uploadCode: AugmentedRpc<
@@ -848,6 +852,7 @@ declare module "@polkadot/rpc-core/types/jsonrpc" {
     }
     payment: {
       /**
+       * @deprecated Use `api.call.transactionPaymentApi.queryFeeDetails` instead
        * Query the detailed fee of a given encoded extrinsic
        **/
       queryFeeDetails: AugmentedRpc<
@@ -857,13 +862,14 @@ declare module "@polkadot/rpc-core/types/jsonrpc" {
         ) => Observable<FeeDetails>
       >
       /**
+       * @deprecated Use `api.call.transactionPaymentApi.queryInfo` instead
        * Retrieves the fee information for an encoded extrinsic
        **/
       queryInfo: AugmentedRpc<
         (
           extrinsic: Bytes | string | Uint8Array,
           at?: BlockHash | string | Uint8Array,
-        ) => Observable<RuntimeDispatchInfo>
+        ) => Observable<RuntimeDispatchInfoV1>
       >
     }
     rpc: {
@@ -942,6 +948,7 @@ declare module "@polkadot/rpc-core/types/jsonrpc" {
         ) => Observable<u64>
       >
       /**
+       * @deprecated Use `api.rpc.state.getKeysPaged` to retrieve keys
        * Retrieves the keys with a certain prefix
        **/
       getKeys: AugmentedRpc<
@@ -968,6 +975,7 @@ declare module "@polkadot/rpc-core/types/jsonrpc" {
         (at?: BlockHash | string | Uint8Array) => Observable<Metadata>
       >
       /**
+       * @deprecated Use `api.rpc.state.getKeysPaged` to retrieve keys
        * Returns the keys with prefix, leave empty to get all the keys (deprecated: Use getKeysPaged)
        **/
       getPairs: AugmentedRpc<
