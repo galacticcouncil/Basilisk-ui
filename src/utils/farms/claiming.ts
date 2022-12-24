@@ -17,8 +17,7 @@ import {
   getAccountResolver,
   MultiCurrencyContainer,
   XYKLiquidityMiningClaimSim,
-  MutableYieldFarm,
-  MutableGlobalFarm,
+  createMutableFarmEntries,
 } from "./claiming.utils"
 import { useAssetDetailsList } from "api/assetDetails"
 import * as liquidityMining from "@galacticcouncil/math/build/liquidity-mining/bundler"
@@ -68,65 +67,7 @@ export const useClaimableAmount = (pool: PoolBase) => {
     assetList.data ?? [],
   )
 
-  const mutableYieldFarms: Record<string, MutableYieldFarm> = {}
-  const mutableGlobalFarms: Record<string, MutableGlobalFarm> = {}
-
-  farms.data?.forEach(({ globalFarm, yieldFarm }) => {
-    mutableGlobalFarms[globalFarm.id.toString()] = {
-      id: globalFarm.id,
-      incentivizedAsset: globalFarm.incentivizedAsset,
-      owner: globalFarm.owner,
-      rewardCurrency: globalFarm.rewardCurrency,
-      // PeriodOf<T>
-      updatedAt: globalFarm.updatedAt.toBigNumber(),
-      // Balance
-      totalSharesZ: globalFarm.totalSharesZ.toBigNumber(),
-      // FixedU128
-      accumulatedRpz: globalFarm.accumulatedRpz.toBigNumber(),
-      // Balance
-      accumulatedRewards: globalFarm.accumulatedRewards.toBigNumber(),
-      // Balance
-      paidAccumulatedRewards: globalFarm.paidAccumulatedRewards.toBigNumber(),
-      // Perquintill
-      yieldPerPeriod: globalFarm.yieldPerPeriod.toBigNumber(),
-      // PeriodOf<T>
-      plannedYieldingPeriods: globalFarm.plannedYieldingPeriods.toBigNumber(),
-      // BlockNumberFor<T>
-      blocksPerPeriod: globalFarm.blocksPerPeriod.toBigNumber(),
-      // Balance
-      maxRewardPerPeriod: globalFarm.maxRewardPerPeriod.toBigNumber(),
-      // Balance
-      minDeposit: globalFarm.minDeposit.toBigNumber(),
-      // u32
-      liveYieldFarmsCount: globalFarm.liveYieldFarmsCount.toBigNumber(),
-      // u32
-      totalYieldFarmsCount: globalFarm.totalYieldFarmsCount.toBigNumber(),
-      // FixedU128
-      priceAdjustment: globalFarm.priceAdjustment.toBigNumber(),
-    }
-
-    mutableYieldFarms[yieldFarm.id.toString()] = {
-      id: yieldFarm.id,
-      // PeriodOf<T>
-      updatedAt: yieldFarm.updatedAt.toBigNumber(),
-      // Balance
-      totalShares: yieldFarm.totalShares.toBigNumber(),
-      // Balance
-      totalValuedShares: yieldFarm.totalValuedShares.toBigNumber(),
-      // FixedU128
-      accumulatedRpvs: yieldFarm.accumulatedRpvs.toBigNumber(),
-      // FixedU128
-      accumulatedRpz: yieldFarm.accumulatedRpz.toBigNumber(),
-      // FarmMultiplier
-      multiplier: yieldFarm.multiplier.toBigNumber(),
-      // u64
-      entriesCount: yieldFarm.entriesCount.toBigNumber(),
-      // Balance
-      leftToDistribute: yieldFarm.leftToDistribute.toBigNumber(),
-      loyaltyCurve: yieldFarm.loyaltyCurve,
-      state: yieldFarm.state,
-    }
-  })
+  const { globalFarms, yieldFarms } = createMutableFarmEntries(farms.data ?? [])
 
   const data = deposits.data
     ?.map((record) => {
@@ -140,8 +81,8 @@ export const useClaimableAmount = (pool: PoolBase) => {
 
           if (!aprEntry) return null
           return sim.claim_rewards(
-            mutableGlobalFarms[aprEntry.globalFarm.id.toString()],
-            mutableYieldFarms[aprEntry.yieldFarm.id.toString()],
+            globalFarms[aprEntry.globalFarm.id.toString()],
+            yieldFarms[aprEntry.yieldFarm.id.toString()],
             farmEntry,
             bestNumber.relaychainBlockNumber.toBigNumber(),
           )
