@@ -1,34 +1,33 @@
-console.log(
-  await Promise.all([
-    api.query.xykWarehouseLM.globalFarm(10),
-    api.query.xykWarehouseLM.globalFarm(12),
-    api.query.xykWarehouseLM.yieldFarm(
-      "bXjaGnLVKE3auHRwYWn6eGQSTcRLwrMVX7paepZhb6tgy28tY",
-      10,
-      14,
-    ),
-    api.query.xykWarehouseLM.yieldFarm(
-      "bXjaGnLVKE3auHRwYWn6eGQSTcRLwrMVX7paepZhb6tgy28tY",
-      12,
-      15,
-    ),
-    api.query.system.account(
-      "5EYCAe5diR59yJu1zi5jdbXWTzCk5nbR65wdmsWerp64Meis",
-    ),
-    api.query.system.account(
-      "5EYCAe5diR59yJu1zi8T3ryPavxifKcASoLjHJP1V4qM3zvk",
-    ),
-    api.query.tokens.accounts(
-      "5EYCAe5diR59yJu1zi5jdbXWTzCk5nbR65wdmsWerp64Meis",
-      4,
-    ),
-    api.query.tokens.accounts(
-      "5EYCAe5diR59yJu1zi8zXv4ZovK7aRouv9DkPBkgQiaob13o",
-      4,
-    ),
-    api.query.xykWarehouseLM.deposit(5),
-  ]),
-)
+```js
+await Promise.all([
+  api.query.xykWarehouseLM.globalFarm(10),
+  api.query.xykWarehouseLM.globalFarm(12),
+  api.query.xykWarehouseLM.yieldFarm(
+    "bXjaGnLVKE3auHRwYWn6eGQSTcRLwrMVX7paepZhb6tgy28tY",
+    10,
+    14,
+  ),
+  api.query.xykWarehouseLM.yieldFarm(
+    "bXjaGnLVKE3auHRwYWn6eGQSTcRLwrMVX7paepZhb6tgy28tY",
+    12,
+    15,
+  ),
+  api.query.system.account(
+    "5EYCAe5diR59yJu1zi5jdbXWTzCk5nbR65wdmsWerp64Meis",
+  ),
+  api.query.system.account(
+    "5EYCAe5diR59yJu1zi8T3ryPavxifKcASoLjHJP1V4qM3zvk",
+  ),
+  api.query.tokens.accounts(
+    "5EYCAe5diR59yJu1zi5jdbXWTzCk5nbR65wdmsWerp64Meis",
+    4,
+  ),
+  api.query.tokens.accounts(
+    "5EYCAe5diR59yJu1zi8zXv4ZovK7aRouv9DkPBkgQiaob13o",
+    4,
+  ),
+  api.query.xykWarehouseLM.deposit(5),
+]),
 
 // "5EYCAe5diR59yJu1zi5jdbXWTzCk5nbR65wdmsWerp64Meis" 0 (pot)
 // "5EYCAe5diR59yJu1zi8T3ryPavxifKcASoLjHJP1V4qM3zvk" 0 (global farm)
@@ -154,5 +153,4 @@ const result = [
     ],
   },
 ]
-
-// yield farm id: 12 (global farm: 10, ammId: bXjaGnLVKE3auHRwYWn6eGQSTcRLwrMVX7paepZhb6tgy28tY)
+```
