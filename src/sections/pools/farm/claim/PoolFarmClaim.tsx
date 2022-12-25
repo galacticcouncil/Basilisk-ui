@@ -12,14 +12,18 @@ import { ReactComponent as WalletIcon } from "assets/icons/Wallet.svg"
 import { PoolPositionMobile } from "sections/pools/farm/position/PoolFarmPositionMobile"
 import { useUserDeposits } from "utils/farms/deposits"
 import { separateBalance } from "utils/balance"
+import { DepositNftType } from "api/deposits"
 
-export function PoolFarmClaim(props: { pool: PoolBase }) {
+export function PoolFarmClaim(props: {
+  pool: PoolBase
+  depositNft?: DepositNftType
+}) {
   const { t } = useTranslation()
   const [openMyPositions, setOpenMyPositions] = useState(false)
 
   const positions = useUserDeposits(props.pool.address)
-  const claimable = useClaimableAmount(props.pool)
-  const claimAll = useClaimAllMutation(props.pool.address)
+  const claimable = useClaimableAmount(props.pool, props.depositNft)
+  const claimAll = useClaimAllMutation(props.pool.address, props.depositNft)
 
   const balance = separateBalance(claimable.data?.bsx, {
     fixedPointScale: 12,
