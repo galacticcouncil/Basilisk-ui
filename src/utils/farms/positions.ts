@@ -7,7 +7,6 @@ import { useTotalIssuances } from "api/totalIssuance"
 import { useAsset, useUsdPeggedAsset } from "api/asset"
 import { useSpotPrices } from "api/spotPrice"
 import { useAllUserDeposits } from "utils/farms/deposits"
-import { useMath } from "utils/api"
 import { PalletLiquidityMiningYieldFarmEntry } from "@polkadot/types/lookup"
 import { PoolBase } from "@galacticcouncil/sdk"
 import { subSeconds } from "date-fns"
@@ -15,6 +14,7 @@ import { useBestNumber } from "api/chain"
 import { useGlobalFarm, useYieldFarm } from "api/farms"
 import { usePoolShareToken } from "api/pools"
 import { useTotalIssuance } from "api/totalIssuance"
+import * as liquidityMining from "@galacticcouncil/math/build/liquidity-mining/bundler"
 import BN from "bignumber.js"
 
 export const useTotalInPositions = () => {
@@ -139,7 +139,6 @@ export const usePoolPosition = ({
 
   const rewardAsset = useAsset(globalFarm.data?.rewardCurrency)
   const bestNumber = useBestNumber()
-  const math = useMath()
 
   const queries = [
     globalFarm,
@@ -149,7 +148,6 @@ export const usePoolPosition = ({
     usd,
     rewardAsset,
     bestNumber,
-    math,
     ...spotPrices,
   ]
   const isLoading = queries.some((q) => q.isLoading)
@@ -157,7 +155,6 @@ export const usePoolPosition = ({
   const mined = useMemo(() => {
     if (
       bestNumber.data == null ||
-      math.liquidityMining == null ||
       globalFarm.data == null ||
       yieldFarm.data == null
     )
@@ -175,7 +172,7 @@ export const usePoolPosition = ({
       const { initialRewardPercentage, scaleCoef } =
         yieldFarm.data.loyaltyCurve.unwrap()
 
-      loyaltyMultiplier = math.liquidityMining.calculate_loyalty_multiplier(
+      loyaltyMultiplier = liquidityMining.calculate_loyalty_multiplier(
         periods.toFixed(),
         initialRewardPercentage.toBigNumber().toFixed(),
         scaleCoef.toBigNumber().toFixed(),
@@ -183,7 +180,7 @@ export const usePoolPosition = ({
     }
 
     return new BN(
-      math.liquidityMining.calculate_user_reward(
+      liquidityMining.calculate_user_reward(
         position.accumulatedRpvs.toBigNumber().toFixed(),
         position.valuedShares.toBigNumber().toFixed(),
         position.accumulatedClaimedRewards.toBigNumber().toFixed(),
@@ -194,7 +191,6 @@ export const usePoolPosition = ({
   }, [
     bestNumber.data,
     globalFarm.data,
-    math.liquidityMining,
     position.accumulatedClaimedRewards,
     position.accumulatedRpvs,
     position.enteredAt,

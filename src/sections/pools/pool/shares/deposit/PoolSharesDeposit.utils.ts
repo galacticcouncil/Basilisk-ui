@@ -7,7 +7,6 @@ import { subSeconds } from "date-fns"
 import { u32 } from "@polkadot/types"
 import { useUsdPeggedAsset } from "api/asset"
 import { useGlobalFarms, useYieldFarms } from "api/farms"
-import { useMath } from "utils/api"
 import { useMemo } from "react"
 import { usePoolShareToken } from "api/pools"
 import { useSpotPrices } from "api/spotPrice"
@@ -43,15 +42,12 @@ export const usePoolSharesDeposit = ({
     usd.data?.id,
   )
 
-  const math = useMath()
-
   const queries = [
     globalFarms,
     yieldFarms,
     shareToken,
     totalIssuance,
     usd,
-    math,
     ...spotPrices,
   ]
   const isLoading = queries.some((q) => q.isLoading)

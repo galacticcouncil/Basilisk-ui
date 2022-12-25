@@ -24,26 +24,27 @@ export const PoolSharesDepositFarm: FC<Props> = ({ pool, depositNft }) => {
   const { t } = useTranslation()
   const [openFarm, setOpenFarm] = useState(false)
 
-  const aprs = useAPR(pool.address)
-
-  const [fromApr, toApr] = aprs.data
-    .filter((i) =>
+  const apr = useAPR(pool.address)
+  const activeAprs =
+    apr.data?.filter((i) =>
       depositNft.deposit.yieldFarmEntries.some(
         (entry) =>
           entry.globalFarmId.eq(i.globalFarm.id) &&
           entry.yieldFarmId.eq(i.yieldFarm.id),
       ),
-    )
-    .reduce<[BN | null, BN | null]>(
+    ) ?? []
+
+  const [fromApr, toApr] =
+    activeAprs.reduce<[BN | null, BN | null]>(
       ([oldMin, oldMax], item) => {
         const min = !oldMin || oldMin.gt(item.apr) ? item.apr : oldMin
         const max = !oldMax || oldMax.lt(item.apr) ? item.apr : oldMax
         return [min, max]
       },
       [null, null],
-    )
+    ) ?? []
 
-  const assetList = useAssetMetaList(aprs.data.map((i) => i.assetId))
+  const assetList = useAssetMetaList(activeAprs.map((i) => i.assetId))
 
   return (
     <SContainer>

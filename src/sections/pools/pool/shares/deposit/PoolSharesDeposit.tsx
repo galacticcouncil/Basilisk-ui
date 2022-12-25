@@ -86,7 +86,7 @@ export const PoolSharesDeposit: FC<Props> = ({ depositNft, index, pool }) => {
           </div>
           <PoolSharesDepositFarm pool={pool} depositNft={depositNft} />
 
-          <PoolPositionFarmRedeposit pool={pool} />
+          <PoolPositionFarmRedeposit pool={pool} depositNft={depositNft} />
         </SPositionContainer>
       </div>
     </SContainer>

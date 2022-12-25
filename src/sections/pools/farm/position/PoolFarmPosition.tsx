@@ -13,8 +13,10 @@ export function PoolFarmPosition(props: {
 }) {
   const { t } = useTranslation()
 
-  const { enteredDate, mined, rewardAsset, assetA, assetB } =
-    usePoolPosition({ position: props.position, pool: props.pool })
+  const { enteredDate, mined, rewardAsset, assetA, assetB } = usePoolPosition({
+    position: props.position,
+    pool: props.pool,
+  })
 
   return (
     <div sx={{ flex: "column", gap: 8 }}>
