@@ -26,8 +26,6 @@ export const useClaimableAmount = (pool: PoolBase) => {
   const deposits = useUserDeposits(pool.address)
   const farms = usePoolFarms(pool.address)
   const usd = useUsdPeggedAsset()
-  const queries = [deposits, bestNumberQuery, farms, usd]
-  const isLoading = queries.some((q) => q.isLoading)
 
   const api = useApiPromise()
   const accountResolver = getAccountResolver(api.registry)
@@ -53,6 +51,16 @@ export const useClaimableAmount = (pool: PoolBase) => {
       .flat(1) ?? []
 
   const accountBalances = useTokenAccountBalancesList(accountAddresses)
+
+  const queries = [
+    bestNumberQuery,
+    deposits,
+    farms,
+    usd,
+    assetList,
+    accountBalances,
+  ]
+  const isLoading = queries.some((q) => q.isLoading)
 
   if (bestNumberQuery.data == null || accountBalances.data == null)
     return { data: null, isLoading }
