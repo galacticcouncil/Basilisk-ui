@@ -1933,9 +1933,9 @@
     capi "^0.1.0-beta.12"
     lodash.clonedeep "^4.5.0"
 
-"@galacticcouncil/trade-app@https://github.com/galacticcouncil/trade-app#b01f03484735be757b4633d77adf01883b0d11c5":
+"@galacticcouncil/trade-app@https://github.com/galacticcouncil/apps#b01f03484735be757b4633d77adf01883b0d11c5":
   version "1.0.0"
-  resolved "https://github.com/galacticcouncil/trade-app#b01f03484735be757b4633d77adf01883b0d11c5"
+  resolved "https://github.com/galacticcouncil/apps#b01f03484735be757b4633d77adf01883b0d11c5"
   dependencies:
     "@lit/reactive-element" "^1.0.0"
     "@thi.ng/atom" "^5.1.3"
