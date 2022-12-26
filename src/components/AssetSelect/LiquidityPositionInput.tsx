@@ -8,10 +8,7 @@ import { Text } from "components/Typography/Text/Text"
 import { Trans, useTranslation } from "react-i18next"
 import { useAccountStore } from "state/store"
 import { getFloatingPointAmount } from "utils/balance"
-import {
-  SContainer,
-  SMaxButton,
-} from "components/AssetSelect/LiquidityPositionInput.styled"
+import { TokenInputContainer, TokenInputMaxButton } from "./TokenInput"
 
 export const LiquidityPositionInput = (props: {
   name: string
@@ -35,7 +32,7 @@ export const LiquidityPositionInput = (props: {
   const [assetIn, assetOut] = props.pool?.tokens
 
   return (
-    <SContainer>
+    <TokenInputContainer className={props.className}>
       <Text fw={500} lh={22} color="primary200" css={{ gridArea: "title" }}>
         {props.title}
       </Text>
@@ -57,10 +54,7 @@ export const LiquidityPositionInput = (props: {
             <span css={{ opacity: 0.7 }} />
           </Trans>
         </Text>
-        <SMaxButton
-          size="micro"
-          text={t("selectAsset.button.max")}
-          capitalize
+        <TokenInputMaxButton
           onClick={() => {
             if (balance.data?.balance != null) {
               props.onChange(
@@ -95,10 +89,10 @@ export const LiquidityPositionInput = (props: {
           label={t("selectAsset.input.label")}
           value={props.value}
           onChange={props.onChange}
-          css={{ flexGrow: 1 }}
           error={props.error}
+          css={{ flexGrow: 1 }}
         />
       </div>
-    </SContainer>
+    </TokenInputContainer>
   )
 }

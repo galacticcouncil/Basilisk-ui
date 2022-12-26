@@ -23,7 +23,7 @@
   "selectAsset.input.label": "Deposit amount",
   "selectAsset.title": "Select asset",
   "selectAsset.balance": "<0>Your balance:</0> {{ balance, bignumber }}",
-  "selectAsset.button.max": "Max",
+  "tokenInput.button.max": "Max",
   "address.input.native": "{{symbol}}: {{address}}",
   "header.trade": "Trade",
   "header.pools": "Pools & Farms",

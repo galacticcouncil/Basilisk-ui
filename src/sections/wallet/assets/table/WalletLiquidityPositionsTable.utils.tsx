@@ -18,7 +18,7 @@ import { WalletLiquidityPositionsTableActions } from "./actions/WalletLiquidityP
 export const useLiquidityPositionsTable = (
   data: LiquidityPositionsTableData[],
   actions: {
-    onTransfer: (assetId: string) => void
+    onTransfer: (poolAddress: string) => void
   },
 ) => {
   const { t } = useTranslation()
@@ -93,7 +93,6 @@ export const useLiquidityPositionsTable = (
 }
 
 export type LiquidityPositionsTableData = {
-  shareTokenId?: string
   name?: string
   poolAddress: string
   assetA: {
