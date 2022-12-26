@@ -1,5 +1,6 @@
+import { PoolBase } from "@galacticcouncil/sdk"
 import { useTokenBalance } from "api/balances"
-import { PoolShareToken } from "api/pools"
+import { usePoolShareToken } from "api/pools"
 import { getAssetLogo } from "components/AssetIcon/AssetIcon"
 import { AssetInput } from "components/AssetInput/AssetInput"
 import { DualAssetIcons } from "components/DualAssetIcons/DualAssetIcons"
@@ -10,15 +11,15 @@ import { getFloatingPointAmount } from "utils/balance"
 import {
   SContainer,
   SMaxButton,
-} from "./WalletTransferLiquidityPositionInput.styled"
+} from "components/AssetSelect/LiquidityPositionInput.styled"
 
-export const WalletTransferLiquidityPositionInput = (props: {
+export const LiquidityPositionInput = (props: {
   name: string
 
   value: string
   onChange: (value: string) => void
 
-  pool: PoolShareToken
+  pool: PoolBase
 
   title?: string
   className?: string
@@ -27,10 +28,9 @@ export const WalletTransferLiquidityPositionInput = (props: {
 }) => {
   const { t } = useTranslation()
   const { account } = useAccountStore()
-  const balance = useTokenBalance(
-    props.pool?.shareToken?.token,
-    account?.address,
-  )
+
+  const shareToken = usePoolShareToken(props.pool.address)
+  const balance = useTokenBalance(shareToken.data?.token, account?.address)
 
   const [assetIn, assetOut] = props.pool?.tokens
 

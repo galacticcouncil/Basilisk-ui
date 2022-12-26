@@ -11,7 +11,7 @@ import BigNumber from "bignumber.js"
 import { useTranslation } from "react-i18next"
 import { WalletTransferAccountInput } from "sections/wallet/transfer/WalletTransferAccountInput"
 import { safeConvertAddressSS58 } from "utils/formatting"
-import { WalletTransferLiquidityPositionInput } from "../WalletTransferLiquidityPositionInput"
+import { LiquidityPositionInput } from "../../../../components/AssetSelect/LiquidityPositionInput"
 import { AccountId32 } from "@polkadot/types/interfaces"
 import { getFixedPointAmount } from "utils/balance"
 import { usePoolsWithShareTokens } from "api/pools"
@@ -124,7 +124,7 @@ export function WalletTransferSectionLiquidityPositions(props: {
                 field: { name, value, onChange },
                 fieldState: { error },
               }) => (
-                <WalletTransferLiquidityPositionInput
+                <LiquidityPositionInput
                   title={t("wallet.assets.transfer.asset.label")}
                   name={name}
                   value={value}

@@ -8,7 +8,7 @@ import {
   SContainer,
   SMaxButton,
   SSelectAssetButton,
-} from "./AssetSelect.styled"
+} from "./AssetSelectInput.styled"
 import { u32 } from "@polkadot/types"
 import BigNumber from "bignumber.js"
 import { getFloatingPointAmount } from "utils/balance"
@@ -17,7 +17,7 @@ import { useSpotPrice } from "api/spotPrice"
 import { Maybe } from "utils/helpers"
 import { getAssetName } from "components/AssetIcon/AssetIcon"
 
-export const AssetSelect = (props: {
+export const AssetSelectInput = (props: {
   name: string
   value: string
 
