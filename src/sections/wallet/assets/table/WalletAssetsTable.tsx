@@ -106,7 +106,7 @@ export const WalletAssetsTable = ({ data }: Props) => {
         {transferAsset && (
           <WalletTransferModal
             open
-            initialAsset={transferAsset}
+            value={{ type: "asset", asset: transferAsset }}
             onClose={() => setTransferAsset(null)}
           />
         )}

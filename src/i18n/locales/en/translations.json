@@ -204,6 +204,7 @@
   "testnet.modal.back": "No, take me back",
   "testnet.modal.enter": "Yess, let me enter",
   "wallet.assets.transfer.title": "Transfer asset within Basilisk",
+  "wallet.assets.transfer.liquidityPosition.title": "Transfer liquidity position",
   "wallet.assets.transfer.switch.onchain": "On Basilisk",
   "wallet.assets.transfer.switch.crosschain": "Cross-chain",
   "wallet.assets.transfer.from.label": "From",
