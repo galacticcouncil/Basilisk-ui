@@ -210,6 +210,7 @@
   "wallet.assets.transfer.from.label": "From",
   "wallet.assets.transfer.dest.label": "To Basilisk Address",
   "wallet.assets.transfer.asset.label": "Asset to transfer",
+  "wallet.assets.transfer.liquidityPosition.label": "Position to transfer",
   "wallet.assets.transfer.cancel": "Cancel",
   "wallet.assets.transfer.submit": "Review & Send",
   "wallet.assets.transfer.error.required": "Required address",

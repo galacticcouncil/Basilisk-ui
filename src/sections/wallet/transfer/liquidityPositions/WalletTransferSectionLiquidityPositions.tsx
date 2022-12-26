@@ -125,7 +125,7 @@ export function WalletTransferSectionLiquidityPositions(props: {
                 fieldState: { error },
               }) => (
                 <LiquidityPositionInput
-                  title={t("wallet.assets.transfer.asset.label")}
+                  title={t("wallet.assets.transfer.liquidityPosition.label")}
                   name={name}
                   value={value}
                   onChange={onChange}
