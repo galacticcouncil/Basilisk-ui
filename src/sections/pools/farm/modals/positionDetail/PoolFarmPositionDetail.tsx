@@ -46,6 +46,7 @@ export const PoolFarmPositionDetail = (props: {
         ) : (
           <PoolFarmPositionDetailSectionList
             pool={props.pool}
+            depositNft={props.depositNft}
             onSelect={setSelectedYieldFarmId}
           />
         )}

@@ -1,21 +1,19 @@
 import { useTranslation } from "react-i18next"
 import { PoolBase } from "@galacticcouncil/sdk"
-import { useAccountDepositIds, useDeposits } from "api/deposits"
-import { useAccountStore, useStore } from "state/store"
+import { useStore } from "state/store"
 import { Button } from "components/Button/Button"
 import { useMutation } from "@tanstack/react-query"
 import { useApiPromise } from "utils/api"
+import { useUserDeposits } from "utils/farms/deposits"
+import { DepositNftType } from "api/deposits"
 
-export function PoolFarmWithdraw(props: { pool: PoolBase }) {
+export function PoolFarmWithdraw(props: {
+  pool: PoolBase
+  depositNft?: DepositNftType
+}) {
   const api = useApiPromise()
-
-  const { account } = useAccountStore()
-  const deposits = useDeposits(props.pool.address)
-  const accountDepositIds = useAccountDepositIds(account?.address)
-
-  const positions = deposits.data?.filter((deposit) =>
-    accountDepositIds.data?.some((ad) => ad.instanceId.eq(deposit.id)),
-  )
+  const userDeposits = useUserDeposits(props.pool.address)
+  const deposits = props.depositNft ? [props.depositNft] : userDeposits.data
 
   const { createTransaction } = useStore()
   const { t } = useTranslation()
@@ -23,7 +21,7 @@ export function PoolFarmWithdraw(props: { pool: PoolBase }) {
 
   const mutate = useMutation(async () => {
     const txs =
-      positions
+      deposits
         ?.map((record) => {
           return record.deposit.yieldFarmEntries.map((entry) => {
             return api.tx.xykLiquidityMining.withdrawShares(
@@ -35,9 +33,13 @@ export function PoolFarmWithdraw(props: { pool: PoolBase }) {
         })
         .flat(2) ?? []
 
-    if (txs.length > 0) {
+    if (txs.length > 1) {
       return await createTransaction({
         tx: api.tx.utility.batchAll(txs),
+      })
+    } else if (txs.length > 0) {
+      return await createTransaction({
+        tx: txs[0],
       })
     }
   })
@@ -45,7 +47,7 @@ export function PoolFarmWithdraw(props: { pool: PoolBase }) {
   return (
     <Button
       variant="secondary"
-      disabled={!deposits.data?.length}
+      disabled={!deposits?.length}
       isLoading={mutate.isLoading}
       onClick={() => mutate.mutate()}
       sx={{ width: ["inherit", "auto"] }}

@@ -20,10 +20,14 @@ import { createMutableFarmEntries } from "utils/farms/claiming/mutableFarms"
 import { useAssetDetailsList } from "api/assetDetails"
 import * as liquidityMining from "@galacticcouncil/math/build/liquidity-mining/bundler"
 import { useSpotPrices } from "api/spotPrice"
+import { DepositNftType } from "api/deposits"
 
-export const useClaimableAmount = (pool: PoolBase) => {
+export const useClaimableAmount = (
+  pool: PoolBase,
+  depositNft?: DepositNftType,
+) => {
   const bestNumberQuery = useBestNumber()
-  const deposits = useUserDeposits(pool.address)
+  const userDeposits = useUserDeposits(pool.address)
   const farms = usePoolFarms(pool.address)
   const usd = useUsdPeggedAsset()
 
@@ -54,7 +58,7 @@ export const useClaimableAmount = (pool: PoolBase) => {
 
   const queries = [
     bestNumberQuery,
-    deposits,
+    userDeposits,
     farms,
     usd,
     assetList,
@@ -65,6 +69,7 @@ export const useClaimableAmount = (pool: PoolBase) => {
   if (bestNumberQuery.data == null || accountBalances.data == null)
     return { data: null, isLoading }
 
+  const deposits = depositNft != null ? [depositNft] : userDeposits.data ?? []
   const bestNumber = bestNumberQuery.data
 
   const multiCurrency = new MultiCurrencyContainer(
@@ -80,7 +85,7 @@ export const useClaimableAmount = (pool: PoolBase) => {
 
   const { globalFarms, yieldFarms } = createMutableFarmEntries(farms.data ?? [])
 
-  const rewardSum = deposits.data
+  const rewardSum = deposits
     ?.map((record) =>
       record.deposit.yieldFarmEntries.map((farmEntry) => {
         const aprEntry = farms.data?.find(
@@ -127,14 +132,19 @@ export const useClaimableAmount = (pool: PoolBase) => {
   return { data: rewardSum, isLoading }
 }
 
-export const useClaimAllMutation = (poolId: string) => {
+export const useClaimAllMutation = (
+  poolId: string,
+  depositNft?: DepositNftType,
+) => {
   const api = useApiPromise()
   const { createTransaction } = useStore()
-  const deposits = useUserDeposits(poolId)
+  const userDeposits = useUserDeposits(poolId)
+
+  const deposits = depositNft ? [depositNft] : userDeposits.data
 
   const claim = useMutation(async () => {
     const txs =
-      deposits.data
+      deposits
         ?.map((i) =>
           i.deposit.yieldFarmEntries.map((entry) => {
             return api.tx.xykLiquidityMining.claimRewards(
@@ -145,14 +155,18 @@ export const useClaimAllMutation = (poolId: string) => {
         )
         .flat(2) ?? []
 
-    if (txs.length) {
+    if (txs.length > 1) {
       return await createTransaction({
         tx: api.tx.utility.batch(txs),
+      })
+    } else if (txs.length > 0) {
+      return await createTransaction({
+        tx: txs[0],
       })
     }
   })
 
-  return { mutation: claim, isLoading: deposits.isLoading }
+  return { mutation: claim, isLoading: userDeposits.isLoading }
 }
 
 // @ts-expect-error
