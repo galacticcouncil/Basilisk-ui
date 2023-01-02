@@ -10,6 +10,7 @@ import { DepositNftType } from "api/deposits"
 
 export const PoolFarmPositionDetail = (props: {
   pool: PoolBase
+  depositNft?: DepositNftType
   isOpen: boolean
   onClose: () => void
   onSelect: () => void
@@ -45,6 +46,7 @@ export const PoolFarmPositionDetail = (props: {
         ) : (
           <PoolFarmPositionDetailSectionList
             pool={props.pool}
+            depositNft={props.depositNft}
             onSelect={setSelectedYieldFarmId}
           />
         )}
