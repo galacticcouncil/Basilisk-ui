@@ -1,7 +1,7 @@
 import { u32 } from "@polkadot/types"
 import { useAsset } from "api/asset"
 import { useTokenBalance } from "api/balances"
-import { AssetSelect } from "components/AssetSelect/AssetSelect"
+import { AssetSelectInput } from "components/AssetSelect/AssetSelectInput"
 import { useAssetsModal } from "sections/assets/AssetsModal.utils"
 import { useAccountStore } from "state/store"
 
@@ -30,7 +30,7 @@ export const WalletTransferAssetSelect = (props: {
   return (
     <>
       {modal}
-      <AssetSelect
+      <AssetSelectInput
         name={props.name}
         title={props.title}
         className={props.className}

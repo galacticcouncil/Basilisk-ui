@@ -8,11 +8,15 @@ import { useTranslation } from "react-i18next"
 import { WalletTransferSectionOnchain } from "sections/wallet/transfer/onchain/WalletTransferSectionOnchain"
 import { WalletTransferSectionCrosschain } from "sections/wallet/transfer/crosschain/WalletTransferSectionCrosschain"
 import { SPillContainer } from "./WalletTransferModal.styled"
+import { WalletTransferSectionLiquidityPositions } from "./liquidityPositions/WalletTransferSectionLiquidityPositions"
+import { AccountId32 } from "@polkadot/types/interfaces"
 
 export function WalletTransferModal(props: {
   open: boolean
   onClose: () => void
-  initialAsset: u32 | string
+  value:
+    | { type: "liquidityPositions"; poolAddress: string | AccountId32 }
+    | { type: "asset"; asset: string | u32 }
 }) {
   const { t } = useTranslation()
   const [chain, setChain] = useState<"onchain" | "crosschain">("onchain")
@@ -41,10 +45,21 @@ export function WalletTransferModal(props: {
       }
     >
       {chain === "onchain" && (
-        <WalletTransferSectionOnchain
-          initialAsset={props.initialAsset}
-          onClose={props.onClose}
-        />
+        <>
+          {props.value.type === "asset" && (
+            <WalletTransferSectionOnchain
+              initialAsset={props.value.asset}
+              onClose={props.onClose}
+            />
+          )}
+
+          {props.value.type === "liquidityPositions" && (
+            <WalletTransferSectionLiquidityPositions
+              poolAddress={props.value.poolAddress}
+              onClose={props.onClose}
+            />
+          )}
+        </>
       )}
 
       {chain === "crosschain" && (

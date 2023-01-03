@@ -2,13 +2,14 @@ import { useQueries, useQuery } from "@tanstack/react-query"
 import { QUERY_KEYS } from "utils/queryKeys"
 import { useApiPromise, useTradeRouter } from "utils/api"
 import { ApiPromise } from "@polkadot/api"
-import { TradeRouter } from "@galacticcouncil/sdk"
+import { PoolBase, TradeRouter } from "@galacticcouncil/sdk"
 import { AccountId32 } from "@polkadot/types/interfaces"
 import { useMemo } from "react"
 import { u32 } from "@polkadot/types"
 import { useTotalIssuances } from "./totalIssuance"
 import { useTokensBalances } from "./balances"
 import { useAccountStore } from "../state/store"
+import { useQueryReduce } from "utils/helpers"
 
 export const usePools = () => {
   const tradeRouter = useTradeRouter()
@@ -24,30 +25,37 @@ export const usePoolShareToken = (poolId: string) => {
   )
 }
 
+export interface PoolShareToken extends PoolBase {
+  shareToken?: {
+    poolId: string | AccountId32
+    token: u32
+  } | null
+}
+
 export const usePoolsWithShareTokens = () => {
   const pools = usePools()
   const shareTokens = usePoolShareTokens(
     pools.data?.map((pool) => pool.address) ?? [],
   )
-  const queries = [pools, ...shareTokens]
-  const isLoading = queries.some((query) => query.isLoading)
 
-  const data = useMemo(() => {
-    if (pools.data && shareTokens.every((query) => query.data)) {
-      return pools.data.map((pool) => ({
-        ...pool,
-        shareToken: shareTokens.find((shareToken) => {
-          if (shareToken.data) {
-            return shareToken.data.poolId === pool.address
-          }
-          return null
-        })?.data,
-      }))
-    }
-    return []
-  }, [shareTokens, pools.data])
+  return useQueryReduce(
+    [pools, ...shareTokens] as const,
+    (pools, ...shareTokens) => {
+      if (shareTokens.every((query) => query)) {
+        return pools.map((pool) => ({
+          ...pool,
+          shareToken: shareTokens.find((shareToken) => {
+            if (shareToken) {
+              return shareToken.poolId === pool.address
+            }
+            return null
+          }),
+        }))
+      }
 
-  return { isLoading, data }
+      return []
+    },
+  )
 }
 
 export const usePoolShareTokens = (poolIds: (string | AccountId32)[]) => {
@@ -84,10 +92,10 @@ export const useShareOfPools = (assets: (u32 | string)[]) => {
     if (!!totalIssuances.length && !!totalBalances.length) {
       return assets.map((asset) => {
         const totalBalance = totalBalances.find(
-          (balance) => balance.data?.assetId === asset,
+          (balance) => balance.data?.assetId.toString() === asset.toString(),
         )
         const totalIssuance = totalIssuances.find(
-          (issuance) => issuance.data?.token === asset,
+          (issuance) => issuance.data?.token.toString() === asset.toString(),
         )
 
         const calculateTotalShare = () => {
