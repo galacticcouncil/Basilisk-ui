@@ -474,40 +474,6 @@ declare module "@polkadot/api-base/types/errors" {
        **/
       [key: string]: AugmentedError<ApiType>
     }
-    exchange: {
-      /**
-       * Insufficient asset balance.
-       **/
-      InsufficientAssetBalance: AugmentedError<ApiType>
-      /**
-       * Overflow
-       **/
-      IntentionCountOverflow: AugmentedError<ApiType>
-      /**
-       * Trade amount is too low.
-       **/
-      MinimumTradeLimitNotReached: AugmentedError<ApiType>
-      /**
-       * Token pool does not exist.
-       **/
-      TokenPoolNotFound: AugmentedError<ApiType>
-      /**
-       * Given trading limit has been exceeded (buy).
-       **/
-      TradeAmountExceededLimit: AugmentedError<ApiType>
-      /**
-       * Given trading limit has not been reached (sell).
-       **/
-      TradeAmountNotReachedLimit: AugmentedError<ApiType>
-      /**
-       * Overflow
-       **/
-      ZeroSpotPrice: AugmentedError<ApiType>
-      /**
-       * Generic error
-       **/
-      [key: string]: AugmentedError<ApiType>
-    }
     identity: {
       /**
        * Account ID is already named.
@@ -1055,27 +1021,31 @@ declare module "@polkadot/api-base/types/errors" {
        **/
       [key: string]: AugmentedError<ApiType>
     }
-    session: {
+    router: {
       /**
-       * Registered duplicate key.
+       * The user has not enough balance to execute the trade
        **/
-      DuplicatedKey: AugmentedError<ApiType>
+      InsufficientBalance: AugmentedError<ApiType>
       /**
-       * Invalid ownership proof.
+       * The the max number of trades limit is reached
        **/
-      InvalidProof: AugmentedError<ApiType>
+      MaxTradesExceeded: AugmentedError<ApiType>
       /**
-       * Key setting account is not live, so it's impossible to associate keys.
+       * The AMM pool is not supported for executing trades
        **/
-      NoAccount: AugmentedError<ApiType>
+      PoolNotSupported: AugmentedError<ApiType>
       /**
-       * No associated validator ID for account.
+       * Route has not trades to be executed
        **/
-      NoAssociatedValidatorId: AugmentedError<ApiType>
+      RouteHasNoTrades: AugmentedError<ApiType>
       /**
-       * No keys are associated with this account.
+       * The trading limit has been reached
        **/
-      NoKeys: AugmentedError<ApiType>
+      TradingLimitReached: AugmentedError<ApiType>
+      /**
+       * Unexpected error which should never really happen, but the error case must be handled to prevent panics.
+       **/
+      UnexpectedError: AugmentedError<ApiType>
       /**
        * Generic error
        **/
@@ -1103,11 +1073,27 @@ declare module "@polkadot/api-base/types/errors" {
        **/
       [key: string]: AugmentedError<ApiType>
     }
-    sudo: {
+    session: {
       /**
-       * Sender must be the Sudo account
+       * Registered duplicate key.
        **/
-      RequireSudo: AugmentedError<ApiType>
+      DuplicatedKey: AugmentedError<ApiType>
+      /**
+       * Invalid ownership proof.
+       **/
+      InvalidProof: AugmentedError<ApiType>
+      /**
+       * Key setting account is not live, so it's impossible to associate keys.
+       **/
+      NoAccount: AugmentedError<ApiType>
+      /**
+       * No associated validator ID for account.
+       **/
+      NoAssociatedValidatorId: AugmentedError<ApiType>
+      /**
+       * No keys are associated with this account.
+       **/
+      NoKeys: AugmentedError<ApiType>
       /**
        * Generic error
        **/
@@ -1336,12 +1322,6 @@ declare module "@polkadot/api-base/types/errors" {
        * The provided max supply is less to the amount of items a collection already has.
        **/
       MaxSupplyTooSmall: AugmentedError<ApiType>
-      /**
-       * The `CollectionId` in `NextCollectionId` is not being used.
-       *
-       * This means that you can directly proceed to call `create`.
-       **/
-      NextIdNotUsed: AugmentedError<ApiType>
       /**
        * There is no delegate approved.
        **/
@@ -1583,6 +1563,7 @@ declare module "@polkadot/api-base/types/errors" {
       CannotCreatePoolWithSameAssets: AugmentedError<ApiType>
       /**
        * Overflow
+       * Not used, kept for backward compatibility
        **/
       CreatePoolAssetAmountInvalid: AugmentedError<ApiType>
       /**
@@ -1647,6 +1628,7 @@ declare module "@polkadot/api-base/types/errors" {
       TokenPoolNotFound: AugmentedError<ApiType>
       /**
        * It is not allowed to create a pool with zero initial price.
+       * Not used, kept for backward compatibility
        **/
       ZeroInitialPrice: AugmentedError<ApiType>
       /**
@@ -1659,6 +1641,10 @@ declare module "@polkadot/api-base/types/errors" {
       [key: string]: AugmentedError<ApiType>
     }
     xykLiquidityMining: {
+      /**
+       * Asset is not in the `AssetPair`.
+       **/
+      AssetNotInAssetPair: AugmentedError<ApiType>
       /**
        * Nft pallet didn't return an owner.
        **/
@@ -1727,9 +1713,9 @@ declare module "@polkadot/api-base/types/errors" {
        **/
       GlobalFarmNotFound: AugmentedError<ApiType>
       /**
-       * Insufficient rewards on `Pot` account.
+       * `incentivized_asset` is not registered in asset registry.
        **/
-      InsufficientPotBalance: AugmentedError<ApiType>
+      IncentivizedAssetNotRegistered: AugmentedError<ApiType>
       /**
        * Reward currency balance is not sufficient.
        **/
@@ -1791,6 +1777,10 @@ declare module "@polkadot/api-base/types/errors" {
        **/
       MissingIncentivizedAsset: AugmentedError<ApiType>
       /**
+       * `reward_currency` is not registered in asset registry.
+       **/
+      RewardCurrencyNotRegistered: AugmentedError<ApiType>
+      /**
        * Yield farm with given `amm_pool_id` already exists in global farm.
        **/
       YieldFarmAlreadyExists: AugmentedError<ApiType>
@@ -1802,6 +1792,10 @@ declare module "@polkadot/api-base/types/errors" {
        * Yield farm does not exist.
        **/
       YieldFarmNotFound: AugmentedError<ApiType>
+      /**
+       * Value of deposited shares amount in reward currency can't be 0.
+       **/
+      ZeroValuedShares: AugmentedError<ApiType>
       /**
        * Generic error
        **/

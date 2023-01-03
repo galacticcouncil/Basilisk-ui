@@ -25,12 +25,13 @@ export const PoolIncentives = ({ poolId }: PoolIncentivesProps) => {
       >
         {t("pools.pool.incentives.title")}
       </Text>
+
       {isDesktop ? (
-        data.map((row, i) => (
+        data?.map((row, i) => (
           <PoolIncentivesRow key={i} assetId={row.assetId} apr={row.apr} />
         ))
       ) : (
-        <MultiplePoolIncentivesRow farms={data} />
+        <MultiplePoolIncentivesRow farms={data ?? []} />
       )}
     </div>
   )

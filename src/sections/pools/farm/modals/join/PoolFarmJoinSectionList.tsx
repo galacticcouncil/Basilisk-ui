@@ -43,7 +43,7 @@ export function PoolFarmJoinSectionList(props: {
 
       <div sx={{ flex: "column", gap: 28 }}>
         <div sx={{ flex: "column", gap: 12 }}>
-          {apr.data.map((farm) => (
+          {apr.data?.map((farm) => (
             <PoolFarmDetail
               key={[farm.globalFarm.id, farm.yieldFarm.id].join(",")}
               farm={farm}

@@ -21,6 +21,7 @@ import type {
   AccountId32,
   Percent,
   Permill,
+  Weight,
 } from "@polkadot/types/interfaces/runtime"
 import type {
   FrameSupportPalletId,
@@ -214,13 +215,6 @@ declare module "@polkadot/api-base/types/consts" {
        **/
       [key: string]: Codec
     }
-    exchange: {
-      maxOutRatio: u128 & AugmentedConst<ApiType>
-      /**
-       * Generic const
-       **/
-      [key: string]: Codec
-    }
     identity: {
       /**
        * The amount held on deposit for a registered identity
@@ -383,12 +377,22 @@ declare module "@polkadot/api-base/types/consts" {
        **/
       [key: string]: Codec
     }
+    router: {
+      /**
+       * Max limit for the number of trades within a route
+       **/
+      maxNumberOfTrades: u8 & AugmentedConst<ApiType>
+      /**
+       * Generic const
+       **/
+      [key: string]: Codec
+    }
     scheduler: {
       /**
        * The maximum weight that may be scheduled per block for any dispatchables of less
        * priority than `schedule::HARD_DEADLINE`.
        **/
-      maximumWeight: u64 & AugmentedConst<ApiType>
+      maximumWeight: Weight & AugmentedConst<ApiType>
       /**
        * The maximum number of scheduled calls in the queue for a single block.
        * Not strictly enforced, but used for weight estimation.
@@ -417,7 +421,7 @@ declare module "@polkadot/api-base/types/consts" {
        **/
       dbWeight: FrameSupportWeightsRuntimeDbWeight & AugmentedConst<ApiType>
       /**
-       * The designated SS85 prefix of this chain.
+       * The designated SS58 prefix of this chain.
        *
        * This replaces the "ss58Format" property declared in the chain spec. Reason is
        * that the runtime should know about the prefix in order to make use of it as

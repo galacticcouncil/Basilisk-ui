@@ -6,7 +6,7 @@ import {
 import { useTranslation } from "react-i18next"
 import { GradientText } from "components/Typography/GradientText/GradientText"
 import { useAccountDepositIds, useDeposits } from "api/deposits"
-import { PoolPositionList } from "sections/pools/pool/position/list/PoolPositionList"
+import { PoolSharesDeposit } from "sections/pools/pool/shares/deposit/PoolSharesDeposit"
 import { PoolBase } from "@galacticcouncil/sdk"
 import { usePoolShareToken } from "api/pools"
 import { PoolSharesValue } from "sections/pools/pool/shares/value/PoolSharesValue"
@@ -48,7 +48,7 @@ export const PoolShares: FC<Props> = ({ pool }) => {
       {!!depositNftList?.length && (
         <div sx={{ flex: "column", gap: 12, mt: 32 }}>
           {depositNftList.map((nft, i) => (
-            <PoolPositionList
+            <PoolSharesDeposit
               key={nft.id.toString()}
               index={i + 1}
               pool={pool}

@@ -4,25 +4,21 @@ import { useAccountStore } from "state/store"
 import { usePools } from "api/pools"
 import { PalletLiquidityMiningDepositData } from "@polkadot/types/lookup"
 import { u128 } from "@polkadot/types-codec"
+import { useQueryReduce } from "utils/helpers"
 
 export const useUserDeposits = (poolId: string) => {
   const { account } = useAccountStore()
   const deposits = useDeposits(poolId)
   const depositIds = useAccountDepositIds(account?.address)
 
-  const userDeposits = useMemo(
-    () =>
-      deposits.data?.filter((deposit) =>
-        depositIds.data?.some((id) => id.instanceId.eq(deposit.id)),
-      ),
-    [deposits.data, depositIds.data],
+  return useQueryReduce(
+    [deposits, depositIds] as const,
+    (deposits, depositIds) => {
+      return deposits.filter((deposit) =>
+        depositIds?.some((id) => id.instanceId.eq(deposit.id)),
+      )
+    },
   )
-
-  return {
-    data: userDeposits,
-    isLoading: deposits.isLoading || depositIds.isLoading,
-    isInitialLoading: deposits.isInitialLoading || depositIds.isInitialLoading,
-  }
 }
 
 export const useAllUserDeposits = () => {

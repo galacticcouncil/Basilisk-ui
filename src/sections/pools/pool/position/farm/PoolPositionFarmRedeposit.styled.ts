@@ -2,30 +2,34 @@ import styled from "@emotion/styled"
 import { theme } from "theme"
 
 export const SContainer = styled.div<{ isMultiple?: boolean }>`
-  display: grid;
+  display: flex;
+  justify-content: flex-end;
   grid-column-gap: 8px;
 
   ${({ isMultiple }) => {
     if (isMultiple) {
       return {
         marginTop: 12,
-        justifyItems: "flex-end",
-        gridTemplateColumns: "1fr",
+        gridColumn: "1 / span 4",
       }
     }
 
-    return { gridTemplateColumns: "1fr 1fr 1fr 2fr" }
+    return { gridColumnStart: "4" }
   }}
 `
 
-export const SInnerContainer = styled.div`
+export const SInnerContainer = styled.div<{ isMultiple?: boolean }>`
   display: grid;
   grid-template-columns: auto 1fr 120px;
   border-radius: 12px;
   align-items: center;
   background: rgba(${theme.rgbColors.primary100}, 0.06);
-  grid-column: 4;
 
   padding: 8px 12px;
   gap: 8px;
+
+  ${({ isMultiple }) => {
+    if (!isMultiple) return { flexGrow: 1 }
+    return null
+  }}
 `

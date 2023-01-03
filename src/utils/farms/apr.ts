@@ -1,138 +1,145 @@
 import BN from "bignumber.js"
 import { useActiveYieldFarms, useGlobalFarms, useYieldFarms } from "api/farms"
-import { useMemo } from "react"
 import { AccountId32 } from "@polkadot/types/interfaces/runtime"
 import { BLOCK_TIME, BN_QUINTILL } from "utils/constants"
 import { secondsInYear } from "date-fns"
 import { useBestNumber } from "api/chain"
+import { useQueryReduce } from "utils/helpers"
+import {
+  PalletLiquidityMiningGlobalFarmData,
+  PalletLiquidityMiningYieldFarmData,
+} from "@polkadot/types/lookup"
 
-export type AprFarm = NonNullable<ReturnType<typeof useAPR>["data"][number]>
-
-export const useAPR = (poolId: AccountId32 | string) => {
-  const bestNumber = useBestNumber()
+export type PoolFarm = NonNullable<
+  Exclude<ReturnType<typeof usePoolFarms>["data"], undefined>[number]
+>
+export const usePoolFarms = (poolId: AccountId32 | string) => {
   const activeYieldFarms = useActiveYieldFarms(poolId)
   const globalFarms = useGlobalFarms(
     activeYieldFarms.data?.map((f) => f.globalFarmId) ?? [],
   )
   const yieldFarms = useYieldFarms(activeYieldFarms.data ?? [])
 
-  const queries = [bestNumber, activeYieldFarms, globalFarms, yieldFarms]
-  const isLoading = queries.some((q) => q.isLoading)
+  return useQueryReduce(
+    [activeYieldFarms, globalFarms, yieldFarms] as const,
+    (activeYieldFarms, globalFarms, yieldFarms) => {
+      const farms = activeYieldFarms.map((af) => {
+        const globalFarm = globalFarms.find((gf) => af.globalFarmId.eq(gf.id))
+        const yieldFarm = yieldFarms.find((yf) => af.yieldFarmId.eq(yf.id))
+        if (!globalFarm || !yieldFarm) return undefined
+        return { globalFarm, yieldFarm }
+      })
 
-  const data = useMemo(() => {
-    if (
-      !globalFarms.data ||
-      !activeYieldFarms.data ||
-      !yieldFarms.data ||
-      !bestNumber.data
-    )
-      return []
-
-    const farms = activeYieldFarms.data.map((af) => {
-      const globalFarm = globalFarms.data.find((gf) =>
-        af.globalFarmId.eq(gf.id),
+      return farms.filter(
+        (
+          x,
+        ): x is {
+          globalFarm: PalletLiquidityMiningGlobalFarmData
+          yieldFarm: PalletLiquidityMiningYieldFarmData
+        } => x != null,
       )
-      const yieldFarm = yieldFarms.data.find((yf) => af.yieldFarmId.eq(yf.id))
-      if (!globalFarm || !yieldFarm) return undefined
-      return { globalFarm, yieldFarm }
-    })
+    },
+  )
+}
 
-    const filteredFarms = farms.filter(
-      (x): x is NonNullable<typeof farms[number]> => x != null,
-    )
+export type AprFarm = NonNullable<
+  Exclude<ReturnType<typeof useAPR>["data"], undefined>[number]
+>
 
-    const data = filteredFarms.map((farm) => {
-      const { globalFarm, yieldFarm } = farm
+export const useAPR = (poolId: AccountId32 | string) => {
+  const bestNumber = useBestNumber()
+  const poolFarms = usePoolFarms(poolId)
 
-      const totalSharesZ = globalFarm.totalSharesZ.toBigNumber()
-      const plannedYieldingPeriods =
-        globalFarm.plannedYieldingPeriods.toBigNumber()
-      const yieldPerPeriod = globalFarm.yieldPerPeriod
-        .toBigNumber()
-        .div(BN_QUINTILL) // 18dp
-      const maxRewardPerPeriod = globalFarm.maxRewardPerPeriod.toBigNumber()
-      const blocksPerPeriod = globalFarm.blocksPerPeriod.toBigNumber()
-      const currentPeriod = bestNumber.data.relaychainBlockNumber
-        .toBigNumber()
-        .dividedToIntegerBy(blocksPerPeriod)
-      const blockTime = BLOCK_TIME
-      const multiplier = yieldFarm.multiplier.toBigNumber().div(BN_QUINTILL)
-      const secondsPerYear = new BN(secondsInYear)
-      const periodsPerYear = secondsPerYear.div(
-        blockTime.times(blocksPerPeriod),
-      )
+  return useQueryReduce(
+    [bestNumber, poolFarms] as const,
+    (bestNumber, poolFarms) => {
+      const data = poolFarms.map((farm) => {
+        const { globalFarm, yieldFarm } = farm
 
-      let apr
-      if (totalSharesZ.isZero()) {
-        apr = yieldPerPeriod.times(multiplier).times(periodsPerYear)
-      } else {
-        const globalRewardPerPeriod = getGlobalRewardPerPeriod(
-          totalSharesZ,
-          yieldPerPeriod,
-          maxRewardPerPeriod,
+        const totalSharesZ = globalFarm.totalSharesZ.toBigNumber()
+        const plannedYieldingPeriods =
+          globalFarm.plannedYieldingPeriods.toBigNumber()
+        const yieldPerPeriod = globalFarm.yieldPerPeriod
+          .toBigNumber()
+          .div(BN_QUINTILL) // 18dp
+        const maxRewardPerPeriod = globalFarm.maxRewardPerPeriod.toBigNumber()
+        const blocksPerPeriod = globalFarm.blocksPerPeriod.toBigNumber()
+        const currentPeriod = bestNumber.relaychainBlockNumber
+          .toBigNumber()
+          .dividedToIntegerBy(blocksPerPeriod)
+        const blockTime = BLOCK_TIME
+        const multiplier = yieldFarm.multiplier.toBigNumber().div(BN_QUINTILL)
+        const secondsPerYear = new BN(secondsInYear)
+        const periodsPerYear = secondsPerYear.div(
+          blockTime.times(blocksPerPeriod),
         )
-        const poolYieldPerPeriod = getPoolYieldPerPeriod(
-          globalRewardPerPeriod,
-          multiplier,
-          totalSharesZ,
-        )
-        apr = poolYieldPerPeriod.times(periodsPerYear)
-      }
 
-      // multiply by 100 since APR should be a percentage
-      apr = apr.times(100)
-      // all of the APR calculations are using only half of the position -
-      // this is correct in terms of inputs but for the user,
-      // they are not depositing only half of the position, they are depositing 2 assets
-      apr = apr.div(2)
+        let apr
+        if (totalSharesZ.isZero()) {
+          apr = yieldPerPeriod.times(multiplier).times(periodsPerYear)
+        } else {
+          const globalRewardPerPeriod = getGlobalRewardPerPeriod(
+            totalSharesZ,
+            yieldPerPeriod,
+            maxRewardPerPeriod,
+          )
+          const poolYieldPerPeriod = getPoolYieldPerPeriod(
+            globalRewardPerPeriod,
+            multiplier,
+            totalSharesZ,
+          )
+          apr = poolYieldPerPeriod.times(periodsPerYear)
+        }
 
-      // max distribution of rewards
-      // https://www.notion.so/Screen-elements-mapping-Farms-baee6acc456542ca8d2cccd1cc1548ae?p=4a2f16a9f2454095945dbd9ce0eb1b6b&pm=s
-      const distributedRewards = globalFarm.accumulatedRewards
-        .toBigNumber()
-        .plus(globalFarm.paidAccumulatedRewards.toBigNumber())
+        // multiply by 100 since APR should be a percentage
+        apr = apr.times(100)
 
-      const maxRewards = maxRewardPerPeriod.times(plannedYieldingPeriods)
-      const leftToDistribute = maxRewards.minus(distributedRewards)
+        // all of the APR calculations are using only half of the position -
+        // this is correct in terms of inputs but for the user,
+        // they are not depositing only half of the position, they are depositing 2 assets
+        apr = apr.div(2)
 
-      // estimate, when the farm will most likely distribute all the rewards
-      const updatedAtPeriod = globalFarm.updatedAt.toBigNumber()
-      const periodsLeft = leftToDistribute.div(maxRewardPerPeriod)
+        // max distribution of rewards
+        // https://www.notion.so/Screen-elements-mapping-Farms-baee6acc456542ca8d2cccd1cc1548ae?p=4a2f16a9f2454095945dbd9ce0eb1b6b&pm=s
+        const distributedRewards = globalFarm.accumulatedRewards
+          .toBigNumber()
+          .plus(globalFarm.paidAccumulatedRewards.toBigNumber())
 
-      // if there are no deposits, the farm is not running and distributing rewards
-      const estimatedEndPeriod = totalSharesZ.gte(0)
-        ? updatedAtPeriod.plus(periodsLeft)
-        : currentPeriod.plus(periodsLeft)
+        const maxRewards = maxRewardPerPeriod.times(plannedYieldingPeriods)
+        const leftToDistribute = maxRewards.minus(distributedRewards)
 
-      const estimatedEndBlock = estimatedEndPeriod.times(blocksPerPeriod)
+        // estimate, when the farm will most likely distribute all the rewards
+        const updatedAtPeriod = globalFarm.updatedAt.toBigNumber()
+        const periodsLeft = leftToDistribute.div(maxRewardPerPeriod)
 
-      // fullness of the farm
-      // interpreted as how close are we to the cap of yield per period
-      // https://www.notion.so/FAQ-59697ce6fd2e46e1b8f9093ba4606e88#446ee616be484c5e86e5eb82d3a29455
-      const fullness = totalSharesZ
-        .times(yieldPerPeriod)
-        .div(maxRewardPerPeriod)
+        // if there are no deposits, the farm is not running and distributing rewards
+        const estimatedEndPeriod = totalSharesZ.gte(0)
+          ? updatedAtPeriod.plus(periodsLeft)
+          : currentPeriod.plus(periodsLeft)
 
-      return {
-        apr,
-        distributedRewards,
-        maxRewards,
-        fullness,
-        estimatedEndBlock: estimatedEndBlock,
-        assetId: globalFarm.rewardCurrency,
-        ...farm,
-      }
-    })
+        const estimatedEndBlock = estimatedEndPeriod.times(blocksPerPeriod)
 
-    return data.filter((x): x is NonNullable<typeof data[number]> => !!x)
-  }, [
-    bestNumber.data,
-    globalFarms.data,
-    activeYieldFarms.data,
-    yieldFarms.data,
-  ])
+        // fullness of the farm
+        // interpreted as how close are we to the cap of yield per period
+        // https://www.notion.so/FAQ-59697ce6fd2e46e1b8f9093ba4606e88#446ee616be484c5e86e5eb82d3a29455
+        const fullness = totalSharesZ
+          .times(yieldPerPeriod)
+          .div(maxRewardPerPeriod)
 
-  return { data, isLoading }
+        return {
+          apr,
+          distributedRewards,
+          maxRewards,
+          fullness,
+          estimatedEndBlock: estimatedEndBlock,
+          assetId: globalFarm.rewardCurrency,
+          ...farm,
+        }
+      })
+
+      return data.filter((x): x is NonNullable<typeof data[number]> => !!x)
+    },
+  )
 }
 
 export const getGlobalRewardPerPeriod = (

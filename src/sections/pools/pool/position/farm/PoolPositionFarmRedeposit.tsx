@@ -4,8 +4,7 @@ import { PoolBase } from "@galacticcouncil/sdk"
 import { GradientText } from "components/Typography/GradientText/GradientText"
 import { Button } from "components/Button/Button"
 import { AprFarm, useAPR } from "utils/farms/apr"
-import { useAccountStore } from "state/store"
-import { useAccountDepositIds, useDeposits } from "api/deposits"
+import { DepositNftType } from "api/deposits"
 import { useRedepositMutation } from "utils/farms/redeposit"
 import { useAsset } from "api/asset"
 import { theme } from "theme"
@@ -38,40 +37,32 @@ const PoolPositionFarmRedepositAsset = (props: {
 
 export const PoolPositionFarmRedeposit = (props: {
   pool: PoolBase
+  depositNft: DepositNftType
   className?: string
 }) => {
   const { t } = useTranslation()
-  const { account } = useAccountStore()
   const apr = useAPR(props.pool.address)
-  const deposits = useDeposits(props.pool.address)
-  const accountDepositIds = useAccountDepositIds(account?.address)
 
-  const depositNfts = deposits.data?.filter((deposit) =>
-    accountDepositIds.data?.some((ad) => ad.instanceId.eq(deposit.id)),
-  )
-  let availableYieldFarms = apr.data.filter(
-    (farm) =>
-      !depositNfts?.find((deposit) =>
-        deposit.deposit.yieldFarmEntries.find(
+  let availableYieldFarms =
+    apr.data?.filter(
+      (i) =>
+        !props.depositNft.deposit.yieldFarmEntries.some(
           (entry) =>
-            entry.globalFarmId.eq(farm.globalFarm.id) &&
-            entry.yieldFarmId.eq(farm.yieldFarm.id),
+            entry.globalFarmId.eq(i.globalFarm.id) &&
+            entry.yieldFarmId.eq(i.yieldFarm.id),
         ),
-      ),
-  )
+    ) ?? []
 
-  const redeposit = useRedepositMutation(
-    props.pool,
-    availableYieldFarms,
-    depositNfts ?? [],
-  )
+  const redeposit = useRedepositMutation(props.pool, availableYieldFarms, [
+    props.depositNft,
+  ])
 
   const isMultiple = availableYieldFarms.length > 1
 
   if (!availableYieldFarms.length) return null
   return (
     <SContainer isMultiple={isMultiple}>
-      <SInnerContainer>
+      <SInnerContainer isMultiple={isMultiple}>
         <GradientText fs={12} fw={400}>
           {t("pools.pool.positions.farms.redeposit.title")}
         </GradientText>

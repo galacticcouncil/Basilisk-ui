@@ -6,6 +6,9 @@
 import "@polkadot/types/types/registry"
 
 import type {
+  BasiliskRuntimeOpaqueSessionKeys,
+  BasiliskRuntimeOriginCaller,
+  BasiliskRuntimeRuntime,
   CommonRuntimeAssetLocation,
   CommonRuntimeProxyType,
   CumulusPalletDmpQueueCall,
@@ -38,7 +41,7 @@ import type {
   FrameSupportWeightsDispatchInfo,
   FrameSupportWeightsPays,
   FrameSupportWeightsPerDispatchClassU32,
-  FrameSupportWeightsPerDispatchClassU64,
+  FrameSupportWeightsPerDispatchClassWeight,
   FrameSupportWeightsPerDispatchClassWeightsPerClass,
   FrameSupportWeightsRuntimeDbWeight,
   FrameSystemAccountInfo,
@@ -56,6 +59,7 @@ import type {
   FrameSystemLimitsBlockWeights,
   FrameSystemLimitsWeightsPerClass,
   FrameSystemPhase,
+  HydradxTraitsRouterPoolType,
   OrmlTokensAccountData,
   OrmlTokensBalanceLock,
   OrmlTokensModuleCall,
@@ -127,9 +131,6 @@ import type {
   PalletElectionsPhragmenRenouncing,
   PalletElectionsPhragmenSeatHolder,
   PalletElectionsPhragmenVoter,
-  PalletExchangeCall,
-  PalletExchangeError,
-  PalletExchangeEvent,
   PalletIdentityBitFlags,
   PalletIdentityCall,
   PalletIdentityError,
@@ -181,6 +182,10 @@ import type {
   PalletRelaychainInfoCall,
   PalletRelaychainInfoError,
   PalletRelaychainInfoEvent,
+  PalletRouteExecutorCall,
+  PalletRouteExecutorError,
+  PalletRouteExecutorEvent,
+  PalletRouteExecutorTrade,
   PalletSchedulerCall,
   PalletSchedulerError,
   PalletSchedulerEvent,
@@ -188,9 +193,6 @@ import type {
   PalletSessionCall,
   PalletSessionError,
   PalletSessionEvent,
-  PalletSudoCall,
-  PalletSudoError,
-  PalletSudoEvent,
   PalletTimestampCall,
   PalletTipsCall,
   PalletTipsError,
@@ -243,8 +245,6 @@ import type {
   PolkadotPrimitivesV2PersistedValidationData,
   PolkadotPrimitivesV2UpgradeRestriction,
   PrimitivesAssetAssetPair,
-  PrimitivesExchangeIntention,
-  PrimitivesIntentionType,
   SpConsensusAuraSr25519AppSr25519Public,
   SpCoreCryptoKeyTypeId,
   SpCoreEcdsaSignature,
@@ -264,9 +264,6 @@ import type {
   SpRuntimeTransactionalError,
   SpTrieStorageProof,
   SpVersionRuntimeVersion,
-  TestingBasiliskRuntimeOpaqueSessionKeys,
-  TestingBasiliskRuntimeOriginCaller,
-  TestingBasiliskRuntimeRuntime,
   XcmDoubleEncoded,
   XcmV0Junction,
   XcmV0JunctionBodyId,
@@ -307,6 +304,9 @@ import type {
 
 declare module "@polkadot/types/types/registry" {
   interface InterfaceTypes {
+    BasiliskRuntimeOpaqueSessionKeys: BasiliskRuntimeOpaqueSessionKeys
+    BasiliskRuntimeOriginCaller: BasiliskRuntimeOriginCaller
+    BasiliskRuntimeRuntime: BasiliskRuntimeRuntime
     CommonRuntimeAssetLocation: CommonRuntimeAssetLocation
     CommonRuntimeProxyType: CommonRuntimeProxyType
     CumulusPalletDmpQueueCall: CumulusPalletDmpQueueCall
@@ -339,7 +339,7 @@ declare module "@polkadot/types/types/registry" {
     FrameSupportWeightsDispatchInfo: FrameSupportWeightsDispatchInfo
     FrameSupportWeightsPays: FrameSupportWeightsPays
     FrameSupportWeightsPerDispatchClassU32: FrameSupportWeightsPerDispatchClassU32
-    FrameSupportWeightsPerDispatchClassU64: FrameSupportWeightsPerDispatchClassU64
+    FrameSupportWeightsPerDispatchClassWeight: FrameSupportWeightsPerDispatchClassWeight
     FrameSupportWeightsPerDispatchClassWeightsPerClass: FrameSupportWeightsPerDispatchClassWeightsPerClass
     FrameSupportWeightsRuntimeDbWeight: FrameSupportWeightsRuntimeDbWeight
     FrameSystemAccountInfo: FrameSystemAccountInfo
@@ -357,6 +357,7 @@ declare module "@polkadot/types/types/registry" {
     FrameSystemLimitsBlockWeights: FrameSystemLimitsBlockWeights
     FrameSystemLimitsWeightsPerClass: FrameSystemLimitsWeightsPerClass
     FrameSystemPhase: FrameSystemPhase
+    HydradxTraitsRouterPoolType: HydradxTraitsRouterPoolType
     OrmlTokensAccountData: OrmlTokensAccountData
     OrmlTokensBalanceLock: OrmlTokensBalanceLock
     OrmlTokensModuleCall: OrmlTokensModuleCall
@@ -428,9 +429,6 @@ declare module "@polkadot/types/types/registry" {
     PalletElectionsPhragmenRenouncing: PalletElectionsPhragmenRenouncing
     PalletElectionsPhragmenSeatHolder: PalletElectionsPhragmenSeatHolder
     PalletElectionsPhragmenVoter: PalletElectionsPhragmenVoter
-    PalletExchangeCall: PalletExchangeCall
-    PalletExchangeError: PalletExchangeError
-    PalletExchangeEvent: PalletExchangeEvent
     PalletIdentityBitFlags: PalletIdentityBitFlags
     PalletIdentityCall: PalletIdentityCall
     PalletIdentityError: PalletIdentityError
@@ -482,6 +480,10 @@ declare module "@polkadot/types/types/registry" {
     PalletRelaychainInfoCall: PalletRelaychainInfoCall
     PalletRelaychainInfoError: PalletRelaychainInfoError
     PalletRelaychainInfoEvent: PalletRelaychainInfoEvent
+    PalletRouteExecutorCall: PalletRouteExecutorCall
+    PalletRouteExecutorError: PalletRouteExecutorError
+    PalletRouteExecutorEvent: PalletRouteExecutorEvent
+    PalletRouteExecutorTrade: PalletRouteExecutorTrade
     PalletSchedulerCall: PalletSchedulerCall
     PalletSchedulerError: PalletSchedulerError
     PalletSchedulerEvent: PalletSchedulerEvent
@@ -489,9 +491,6 @@ declare module "@polkadot/types/types/registry" {
     PalletSessionCall: PalletSessionCall
     PalletSessionError: PalletSessionError
     PalletSessionEvent: PalletSessionEvent
-    PalletSudoCall: PalletSudoCall
-    PalletSudoError: PalletSudoError
-    PalletSudoEvent: PalletSudoEvent
     PalletTimestampCall: PalletTimestampCall
     PalletTipsCall: PalletTipsCall
     PalletTipsError: PalletTipsError
@@ -544,8 +543,6 @@ declare module "@polkadot/types/types/registry" {
     PolkadotPrimitivesV2PersistedValidationData: PolkadotPrimitivesV2PersistedValidationData
     PolkadotPrimitivesV2UpgradeRestriction: PolkadotPrimitivesV2UpgradeRestriction
     PrimitivesAssetAssetPair: PrimitivesAssetAssetPair
-    PrimitivesExchangeIntention: PrimitivesExchangeIntention
-    PrimitivesIntentionType: PrimitivesIntentionType
     SpConsensusAuraSr25519AppSr25519Public: SpConsensusAuraSr25519AppSr25519Public
     SpCoreCryptoKeyTypeId: SpCoreCryptoKeyTypeId
     SpCoreEcdsaSignature: SpCoreEcdsaSignature
@@ -565,9 +562,6 @@ declare module "@polkadot/types/types/registry" {
     SpRuntimeTransactionalError: SpRuntimeTransactionalError
     SpTrieStorageProof: SpTrieStorageProof
     SpVersionRuntimeVersion: SpVersionRuntimeVersion
-    TestingBasiliskRuntimeOpaqueSessionKeys: TestingBasiliskRuntimeOpaqueSessionKeys
-    TestingBasiliskRuntimeOriginCaller: TestingBasiliskRuntimeOriginCaller
-    TestingBasiliskRuntimeRuntime: TestingBasiliskRuntimeRuntime
     XcmDoubleEncoded: XcmDoubleEncoded
     XcmV0Junction: XcmV0Junction
     XcmV0JunctionBodyId: XcmV0JunctionBodyId
