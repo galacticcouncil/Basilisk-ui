@@ -14,6 +14,9 @@ export const QUERY_KEYS = {
     "accountBalances",
     id?.toString(),
   ],
+  tokenAccountBalancesList: (
+    pairs: Array<[address: AccountId32 | string, assetId: u32 | string]>,
+  ) => [QUERY_KEY_PREFIX, "tokenAccountBalancesList", pairs],
   pools: [QUERY_KEY_PREFIX, "pools"],
   poolShareToken: (poolId: AccountId32 | string) => [
     QUERY_KEY_PREFIX,
