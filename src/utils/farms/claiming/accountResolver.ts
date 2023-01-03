@@ -9,8 +9,6 @@ export const getAccountResolver =
   (sub: u32 | number): AccountId32 => {
     // TYPE_ID based on Substrate
     const TYPE_ID = "modl"
-
-    // TODO: obtain the pallet ID from api.consts.xykWarehouseLM.palletId
     const PALLET_ID = "0x57686f7573654c6d"
 
     return new GenericAccountId32(
