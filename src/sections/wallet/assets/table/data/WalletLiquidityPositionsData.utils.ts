@@ -5,10 +5,10 @@ import { useAssetDetailsList } from "api/assetDetails"
 import { useMemo } from "react"
 import { usePoolsWithShareTokens, useShareOfPools } from "api/pools"
 import BigNumber from "bignumber.js"
-import { useUsdPeggedAsset } from "../../../../../api/asset"
-import { useSpotPrices } from "../../../../../api/spotPrice"
-import { BN_0, BN_1 } from "../../../../../utils/constants"
-import { getFloatingPointAmount } from "../../../../../utils/balance"
+import { useUsdPeggedAsset } from "api/asset"
+import { useSpotPrices } from "api/spotPrice"
+import { BN_0, BN_1 } from "utils/constants"
+import { calculateFreeBalance, getFloatingPointAmount } from "utils/balance"
 
 export const useLiquidityPositionsTableData = () => {
   const { account } = useAccountStore()
@@ -64,8 +64,12 @@ export const useLiquidityPositionsTableData = () => {
   const balances = useMemo(() => {
     if (!!participatedLiquidityPools.length && !!shares.data?.length) {
       return participatedLiquidityPools.map((pool) => {
+        const share = accountBalances.data?.balances.find(
+          (i) => i.id.toString() === pool.shareTokenId?.toString(),
+        )?.data
+
         const shareAmount = shares.data?.find(
-          (share) => share.asset === pool.shareTokenId,
+          (share) => share.asset.toString() === pool.shareTokenId?.toString(),
         )
         const assetABalance = new BigNumber(pool.assetA.balance)
         const assetBBalance = new BigNumber(pool.assetB.balance)
@@ -90,8 +94,25 @@ export const useLiquidityPositionsTableData = () => {
           pool.assetB.decimals ?? 12,
         )
 
+        const totalShareAssetAmount = getFloatingPointAmount(
+          share ? share.free.add(share.reserved) : BN_0,
+          12,
+        )
+
+        const transferableShareAssetAmount = getFloatingPointAmount(
+          share
+            ? calculateFreeBalance(share.free, share.reserved, share.frozen)
+            : BN_0,
+          12,
+        )
+
         return {
           address: pool.address,
+          share: {
+            id: pool.shareTokenId?.toString(),
+            total: totalShareAssetAmount,
+            transferable: transferableShareAssetAmount,
+          },
           assetA: {
             id: pool.assetA.id,
             total: totalAssetAAmount,
@@ -106,7 +127,7 @@ export const useLiquidityPositionsTableData = () => {
       })
     }
     return null
-  }, [participatedLiquidityPools, shares])
+  }, [accountBalances.data?.balances, participatedLiquidityPools, shares.data])
 
   const currencies = [
     ...(balances?.map((balance) => balance.assetA.id) ?? []),
@@ -159,10 +180,9 @@ export const useLiquidityPositionsTableData = () => {
             decimals: pool.assetB.decimals,
             chain: "Basilisk", // TODO: find out proper chain
           },
-          total: assetA?.total?.plus(assetB?.total ?? BN_0) ?? BN_0,
+          total: amounts?.share?.total ?? BN_0,
           totalUsd: totalAssetAUsd?.plus(totalAssetBUsd ?? BN_0) ?? BN_0,
-          transferable:
-            assetA?.transferable?.plus(assetB?.transferable ?? BN_0) ?? BN_0,
+          transferable: amounts?.share?.transferable ?? BN_0,
           transferableUsd:
             transferableAssetAUsd?.plus(transferableAssetBUsd ?? BN_0) ?? BN_0,
         }

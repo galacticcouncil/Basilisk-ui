@@ -3,7 +3,7 @@ import { u32 } from "@polkadot/types"
 import BigNumber from "bignumber.js"
 import { useAssetsModal } from "sections/assets/AssetsModal.utils"
 import { Maybe } from "utils/helpers"
-import { AssetSelect } from "components/AssetSelect/AssetSelect"
+import { AssetSelectInput } from "components/AssetSelect/AssetSelectInput"
 import { useTranslation } from "react-i18next"
 
 type Props = {
@@ -33,7 +33,7 @@ export const PoolAddLiquidityAssetSelect: FC<Props> = (props) => {
   return (
     <>
       {modal}
-      <AssetSelect
+      <AssetSelectInput
         {...props}
         title={t("selectAsset.title")}
         onSelectAssetClick={openModal}
