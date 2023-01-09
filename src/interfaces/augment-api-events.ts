@@ -1574,6 +1574,36 @@ declare module "@polkadot/api-base/types/events" {
        **/
       [key: string]: AugmentedEvent<ApiType>
     }
+    sudo: {
+      /**
+       * The \[sudoer\] just switched identity; the old key is supplied if one existed.
+       **/
+      KeyChanged: AugmentedEvent<
+        ApiType,
+        [oldSudoer: Option<AccountId32>],
+        { oldSudoer: Option<AccountId32> }
+      >
+      /**
+       * A sudo just took place. \[result\]
+       **/
+      Sudid: AugmentedEvent<
+        ApiType,
+        [sudoResult: Result<Null, SpRuntimeDispatchError>],
+        { sudoResult: Result<Null, SpRuntimeDispatchError> }
+      >
+      /**
+       * A sudo just took place. \[result\]
+       **/
+      SudoAsDone: AugmentedEvent<
+        ApiType,
+        [sudoResult: Result<Null, SpRuntimeDispatchError>],
+        { sudoResult: Result<Null, SpRuntimeDispatchError> }
+      >
+      /**
+       * Generic event
+       **/
+      [key: string]: AugmentedEvent<ApiType>
+    }
     system: {
       /**
        * `:code` was updated.

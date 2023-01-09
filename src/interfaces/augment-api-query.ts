@@ -33,7 +33,6 @@ import type {
   Weight,
 } from "@polkadot/types/interfaces/runtime"
 import type {
-  BasiliskRuntimeOpaqueSessionKeys,
   CommonRuntimeAssetLocation,
   CumulusPalletDmpQueueConfigData,
   CumulusPalletDmpQueuePageIndexData,
@@ -97,6 +96,7 @@ import type {
   SpCoreCryptoKeyTypeId,
   SpRuntimeDigest,
   SpTrieStorageProof,
+  TestingBasiliskRuntimeOpaqueSessionKeys,
   XcmV1MultiLocation,
   XcmVersionedMultiLocation,
 } from "@polkadot/types/lookup"
@@ -1373,7 +1373,7 @@ declare module "@polkadot/api-base/types/storage" {
         ApiType,
         (
           arg: AccountId32 | string | Uint8Array,
-        ) => Observable<Option<BasiliskRuntimeOpaqueSessionKeys>>,
+        ) => Observable<Option<TestingBasiliskRuntimeOpaqueSessionKeys>>,
         [AccountId32]
       > &
         QueryableStorageEntry<ApiType, [AccountId32]>
@@ -1390,7 +1390,7 @@ declare module "@polkadot/api-base/types/storage" {
       queuedKeys: AugmentedQuery<
         ApiType,
         () => Observable<
-          Vec<ITuple<[AccountId32, BasiliskRuntimeOpaqueSessionKeys]>>
+          Vec<ITuple<[AccountId32, TestingBasiliskRuntimeOpaqueSessionKeys]>>
         >,
         []
       > &
@@ -1403,6 +1403,17 @@ declare module "@polkadot/api-base/types/storage" {
         () => Observable<Vec<AccountId32>>,
         []
       > &
+        QueryableStorageEntry<ApiType, []>
+      /**
+       * Generic query
+       **/
+      [key: string]: QueryableStorageEntry<ApiType>
+    }
+    sudo: {
+      /**
+       * The `AccountId` of the sudo key.
+       **/
+      key: AugmentedQuery<ApiType, () => Observable<Option<AccountId32>>, []> &
         QueryableStorageEntry<ApiType, []>
       /**
        * Generic query

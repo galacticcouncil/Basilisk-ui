@@ -6,9 +6,6 @@
 import "@polkadot/types/types/registry"
 
 import type {
-  BasiliskRuntimeOpaqueSessionKeys,
-  BasiliskRuntimeOriginCaller,
-  BasiliskRuntimeRuntime,
   CommonRuntimeAssetLocation,
   CommonRuntimeProxyType,
   CumulusPalletDmpQueueCall,
@@ -193,6 +190,9 @@ import type {
   PalletSessionCall,
   PalletSessionError,
   PalletSessionEvent,
+  PalletSudoCall,
+  PalletSudoError,
+  PalletSudoEvent,
   PalletTimestampCall,
   PalletTipsCall,
   PalletTipsError,
@@ -264,6 +264,9 @@ import type {
   SpRuntimeTransactionalError,
   SpTrieStorageProof,
   SpVersionRuntimeVersion,
+  TestingBasiliskRuntimeOpaqueSessionKeys,
+  TestingBasiliskRuntimeOriginCaller,
+  TestingBasiliskRuntimeRuntime,
   XcmDoubleEncoded,
   XcmV0Junction,
   XcmV0JunctionBodyId,
@@ -304,9 +307,6 @@ import type {
 
 declare module "@polkadot/types/types/registry" {
   interface InterfaceTypes {
-    BasiliskRuntimeOpaqueSessionKeys: BasiliskRuntimeOpaqueSessionKeys
-    BasiliskRuntimeOriginCaller: BasiliskRuntimeOriginCaller
-    BasiliskRuntimeRuntime: BasiliskRuntimeRuntime
     CommonRuntimeAssetLocation: CommonRuntimeAssetLocation
     CommonRuntimeProxyType: CommonRuntimeProxyType
     CumulusPalletDmpQueueCall: CumulusPalletDmpQueueCall
@@ -491,6 +491,9 @@ declare module "@polkadot/types/types/registry" {
     PalletSessionCall: PalletSessionCall
     PalletSessionError: PalletSessionError
     PalletSessionEvent: PalletSessionEvent
+    PalletSudoCall: PalletSudoCall
+    PalletSudoError: PalletSudoError
+    PalletSudoEvent: PalletSudoEvent
     PalletTimestampCall: PalletTimestampCall
     PalletTipsCall: PalletTipsCall
     PalletTipsError: PalletTipsError
@@ -562,6 +565,9 @@ declare module "@polkadot/types/types/registry" {
     SpRuntimeTransactionalError: SpRuntimeTransactionalError
     SpTrieStorageProof: SpTrieStorageProof
     SpVersionRuntimeVersion: SpVersionRuntimeVersion
+    TestingBasiliskRuntimeOpaqueSessionKeys: TestingBasiliskRuntimeOpaqueSessionKeys
+    TestingBasiliskRuntimeOriginCaller: TestingBasiliskRuntimeOriginCaller
+    TestingBasiliskRuntimeRuntime: TestingBasiliskRuntimeRuntime
     XcmDoubleEncoded: XcmDoubleEncoded
     XcmV0Junction: XcmV0Junction
     XcmV0JunctionBodyId: XcmV0JunctionBodyId

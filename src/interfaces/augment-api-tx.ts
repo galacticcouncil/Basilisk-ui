@@ -37,8 +37,6 @@ import type {
   Weight,
 } from "@polkadot/types/interfaces/runtime"
 import type {
-  BasiliskRuntimeOpaqueSessionKeys,
-  BasiliskRuntimeOriginCaller,
   CommonRuntimeAssetLocation,
   CommonRuntimeProxyType,
   CumulusPrimitivesParachainInherentParachainInherentData,
@@ -59,6 +57,8 @@ import type {
   PalletUniquesDestroyWitness,
   PrimitivesAssetAssetPair,
   SpRuntimeHeader,
+  TestingBasiliskRuntimeOpaqueSessionKeys,
+  TestingBasiliskRuntimeOriginCaller,
   XcmV1MultiLocation,
   XcmV2WeightLimit,
   XcmVersionedMultiAsset,
@@ -3422,13 +3422,94 @@ declare module "@polkadot/api-base/types/submittable" {
       setKeys: AugmentedSubmittable<
         (
           keys:
-            | BasiliskRuntimeOpaqueSessionKeys
+            | TestingBasiliskRuntimeOpaqueSessionKeys
             | { aura?: any }
             | string
             | Uint8Array,
           proof: Bytes | string | Uint8Array,
         ) => SubmittableExtrinsic<ApiType>,
-        [BasiliskRuntimeOpaqueSessionKeys, Bytes]
+        [TestingBasiliskRuntimeOpaqueSessionKeys, Bytes]
+      >
+      /**
+       * Generic tx
+       **/
+      [key: string]: SubmittableExtrinsicFunction<ApiType>
+    }
+    sudo: {
+      /**
+       * Authenticates the current sudo key and sets the given AccountId (`new`) as the new sudo
+       * key.
+       *
+       * The dispatch origin for this call must be _Signed_.
+       *
+       * # <weight>
+       * - O(1).
+       * - Limited storage reads.
+       * - One DB change.
+       * # </weight>
+       **/
+      setKey: AugmentedSubmittable<
+        (
+          updated: AccountId32 | string | Uint8Array,
+        ) => SubmittableExtrinsic<ApiType>,
+        [AccountId32]
+      >
+      /**
+       * Authenticates the sudo key and dispatches a function call with `Root` origin.
+       *
+       * The dispatch origin for this call must be _Signed_.
+       *
+       * # <weight>
+       * - O(1).
+       * - Limited storage reads.
+       * - One DB write (event).
+       * - Weight of derivative `call` execution + 10,000.
+       * # </weight>
+       **/
+      sudo: AugmentedSubmittable<
+        (
+          call: Call | IMethod | string | Uint8Array,
+        ) => SubmittableExtrinsic<ApiType>,
+        [Call]
+      >
+      /**
+       * Authenticates the sudo key and dispatches a function call with `Signed` origin from
+       * a given account.
+       *
+       * The dispatch origin for this call must be _Signed_.
+       *
+       * # <weight>
+       * - O(1).
+       * - Limited storage reads.
+       * - One DB write (event).
+       * - Weight of derivative `call` execution + 10,000.
+       * # </weight>
+       **/
+      sudoAs: AugmentedSubmittable<
+        (
+          who: AccountId32 | string | Uint8Array,
+          call: Call | IMethod | string | Uint8Array,
+        ) => SubmittableExtrinsic<ApiType>,
+        [AccountId32, Call]
+      >
+      /**
+       * Authenticates the sudo key and dispatches a function call with `Root` origin.
+       * This function does not check the weight of the call, and instead allows the
+       * Sudo user to specify the weight of the call.
+       *
+       * The dispatch origin for this call must be _Signed_.
+       *
+       * # <weight>
+       * - O(1).
+       * - The weight of this call is defined by the caller.
+       * # </weight>
+       **/
+      sudoUncheckedWeight: AugmentedSubmittable<
+        (
+          call: Call | IMethod | string | Uint8Array,
+          weight: Weight | AnyNumber | Uint8Array,
+        ) => SubmittableExtrinsic<ApiType>,
+        [Call, Weight]
       >
       /**
        * Generic tx
@@ -4880,7 +4961,7 @@ declare module "@polkadot/api-base/types/submittable" {
       dispatchAs: AugmentedSubmittable<
         (
           asOrigin:
-            | BasiliskRuntimeOriginCaller
+            | TestingBasiliskRuntimeOriginCaller
             | { system: any }
             | { Void: any }
             | { Council: any }
@@ -4891,7 +4972,7 @@ declare module "@polkadot/api-base/types/submittable" {
             | Uint8Array,
           call: Call | IMethod | string | Uint8Array,
         ) => SubmittableExtrinsic<ApiType>,
-        [BasiliskRuntimeOriginCaller, Call]
+        [TestingBasiliskRuntimeOriginCaller, Call]
       >
       /**
        * Send a batch of dispatch calls.
