@@ -17,6 +17,9 @@ import { WalletLiquidityPositionsTableActions } from "./actions/WalletLiquidityP
 
 export const useLiquidityPositionsTable = (
   data: LiquidityPositionsTableData[],
+  actions: {
+    onTransfer: (poolAddress: string) => void
+  },
 ) => {
   const { t } = useTranslation()
   const { accessor, display } =
@@ -71,6 +74,7 @@ export const useLiquidityPositionsTable = (
         <WalletLiquidityPositionsTableActions
           address={row.original.poolAddress}
           toggleExpanded={() => row.toggleExpanded()}
+          onTransferClick={() => actions.onTransfer(row.original.poolAddress)}
         />
       ),
     }),

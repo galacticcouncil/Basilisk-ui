@@ -8,15 +8,7 @@ import { u32 } from "@polkadot/types"
 import { AccountId32 } from "@polkadot/types/interfaces"
 import { Maybe, undefinedNoop } from "utils/helpers"
 import { useAccountStore } from "../state/store"
-
-function calculateFreeBalance(
-  free: BigNumber,
-  miscFrozen: BigNumber,
-  feeFrozen: BigNumber,
-) {
-  const maxFrozenBalance = miscFrozen.gt(feeFrozen) ? miscFrozen : feeFrozen
-  return free.minus(maxFrozenBalance)
-}
+import { calculateFreeBalance } from "utils/balance"
 
 export const getTokenBalance =
   (api: ApiPromise, account: AccountId32 | string, id: string | u32) =>

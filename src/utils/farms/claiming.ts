@@ -1,125 +1,150 @@
-import { useMemo } from "react"
-import { BN_0, BN_1 } from "utils/constants"
+import { BN_0 } from "utils/constants"
 import BN from "bignumber.js"
 import { useBestNumber } from "api/chain"
-import { useAPR } from "utils/farms/apr"
 import { useUsdPeggedAsset } from "api/asset"
-import { useSpotPrices } from "api/spotPrice"
+import { usePoolFarms } from "utils/farms/apr"
 import { PoolBase } from "@galacticcouncil/sdk"
 import { useUserDeposits } from "utils/farms/deposits"
-import { NATIVE_ASSET_ID, useApiPromise, useMath } from "utils/api"
+import { NATIVE_ASSET_ID, useApiPromise } from "utils/api"
 import { useStore } from "state/store"
 import { useMutation } from "@tanstack/react-query"
+import { u32 } from "@polkadot/types"
+import { AccountId32 } from "@polkadot/types/interfaces"
+import { decodeAddress } from "@polkadot/util-crypto"
+import { u8aToHex } from "@polkadot/util"
+import { useTokenAccountBalancesList } from "api/accountBalances"
+import { XYKLiquidityMiningClaimSim } from "utils/farms/claiming/claimSimulator"
+import { getAccountResolver } from "utils/farms/claiming/accountResolver"
+import { MultiCurrencyContainer } from "utils/farms/claiming/multiCurrency"
+import { createMutableFarmEntries } from "utils/farms/claiming/mutableFarms"
+import { useAssetDetailsList } from "api/assetDetails"
+import * as liquidityMining from "@galacticcouncil/math/build/liquidity-mining/bundler"
+import { useSpotPrices } from "api/spotPrice"
+import { DepositNftType } from "api/deposits"
 
-export const useClaimableAmount = (pool: PoolBase) => {
-  const bestNumber = useBestNumber()
-  const deposits = useUserDeposits(pool.address)
-  const apr = useAPR(pool.address)
-  const math = useMath()
+export const useClaimableAmount = (
+  pool: PoolBase,
+  depositNft?: DepositNftType,
+) => {
+  const bestNumberQuery = useBestNumber()
+  const userDeposits = useUserDeposits(pool.address)
+  const farms = usePoolFarms(pool.address)
   const usd = useUsdPeggedAsset()
-  const currencies = [
-    ...new Set(apr.data.map((i) => i.globalFarm.rewardCurrency.toString())),
-  ]
-  const bsxSpotPrices = useSpotPrices(currencies, NATIVE_ASSET_ID)
-  const ausdSpotPrices = useSpotPrices(currencies, usd.data?.id)
 
-  const queries = [deposits, bestNumber, apr, math, usd, ...ausdSpotPrices]
+  const api = useApiPromise()
+  const accountResolver = getAccountResolver(api.registry)
+
+  const assetIds = [
+    ...new Set(farms.data?.map((i) => i.globalFarm.rewardCurrency.toString())),
+  ]
+
+  const assetList = useAssetDetailsList(assetIds)
+
+  const bsxSpotPrices = useSpotPrices(assetIds, NATIVE_ASSET_ID)
+  const usdSpotPrices = useSpotPrices(assetIds, usd.data?.id)
+
+  const accountAddresses =
+    farms.data
+      ?.map(
+        ({ globalFarm }) =>
+          [
+            [accountResolver(0), globalFarm.rewardCurrency],
+            [accountResolver(globalFarm.id), globalFarm.rewardCurrency],
+          ] as [AccountId32, u32][],
+      )
+      .flat(1) ?? []
+
+  const accountBalances = useTokenAccountBalancesList(accountAddresses)
+
+  const queries = [
+    bestNumberQuery,
+    userDeposits,
+    farms,
+    usd,
+    assetList,
+    accountBalances,
+  ]
   const isLoading = queries.some((q) => q.isLoading)
 
-  const data = useMemo(() => {
-    if (bestNumber.data == null) return null
+  if (bestNumberQuery.data == null || accountBalances.data == null)
+    return { data: null, isLoading }
 
-    return deposits.data
-      ?.map((record) => {
-        return record.deposit.yieldFarmEntries.map((entry) => {
-          const aprEntry = apr.data.find(
-            (i) =>
-              i.globalFarm.id.eq(entry.globalFarmId) &&
-              i.yieldFarm.id.eq(entry.yieldFarmId),
-          )
+  const deposits = depositNft != null ? [depositNft] : userDeposits.data ?? []
+  const bestNumber = bestNumberQuery.data
 
-          const bsx = bsxSpotPrices.find((a) =>
-            aprEntry?.globalFarm.rewardCurrency.eq(a.data?.tokenIn),
-          )?.data
+  const multiCurrency = new MultiCurrencyContainer(
+    accountAddresses,
+    accountBalances.data,
+  )
+  const sim = new XYKLiquidityMiningClaimSim(
+    getAccountResolver(api.registry),
+    multiCurrency,
+    liquidityMining,
+    assetList.data ?? [],
+  )
 
-          const usd = ausdSpotPrices.find((a) =>
-            aprEntry?.globalFarm.rewardCurrency.eq(a.data?.tokenIn),
-          )?.data
+  const { globalFarms, yieldFarms } = createMutableFarmEntries(farms.data ?? [])
 
-          if (
-            aprEntry == null ||
-            bsx == null ||
-            usd == null ||
-            math.liquidityMining == null
-          )
-            return null
+  const rewardSum = deposits
+    ?.map((record) =>
+      record.deposit.yieldFarmEntries.map((farmEntry) => {
+        const aprEntry = farms.data?.find(
+          (i) =>
+            i.globalFarm.id.eq(farmEntry.globalFarmId) &&
+            i.yieldFarm.id.eq(farmEntry.yieldFarmId),
+        )
+        if (!aprEntry) return null
 
-          const currentPeriod = bestNumber.data.relaychainBlockNumber
-            .toBigNumber()
-            .dividedToIntegerBy(
-              aprEntry.globalFarm.blocksPerPeriod.toBigNumber(),
-            )
-          const periods = currentPeriod.minus(entry.enteredAt.toBigNumber())
+        const reward = sim.claim_rewards(
+          globalFarms[aprEntry.globalFarm.id.toString()],
+          yieldFarms[aprEntry.yieldFarm.id.toString()],
+          farmEntry,
+          bestNumber.relaychainBlockNumber.toBigNumber(),
+        )
 
-          let loyaltyMultiplier = BN_1.toString()
+        const bsx = bsxSpotPrices.find(
+          (spot) => spot.data?.tokenIn === reward?.assetId,
+        )?.data
 
-          if (!aprEntry.yieldFarm.loyaltyCurve.isNone) {
-            const { initialRewardPercentage, scaleCoef } =
-              aprEntry.yieldFarm.loyaltyCurve.unwrap()
+        const usd = usdSpotPrices.find(
+          (spot) => spot.data?.tokenIn === reward?.assetId,
+        )?.data
 
-            loyaltyMultiplier =
-              math.liquidityMining.calculate_loyalty_multiplier(
-                periods.toFixed(),
-                initialRewardPercentage.toBigNumber().toFixed(),
-                scaleCoef.toBigNumber().toFixed(),
-              )
-          }
+        if (!reward || !bsx || !usd) return null
 
-          const reward = new BN(
-            math.liquidityMining.calculate_user_reward(
-              entry.accumulatedRpvs.toBigNumber().toFixed(),
-              entry.valuedShares.toBigNumber().toFixed(),
-              entry.accumulatedClaimedRewards.toBigNumber().toFixed(),
-              aprEntry.yieldFarm.accumulatedRpvs.toBigNumber().toFixed(),
-              loyaltyMultiplier,
-            ),
-          )
+        return {
+          bsx: reward.value.multipliedBy(bsx.spotPrice),
+          usd: reward.value.multipliedBy(usd.spotPrice),
+        }
+      }),
+    )
+    .flat(2)
+    .reduce<Record<"bsx" | "usd", BN>>(
+      (memo, item) => {
+        if (item == null) return memo
+        memo.bsx = memo.bsx.plus(item.bsx)
+        memo.usd = memo.usd.plus(item.usd)
+        return memo
+      },
+      { bsx: BN_0, usd: BN_0 },
+    )
 
-          // bsx reward
-          const bsxReward = reward.multipliedBy(bsx.spotPrice)
-          const ausdReward = reward.multipliedBy(usd.spotPrice)
-
-          return { ausd: ausdReward, bsx: bsxReward }
-        })
-      })
-      .flat(2)
-      .reduce<{ bsx: BN; ausd: BN }>(
-        (memo, item) => ({
-          ausd: memo.ausd.plus(item?.ausd ?? BN_0),
-          bsx: memo.bsx.plus(item?.bsx ?? BN_0),
-        }),
-        { bsx: BN_0, ausd: BN_0 },
-      )
-  }, [
-    apr.data,
-    deposits.data,
-    ausdSpotPrices,
-    bestNumber.data,
-    bsxSpotPrices,
-    math.liquidityMining,
-  ])
-
-  return { data, isLoading }
+  return { data: rewardSum, isLoading }
 }
 
-export const useClaimAllMutation = (poolId: string) => {
+export const useClaimAllMutation = (
+  poolId: string,
+  depositNft?: DepositNftType,
+) => {
   const api = useApiPromise()
   const { createTransaction } = useStore()
-  const deposits = useUserDeposits(poolId)
+  const userDeposits = useUserDeposits(poolId)
+
+  const deposits = depositNft ? [depositNft] : userDeposits.data
 
   const claim = useMutation(async () => {
     const txs =
-      deposits.data
+      deposits
         ?.map((i) =>
           i.deposit.yieldFarmEntries.map((entry) => {
             return api.tx.xykLiquidityMining.claimRewards(
@@ -130,12 +155,19 @@ export const useClaimAllMutation = (poolId: string) => {
         )
         .flat(2) ?? []
 
-    if (txs.length) {
+    if (txs.length > 1) {
       return await createTransaction({
         tx: api.tx.utility.batch(txs),
+      })
+    } else if (txs.length > 0) {
+      return await createTransaction({
+        tx: txs[0],
       })
     }
   })
 
-  return { mutation: claim, isLoading: deposits.isLoading }
+  return { mutation: claim, isLoading: userDeposits.isLoading }
 }
+
+// @ts-expect-error
+window.decodeAddressToBytes = (bsx: string) => u8aToHex(decodeAddress(bsx))

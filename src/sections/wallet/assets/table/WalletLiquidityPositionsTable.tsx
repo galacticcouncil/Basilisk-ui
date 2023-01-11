@@ -25,8 +25,10 @@ type Props = { data: LiquidityPositionsTableData[] }
 export const WalletLiquidityPositionsTable = ({ data }: Props) => {
   const { t } = useTranslation()
 
-  const [transferAsset, setTransferAsset] = useState<string | null>(null)
-  const table = useLiquidityPositionsTable(data)
+  const [poolAddress, setPoolAddress] = useState<string | null>(null)
+  const table = useLiquidityPositionsTable(data, {
+    onTransfer: setPoolAddress,
+  })
 
   return (
     <TableContainer css={assetsTableStyles}>
@@ -79,11 +81,11 @@ export const WalletLiquidityPositionsTable = ({ data }: Props) => {
           ))}
         </TableBodyContent>
       </Table>
-      {transferAsset && (
+      {poolAddress && (
         <WalletTransferModal
           open
-          initialAsset={transferAsset}
-          onClose={() => setTransferAsset(null)}
+          value={{ type: "liquidityPositions", poolAddress }}
+          onClose={() => setPoolAddress(null)}
         />
       )}
     </TableContainer>

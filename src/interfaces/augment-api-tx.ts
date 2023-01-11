@@ -34,8 +34,11 @@ import type {
   H256,
   Perbill,
   Perquintill,
+  Weight,
 } from "@polkadot/types/interfaces/runtime"
 import type {
+  BasiliskRuntimeOpaqueSessionKeys,
+  BasiliskRuntimeOriginCaller,
   CommonRuntimeAssetLocation,
   CommonRuntimeProxyType,
   CumulusPrimitivesParachainInherentParachainInherentData,
@@ -52,11 +55,10 @@ import type {
   PalletLiquidityMiningLoyaltyCurve,
   PalletMultisigTimepoint,
   PalletNftCollectionType,
+  PalletRouteExecutorTrade,
   PalletUniquesDestroyWitness,
   PrimitivesAssetAssetPair,
   SpRuntimeHeader,
-  TestingBasiliskRuntimeOpaqueSessionKeys,
-  TestingBasiliskRuntimeOriginCaller,
   XcmV1MultiLocation,
   XcmV2WeightLimit,
   XcmVersionedMultiAsset,
@@ -410,10 +412,10 @@ declare module "@polkadot/api-base/types/submittable" {
         (
           proposalHash: H256 | string | Uint8Array,
           index: Compact<u32> | AnyNumber | Uint8Array,
-          proposalWeightBound: Compact<u64> | AnyNumber | Uint8Array,
+          proposalWeightBound: Compact<Weight> | AnyNumber | Uint8Array,
           lengthBound: Compact<u32> | AnyNumber | Uint8Array,
         ) => SubmittableExtrinsic<ApiType>,
-        [H256, Compact<u32>, Compact<u64>, Compact<u32>]
+        [H256, Compact<u32>, Compact<Weight>, Compact<u32>]
       >
       /**
        * Disapprove a proposal, close, and remove it from the system, regardless of its current
@@ -1113,9 +1115,9 @@ declare module "@polkadot/api-base/types/submittable" {
       serviceOverweight: AugmentedSubmittable<
         (
           index: u64 | AnyNumber | Uint8Array,
-          weightLimit: u64 | AnyNumber | Uint8Array,
+          weightLimit: Weight | AnyNumber | Uint8Array,
         ) => SubmittableExtrinsic<ApiType>,
-        [u64, u64]
+        [u64, Weight]
       >
       /**
        * Generic tx
@@ -1304,40 +1306,6 @@ declare module "@polkadot/api-base/types/submittable" {
           value: Compact<u128> | AnyNumber | Uint8Array,
         ) => SubmittableExtrinsic<ApiType>,
         [Vec<AccountId32>, Compact<u128>]
-      >
-      /**
-       * Generic tx
-       **/
-      [key: string]: SubmittableExtrinsicFunction<ApiType>
-    }
-    exchange: {
-      /**
-       * Create buy intention
-       * Calculate current spot price, create an intention and store in ```ExchangeAssetsIntentions```
-       **/
-      buy: AugmentedSubmittable<
-        (
-          assetBuy: u32 | AnyNumber | Uint8Array,
-          assetSell: u32 | AnyNumber | Uint8Array,
-          amountBuy: u128 | AnyNumber | Uint8Array,
-          maxSold: u128 | AnyNumber | Uint8Array,
-          discount: bool | boolean | Uint8Array,
-        ) => SubmittableExtrinsic<ApiType>,
-        [u32, u32, u128, u128, bool]
-      >
-      /**
-       * Create sell intention
-       * Calculate current spot price, create an intention and store in ```ExchangeAssetsIntentions```
-       **/
-      sell: AugmentedSubmittable<
-        (
-          assetSell: u32 | AnyNumber | Uint8Array,
-          assetBuy: u32 | AnyNumber | Uint8Array,
-          amountSell: u128 | AnyNumber | Uint8Array,
-          minBought: u128 | AnyNumber | Uint8Array,
-          discount: bool | boolean | Uint8Array,
-        ) => SubmittableExtrinsic<ApiType>,
-        [u32, u32, u128, u128, bool]
       >
       /**
        * Generic tx
@@ -2136,9 +2104,15 @@ declare module "@polkadot/api-base/types/submittable" {
             | { height?: any; index?: any }
             | string,
           callHash: U8aFixed | string | Uint8Array,
-          maxWeight: u64 | AnyNumber | Uint8Array,
+          maxWeight: Weight | AnyNumber | Uint8Array,
         ) => SubmittableExtrinsic<ApiType>,
-        [u16, Vec<AccountId32>, Option<PalletMultisigTimepoint>, U8aFixed, u64]
+        [
+          u16,
+          Vec<AccountId32>,
+          Option<PalletMultisigTimepoint>,
+          U8aFixed,
+          Weight,
+        ]
       >
       /**
        * Register approval for a dispatch to be made from a deterministic composite account if
@@ -2202,7 +2176,7 @@ declare module "@polkadot/api-base/types/submittable" {
             | string,
           call: WrapperKeepOpaque<Call> | object | string | Uint8Array,
           storeCall: bool | boolean | Uint8Array,
-          maxWeight: u64 | AnyNumber | Uint8Array,
+          maxWeight: Weight | AnyNumber | Uint8Array,
         ) => SubmittableExtrinsic<ApiType>,
         [
           u16,
@@ -2210,7 +2184,7 @@ declare module "@polkadot/api-base/types/submittable" {
           Option<PalletMultisigTimepoint>,
           WrapperKeepOpaque<Call>,
           bool,
-          u64,
+          Weight,
         ]
       >
       /**
@@ -2344,9 +2318,11 @@ declare module "@polkadot/api-base/types/submittable" {
     }
     nft: {
       /**
-       * Removes a token from existence
+       * Removes a token from existence.
+       * Burning needs to be enabled in the permissions for the given collection type.
        *
        * Parameters:
+       * - `origin`: The NFT owner.
        * - `collection_id`: The collection of the asset to be burned.
        * - `item_id`: The instance of the asset to be burned.
        **/
@@ -2358,13 +2334,16 @@ declare module "@polkadot/api-base/types/submittable" {
         [u128, u128]
       >
       /**
-       * Creates an NFT collection of the given collection type
-       * and sets its metadata
+       * Creates an NFT collection of the given collection type and sets its metadata.
+       * The collection ID needs to be outside of the range of reserved IDs.
+       * The creation of a collection needs to be enabled in the permissions
+       * for the given collection type.
        *
        * Parameters:
-       * - `collection_id`: Identifier of a collection
-       * - `collection_type`: The collection type determines its purpose and usage
-       * - `metadata`: Arbitrary data about a collection, e.g. IPFS hash or name
+       * - `origin`: The owner of the newly created collection.
+       * - `collection_id`: Identifier of a collection.
+       * - `collection_type`: The collection type determines its purpose and usage.
+       * - `metadata`: Arbitrary data about a collection, e.g. IPFS hash or name.
        *
        * Emits CollectionCreated event
        **/
@@ -2385,9 +2364,13 @@ declare module "@polkadot/api-base/types/submittable" {
         [u128, PalletNftCollectionType, Bytes]
       >
       /**
-       * Removes a collection from existence
+       * Removes a collection from existence.
+       * Destroying of collections need to be enabled in the permissions
+       * for the given collection type.
+       * Fails if the collection is not empty.
        *
        * Parameters:
+       * - `origin`: The collection owner.
        * - `collection_id`: The identifier of the asset collection to be destroyed.
        **/
       destroyCollection: AugmentedSubmittable<
@@ -2397,13 +2380,15 @@ declare module "@polkadot/api-base/types/submittable" {
         [u128]
       >
       /**
-       * Mints an NFT in the specified collection
-       * and sets its metadata
+       * Mints an NFT in the specified collection and sets its metadata.
+       * Minting of new items needs to be enabled in the permissions
+       * for the given collection type.
        *
        * Parameters:
+       * - `origin`: The owner of the newly minted NFT.
        * - `collection_id`: The collection of the asset to be minted.
        * - `item_id`: The item of the asset to be minted.
-       * - `metadata`: Arbitrary data about an item, e.g. IPFS hash or symbol
+       * - `metadata`: Arbitrary data about an item, e.g. IPFS hash or symbol.
        **/
       mint: AugmentedSubmittable<
         (
@@ -2414,11 +2399,11 @@ declare module "@polkadot/api-base/types/submittable" {
         [u128, u128, Bytes]
       >
       /**
-       * Transfers NFT from account A to account B
-       * Only the ProtocolOrigin can send NFT to another account
-       * This is to prevent creating deposit burden for others
+       * Transfers NFT from account A to account B.
+       * Transfers need to be enabled in the permissions for the given collection type.
        *
        * Parameters:
+       * - `origin`: The NFT owner
        * - `collection_id`: The collection of the asset to be transferred.
        * - `item_id`: The instance of the asset to be transferred.
        * - `dest`: The account to receive ownership of the asset.
@@ -2536,9 +2521,9 @@ declare module "@polkadot/api-base/types/submittable" {
             | { V2: any }
             | string
             | Uint8Array,
-          maxWeight: u64 | AnyNumber | Uint8Array,
+          maxWeight: Weight | AnyNumber | Uint8Array,
         ) => SubmittableExtrinsic<ApiType>,
-        [XcmVersionedXcm, u64]
+        [XcmVersionedXcm, Weight]
       >
       /**
        * Set a safe XCM version (the version that XCM should be encoded with if the most recent
@@ -3199,52 +3184,66 @@ declare module "@polkadot/api-base/types/submittable" {
        **/
       [key: string]: SubmittableExtrinsicFunction<ApiType>
     }
-    session: {
+    router: {
       /**
-       * Removes any session key(s) of the function caller.
+       * Executes a buy with a series of trades specified in the route.
+       * The price for each trade is determined by the corresponding AMM.
        *
-       * This doesn't take effect until the next session.
+       * - `origin`: The executor of the trade
+       * - `asset_in`: The identifier of the asset to be swapped to buy `asset_out`
+       * - `asset_out`: The identifier of the asset to buy
+       * - `amount_out`: The amount of `asset_out` to buy
+       * - `max_amount_in`: The max amount of `asset_in` to spend on the buy.
+       * - `route`: Series of [`Trade<AssetId>`] to be executed. A [`Trade<AssetId>`] specifies the asset pair (`asset_in`, `asset_out`) and the AMM (`pool`) in which the trade is executed.
        *
-       * The dispatch origin of this function must be Signed and the account must be either be
-       * convertible to a validator ID using the chain's typical addressing system (this usually
-       * means being a controller account) or directly convertible into a validator ID (which
-       * usually means being a stash account).
-       *
-       * # <weight>
-       * - Complexity: `O(1)` in number of key types. Actual cost depends on the number of length
-       * of `T::Keys::key_ids()` which is fixed.
-       * - DbReads: `T::ValidatorIdOf`, `NextKeys`, `origin account`
-       * - DbWrites: `NextKeys`, `origin account`
-       * - DbWrites per key id: `KeyOwner`
-       * # </weight>
+       * Emits `RouteExecuted` when successful.
        **/
-      purgeKeys: AugmentedSubmittable<() => SubmittableExtrinsic<ApiType>, []>
-      /**
-       * Sets the session key(s) of the function caller to `keys`.
-       * Allows an account to set its session key prior to becoming a validator.
-       * This doesn't take effect until the next session.
-       *
-       * The dispatch origin of this function must be signed.
-       *
-       * # <weight>
-       * - Complexity: `O(1)`. Actual cost depends on the number of length of
-       * `T::Keys::key_ids()` which is fixed.
-       * - DbReads: `origin account`, `T::ValidatorIdOf`, `NextKeys`
-       * - DbWrites: `origin account`, `NextKeys`
-       * - DbReads per key id: `KeyOwner`
-       * - DbWrites per key id: `KeyOwner`
-       * # </weight>
-       **/
-      setKeys: AugmentedSubmittable<
+      buy: AugmentedSubmittable<
         (
-          keys:
-            | TestingBasiliskRuntimeOpaqueSessionKeys
-            | { aura?: any }
-            | string
-            | Uint8Array,
-          proof: Bytes | string | Uint8Array,
+          assetIn: u32 | AnyNumber | Uint8Array,
+          assetOut: u32 | AnyNumber | Uint8Array,
+          amountOut: u128 | AnyNumber | Uint8Array,
+          maxAmountIn: u128 | AnyNumber | Uint8Array,
+          route:
+            | Vec<PalletRouteExecutorTrade>
+            | (
+                | PalletRouteExecutorTrade
+                | { pool?: any; assetIn?: any; assetOut?: any }
+                | string
+                | Uint8Array
+              )[],
         ) => SubmittableExtrinsic<ApiType>,
-        [TestingBasiliskRuntimeOpaqueSessionKeys, Bytes]
+        [u32, u32, u128, u128, Vec<PalletRouteExecutorTrade>]
+      >
+      /**
+       * Executes a sell with a series of trades specified in the route.
+       * The price for each trade is determined by the corresponding AMM.
+       *
+       * - `origin`: The executor of the trade
+       * - `asset_in`: The identifier of the asset to sell
+       * - `asset_out`: The identifier of the asset to receive
+       * - `amount_in`: The amount of `asset_in` to sell
+       * - `min_amount_out`: The minimum amount of `asset_out` to receive.
+       * - `route`: Series of [`Trade<AssetId>`] to be executed. A [`Trade<AssetId>`] specifies the asset pair (`asset_in`, `asset_out`) and the AMM (`pool`) in which the trade is executed.
+       *
+       * Emits `RouteExecuted` when successful.
+       **/
+      sell: AugmentedSubmittable<
+        (
+          assetIn: u32 | AnyNumber | Uint8Array,
+          assetOut: u32 | AnyNumber | Uint8Array,
+          amountIn: u128 | AnyNumber | Uint8Array,
+          minAmountOut: u128 | AnyNumber | Uint8Array,
+          route:
+            | Vec<PalletRouteExecutorTrade>
+            | (
+                | PalletRouteExecutorTrade
+                | { pool?: any; assetIn?: any; assetOut?: any }
+                | string
+                | Uint8Array
+              )[],
+        ) => SubmittableExtrinsic<ApiType>,
+        [u32, u32, u128, u128, Vec<PalletRouteExecutorTrade>]
       >
       /**
        * Generic tx
@@ -3384,81 +3383,52 @@ declare module "@polkadot/api-base/types/submittable" {
        **/
       [key: string]: SubmittableExtrinsicFunction<ApiType>
     }
-    sudo: {
+    session: {
       /**
-       * Authenticates the current sudo key and sets the given AccountId (`new`) as the new sudo
-       * key.
+       * Removes any session key(s) of the function caller.
        *
-       * The dispatch origin for this call must be _Signed_.
+       * This doesn't take effect until the next session.
+       *
+       * The dispatch origin of this function must be Signed and the account must be either be
+       * convertible to a validator ID using the chain's typical addressing system (this usually
+       * means being a controller account) or directly convertible into a validator ID (which
+       * usually means being a stash account).
        *
        * # <weight>
-       * - O(1).
-       * - Limited storage reads.
-       * - One DB change.
+       * - Complexity: `O(1)` in number of key types. Actual cost depends on the number of length
+       * of `T::Keys::key_ids()` which is fixed.
+       * - DbReads: `T::ValidatorIdOf`, `NextKeys`, `origin account`
+       * - DbWrites: `NextKeys`, `origin account`
+       * - DbWrites per key id: `KeyOwner`
        * # </weight>
        **/
-      setKey: AugmentedSubmittable<
-        (
-          updated: AccountId32 | string | Uint8Array,
-        ) => SubmittableExtrinsic<ApiType>,
-        [AccountId32]
-      >
+      purgeKeys: AugmentedSubmittable<() => SubmittableExtrinsic<ApiType>, []>
       /**
-       * Authenticates the sudo key and dispatches a function call with `Root` origin.
+       * Sets the session key(s) of the function caller to `keys`.
+       * Allows an account to set its session key prior to becoming a validator.
+       * This doesn't take effect until the next session.
        *
-       * The dispatch origin for this call must be _Signed_.
+       * The dispatch origin of this function must be signed.
        *
        * # <weight>
-       * - O(1).
-       * - Limited storage reads.
-       * - One DB write (event).
-       * - Weight of derivative `call` execution + 10,000.
+       * - Complexity: `O(1)`. Actual cost depends on the number of length of
+       * `T::Keys::key_ids()` which is fixed.
+       * - DbReads: `origin account`, `T::ValidatorIdOf`, `NextKeys`
+       * - DbWrites: `origin account`, `NextKeys`
+       * - DbReads per key id: `KeyOwner`
+       * - DbWrites per key id: `KeyOwner`
        * # </weight>
        **/
-      sudo: AugmentedSubmittable<
+      setKeys: AugmentedSubmittable<
         (
-          call: Call | IMethod | string | Uint8Array,
+          keys:
+            | BasiliskRuntimeOpaqueSessionKeys
+            | { aura?: any }
+            | string
+            | Uint8Array,
+          proof: Bytes | string | Uint8Array,
         ) => SubmittableExtrinsic<ApiType>,
-        [Call]
-      >
-      /**
-       * Authenticates the sudo key and dispatches a function call with `Signed` origin from
-       * a given account.
-       *
-       * The dispatch origin for this call must be _Signed_.
-       *
-       * # <weight>
-       * - O(1).
-       * - Limited storage reads.
-       * - One DB write (event).
-       * - Weight of derivative `call` execution + 10,000.
-       * # </weight>
-       **/
-      sudoAs: AugmentedSubmittable<
-        (
-          who: AccountId32 | string | Uint8Array,
-          call: Call | IMethod | string | Uint8Array,
-        ) => SubmittableExtrinsic<ApiType>,
-        [AccountId32, Call]
-      >
-      /**
-       * Authenticates the sudo key and dispatches a function call with `Root` origin.
-       * This function does not check the weight of the call, and instead allows the
-       * Sudo user to specify the weight of the call.
-       *
-       * The dispatch origin for this call must be _Signed_.
-       *
-       * # <weight>
-       * - O(1).
-       * - The weight of this call is defined by the caller.
-       * # </weight>
-       **/
-      sudoUncheckedWeight: AugmentedSubmittable<
-        (
-          call: Call | IMethod | string | Uint8Array,
-          weight: u64 | AnyNumber | Uint8Array,
-        ) => SubmittableExtrinsic<ApiType>,
-        [Call, u64]
+        [BasiliskRuntimeOpaqueSessionKeys, Bytes]
       >
       /**
        * Generic tx
@@ -3610,10 +3580,10 @@ declare module "@polkadot/api-base/types/submittable" {
         (
           proposalHash: H256 | string | Uint8Array,
           index: Compact<u32> | AnyNumber | Uint8Array,
-          proposalWeightBound: Compact<u64> | AnyNumber | Uint8Array,
+          proposalWeightBound: Compact<Weight> | AnyNumber | Uint8Array,
           lengthBound: Compact<u32> | AnyNumber | Uint8Array,
         ) => SubmittableExtrinsic<ApiType>,
-        [H256, Compact<u32>, Compact<u64>, Compact<u32>]
+        [H256, Compact<u32>, Compact<Weight>, Compact<u32>]
       >
       /**
        * Disapprove a proposal, close, and remove it from the system, regardless of its current
@@ -4201,11 +4171,14 @@ declare module "@polkadot/api-base/types/submittable" {
       /**
        * Approve an item to be transferred by a delegated third-party account.
        *
-       * Origin must be Signed and must be the owner of the `item`.
+       * The origin must conform to `ForceOrigin` or must be `Signed` and the sender must be
+       * either the owner of the `item` or the admin of the collection.
        *
        * - `collection`: The collection of the item to be approved for delegated transfer.
        * - `item`: The item of the item to be approved for delegated transfer.
        * - `delegate`: The account to delegate permission to transfer the item.
+       *
+       * Important NOTE: The `approved` account gets reset after each transfer.
        *
        * Emits `ApprovedTransfer` on success.
        *
@@ -4373,6 +4346,7 @@ declare module "@polkadot/api-base/types/submittable" {
        * `ItemDeposit` funds of sender are reserved.
        *
        * Parameters:
+       * - `collection`: The identifier of the new collection. This must not be currently in use.
        * - `admin`: The admin of this collection. The admin is the initial address of each
        * member of the collection's admin team.
        *
@@ -4382,9 +4356,10 @@ declare module "@polkadot/api-base/types/submittable" {
        **/
       create: AugmentedSubmittable<
         (
+          collection: u128 | AnyNumber | Uint8Array,
           admin: AccountId32 | string | Uint8Array,
         ) => SubmittableExtrinsic<ApiType>,
-        [AccountId32]
+        [u128, AccountId32]
       >
       /**
        * Destroy a collection of fungible items.
@@ -4423,6 +4398,7 @@ declare module "@polkadot/api-base/types/submittable" {
        *
        * Unlike `create`, no funds are reserved.
        *
+       * - `collection`: The identifier of the new item. This must not be currently in use.
        * - `owner`: The owner of this collection of items. The owner has full superuser
        * permissions
        * over this item, but may later change and configure the permissions using
@@ -4434,10 +4410,11 @@ declare module "@polkadot/api-base/types/submittable" {
        **/
       forceCreate: AugmentedSubmittable<
         (
+          collection: u128 | AnyNumber | Uint8Array,
           owner: AccountId32 | string | Uint8Array,
           freeHolding: bool | boolean | Uint8Array,
         ) => SubmittableExtrinsic<ApiType>,
-        [AccountId32, bool]
+        [u128, AccountId32, bool]
       >
       /**
        * Alter the attributes of a given item.
@@ -4761,6 +4738,8 @@ declare module "@polkadot/api-base/types/submittable" {
       /**
        * Move an item from the sender account to another.
        *
+       * This resets the approved account of the item.
+       *
        * Origin must be Signed and the signing account must be either:
        * - the Admin of the `collection`;
        * - the Owner of the `item`;
@@ -4802,23 +4781,6 @@ declare module "@polkadot/api-base/types/submittable" {
           owner: AccountId32 | string | Uint8Array,
         ) => SubmittableExtrinsic<ApiType>,
         [u128, AccountId32]
-      >
-      /**
-       * Increments the `CollectionId` stored in `NextCollectionId`.
-       *
-       * This is only callable when the next `CollectionId` is already being
-       * used for some other collection.
-       *
-       * The origin must be Signed and the sender must have sufficient funds
-       * free.
-       *
-       * Emits `NextCollectionIdIncremented` event when successful.
-       *
-       * Weight: `O(1)`
-       **/
-      tryIncrementId: AugmentedSubmittable<
-        () => SubmittableExtrinsic<ApiType>,
-        []
       >
       /**
        * Generic tx
@@ -4918,7 +4880,7 @@ declare module "@polkadot/api-base/types/submittable" {
       dispatchAs: AugmentedSubmittable<
         (
           asOrigin:
-            | TestingBasiliskRuntimeOriginCaller
+            | BasiliskRuntimeOriginCaller
             | { system: any }
             | { Void: any }
             | { Council: any }
@@ -4929,7 +4891,7 @@ declare module "@polkadot/api-base/types/submittable" {
             | Uint8Array,
           call: Call | IMethod | string | Uint8Array,
         ) => SubmittableExtrinsic<ApiType>,
-        [TestingBasiliskRuntimeOriginCaller, Call]
+        [BasiliskRuntimeOriginCaller, Call]
       >
       /**
        * Send a batch of dispatch calls.
@@ -5276,11 +5238,11 @@ declare module "@polkadot/api-base/types/submittable" {
       createPool: AugmentedSubmittable<
         (
           assetA: u32 | AnyNumber | Uint8Array,
+          amountA: u128 | AnyNumber | Uint8Array,
           assetB: u32 | AnyNumber | Uint8Array,
-          amount: u128 | AnyNumber | Uint8Array,
-          initialPrice: u128 | AnyNumber | Uint8Array,
+          amountB: u128 | AnyNumber | Uint8Array,
         ) => SubmittableExtrinsic<ApiType>,
-        [u32, u32, u128, u128]
+        [u32, u128, u32, u128]
       >
       /**
        * Remove liquidity from specific liquidity pool in the form of burning shares.
@@ -5460,58 +5422,6 @@ declare module "@polkadot/api-base/types/submittable" {
         [u32, u32, PrimitivesAssetAssetPair, u128]
       >
       /**
-       * Destroy existing liq. mining program.
-       *
-       * Only farm owner can perform this action.
-       *
-       * WARN: To successfully destroy a farm, farm have to be empty(all yield farms in he global farm must be destroyed).
-       *
-       * Parameters:
-       * - `origin`: global farm's owner.
-       * - `global_farm_id`: id of global farm to be destroyed.
-       *
-       * Emits `FarmDestroyed` event when successful.
-       **/
-      destroyGlobalFarm: AugmentedSubmittable<
-        (
-          globalFarmId: u32 | AnyNumber | Uint8Array,
-        ) => SubmittableExtrinsic<ApiType>,
-        [u32]
-      >
-      /**
-       * Remove yield farm
-       *
-       * This function marks a yield farm as ready to be removed from storage when it's empty. Users will
-       * be able to only withdraw shares(without claiming rewards from yield farm). Unpaid rewards
-       * will be transferred back to global farm and will be used to distribute to other yield farms.
-       *
-       * Yield farm must be stopped before calling this function.
-       *
-       * Only global farm's owner can perform this action. Yield farm stays in the storage until it's
-       * empty(all farm entries are withdrawn). Last withdrawn from yield farm trigger removing from
-       * the storage.
-       *
-       * Parameters:
-       * - `origin`: global farm's owner.
-       * - `global_farm_id`: farm id from which yield farm should be destroyed.
-       * - `yield_farm_id`: id of yield farm to be destroyed.
-       * - `asset_pair`: asset pair identifying yield farm in the global farm.
-       *
-       * Emits `YieldFarmDestroyed` event when successful.
-       **/
-      destroyYieldFarm: AugmentedSubmittable<
-        (
-          globalFarmId: u32 | AnyNumber | Uint8Array,
-          yieldFarmId: u32 | AnyNumber | Uint8Array,
-          assetPair:
-            | PrimitivesAssetAssetPair
-            | { assetIn?: any; assetOut?: any }
-            | string
-            | Uint8Array,
-        ) => SubmittableExtrinsic<ApiType>,
-        [u32, u32, PrimitivesAssetAssetPair]
-      >
-      /**
        * Redeposit already locked LP shares to another yield farm.
        *
        * This function create yield farm entry for existing deposit. LP shares are not transferred
@@ -5602,6 +5512,58 @@ declare module "@polkadot/api-base/types/submittable" {
         [u32, PrimitivesAssetAssetPair]
       >
       /**
+       * Terminate existing liq. mining program.
+       *
+       * Only farm owner can perform this action.
+       *
+       * WARN: To successfully terminate a farm, farm have to be empty(all yield farms in he global farm must be terminated).
+       *
+       * Parameters:
+       * - `origin`: global farm's owner.
+       * - `global_farm_id`: id of global farm to be terminated.
+       *
+       * Emits `GlobalFarmTerminated` event when successful.
+       **/
+      terminateGlobalFarm: AugmentedSubmittable<
+        (
+          globalFarmId: u32 | AnyNumber | Uint8Array,
+        ) => SubmittableExtrinsic<ApiType>,
+        [u32]
+      >
+      /**
+       * Remove yield farm
+       *
+       * This function marks a yield farm as ready to be removed from storage when it's empty. Users will
+       * be able to only withdraw shares(without claiming rewards from yield farm). Unpaid rewards
+       * will be transferred back to global farm and will be used to distribute to other yield farms.
+       *
+       * Yield farm must be stopped before calling this function.
+       *
+       * Only global farm's owner can perform this action. Yield farm stays in the storage until it's
+       * empty(all farm entries are withdrawn). Last withdrawn from yield farm trigger removing from
+       * the storage.
+       *
+       * Parameters:
+       * - `origin`: global farm's owner.
+       * - `global_farm_id`: farm id from which yield farm should be terminated.
+       * - `yield_farm_id`: id of yield farm to be terminated.
+       * - `asset_pair`: asset pair identifying yield farm in the global farm.
+       *
+       * Emits `YieldFarmTerminated` event when successful.
+       **/
+      terminateYieldFarm: AugmentedSubmittable<
+        (
+          globalFarmId: u32 | AnyNumber | Uint8Array,
+          yieldFarmId: u32 | AnyNumber | Uint8Array,
+          assetPair:
+            | PrimitivesAssetAssetPair
+            | { assetIn?: any; assetOut?: any }
+            | string
+            | Uint8Array,
+        ) => SubmittableExtrinsic<ApiType>,
+        [u32, u32, PrimitivesAssetAssetPair]
+      >
+      /**
        * Update global farm's prices adjustment.
        *
        * Only farm's owner can perform this action.
@@ -5654,8 +5616,8 @@ declare module "@polkadot/api-base/types/submittable" {
        * wasn't claimed in this period) and transfer LP shares.
        * * liq. mining is stopped - claim and transfer rewards(if it
        * wasn't claimed in this period) and transfer LP shares.
-       * * yield farm was destroyed - only LP shares will be transferred.
-       * * farm was destroyed - only LP shares will be transferred.
+       * * yield farm was terminated - only LP shares will be transferred.
+       * * farm was terminated - only LP shares will be transferred.
        *
        * User's unclaimable rewards will be transferred back to global farm's account.
        *

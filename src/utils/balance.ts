@@ -60,3 +60,16 @@ export const separateBalance = (
   }
   return null
 }
+
+export function calculateFreeBalance(
+  free: BigNumberLikeType,
+  miscFrozen: BigNumberLikeType,
+  feeFrozen: BigNumberLikeType,
+) {
+  const freeBN = normalizeBigNumber(free)
+  const miscFrozenBN = normalizeBigNumber(miscFrozen)
+  const feeFrozenBN = normalizeBigNumber(feeFrozen)
+
+  const maxFrozenBalance = freeBN.gt(feeFrozenBN) ? miscFrozenBN : feeFrozenBN
+  return freeBN.minus(maxFrozenBalance)
+}

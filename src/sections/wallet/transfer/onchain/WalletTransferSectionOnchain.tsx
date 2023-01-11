@@ -157,7 +157,7 @@ export function WalletTransferSectionOnchain(props: {
             }}
           />
 
-          {asset !== "0" && (
+          {asset !== NATIVE_ASSET_ID && (
             <Alert variant="warning">
               {t("wallet.assets.transfer.warning.nonNative")}
             </Alert>

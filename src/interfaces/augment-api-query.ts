@@ -30,8 +30,10 @@ import type {
   AccountId32,
   Call,
   H256,
+  Weight,
 } from "@polkadot/types/interfaces/runtime"
 import type {
+  BasiliskRuntimeOpaqueSessionKeys,
   CommonRuntimeAssetLocation,
   CumulusPalletDmpQueueConfigData,
   CumulusPalletDmpQueuePageIndexData,
@@ -39,7 +41,7 @@ import type {
   CumulusPalletXcmpQueueInboundChannelDetails,
   CumulusPalletXcmpQueueOutboundChannelDetails,
   CumulusPalletXcmpQueueQueueConfigData,
-  FrameSupportWeightsPerDispatchClassU64,
+  FrameSupportWeightsPerDispatchClassWeight,
   FrameSystemAccountInfo,
   FrameSystemEventRecord,
   FrameSystemLastRuntimeUpgradeInfo,
@@ -92,11 +94,9 @@ import type {
   PolkadotPrimitivesV2AbridgedHostConfiguration,
   PolkadotPrimitivesV2PersistedValidationData,
   PolkadotPrimitivesV2UpgradeRestriction,
-  PrimitivesExchangeIntention,
   SpCoreCryptoKeyTypeId,
   SpRuntimeDigest,
   SpTrieStorageProof,
-  TestingBasiliskRuntimeOpaqueSessionKeys,
   XcmV1MultiLocation,
   XcmVersionedMultiLocation,
 } from "@polkadot/types/lookup"
@@ -661,39 +661,6 @@ declare module "@polkadot/api-base/types/storage" {
        **/
       [key: string]: QueryableStorageEntry<ApiType>
     }
-    exchange: {
-      /**
-       * Intention count for current block
-       **/
-      exchangeAssetsIntentionCount: AugmentedQuery<
-        ApiType,
-        (
-          arg:
-            | ITuple<[u32, u32]>
-            | [u32 | AnyNumber | Uint8Array, u32 | AnyNumber | Uint8Array],
-        ) => Observable<u32>,
-        [ITuple<[u32, u32]>]
-      > &
-        QueryableStorageEntry<ApiType, [ITuple<[u32, u32]>]>
-      /**
-       * Registered intentions for current block
-       * Stored as ( asset_a, asset_b ) combination where asset_a is meant to be exchanged for asset_b ( asset_a < asset_b)
-       **/
-      exchangeAssetsIntentions: AugmentedQuery<
-        ApiType,
-        (
-          arg:
-            | ITuple<[u32, u32]>
-            | [u32 | AnyNumber | Uint8Array, u32 | AnyNumber | Uint8Array],
-        ) => Observable<Vec<PrimitivesExchangeIntention>>,
-        [ITuple<[u32, u32]>]
-      > &
-        QueryableStorageEntry<ApiType, [ITuple<[u32, u32]>]>
-      /**
-       * Generic query
-       **/
-      [key: string]: QueryableStorageEntry<ApiType>
-    }
     identity: {
       /**
        * Information that is pertinent to identify the entity behind an account.
@@ -1109,7 +1076,7 @@ declare module "@polkadot/api-base/types/storage" {
        **/
       reservedDmpWeightOverride: AugmentedQuery<
         ApiType,
-        () => Observable<Option<u64>>,
+        () => Observable<Option<Weight>>,
         []
       > &
         QueryableStorageEntry<ApiType, []>
@@ -1119,7 +1086,7 @@ declare module "@polkadot/api-base/types/storage" {
        **/
       reservedXcmpWeightOverride: AugmentedQuery<
         ApiType,
-        () => Observable<Option<u64>>,
+        () => Observable<Option<Weight>>,
         []
       > &
         QueryableStorageEntry<ApiType, []>
@@ -1336,6 +1303,34 @@ declare module "@polkadot/api-base/types/storage" {
        **/
       [key: string]: QueryableStorageEntry<ApiType>
     }
+    scheduler: {
+      /**
+       * Items to be executed, indexed by the block number that they should be executed on.
+       **/
+      agenda: AugmentedQuery<
+        ApiType,
+        (
+          arg: u32 | AnyNumber | Uint8Array,
+        ) => Observable<Vec<Option<PalletSchedulerScheduledV3>>>,
+        [u32]
+      > &
+        QueryableStorageEntry<ApiType, [u32]>
+      /**
+       * Lookup from identity to the block number and index of the task.
+       **/
+      lookup: AugmentedQuery<
+        ApiType,
+        (
+          arg: Bytes | string | Uint8Array,
+        ) => Observable<Option<ITuple<[u32, u32]>>>,
+        [Bytes]
+      > &
+        QueryableStorageEntry<ApiType, [Bytes]>
+      /**
+       * Generic query
+       **/
+      [key: string]: QueryableStorageEntry<ApiType>
+    }
     session: {
       /**
        * Current index of the session.
@@ -1378,7 +1373,7 @@ declare module "@polkadot/api-base/types/storage" {
         ApiType,
         (
           arg: AccountId32 | string | Uint8Array,
-        ) => Observable<Option<TestingBasiliskRuntimeOpaqueSessionKeys>>,
+        ) => Observable<Option<BasiliskRuntimeOpaqueSessionKeys>>,
         [AccountId32]
       > &
         QueryableStorageEntry<ApiType, [AccountId32]>
@@ -1395,7 +1390,7 @@ declare module "@polkadot/api-base/types/storage" {
       queuedKeys: AugmentedQuery<
         ApiType,
         () => Observable<
-          Vec<ITuple<[AccountId32, TestingBasiliskRuntimeOpaqueSessionKeys]>>
+          Vec<ITuple<[AccountId32, BasiliskRuntimeOpaqueSessionKeys]>>
         >,
         []
       > &
@@ -1408,45 +1403,6 @@ declare module "@polkadot/api-base/types/storage" {
         () => Observable<Vec<AccountId32>>,
         []
       > &
-        QueryableStorageEntry<ApiType, []>
-      /**
-       * Generic query
-       **/
-      [key: string]: QueryableStorageEntry<ApiType>
-    }
-    scheduler: {
-      /**
-       * Items to be executed, indexed by the block number that they should be executed on.
-       **/
-      agenda: AugmentedQuery<
-        ApiType,
-        (
-          arg: u32 | AnyNumber | Uint8Array,
-        ) => Observable<Vec<Option<PalletSchedulerScheduledV3>>>,
-        [u32]
-      > &
-        QueryableStorageEntry<ApiType, [u32]>
-      /**
-       * Lookup from identity to the block number and index of the task.
-       **/
-      lookup: AugmentedQuery<
-        ApiType,
-        (
-          arg: Bytes | string | Uint8Array,
-        ) => Observable<Option<ITuple<[u32, u32]>>>,
-        [Bytes]
-      > &
-        QueryableStorageEntry<ApiType, [Bytes]>
-      /**
-       * Generic query
-       **/
-      [key: string]: QueryableStorageEntry<ApiType>
-    }
-    sudo: {
-      /**
-       * The `AccountId` of the sudo key.
-       **/
-      key: AugmentedQuery<ApiType, () => Observable<Option<AccountId32>>, []> &
         QueryableStorageEntry<ApiType, []>
       /**
        * Generic query
@@ -1488,7 +1444,7 @@ declare module "@polkadot/api-base/types/storage" {
        **/
       blockWeight: AugmentedQuery<
         ApiType,
-        () => Observable<FrameSupportWeightsPerDispatchClassU64>,
+        () => Observable<FrameSupportWeightsPerDispatchClassWeight>,
         []
       > &
         QueryableStorageEntry<ApiType, []>
@@ -1929,12 +1885,6 @@ declare module "@polkadot/api-base/types/storage" {
         [u128, u128]
       > &
         QueryableStorageEntry<ApiType, [u128, u128]>
-      /**
-       * Stores the `CollectionId` that is going to be used for the next collection.
-       * This gets incremented by 1 whenever a new collection is created.
-       **/
-      nextCollectionId: AugmentedQuery<ApiType, () => Observable<u128>, []> &
-        QueryableStorageEntry<ApiType, []>
       /**
        * The collection, if any, of which an account is willing to take ownership.
        **/

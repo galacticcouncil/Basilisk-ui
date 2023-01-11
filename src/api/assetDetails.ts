@@ -7,6 +7,7 @@ import { Maybe, normalizeId, isNotNil } from "utils/helpers"
 import { useAccountBalances } from "./accountBalances"
 import { AccountId32 } from "@polkadot/types/interfaces"
 import { PalletAssetRegistryAssetType } from "@polkadot/types/lookup"
+import { BN_0 } from "utils/constants"
 
 export const useAssetDetails = (id: Maybe<u32 | string>) => {
   const api = useApiPromise()
@@ -67,6 +68,7 @@ const getAssetDetails = (api: ApiPromise) => async () => {
       name: data.unwrap().name.toUtf8(),
       locked: data.unwrap().locked.toPrimitive(),
       assetType: data.unwrap().assetType.type,
+      existentialDeposit: data.unwrap().existentialDeposit.toBigNumber(),
     }
   })
 
@@ -76,6 +78,7 @@ const getAssetDetails = (api: ApiPromise) => async () => {
       locked: false,
       name: system.tokenSymbol.unwrap()[0].toString(),
       assetType: "Token",
+      existentialDeposit: BN_0,
     })
   }
 

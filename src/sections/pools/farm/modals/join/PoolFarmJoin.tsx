@@ -30,7 +30,7 @@ export const PoolFarmJoin = (props: {
   } | null>(props.initialFarm || null)
 
   const selectedFarm = selectedYieldFarmId
-    ? apr.data.find(
+    ? apr.data?.find(
         (i) =>
           i.yieldFarm.id.eq(selectedYieldFarmId.yieldFarmId) &&
           i.globalFarm.id.eq(selectedYieldFarmId.globalFarmId),

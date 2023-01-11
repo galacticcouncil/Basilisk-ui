@@ -20,12 +20,12 @@ export const usePoolFooterValues = (pool: PoolBase) => {
   })
   const claimAll = useClaimAllMutation(pool.address)
 
-  const queries = [deposits, claimable, shares, claimAll]
+  const queries = [deposits, shares, claimAll]
   const isLoading = queries.some((q) => q.isLoading)
 
   return {
     locked: shares.dollarValue,
-    claimable: claimable.data?.ausd,
+    claimable: claimable.data,
     claimAll: claimAll.mutation,
     isLoading,
   }
