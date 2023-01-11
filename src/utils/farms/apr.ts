@@ -101,9 +101,9 @@ export const useAPR = (poolId: AccountId32 | string) => {
 
         // max distribution of rewards
         // https://www.notion.so/Screen-elements-mapping-Farms-baee6acc456542ca8d2cccd1cc1548ae?p=4a2f16a9f2454095945dbd9ce0eb1b6b&pm=s
-        const distributedRewards = globalFarm.accumulatedRewards
+        const distributedRewards = globalFarm.pendingRewards
           .toBigNumber()
-          .plus(globalFarm.paidAccumulatedRewards.toBigNumber())
+          .plus(globalFarm.accumulatedPaidRewards.toBigNumber())
 
         const maxRewards = maxRewardPerPeriod.times(plannedYieldingPeriods)
         const leftToDistribute = maxRewards.minus(distributedRewards)

@@ -100,8 +100,8 @@ test("proper cloning", () => {
           new U128(registry, "0x0000000000000000001e209208975110"),
         ],
         rewardCurrency: [U32, new U32(registry, 0)],
-        accumulatedRewards: [U128, new U128(registry, "3075389218210")],
-        paidAccumulatedRewards: [
+        pendingRewards: [U128, new U128(registry, "3075389218210")],
+        accumulatedPaidRewards: [
           U128,
           new U128(registry, "0x000000000000000000a97b9ce8510501"),
         ],
@@ -166,6 +166,7 @@ test("proper cloning", () => {
         ],
         entriesCount: [U64, new U64(registry, 3)],
         leftToDistribute: [U128, new U128(registry, "360825852820805")],
+        totalStopped: [U64, new U64(registry, 0)],
         state: [
           Enum,
           createEnum<PalletLiquidityMiningFarmState>(registry, {
@@ -203,10 +204,10 @@ test("proper cloning", () => {
   expect(globalFarm.accumulatedRpz.toFixed()).toEqual(
     "8,480,060,882,768,144".replaceAll(",", ""),
   )
-  expect(globalFarm.accumulatedRewards.toFixed()).toEqual(
+  expect(globalFarm.pendingRewards.toFixed()).toEqual(
     "3,075,389,218,210".replaceAll(",", ""),
   )
-  expect(globalFarm.paidAccumulatedRewards.toFixed()).toEqual(
+  expect(globalFarm.accumulatedPaidRewards.toFixed()).toEqual(
     "47,705,184,906,839,297".replaceAll(",", ""),
   )
   expect(globalFarm.yieldPerPeriod.toFixed()).toEqual("0.000000304414003044")
@@ -248,6 +249,7 @@ test("proper cloning", () => {
   expect(yieldFarm.leftToDistribute.toFixed()).toEqual(
     "360,825,852,820,805".replaceAll(",", ""),
   )
+  expect(yieldFarm.totalStopped.toFixed()).toEqual("0")
   expect(yieldFarm.state.type).toBe("Active")
   expect([
     yieldFarm.state.isActive,

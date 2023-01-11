@@ -15,9 +15,6 @@ import {
   GenericAccountId32,
 } from "@polkadot/types"
 
-// We need to import nodejs due to issues with vitest and the inability to resolve imports
-import * as liquidityMining from "@galacticcouncil/math/build/liquidity-mining/nodejs"
-
 import { XYKLiquidityMiningClaimSim } from "utils/farms/claiming/claimSimulator"
 import { getAccountResolver } from "utils/farms/claiming/accountResolver"
 import { MultiCurrencyContainer } from "utils/farms/claiming/multiCurrency"
@@ -112,8 +109,8 @@ test("create mock type registry", () => {
           new U128(registry, "0x0000000000000000001e209208975110"),
         ],
         rewardCurrency: [U32, new U32(registry, "0")],
-        accumulatedRewards: [U128, new U128(registry, "3075389218210")],
-        paidAccumulatedRewards: [
+        pendingRewards: [U128, new U128(registry, "3075389218210")],
+        accumulatedPaidRewards: [
           U128,
           new U128(registry, "0x000000000000000000a97b9ce8510501"),
         ],
@@ -177,6 +174,7 @@ test("create mock type registry", () => {
           new U128(registry, "0x00000000000000000de0b6b3a7640000"),
         ],
         entriesCount: [U64, new U64(registry, "3")],
+        totalStopped: [U32, new U32(registry, "0")],
         leftToDistribute: [U128, new U128(registry, "360825852820805")],
         state: [
           Enum,
@@ -203,8 +201,8 @@ test("create mock type registry", () => {
           new U128(registry, "0x00000000000000000019f61f44eb77c9"),
         ],
         rewardCurrency: [U32, new U32(registry, "4")],
-        accumulatedRewards: [U128, new U128(registry, "15533733441408")],
-        paidAccumulatedRewards: [U128, new U128(registry, "6226268888")],
+        pendingRewards: [U128, new U128(registry, "15533733441408")],
+        accumulatedPaidRewards: [U128, new U128(registry, "6226268888")],
         yieldPerPeriod: [UInt, new UInt(registry, "262557077625")],
         plannedYieldingPeriods: [U32, new U32(registry, "151200")],
         blocksPerPeriod: [U32, new U32(registry, "2")],
@@ -262,6 +260,7 @@ test("create mock type registry", () => {
           new U128(registry, "0x00000000000000000de0b6b3a7640000"),
         ],
         entriesCount: [U64, new U64(registry, "2")],
+        totalStopped: [U32, new U32(registry, "0")],
         leftToDistribute: [U128, new U128(registry, "6226268888")],
         state: [
           Enum,
@@ -278,7 +277,6 @@ test("create mock type registry", () => {
   const simulator = new XYKLiquidityMiningClaimSim(
     accountResolver,
     multiCurrency,
-    liquidityMining,
     [
       {
         id: "0",
@@ -301,6 +299,7 @@ test("create mock type registry", () => {
         U128,
         new U128(registry, "0x000000000000000000944bf43bacbc41"),
       ],
+      stoppedAtCreation: [U32, new U32(registry, "0")],
       accumulatedRpvs: [U128, new U128(registry, "0")],
       accumulatedClaimedRewards: [U128, new U128(registry, "0")],
       enteredAt: [U32, new U32(registry, "1532800")],

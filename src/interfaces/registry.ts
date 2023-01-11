@@ -151,6 +151,7 @@ import type {
   PalletLiquidityMiningEvent,
   PalletLiquidityMiningFarmState,
   PalletLiquidityMiningGlobalFarmData,
+  PalletLiquidityMiningInconsistentStateError,
   PalletLiquidityMiningLoyaltyCurve,
   PalletLiquidityMiningYieldFarmData,
   PalletLiquidityMiningYieldFarmEntry,
@@ -449,6 +450,7 @@ declare module "@polkadot/types/types/registry" {
     PalletLiquidityMiningEvent: PalletLiquidityMiningEvent
     PalletLiquidityMiningFarmState: PalletLiquidityMiningFarmState
     PalletLiquidityMiningGlobalFarmData: PalletLiquidityMiningGlobalFarmData
+    PalletLiquidityMiningInconsistentStateError: PalletLiquidityMiningInconsistentStateError
     PalletLiquidityMiningLoyaltyCurve: PalletLiquidityMiningLoyaltyCurve
     PalletLiquidityMiningYieldFarmData: PalletLiquidityMiningYieldFarmData
     PalletLiquidityMiningYieldFarmEntry: PalletLiquidityMiningYieldFarmEntry
