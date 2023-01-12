@@ -14,7 +14,7 @@ import { useBestNumber } from "api/chain"
 import { useGlobalFarm, useYieldFarm } from "api/farms"
 import { usePoolShareToken } from "api/pools"
 import { useTotalIssuance } from "api/totalIssuance"
-import * as liquidityMining from "@galacticcouncil/math/build/liquidity-mining/bundler"
+import * as liquidityMining from "@galacticcouncil/math-liquidity-mining"
 import BN from "bignumber.js"
 
 export const useTotalInPositions = () => {

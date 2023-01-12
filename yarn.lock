@@ -1937,6 +1937,16 @@
   resolved "https://registry.yarnpkg.com/@galacticcouncil/math-lbp/-/math-lbp-0.0.4.tgz#da6fe8251361a2469fddf55cff5d9d3d70dcc415"
   integrity sha512-U+HvbdG8JK7Kad1iD850/zs83MDQ8yIJ3AVSL67lXII81+I0cBDHgogf9hL59LnBc2gYm7A+APUmGz/V23PvmQ==
 
+"@galacticcouncil/math-lbp@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@galacticcouncil/math-lbp/-/math-lbp-0.0.5.tgz#fd8d3f62ab226c4ead9663459ca6038d8df2003e"
+  integrity sha512-VzSzR2aFkI3URP9ef1K7pHbJ4UCBz1PzXqpjtNOslKKTg2jPFmK8vb3V2iShnNyVYpNF+xT34pRsgnMcfARuNA==
+
+"@galacticcouncil/math-liquidity-mining@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@galacticcouncil/math-liquidity-mining/-/math-liquidity-mining-0.0.5.tgz#08d1cda811f2c283cf15a143d359694431154b59"
+  integrity sha512-DSeKFS+yLL86aToXO8K3fkCly1NHuptE5Lkibc2HNq4NHlaLnam3ONtkie6zZ9uqv6iNSE1C2Kd7ngN6vt6AXg==
+
 "@galacticcouncil/math-omnipool@^0.0.4":
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/@galacticcouncil/math-omnipool/-/math-omnipool-0.0.4.tgz#877374f443b28144ab13ac311fe2183ea38455a9"
@@ -1947,9 +1957,10 @@
   resolved "https://registry.yarnpkg.com/@galacticcouncil/math-xyk/-/math-xyk-0.0.4.tgz#208ea74df5ba8faa7df247b1b577baac2884534b"
   integrity sha512-NY9pjx1e9/lFR/BLK2eDOuBEaN2S4IYGUwKXztkVsUtDOvdMHtfQ5DWjv8hswLwDU/oijhb7D1LThZKRISm74Q==
 
-"@galacticcouncil/math@https://github.com/galacticcouncil/HydraDX-wasm#0d41bf3a617aa420f2b0f18021a16323f77943fe":
-  version "0.0.4"
-  resolved "https://github.com/galacticcouncil/HydraDX-wasm#0d41bf3a617aa420f2b0f18021a16323f77943fe"
+"@galacticcouncil/math-xyk@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@galacticcouncil/math-xyk/-/math-xyk-0.0.5.tgz#7d13e1dc68a96270a42b4101c67facbc4d73fc18"
+  integrity sha512-TofYG/mTMLyB3VGOLEsBkkDpmf3d7Nfepo5/+MnhGaEiaVBYX++Ej7rB32xV5tpDIGYS+vD+ogC9Qu6tHMBhug==
 
 "@galacticcouncil/sdk@^0.0.1":
   version "0.0.1"

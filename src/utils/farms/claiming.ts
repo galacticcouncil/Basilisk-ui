@@ -18,7 +18,6 @@ import { getAccountResolver } from "utils/farms/claiming/accountResolver"
 import { MultiCurrencyContainer } from "utils/farms/claiming/multiCurrency"
 import { createMutableFarmEntries } from "utils/farms/claiming/mutableFarms"
 import { useAssetDetailsList } from "api/assetDetails"
-import * as liquidityMining from "@galacticcouncil/math/build/liquidity-mining/bundler"
 import { useSpotPrices } from "api/spotPrice"
 import { DepositNftType } from "api/deposits"
 
@@ -79,7 +78,6 @@ export const useClaimableAmount = (
   const sim = new XYKLiquidityMiningClaimSim(
     getAccountResolver(api.registry),
     multiCurrency,
-    liquidityMining,
     assetList.data ?? [],
   )
 

@@ -1680,10 +1680,6 @@ declare module "@polkadot/api-base/types/errors" {
     }
     xykWarehouseLM: {
       /**
-       * Deposit does not exist.
-       **/
-      DepositNotFound: AugmentedError<ApiType>
-      /**
        * Multiple claims in the same period is not allowed.
        **/
       DoubleClaimInPeriod: AugmentedError<ApiType>
@@ -1717,6 +1713,11 @@ declare module "@polkadot/api-base/types/errors" {
        **/
       IncentivizedAssetNotRegistered: AugmentedError<ApiType>
       /**
+       * Action cannot be completed because unexpected error has occurred. This should be reported
+       * to protocol maintainers.
+       **/
+      InconsistentState: AugmentedError<ApiType>
+      /**
        * Reward currency balance is not sufficient.
        **/
       InsufficientRewardCurrencyBalance: AugmentedError<ApiType>
@@ -1728,10 +1729,6 @@ declare module "@polkadot/api-base/types/errors" {
        * LP shares amount is not valid.
        **/
       InvalidDepositAmount: AugmentedError<ApiType>
-      /**
-       * Provided farm id is not valid. Valid range is [1, u32::MAX)
-       **/
-      InvalidFarmId: AugmentedError<ApiType>
       /**
        * Loyalty curve's initial reward percentage is not valid. Valid range is: [0, 1).
        **/
@@ -1768,6 +1765,10 @@ declare module "@polkadot/api-base/types/errors" {
        * Liquidity mining is not canceled.
        **/
       LiquidityMiningIsActive: AugmentedError<ApiType>
+      /**
+       * Liquidity mining is in `active` or `terminated` state and action cannot be completed.
+       **/
+      LiquidityMiningIsNotStopped: AugmentedError<ApiType>
       /**
        * Maximum number of locks reached for deposit.
        **/

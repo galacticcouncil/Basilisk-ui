@@ -2842,6 +2842,14 @@ declare module "@polkadot/api-base/types/events" {
     }
     xykWarehouseLM: {
       /**
+       * Global farm has no more rewards to distribute in the moment.
+       **/
+      AllRewardsDistributed: AugmentedEvent<
+        ApiType,
+        [globalFarmId: u32],
+        { globalFarmId: u32 }
+      >
+      /**
        * Global farm accumulated reward per share was updated.
        **/
       GlobalFarmAccRPZUpdated: AugmentedEvent<

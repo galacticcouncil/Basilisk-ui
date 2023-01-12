@@ -2564,7 +2564,14 @@ declare module "@polkadot/types/lookup" {
       readonly accumulatedRpvs: u128
       readonly totalValuedShares: u128
     } & Struct
-    readonly type: "GlobalFarmAccRPZUpdated" | "YieldFarmAccRPVSUpdated"
+    readonly isAllRewardsDistributed: boolean
+    readonly asAllRewardsDistributed: {
+      readonly globalFarmId: u32
+    } & Struct
+    readonly type:
+      | "GlobalFarmAccRPZUpdated"
+      | "YieldFarmAccRPVSUpdated"
+      | "AllRewardsDistributed"
   }
 
   /** @name PalletCurrenciesModuleEvent (140) */
@@ -6174,8 +6181,8 @@ declare module "@polkadot/types/lookup" {
     readonly totalSharesZ: u128
     readonly accumulatedRpz: u128
     readonly rewardCurrency: u32
-    readonly accumulatedRewards: u128
-    readonly paidAccumulatedRewards: u128
+    readonly pendingRewards: u128
+    readonly accumulatedPaidRewards: u128
     readonly yieldPerPeriod: Perquintill
     readonly plannedYieldingPeriods: u32
     readonly blocksPerPeriod: u32
@@ -6209,6 +6216,7 @@ declare module "@polkadot/types/lookup" {
     readonly state: PalletLiquidityMiningFarmState
     readonly entriesCount: u64
     readonly leftToDistribute: u128
+    readonly totalStopped: u32
   }
 
   /** @name PalletLiquidityMiningDepositData (486) */
@@ -6227,16 +6235,17 @@ declare module "@polkadot/types/lookup" {
     readonly accumulatedClaimedRewards: u128
     readonly enteredAt: u32
     readonly updatedAt: u32
+    readonly stoppedAtCreation: u32
   }
 
   /** @name PalletLiquidityMiningError (490) */
   interface PalletLiquidityMiningError extends Enum {
     readonly isGlobalFarmNotFound: boolean
     readonly isYieldFarmNotFound: boolean
-    readonly isDepositNotFound: boolean
     readonly isDoubleClaimInPeriod: boolean
     readonly isLiquidityMiningCanceled: boolean
     readonly isLiquidityMiningIsActive: boolean
+    readonly isLiquidityMiningIsNotStopped: boolean
     readonly isInvalidDepositAmount: boolean
     readonly isForbidden: boolean
     readonly isInvalidMultiplier: boolean
@@ -6249,7 +6258,6 @@ declare module "@polkadot/types/lookup" {
     readonly isInvalidYieldPerPeriod: boolean
     readonly isInvalidTotalRewards: boolean
     readonly isInvalidPlannedYieldingPeriods: boolean
-    readonly isInvalidFarmId: boolean
     readonly isMaxEntriesPerDeposit: boolean
     readonly isDoubleLock: boolean
     readonly isYieldFarmEntryNotFound: boolean
@@ -6260,13 +6268,15 @@ declare module "@polkadot/types/lookup" {
     readonly isZeroValuedShares: boolean
     readonly isRewardCurrencyNotRegistered: boolean
     readonly isIncentivizedAssetNotRegistered: boolean
+    readonly isInconsistentState: boolean
+    readonly asInconsistentState: PalletLiquidityMiningInconsistentStateError
     readonly type:
       | "GlobalFarmNotFound"
       | "YieldFarmNotFound"
-      | "DepositNotFound"
       | "DoubleClaimInPeriod"
       | "LiquidityMiningCanceled"
       | "LiquidityMiningIsActive"
+      | "LiquidityMiningIsNotStopped"
       | "InvalidDepositAmount"
       | "Forbidden"
       | "InvalidMultiplier"
@@ -6279,7 +6289,6 @@ declare module "@polkadot/types/lookup" {
       | "InvalidYieldPerPeriod"
       | "InvalidTotalRewards"
       | "InvalidPlannedYieldingPeriods"
-      | "InvalidFarmId"
       | "MaxEntriesPerDeposit"
       | "DoubleLock"
       | "YieldFarmEntryNotFound"
@@ -6290,9 +6299,47 @@ declare module "@polkadot/types/lookup" {
       | "ZeroValuedShares"
       | "RewardCurrencyNotRegistered"
       | "IncentivizedAssetNotRegistered"
+      | "InconsistentState"
   }
 
-  /** @name PalletCurrenciesModuleError (491) */
+  /** @name PalletLiquidityMiningInconsistentStateError (491) */
+  interface PalletLiquidityMiningInconsistentStateError extends Enum {
+    readonly isYieldFarmNotFound: boolean
+    readonly isGlobalFarmNotFound: boolean
+    readonly isLiquidityIsNotActive: boolean
+    readonly isGlobalFarmIsNotActive: boolean
+    readonly isDepositNotFound: boolean
+    readonly isInvalidPeriod: boolean
+    readonly isNotEnoughRewardsInYieldFarm: boolean
+    readonly isInvalidLiveYielFarmsCount: boolean
+    readonly isInvalidTotalYieldFarmsCount: boolean
+    readonly isInvalidYieldFarmEntriesCount: boolean
+    readonly isInvalidTotalShares: boolean
+    readonly isInvalidValuedShares: boolean
+    readonly isInvalidTotalSharesZ: boolean
+    readonly isInvalidPaidAccumulatedRewards: boolean
+    readonly isInvalidFarmId: boolean
+    readonly isInvalidLoyaltyMultiplier: boolean
+    readonly type:
+      | "YieldFarmNotFound"
+      | "GlobalFarmNotFound"
+      | "LiquidityIsNotActive"
+      | "GlobalFarmIsNotActive"
+      | "DepositNotFound"
+      | "InvalidPeriod"
+      | "NotEnoughRewardsInYieldFarm"
+      | "InvalidLiveYielFarmsCount"
+      | "InvalidTotalYieldFarmsCount"
+      | "InvalidYieldFarmEntriesCount"
+      | "InvalidTotalShares"
+      | "InvalidValuedShares"
+      | "InvalidTotalSharesZ"
+      | "InvalidPaidAccumulatedRewards"
+      | "InvalidFarmId"
+      | "InvalidLoyaltyMultiplier"
+  }
+
+  /** @name PalletCurrenciesModuleError (492) */
   interface PalletCurrenciesModuleError extends Enum {
     readonly isAmountIntoBalanceFailed: boolean
     readonly isBalanceTooLow: boolean
@@ -6300,26 +6347,26 @@ declare module "@polkadot/types/lookup" {
     readonly type: "AmountIntoBalanceFailed" | "BalanceTooLow" | "DepositFailed"
   }
 
-  /** @name OrmlTokensBalanceLock (493) */
+  /** @name OrmlTokensBalanceLock (494) */
   interface OrmlTokensBalanceLock extends Struct {
     readonly id: U8aFixed
     readonly amount: u128
   }
 
-  /** @name OrmlTokensAccountData (495) */
+  /** @name OrmlTokensAccountData (496) */
   interface OrmlTokensAccountData extends Struct {
     readonly free: u128
     readonly reserved: u128
     readonly frozen: u128
   }
 
-  /** @name OrmlTokensReserveData (497) */
+  /** @name OrmlTokensReserveData (498) */
   interface OrmlTokensReserveData extends Struct {
     readonly id: Null
     readonly amount: u128
   }
 
-  /** @name OrmlTokensModuleError (499) */
+  /** @name OrmlTokensModuleError (500) */
   interface OrmlTokensModuleError extends Enum {
     readonly isBalanceTooLow: boolean
     readonly isAmountIntoBalanceFailed: boolean
@@ -6340,7 +6387,7 @@ declare module "@polkadot/types/lookup" {
       | "TooManyReserves"
   }
 
-  /** @name OrmlXcmModuleError (500) */
+  /** @name OrmlXcmModuleError (501) */
   interface OrmlXcmModuleError extends Enum {
     readonly isUnreachable: boolean
     readonly isSendFailure: boolean
@@ -6348,7 +6395,7 @@ declare module "@polkadot/types/lookup" {
     readonly type: "Unreachable" | "SendFailure" | "BadVersion"
   }
 
-  /** @name OrmlXtokensModuleError (501) */
+  /** @name OrmlXtokensModuleError (502) */
   interface OrmlXtokensModuleError extends Enum {
     readonly isAssetHasNoReserve: boolean
     readonly isNotCrossChainTransfer: boolean
@@ -6391,7 +6438,7 @@ declare module "@polkadot/types/lookup" {
       | "MinXcmFeeNotDefined"
   }
 
-  /** @name OrmlUnknownTokensModuleError (504) */
+  /** @name OrmlUnknownTokensModuleError (505) */
   interface OrmlUnknownTokensModuleError extends Enum {
     readonly isBalanceTooLow: boolean
     readonly isBalanceOverflow: boolean
@@ -6399,7 +6446,7 @@ declare module "@polkadot/types/lookup" {
     readonly type: "BalanceTooLow" | "BalanceOverflow" | "UnhandledAsset"
   }
 
-  /** @name SpRuntimeMultiSignature (506) */
+  /** @name SpRuntimeMultiSignature (507) */
   interface SpRuntimeMultiSignature extends Enum {
     readonly isEd25519: boolean
     readonly asEd25519: SpCoreEd25519Signature
@@ -6410,37 +6457,37 @@ declare module "@polkadot/types/lookup" {
     readonly type: "Ed25519" | "Sr25519" | "Ecdsa"
   }
 
-  /** @name SpCoreEd25519Signature (507) */
+  /** @name SpCoreEd25519Signature (508) */
   interface SpCoreEd25519Signature extends U8aFixed {}
 
-  /** @name SpCoreSr25519Signature (509) */
+  /** @name SpCoreSr25519Signature (510) */
   interface SpCoreSr25519Signature extends U8aFixed {}
 
-  /** @name SpCoreEcdsaSignature (510) */
+  /** @name SpCoreEcdsaSignature (511) */
   interface SpCoreEcdsaSignature extends U8aFixed {}
 
-  /** @name FrameSystemExtensionsCheckSpecVersion (513) */
+  /** @name FrameSystemExtensionsCheckSpecVersion (514) */
   type FrameSystemExtensionsCheckSpecVersion = Null
 
-  /** @name FrameSystemExtensionsCheckTxVersion (514) */
+  /** @name FrameSystemExtensionsCheckTxVersion (515) */
   type FrameSystemExtensionsCheckTxVersion = Null
 
-  /** @name FrameSystemExtensionsCheckGenesis (515) */
+  /** @name FrameSystemExtensionsCheckGenesis (516) */
   type FrameSystemExtensionsCheckGenesis = Null
 
-  /** @name FrameSystemExtensionsCheckNonce (518) */
+  /** @name FrameSystemExtensionsCheckNonce (519) */
   interface FrameSystemExtensionsCheckNonce extends Compact<u32> {}
 
-  /** @name FrameSystemExtensionsCheckWeight (519) */
+  /** @name FrameSystemExtensionsCheckWeight (520) */
   type FrameSystemExtensionsCheckWeight = Null
 
-  /** @name PalletTransactionPaymentChargeTransactionPayment (520) */
+  /** @name PalletTransactionPaymentChargeTransactionPayment (521) */
   interface PalletTransactionPaymentChargeTransactionPayment
     extends Compact<u128> {}
 
-  /** @name PalletTransactionMultiPaymentCurrencyBalanceCheck (521) */
+  /** @name PalletTransactionMultiPaymentCurrencyBalanceCheck (522) */
   type PalletTransactionMultiPaymentCurrencyBalanceCheck = Null
 
-  /** @name BasiliskRuntimeRuntime (522) */
+  /** @name BasiliskRuntimeRuntime (523) */
   type BasiliskRuntimeRuntime = Null
 } // declare module
