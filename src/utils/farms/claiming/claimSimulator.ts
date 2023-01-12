@@ -151,7 +151,7 @@ export class XYKLiquidityMiningClaimSim {
       return
     }
 
-    let state_in_global_farm = new BN(
+    let stake_in_global_farm = new BN(
       liquidityMining.calculate_global_farm_shares(
         yield_farm.totalValuedShares.toFixed(),
         yield_farm.multiplier.toFixed(),
@@ -161,7 +161,7 @@ export class XYKLiquidityMiningClaimSim {
     let yield_farm_rewards = this.calculate_rewards_from_pot(
       global_farm,
       yield_farm,
-      state_in_global_farm,
+      stake_in_global_farm,
     )
 
     yield_farm.accumulatedRpvs = new BN(
