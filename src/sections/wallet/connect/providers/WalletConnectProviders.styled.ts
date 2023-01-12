@@ -32,6 +32,20 @@ export const SWalletButton = styled.button<{
       `
     }
 
+    if (variant === "nova-wallet") {
+      return css`
+        background: hsla(214, 65%, 64%, 0.05);
+
+        :hover {
+          background: hsla(214, 65%, 64%, 0.1);
+        }
+
+        :active {
+          background: hsla(214, 65%, 64%, 0.12);
+        }
+      `
+    }
+
     if (variant === "talisman") {
       return css`
         background: hsla(75, 100%, 68%, 0.05);

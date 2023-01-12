@@ -9,8 +9,6 @@ export const SContainer = styled.div`
   align-items: center;
   justify-content: space-between;
 
-  background: ${theme.colors.backgroundGray1000};
-
   margin: 0px -30px -30px;
   width: calc(100% + 30px * 2);
 
@@ -18,7 +16,12 @@ export const SContainer = styled.div`
   border-top-left-radius: 0px;
   border-top-right-radius: 0px;
 
-  padding: 20px 30px;
+  padding: 10px 30px;
+
+  @media ${theme.viewport.gte.sm} {
+    padding: 20px 30px;
+    background: ${theme.colors.backgroundGray1000};
+  }
 `
 
 export const SLogoutContainer = styled.div`
