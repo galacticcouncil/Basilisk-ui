@@ -1896,6 +1896,9 @@ export default {
         accumulatedRpvs: "u128",
         totalValuedShares: "u128",
       },
+      AllRewardsDistributed: {
+        globalFarmId: "u32",
+      },
     },
   },
   /**
@@ -5046,8 +5049,8 @@ export default {
     totalSharesZ: "u128",
     accumulatedRpz: "u128",
     rewardCurrency: "u32",
-    accumulatedRewards: "u128",
-    paidAccumulatedRewards: "u128",
+    pendingRewards: "u128",
+    accumulatedPaidRewards: "u128",
     yieldPerPeriod: "Perquintill",
     plannedYieldingPeriods: "u32",
     blocksPerPeriod: "u32",
@@ -5080,6 +5083,7 @@ export default {
     state: "PalletLiquidityMiningFarmState",
     entriesCount: "u64",
     leftToDistribute: "u128",
+    totalStopped: "u32",
   },
   /**
    * Lookup486: pallet_liquidity_mining::types::DepositData<T, I>
@@ -5100,58 +5104,82 @@ export default {
     accumulatedClaimedRewards: "u128",
     enteredAt: "u32",
     updatedAt: "u32",
+    stoppedAtCreation: "u32",
   },
   /**
    * Lookup490: pallet_liquidity_mining::pallet::Error<T, I>
    **/
   PalletLiquidityMiningError: {
+    _enum: {
+      GlobalFarmNotFound: "Null",
+      YieldFarmNotFound: "Null",
+      DoubleClaimInPeriod: "Null",
+      LiquidityMiningCanceled: "Null",
+      LiquidityMiningIsActive: "Null",
+      LiquidityMiningIsNotStopped: "Null",
+      InvalidDepositAmount: "Null",
+      Forbidden: "Null",
+      InvalidMultiplier: "Null",
+      YieldFarmAlreadyExists: "Null",
+      InvalidInitialRewardPercentage: "Null",
+      GlobalFarmIsNotEmpty: "Null",
+      MissingIncentivizedAsset: "Null",
+      InsufficientRewardCurrencyBalance: "Null",
+      InvalidBlocksPerPeriod: "Null",
+      InvalidYieldPerPeriod: "Null",
+      InvalidTotalRewards: "Null",
+      InvalidPlannedYieldingPeriods: "Null",
+      MaxEntriesPerDeposit: "Null",
+      DoubleLock: "Null",
+      YieldFarmEntryNotFound: "Null",
+      GlobalFarmIsFull: "Null",
+      InvalidMinDeposit: "Null",
+      InvalidPriceAdjustment: "Null",
+      ErrorGetAccountId: "Null",
+      ZeroValuedShares: "Null",
+      RewardCurrencyNotRegistered: "Null",
+      IncentivizedAssetNotRegistered: "Null",
+      InconsistentState: "PalletLiquidityMiningInconsistentStateError",
+    },
+  },
+  /**
+   * Lookup491: pallet_liquidity_mining::pallet::InconsistentStateError
+   **/
+  PalletLiquidityMiningInconsistentStateError: {
     _enum: [
-      "GlobalFarmNotFound",
       "YieldFarmNotFound",
+      "GlobalFarmNotFound",
+      "LiquidityIsNotActive",
+      "GlobalFarmIsNotActive",
       "DepositNotFound",
-      "DoubleClaimInPeriod",
-      "LiquidityMiningCanceled",
-      "LiquidityMiningIsActive",
-      "InvalidDepositAmount",
-      "Forbidden",
-      "InvalidMultiplier",
-      "YieldFarmAlreadyExists",
-      "InvalidInitialRewardPercentage",
-      "GlobalFarmIsNotEmpty",
-      "MissingIncentivizedAsset",
-      "InsufficientRewardCurrencyBalance",
-      "InvalidBlocksPerPeriod",
-      "InvalidYieldPerPeriod",
-      "InvalidTotalRewards",
-      "InvalidPlannedYieldingPeriods",
+      "InvalidPeriod",
+      "NotEnoughRewardsInYieldFarm",
+      "InvalidLiveYielFarmsCount",
+      "InvalidTotalYieldFarmsCount",
+      "InvalidYieldFarmEntriesCount",
+      "InvalidTotalShares",
+      "InvalidValuedShares",
+      "InvalidTotalSharesZ",
+      "InvalidPaidAccumulatedRewards",
       "InvalidFarmId",
-      "MaxEntriesPerDeposit",
-      "DoubleLock",
-      "YieldFarmEntryNotFound",
-      "GlobalFarmIsFull",
-      "InvalidMinDeposit",
-      "InvalidPriceAdjustment",
-      "ErrorGetAccountId",
-      "ZeroValuedShares",
-      "RewardCurrencyNotRegistered",
-      "IncentivizedAssetNotRegistered",
+      "InvalidLoyaltyMultiplier",
     ],
   },
   /**
-   * Lookup491: pallet_currencies::module::Error<T>
+   * Lookup492: pallet_currencies::module::Error<T>
    **/
   PalletCurrenciesModuleError: {
     _enum: ["AmountIntoBalanceFailed", "BalanceTooLow", "DepositFailed"],
   },
   /**
-   * Lookup493: orml_tokens::BalanceLock<Balance>
+   * Lookup494: orml_tokens::BalanceLock<Balance>
    **/
   OrmlTokensBalanceLock: {
     id: "[u8;8]",
     amount: "u128",
   },
   /**
-   * Lookup495: orml_tokens::AccountData<Balance>
+   * Lookup496: orml_tokens::AccountData<Balance>
    **/
   OrmlTokensAccountData: {
     free: "u128",
@@ -5159,14 +5187,14 @@ export default {
     frozen: "u128",
   },
   /**
-   * Lookup497: orml_tokens::ReserveData<ReserveIdentifier, Balance>
+   * Lookup498: orml_tokens::ReserveData<ReserveIdentifier, Balance>
    **/
   OrmlTokensReserveData: {
     id: "Null",
     amount: "u128",
   },
   /**
-   * Lookup499: orml_tokens::module::Error<T>
+   * Lookup500: orml_tokens::module::Error<T>
    **/
   OrmlTokensModuleError: {
     _enum: [
@@ -5181,13 +5209,13 @@ export default {
     ],
   },
   /**
-   * Lookup500: orml_xcm::module::Error<T>
+   * Lookup501: orml_xcm::module::Error<T>
    **/
   OrmlXcmModuleError: {
     _enum: ["Unreachable", "SendFailure", "BadVersion"],
   },
   /**
-   * Lookup501: orml_xtokens::module::Error<T>
+   * Lookup502: orml_xtokens::module::Error<T>
    **/
   OrmlXtokensModuleError: {
     _enum: [
@@ -5213,13 +5241,13 @@ export default {
     ],
   },
   /**
-   * Lookup504: orml_unknown_tokens::module::Error<T>
+   * Lookup505: orml_unknown_tokens::module::Error<T>
    **/
   OrmlUnknownTokensModuleError: {
     _enum: ["BalanceTooLow", "BalanceOverflow", "UnhandledAsset"],
   },
   /**
-   * Lookup506: sp_runtime::MultiSignature
+   * Lookup507: sp_runtime::MultiSignature
    **/
   SpRuntimeMultiSignature: {
     _enum: {
@@ -5229,47 +5257,47 @@ export default {
     },
   },
   /**
-   * Lookup507: sp_core::ed25519::Signature
+   * Lookup508: sp_core::ed25519::Signature
    **/
   SpCoreEd25519Signature: "[u8;64]",
   /**
-   * Lookup509: sp_core::sr25519::Signature
+   * Lookup510: sp_core::sr25519::Signature
    **/
   SpCoreSr25519Signature: "[u8;64]",
   /**
-   * Lookup510: sp_core::ecdsa::Signature
+   * Lookup511: sp_core::ecdsa::Signature
    **/
   SpCoreEcdsaSignature: "[u8;65]",
   /**
-   * Lookup513: frame_system::extensions::check_spec_version::CheckSpecVersion<T>
+   * Lookup514: frame_system::extensions::check_spec_version::CheckSpecVersion<T>
    **/
   FrameSystemExtensionsCheckSpecVersion: "Null",
   /**
-   * Lookup514: frame_system::extensions::check_tx_version::CheckTxVersion<T>
+   * Lookup515: frame_system::extensions::check_tx_version::CheckTxVersion<T>
    **/
   FrameSystemExtensionsCheckTxVersion: "Null",
   /**
-   * Lookup515: frame_system::extensions::check_genesis::CheckGenesis<T>
+   * Lookup516: frame_system::extensions::check_genesis::CheckGenesis<T>
    **/
   FrameSystemExtensionsCheckGenesis: "Null",
   /**
-   * Lookup518: frame_system::extensions::check_nonce::CheckNonce<T>
+   * Lookup519: frame_system::extensions::check_nonce::CheckNonce<T>
    **/
   FrameSystemExtensionsCheckNonce: "Compact<u32>",
   /**
-   * Lookup519: frame_system::extensions::check_weight::CheckWeight<T>
+   * Lookup520: frame_system::extensions::check_weight::CheckWeight<T>
    **/
   FrameSystemExtensionsCheckWeight: "Null",
   /**
-   * Lookup520: pallet_transaction_payment::ChargeTransactionPayment<T>
+   * Lookup521: pallet_transaction_payment::ChargeTransactionPayment<T>
    **/
   PalletTransactionPaymentChargeTransactionPayment: "Compact<u128>",
   /**
-   * Lookup521: pallet_transaction_multi_payment::CurrencyBalanceCheck<T>
+   * Lookup522: pallet_transaction_multi_payment::CurrencyBalanceCheck<T>
    **/
   PalletTransactionMultiPaymentCurrencyBalanceCheck: "Null",
   /**
-   * Lookup522: basilisk_runtime::Runtime
+   * Lookup523: basilisk_runtime::Runtime
    **/
   BasiliskRuntimeRuntime: "Null",
 }

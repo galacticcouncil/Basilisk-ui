@@ -21,6 +21,7 @@ export interface MutableYieldFarm {
   multiplier: BN
   entriesCount: BN
   leftToDistribute: BN
+  totalStopped: BN
 }
 
 export interface MutableGlobalFarm {
@@ -32,8 +33,8 @@ export interface MutableGlobalFarm {
   updatedAt: BN
   totalSharesZ: BN
   accumulatedRpz: BN
-  accumulatedRewards: BN
-  paidAccumulatedRewards: BN
+  pendingRewards: BN
+  accumulatedPaidRewards: BN
   yieldPerPeriod: BN
   plannedYieldingPeriods: BN
   blocksPerPeriod: BN
@@ -67,9 +68,9 @@ export function createMutableFarmEntries(
       // FixedU128
       accumulatedRpz: globalFarm.accumulatedRpz.toBigNumber(),
       // Balance
-      accumulatedRewards: globalFarm.accumulatedRewards.toBigNumber(),
+      pendingRewards: globalFarm.pendingRewards.toBigNumber(),
       // Balance
-      paidAccumulatedRewards: globalFarm.paidAccumulatedRewards.toBigNumber(),
+      accumulatedPaidRewards: globalFarm.accumulatedPaidRewards.toBigNumber(),
       // Perquintill
       yieldPerPeriod: globalFarm.yieldPerPeriod
         .toBigNumber()
@@ -108,6 +109,8 @@ export function createMutableFarmEntries(
       entriesCount: yieldFarm.entriesCount.toBigNumber(),
       // Balance
       leftToDistribute: yieldFarm.leftToDistribute.toBigNumber(),
+      // PeriodOf<T>
+      totalStopped: yieldFarm.totalStopped.toBigNumber(),
       loyaltyCurve: yieldFarm.loyaltyCurve,
       state: yieldFarm.state,
     }
