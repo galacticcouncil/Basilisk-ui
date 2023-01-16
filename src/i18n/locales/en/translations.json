@@ -138,7 +138,7 @@
   "pools.allFarms.modal.position.mined.label": "Mined:",
   "pools.allFarms.modal.position.mined.value": "{{ value, bignumber(type: 'token') }}",
   "pools.allFarms.modal.position.loyalty.y": "Reward APR%",
-  "pools.allFarms.modal.position.loyalty.x": "Periods",
+  "pools.allFarms.modal.position.loyalty.x": "Days",
   "pools.allFarms.modal.position.loyalty.disclaimer": "You'll receive addition APR by remaining in farm for longer period of time. The longer you keep farming the bigger the reward will be.",
   "pools.allFarms.modal.position.loyalty.title": "Loyalty Rewards",
   "pools.reviewTransaction.modal.title": "Review Transaction Details ",
