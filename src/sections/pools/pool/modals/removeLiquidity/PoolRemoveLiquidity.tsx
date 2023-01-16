@@ -13,7 +13,7 @@ import { Input } from "components/Input/Input"
 import { Text } from "components/Typography/Text/Text"
 import { PoolRemoveLiquidityReward } from "sections/pools/pool/modals/removeLiquidity/reward/PoolRemoveLiquidityReward"
 import { Separator } from "components/Separator/Separator"
-import { useForm, Controller } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import { useAccountStore, useStore } from "state/store"
 import { WalletConnectButton } from "sections/wallet/connect/modal/WalletConnectButton"
 import { PoolBase } from "@galacticcouncil/sdk"
@@ -27,7 +27,8 @@ import { useSpotPrice } from "api/spotPrice"
 import { FormValues } from "utils/helpers"
 import { useAccountCurrency } from "../../../../../api/payments"
 import { useAssetMeta } from "../../../../../api/assetMeta"
-import { SettingsModal } from "components/SettingsModal/SettingsModal"
+import { Settings, SettingsModal } from "components/SettingsModal/SettingsModal"
+import { useLocalStorage } from "react-use"
 
 const options = [
   { label: "25%", value: 25 },
@@ -96,6 +97,7 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
   const form = useForm<{ value: number }>({ defaultValues: { value: 25 } })
   const { createTransaction } = useStore()
   const { account } = useAccountStore()
+  const [settings, setSettings] = useLocalStorage<Settings>("settings")
   const accountCurrency = useAccountCurrency(account?.address)
   const feeMeta = useAssetMeta(accountCurrency.data)
 
@@ -207,10 +209,12 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
                 {t("pools.removeLiquidity.modal.tradeLimit")}
               </Text>
               <div sx={{ flex: "row", align: "center", gap: 4 }}>
-                <Text fs={14}>TODO</Text>
+                <Text fs={14}>
+                  {t("value.percentage", { value: settings?.tradeLimit })}
+                </Text>
                 <ButtonTransparent onClick={() => setOpenSettings(true)}>
                   <Text fs={14} color="primary300">
-                    TODO
+                    {t("edit")}
                   </Text>
                 </ButtonTransparent>
               </div>
@@ -265,7 +269,10 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
       </form>
       <SettingsModal
         isOpen={openSettings}
-        onClose={() => setOpenSettings(false)}
+        onClose={(newSettings) => {
+          setOpenSettings(false)
+          if (newSettings) setSettings(newSettings)
+        }}
       />
     </Modal>
   )

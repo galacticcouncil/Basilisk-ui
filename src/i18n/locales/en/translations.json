@@ -13,6 +13,8 @@
   "metadata.update.cancel": "Cancel",
   "metadata.update.confirm": "Update",
   "confirm": "Confirm",
+  "custom": "Custom",
+  "edit": "Edit",
   "error.positive": "Must be positive",
   "error.validNumber": "Must be a number",
   "modal.closeButton.name": "Close modal button",
@@ -105,6 +107,7 @@
   "pools.removeLiquidity.modal.title": "Remove Liquidity",
   "pools.removeLiquidity.modal.input.placeholder": "Custom",
   "pools.removeLiquidity.modal.receive": "You'll receive",
+  "pools.removeLiquidity.modal.tradeLimit": "Trade Limit",
   "pools.removeLiquidity.modal.cost": "Transaction cost",
   "pools.removeLiquidity.modal.price": "Price",
   "pools.removeLiquidity.modal.confirm": "Confirm removal",
@@ -247,5 +250,11 @@
   "wallet.assets.liquidityPositions.table.actions.transfer": "Transfer",
   "wallet.assets.liquidityPositions.table.actions.details": "Details",
   "wallet.assets.liquidityPositions.table.details.balance": "{{ symbol }} Balance:",
-  "wallet.assets.liquidityPositions.table.details.chain": "{{ symbol }} Origin Chain:"
+  "wallet.assets.liquidityPositions.table.details.chain": "{{ symbol }} Origin Chain:",
+  "settings.modal.title": "Edit Settings",
+  "settings.modal.cancel": "Back",
+  "settings.modal.confirm": "Save & Close",
+  "settings.modal.tradeLimit.title": "Trade Limit Settings",
+  "settings.modal.tradeLimit.auto": "Auto Trade Limit",
+  "settings.modal.tradeLimit.description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vel augue tincidunt, tincidunt dolor aliquam, viverra justo. Morbi fringilla enim mauris, a posuere velit efficitur nec. Maecenas dignissim neque vitae ex vestibulum finibus. "
 }
