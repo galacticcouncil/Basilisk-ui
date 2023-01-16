@@ -1,6 +1,6 @@
-import { BLOCK_TIME, BN_QUINTILL } from "utils/constants"
+import { BN_QUINTILL } from "utils/constants"
 import { PalletLiquidityMiningLoyaltyCurve } from "@polkadot/types/lookup"
-import BN from "bignumber.js"
+
 import type { worker as WorkerType } from "./PoolJoinFarmLoyaltyGraph.worker"
 import Worker from "./PoolJoinFarmLoyaltyGraph.worker?worker"
 import { wrap } from "comlink"
@@ -36,10 +36,7 @@ export const useLoyaltyRates = (
             scaleCoef,
           )
 
-          return result.map((y, x) => ({
-            x: new BN(x).div(BLOCK_TIME).div(60).div(24).toNumber(),
-            y: new BN(y).times(farm.apr.div(100)).toNumber(),
-          }))
+          return result.map((y, x) => ({ x, y }))
         }
       : undefinedNoop,
     { enabled: loyaltyCurve != null },
