@@ -96,6 +96,7 @@
   "pools.pool.positions.position.amounts": "{{ amountA, bignumber(type: 'token') }} {{ symbolA }} | {{ amountB, bignumber(type: 'token') }} {{ symbolB }}",
   "pools.pool.actions.chevron.name": "Open details button",
   "pools.addLiquidity.modal.title": "Add Liquidity",
+  "pools.addLiquidity.modal.row.tradeLimit": "Trade Limit",
   "pools.addLiquidity.modal.row.tradeFee": "Pool Trade Fee",
   "pools.addLiquidity.modal.row.transactionCost": "Transaction cost:",
   "pools.addLiquidity.modal.row.transactionCostValue": "≈ {{ amount, bignumber }} {{ symbol }}",

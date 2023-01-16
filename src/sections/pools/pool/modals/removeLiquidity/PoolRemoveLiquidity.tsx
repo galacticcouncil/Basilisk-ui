@@ -267,13 +267,15 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
           <WalletConnectButton css={{ marginTop: 20, width: "100%" }} />
         )}
       </form>
-      <SettingsModal
-        isOpen={openSettings}
-        onClose={(newSettings) => {
-          setOpenSettings(false)
-          if (newSettings) setSettings(newSettings)
-        }}
-      />
+      {openSettings && (
+        <SettingsModal
+          isOpen={openSettings}
+          onClose={(newSettings) => {
+            setOpenSettings(false)
+            if (newSettings) setSettings(newSettings)
+          }}
+        />
+      )}
     </Modal>
   )
 }

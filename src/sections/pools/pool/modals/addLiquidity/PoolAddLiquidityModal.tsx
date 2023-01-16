@@ -5,7 +5,7 @@ import { BN_1, BN_100, DEFAULT_DECIMALS } from "utils/constants"
 import { Row } from "components/Row/Row"
 import { Separator } from "components/Separator/Separator"
 import { Text } from "components/Typography/Text/Text"
-import { Button } from "components/Button/Button"
+import { Button, ButtonTransparent } from "components/Button/Button"
 import { WalletConnectButton } from "sections/wallet/connect/modal/WalletConnectButton"
 import { usePools, usePoolShareToken } from "api/pools"
 import { FC, useCallback, useMemo, useState } from "react"
@@ -26,6 +26,8 @@ import { getTradeFee } from "sections/pools/pool/Pool.utils"
 import { useAssetMeta } from "api/assetMeta"
 import { useAccountCurrency } from "api/payments"
 import * as xyk from "@galacticcouncil/math-xyk"
+import { useLocalStorage } from "react-use"
+import { Settings, SettingsModal } from "components/SettingsModal/SettingsModal"
 
 interface PoolAddLiquidityModalProps {
   pool: PoolBase
@@ -44,7 +46,8 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
   const { data: shareTokenMeta } = useAssetMeta(shareToken?.token)
   const accountCurrency = useAccountCurrency(account?.address)
   const feeMeta = useAssetMeta(accountCurrency.data)
-
+  const [openSettings, setOpenSettings] = useState(false)
+  const [settings, setSettings] = useLocalStorage<Settings>("settings")
   const [input, setInput] = useState<{
     values: [string, string]
     lastUpdated: 0 | 1
@@ -241,7 +244,22 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
           onChange={(value) => handleChange(value, 1)}
           onSelectAsset={(assetId) => handleSelectAsset(assetId, 1)}
         />
-
+        <Row
+          left={t("pools.addLiquidity.modal.row.tradeLimit")}
+          right={
+            <div sx={{ flex: "row", align: "center", gap: 4 }}>
+              <Text fs={14}>
+                {t("value.percentage", { value: settings?.tradeLimit })}
+              </Text>
+              <ButtonTransparent onClick={() => setOpenSettings(true)}>
+                <Text fs={14} color="primary300">
+                  {t("edit")}
+                </Text>
+              </ButtonTransparent>
+            </div>
+          }
+        />
+        <Separator />
         <Row
           left={t("pools.addLiquidity.modal.row.tradeFee")}
           right={t("value.percentage", { value: getTradeFee(pool.tradeFee) })}
@@ -294,6 +312,15 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
         />
       ) : (
         <WalletConnectButton css={{ marginTop: 30, width: "100%" }} />
+      )}
+      {openSettings && (
+        <SettingsModal
+          isOpen={openSettings}
+          onClose={(newSettings) => {
+            setOpenSettings(false)
+            if (newSettings) setSettings(newSettings)
+          }}
+        />
       )}
     </div>
   )
