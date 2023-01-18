@@ -14,11 +14,18 @@ import { PoolBase } from "@galacticcouncil/sdk"
 import {
   SActionsContainer,
   SButtonOpen,
+  SMobActionButton,
 } from "sections/pools/pool/actions/PoolActions.styled"
 import { useAccountStore } from "state/store"
 import { useMedia } from "react-use"
 import { theme } from "theme"
 import { Modal } from "components/Modal/Modal"
+import { useAccountDepositIds, useDeposits } from "api/deposits"
+import { MyPositionsModal } from "../modals/myPositions/MyPositionsModal"
+import { useCurrentSharesValue } from "../shares/value/PoolSharesValue.utils"
+import { usePoolShareToken } from "api/pools"
+import { useTokenBalance, useTokensBalances } from "api/balances"
+import { useAPR } from "utils/farms/apr"
 
 type Props = { pool: PoolBase; isExpanded: boolean; onExpandClick: () => void }
 
@@ -28,16 +35,49 @@ export const PoolActions: FC<Props> = ({ pool, isExpanded, onExpandClick }) => {
   const [openRemove, setOpenRemove] = useState(false)
   const [openFarms, setOpenFarms] = useState(false)
   const [openActions, setOpenActions] = useState(false)
+  const [openMyPositions, setOpenMyPositions] = useState(false)
   const { account } = useAccountStore()
   const isDesktop = useMedia(theme.viewport.gte.sm)
 
+  const deposits = useDeposits(pool.address)
+  const accountDepositIds = useAccountDepositIds(account?.address)
+  const positions = deposits.data?.filter((deposit) =>
+    accountDepositIds.data?.some((ad) => ad.instanceId.eq(deposit.id)),
+  )
+
+  const apr = useAPR(pool.address)
+
+  const shareToken = usePoolShareToken(pool.address)
+  const balance = useTokenBalance(shareToken.data?.token, account?.address)
+  const [assetA, assetB] = useTokensBalances(
+    pool.tokens.map((i) => i.id),
+    account?.address,
+  )
+
+  const { dollarValue } = useCurrentSharesValue({
+    shareToken: shareToken.data?.token,
+    shareTokenBalance: balance.data?.balance,
+    pool,
+  })
+
   const closeActionsDrawer = () => setOpenActions(false)
 
+  const disabledAddLP =
+    assetA.data?.balance.isZero() || assetB.data?.balance.isZero()
+
+  const disabledRemoveLP = balance.data?.balance.isZero()
+
+  const disabledJoinFarm = !apr.data && balance.data?.balance.isZero()
+
+  const disabledMyPositions =
+    !account || (!positions?.length && (!dollarValue || dollarValue.isZero()))
+
   const actionButtons = (
-    <div sx={{ width: ["auto", 214], flex: "column", gap: 10 }}>
+    <div sx={{ width: ["auto", 214], flex: "column", gap: 10, mt: [19, 0] }}>
       <Button
         fullWidth
         size="small"
+        disabled={disabledAddLP}
         onClick={() => {
           setOpenAdd(true)
           closeActionsDrawer()
@@ -52,6 +92,7 @@ export const PoolActions: FC<Props> = ({ pool, isExpanded, onExpandClick }) => {
       <Button
         fullWidth
         size="small"
+        disabled={disabledRemoveLP}
         onClick={() => {
           setOpenRemove(true)
           closeActionsDrawer()
@@ -66,6 +107,7 @@ export const PoolActions: FC<Props> = ({ pool, isExpanded, onExpandClick }) => {
       <Button
         fullWidth
         size="small"
+        disabled={disabledJoinFarm}
         onClick={() => {
           setOpenFarms(true)
           closeActionsDrawer()
@@ -87,7 +129,7 @@ export const PoolActions: FC<Props> = ({ pool, isExpanded, onExpandClick }) => {
           <SButtonOpen
             isActive={isExpanded}
             onClick={onExpandClick}
-            disabled={!account}
+            disabled={disabledMyPositions}
           >
             <ChevronDown />
           </SButtonOpen>
@@ -104,12 +146,28 @@ export const PoolActions: FC<Props> = ({ pool, isExpanded, onExpandClick }) => {
           >
             {actionButtons}
           </Modal>
-          <Button size="small" onClick={() => setOpenActions(true)}>
-            <div sx={{ flex: "row", align: "center", justify: "center" }}>
-              <Icon icon={<MoreIcon />} sx={{ mr: 8 }} />
-              {t("pools.pool.actions.more")}
-            </div>
-          </Button>
+          <MyPositionsModal
+            pool={pool}
+            isOpen={openMyPositions}
+            onClose={() => setOpenMyPositions(false)}
+          />
+          <div sx={{ flex: "row", gap: 12 }}>
+            <SMobActionButton size="small" onClick={() => setOpenActions(true)}>
+              <div sx={{ flex: "row", align: "center", justify: "center" }}>
+                <Icon icon={<MoreIcon />} sx={{ mr: 8 }} />
+                {t("pools.pool.actions.actions")}
+              </div>
+            </SMobActionButton>
+            <SMobActionButton
+              size="small"
+              onClick={() => setOpenMyPositions(true)}
+              disabled={disabledMyPositions}
+            >
+              <div sx={{ flex: "row", align: "center", justify: "center" }}>
+                {t("pools.pool.actions.myPositions")}
+              </div>
+            </SMobActionButton>
+          </div>
         </>
       )}
 

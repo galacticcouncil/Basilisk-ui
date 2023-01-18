@@ -20,6 +20,8 @@ export const SMobileNavBar = styled.div`
   align-items: center;
   gap: 4px;
 
+  border-radius: 12px 12px 0px 0px;
+
   background: ${theme.gradients.mobNavigationGradient};
 
   @media ${theme.viewport.gte.sm} {
