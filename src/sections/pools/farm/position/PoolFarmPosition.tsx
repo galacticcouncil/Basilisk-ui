@@ -5,6 +5,7 @@ import { Row } from "components/Row/Row"
 import { Separator } from "components/Separator/Separator"
 import { PalletLiquidityMiningYieldFarmEntry } from "@polkadot/types/lookup"
 import { usePoolPosition } from "utils/farms/positions"
+import { useEnteredDate } from "utils/block"
 
 export function PoolFarmPosition(props: {
   pool: PoolBase
@@ -13,17 +14,18 @@ export function PoolFarmPosition(props: {
 }) {
   const { t } = useTranslation()
 
-  const { enteredDate, mined, rewardAsset, assetA, assetB } = usePoolPosition({
+  const { mined, rewardAsset, assetA, assetB } = usePoolPosition({
     position: props.position,
     pool: props.pool,
   })
+  const enteredDate = useEnteredDate(props.position.enteredAt.toBigNumber())
 
   return (
     <div sx={{ flex: "column", gap: 8 }}>
       <Row
         left={t("pools.allFarms.modal.position.joinedDate.label")}
         right={t("pools.allFarms.modal.position.joinedDate.value", {
-          date: enteredDate,
+          date: enteredDate.data,
         })}
       />
       <Separator />

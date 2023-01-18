@@ -1,17 +1,14 @@
-import { BLOCK_TIME, BN_0 } from "utils/constants"
+import { BN_0 } from "utils/constants"
 import { DepositNftType } from "api/deposits"
 import { getFloatingPointAmount } from "utils/balance"
 import { getPoolTotal } from "sections/pools/header/PoolsHeader.utils"
 import { PoolBase } from "@galacticcouncil/sdk"
-import { subSeconds } from "date-fns"
-import { u32 } from "@polkadot/types"
 import { useUsdPeggedAsset } from "api/asset"
 import { useGlobalFarms, useYieldFarms } from "api/farms"
 import { useMemo } from "react"
 import { usePoolShareToken } from "api/pools"
 import { useSpotPrices } from "api/spotPrice"
 import { useTotalIssuance } from "api/totalIssuance"
-import BN from "bignumber.js"
 
 export const usePoolSharesDeposit = ({
   depositNft,
@@ -51,39 +48,6 @@ export const usePoolSharesDeposit = ({
     ...spotPrices,
   ]
   const isLoading = queries.some((q) => q.isLoading)
-
-  // use the most recent entry date to show in UI
-  const enteredDate = useMemo(() => {
-    const lastEnteredAt = depositNft.deposit.yieldFarmEntries.reduce<{
-      value: BN
-      globalFarmId: u32 | null
-    }>(
-      (memo, i) => {
-        if (memo.value.lt(i.toHex())) {
-          return {
-            value: i.enteredAt.toBigNumber(),
-            globalFarmId: i.globalFarmId,
-          }
-        }
-
-        return memo
-      },
-      { value: BN_0, globalFarmId: null },
-    )
-
-    const lastGlobalFarm = globalFarms.data?.find((i) =>
-      i.id.eq(lastEnteredAt.globalFarmId),
-    )
-
-    if (lastGlobalFarm == null) return "-"
-    const blocksPerPeriod = lastGlobalFarm.blocksPerPeriod.toBigNumber()
-    const blockRange = lastEnteredAt.value
-      .times(blocksPerPeriod)
-      .plus(blocksPerPeriod.plus(1))
-
-    const date = subSeconds(Date.now(), blockRange.times(BLOCK_TIME).toNumber())
-    return date
-  }, [depositNft.deposit.yieldFarmEntries, globalFarms.data])
 
   const data = useMemo(() => {
     if (!yieldFarms.data || !totalIssuance.data) return undefined
@@ -143,7 +107,6 @@ export const usePoolSharesDeposit = ({
     usdValue: data?.usdValue,
     assetA: data?.assetA,
     assetB: data?.assetB,
-    enteredDate,
     isLoading,
   }
 }
