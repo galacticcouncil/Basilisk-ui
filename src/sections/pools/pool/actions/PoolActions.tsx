@@ -25,7 +25,7 @@ import { MyPositionsModal } from "../modals/myPositions/MyPositionsModal"
 import { useCurrentSharesValue } from "../shares/value/PoolSharesValue.utils"
 import { usePoolShareToken } from "api/pools"
 import { useTokenBalance, useTokensBalances } from "api/balances"
-import { useAPR } from "utils/farms/apr"
+import { usePoolFarms } from "utils/farms/apr"
 
 type Props = { pool: PoolBase; isExpanded: boolean; onExpandClick: () => void }
 
@@ -45,7 +45,7 @@ export const PoolActions: FC<Props> = ({ pool, isExpanded, onExpandClick }) => {
     accountDepositIds.data?.some((ad) => ad.instanceId.eq(deposit.id)),
   )
 
-  const apr = useAPR(pool.address)
+  const farms = usePoolFarms(pool.address)
 
   const shareToken = usePoolShareToken(pool.address)
   const balance = useTokenBalance(shareToken.data?.token, account?.address)
@@ -67,7 +67,7 @@ export const PoolActions: FC<Props> = ({ pool, isExpanded, onExpandClick }) => {
 
   const disabledRemoveLP = balance.data?.balance.isZero()
 
-  const disabledJoinFarm = !apr.data && balance.data?.balance.isZero()
+  const disabledJoinFarm = !farms.data?.length && balance.data?.balance.isZero()
 
   const disabledMyPositions =
     !account || (!positions?.length && (!dollarValue || dollarValue.isZero()))
