@@ -19,6 +19,7 @@ import { useAccountStore } from "state/store"
 import { useMedia } from "react-use"
 import { theme } from "theme"
 import { Modal } from "components/Modal/Modal"
+import { usePoolFarms } from "utils/farms/apr"
 
 type Props = { pool: PoolBase; isExpanded: boolean; onExpandClick: () => void }
 
@@ -30,6 +31,7 @@ export const PoolActions: FC<Props> = ({ pool, isExpanded, onExpandClick }) => {
   const [openActions, setOpenActions] = useState(false)
   const { account } = useAccountStore()
   const isDesktop = useMedia(theme.viewport.gte.sm)
+  const farms = usePoolFarms(pool.address)
 
   const closeActionsDrawer = () => setOpenActions(false)
 
@@ -66,6 +68,7 @@ export const PoolActions: FC<Props> = ({ pool, isExpanded, onExpandClick }) => {
       <Button
         fullWidth
         size="small"
+        disabled={!farms.data?.length}
         onClick={() => {
           setOpenFarms(true)
           closeActionsDrawer()
