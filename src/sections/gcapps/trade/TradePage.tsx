@@ -7,7 +7,6 @@ import { createComponent } from "@lit-labs/react"
 import { useAccountStore } from "state/store"
 import { z } from "zod"
 import { MakeGenerics, useSearch } from "@tanstack/react-location"
-import { PoolType } from "@galacticcouncil/sdk"
 
 export const TradeApp = createComponent({
   tagName: "gc-trade-app",
