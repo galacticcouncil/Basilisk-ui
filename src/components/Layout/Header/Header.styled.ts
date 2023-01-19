@@ -2,10 +2,12 @@ import styled from "@emotion/styled"
 import { theme } from "theme"
 
 export const SHeader = styled.header`
-  position: sticky;
+  position: fixed;
   top: 0;
   left: 0;
   z-index: ${theme.zIndices.header};
+
+  width: 100%;
 
   padding: 6px 12px;
 
