@@ -1,6 +1,7 @@
 import { PoolsPage } from "./sections/pools/PoolsPage"
 import { WalletPage } from "./sections/wallet/WalletPage"
 import { TradePage } from "sections/gcapps/trade/TradePage"
+import { XcmPage } from "sections/gcapps/xcm/XcmPage"
 
 import { Navigate } from "@tanstack/react-location"
 
@@ -31,5 +32,9 @@ export const routes = [
         element: <WalletPage />,
       },
     ],
+  },
+  {
+    path: "cross-chain",
+    element: <XcmPage />,
   },
 ]
