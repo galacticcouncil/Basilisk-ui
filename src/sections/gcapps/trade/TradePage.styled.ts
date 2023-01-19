@@ -7,4 +7,13 @@ export const SContainer = styled.div`
   @media (${theme.viewport.gte.sm}) {
     margin: unset;
   }
+
+  @media (${theme.viewport.lt.xs}) {
+    display: flex;
+    flex: 1;
+
+    gc-trade-app {
+      flex: 1;
+    }
+  }
 `
