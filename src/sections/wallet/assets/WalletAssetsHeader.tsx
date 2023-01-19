@@ -95,7 +95,10 @@ export const WalletAssetsHeader: FC<WalletAssetsHeaderProps> = ({
           )
         )}
       </div>
-      <Separator sx={{ mb: 15, display: ["inherit", "none"] }} />
+      <Separator
+        sx={{ mb: 15, display: ["inherit", "none"] }}
+        css={{ background: `rgba(${theme.rgbColors.white}, 0.06)` }}
+      />
 
       <div
         sx={{

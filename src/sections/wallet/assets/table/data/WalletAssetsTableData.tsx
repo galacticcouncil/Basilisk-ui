@@ -9,20 +9,21 @@ export const WalletAssetsTableName = (props: {
   symbol: string
   name: string
   isPaymentFee: boolean
+  large?: boolean
 }) => {
   const { t } = useTranslation()
 
   return (
     <div>
       <div sx={{ flex: "row", gap: 6, align: "center" }}>
-        <SIcon>{getAssetLogo(props.symbol)}</SIcon>
+        <SIcon large={props.large}>{getAssetLogo(props.symbol)}</SIcon>
         <div sx={{ flex: "column", width: "100%" }}>
-          <Text fs={14} lh={[16, 18]} fw={500} color="white">
+          <Text fs={14} lh={[props.large ? 18 : 16, 18]} fw={500} color="white">
             {props.symbol}
           </Text>
           <Text
-            fs={[10, 12]}
-            lh={[14, 16]}
+            fs={[props.large ? 14 : 10, 12]}
+            lh={[props.large ? 18 : 14, 16]}
             fw={500}
             color="neutralGray400"
             css={{ letterSpacing: "0.02em" }}
@@ -33,11 +34,11 @@ export const WalletAssetsTableName = (props: {
       </div>
       {props.isPaymentFee && (
         <Text
-          fs={9}
+          fs={props.large ? 9 : 8}
           fw={700}
           sx={{
-            mt: 4,
-            ml: [32, 40],
+            mt: 2,
+            ml: props.large ? 50 : [32, 40],
           }}
           color="primary300"
           tTransform="uppercase"
