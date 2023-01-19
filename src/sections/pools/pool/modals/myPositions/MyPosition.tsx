@@ -107,15 +107,13 @@ export const MyPosition = ({ pool, depositNft, index }: MyPositionProps) => {
           }}
         />
       </SMobContainer>
-      {openFarm && (
-        <PoolFarmPositionDetail
-          pool={pool}
-          isOpen={openFarm}
-          depositNft={depositNft}
-          onClose={() => setOpenFarm(false)}
-          onSelect={() => setOpenFarm(false)}
-        />
-      )}
+      <PoolFarmPositionDetail
+        pool={pool}
+        isOpen={openFarm}
+        depositNft={depositNft}
+        onClose={() => setOpenFarm(false)}
+        onSelect={() => setOpenFarm(false)}
+      />
     </>
   )
 }

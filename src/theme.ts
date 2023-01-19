@@ -9,7 +9,6 @@ const colors = {
   primary300: "#8AFFCB",
   primary200: "#B8FFDF",
   primary100: "#DAFFEE",
-  primarySuccess200: "#B8FFDF",
   blue100: "#D5E8FF",
   blue200: "#9CC1F6",
   blue300: "#467AF0",

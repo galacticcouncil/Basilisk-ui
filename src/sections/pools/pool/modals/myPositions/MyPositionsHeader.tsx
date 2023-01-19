@@ -16,10 +16,14 @@ import { separateBalance } from "utils/balance"
 import { Button } from "components/Button/Button"
 import { ReactComponent as FlagIcon } from "assets/icons/FlagIcon.svg"
 import Skeleton from "react-loading-skeleton"
+import { useAssetMeta } from "api/assetMeta"
+import { NATIVE_ASSET_ID } from "utils/api"
 
 export const MyPositionsHeader = ({ pool }: { pool: PoolBase }) => {
   const { t } = useTranslation()
   const { account } = useAccountStore()
+
+  const { data: meta } = useAssetMeta(NATIVE_ASSET_ID)
 
   const shareToken = usePoolShareToken(pool.address)
   const balance = useTokenBalance(shareToken.data?.token, account?.address)
@@ -97,9 +101,7 @@ export const MyPositionsHeader = ({ pool }: { pool: PoolBase }) => {
         )}
       </div>
       <SClaimAllCard>
-        <Text color="primarySuccess200">
-          {t("pools.allFarms.modal.claim.title")}
-        </Text>
+        <Text color="primary200">{t("pools.allFarms.modal.claim.title")}</Text>
         {claimable.data ? (
           <>
             <Text
@@ -112,7 +114,7 @@ export const MyPositionsHeader = ({ pool }: { pool: PoolBase }) => {
                 i18nKey={"pools.allFarms.modal.claim.bsx"}
                 tOptions={{
                   ...separateBalance(claimable.data?.bsx, {
-                    fixedPointScale: 12,
+                    fixedPointScale: meta?.decimals.toNumber() ?? 12,
                     type: "token",
                   }),
                 }}
@@ -133,8 +135,7 @@ export const MyPositionsHeader = ({ pool }: { pool: PoolBase }) => {
             >
               {t("value.usd", {
                 amount: claimable.data?.usd,
-                fixedPointScale: 12,
-                type: "dollar",
+                fixedPointScale: meta?.decimals.toNumber() ?? 12,
               })}
             </Text>
           </>
