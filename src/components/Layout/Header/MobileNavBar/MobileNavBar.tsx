@@ -4,7 +4,7 @@ import { Link } from "@tanstack/react-location"
 import { ReactComponent as PoolsAndFarmsIcon } from "assets/icons/PoolsAndFarms.svg"
 import { ReactComponent as TradeIcon } from "assets/icons/Trade.svg"
 import { ReactComponent as WalletIcon } from "assets/icons/Wallet.svg"
-import { ReactComponent as TransferIcon } from "assets/icons/Transfer.svg"
+import { ReactComponent as TransferIcon } from "assets/icons/TransferIcon.svg"
 import { ReactComponent as BridgeIcon } from "assets/icons/BridgeIcon.svg"
 import {
   SMobileNavBar,
