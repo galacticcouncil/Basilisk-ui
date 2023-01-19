@@ -1,5 +1,4 @@
 import { Trans, useTranslation } from "react-i18next"
-import { useMemo, useState } from "react"
 import { Text } from "components/Typography/Text/Text"
 import { Button } from "components/Button/Button"
 import { css } from "@emotion/react"
@@ -7,21 +6,18 @@ import { theme } from "theme"
 import { SContainer } from "./PoolFarmClaim.styled"
 import { PoolBase } from "@galacticcouncil/sdk"
 import { useClaimableAmount, useClaimAllMutation } from "utils/farms/claiming"
-import { Modal } from "components/Modal/Modal"
-import { ReactComponent as WalletIcon } from "assets/icons/Wallet.svg"
-import { PoolPositionMobile } from "sections/pools/farm/position/PoolFarmPositionMobile"
-import { useUserDeposits } from "utils/farms/deposits"
 import { separateBalance } from "utils/balance"
 import { DepositNftType } from "api/deposits"
+import { useMedia } from "react-use"
 
 export function PoolFarmClaim(props: {
   pool: PoolBase
   depositNft?: DepositNftType
 }) {
   const { t } = useTranslation()
-  const [openMyPositions, setOpenMyPositions] = useState(false)
 
-  const positions = useUserDeposits(props.pool.address)
+  const isDesktop = useMedia(theme.viewport.gte.sm)
+
   const claimable = useClaimableAmount(props.pool, props.depositNft)
   const claimAll = useClaimAllMutation(props.pool.address, props.depositNft)
 
@@ -30,24 +26,6 @@ export function PoolFarmClaim(props: {
     numberPrefix: "≈",
     type: "token",
   })
-
-  const positionsList = useMemo(() => {
-    let index = 0
-
-    return positions.data?.map((deposit) =>
-      deposit.deposit.yieldFarmEntries.map((entry) => {
-        ++index
-        return (
-          <PoolPositionMobile
-            key={index}
-            pool={props.pool}
-            position={entry}
-            index={index}
-          />
-        )
-      }),
-    )
-  }, [positions.data, props.pool])
 
   return (
     <SContainer>
@@ -86,52 +64,21 @@ export function PoolFarmClaim(props: {
           {t("value.usd", { amount: claimable.data?.usd, fixedPointScale: 12 })}
         </Text>
       </div>
-      <div
+
+      <Button
+        variant={isDesktop ? "primary" : "gradient"}
         sx={{
-          flex: "row",
-          justify: "space-between",
+          ml: [0, 32],
+          flexShrink: 0,
+          p: ["10px 16px", "16px 36px"],
+          width: ["100%", "max-content"],
         }}
+        disabled={!!claimable.data?.bsx.isZero()}
+        isLoading={claimAll.mutation.isLoading}
+        onClick={() => claimAll.mutation.mutate()}
       >
-        {positions.data && positions.data.length > 0 ? (
-          <Button
-            variant="secondary"
-            sx={{
-              p: "10px 16px",
-              display: ["inherit", "none"],
-            }}
-            disabled={!positions.data?.length}
-            isLoading={claimAll.mutation.isLoading}
-            onClick={() => setOpenMyPositions(true)}
-          >
-            <WalletIcon />
-            {t("pools.allFarms.modal.myPositions")}
-          </Button>
-        ) : (
-          <span />
-        )}
-        <Button
-          variant="primary"
-          sx={{
-            ml: [0, 32],
-            flexShrink: 0,
-            p: ["10px 16px", "16px 36px"],
-            width: "max-content",
-          }}
-          disabled={!!claimable.data?.bsx.isZero()}
-          isLoading={claimAll.mutation.isLoading}
-          onClick={() => claimAll.mutation.mutate()}
-        >
-          {t("pools.allFarms.modal.claim.submit")}
-        </Button>
-      </div>
-      <Modal
-        open={openMyPositions}
-        isDrawer
-        titleDrawer={t("pools.allFarms.modal.list.positions")}
-        onClose={() => setOpenMyPositions(false)}
-      >
-        <div sx={{ flex: "column", gap: 10 }}>{positionsList}</div>
-      </Modal>
+        {t("pools.allFarms.modal.claim.submit")}
+      </Button>
     </SContainer>
   )
 }

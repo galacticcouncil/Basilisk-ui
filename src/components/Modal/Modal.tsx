@@ -29,7 +29,7 @@ import { Text } from "components/Typography/Text/Text"
 type Props = {
   open: boolean
   onClose: () => void
-  title?: string | undefined
+  title?: string | ReactNode | undefined
   variant?: "default" | "error"
   secondaryIcon?: { icon: ReactNode; onClick: () => void; name: string }
   topContent?: ReactNode
@@ -126,7 +126,11 @@ export const Modal: FC<PropsWithChildren<Props>> = (props) => {
                 <RemoveScroll enabled={props.open}>
                   <>
                     <ModalBody isDrawer={isDrawer}>
-                      <ModalTitle>{title}</ModalTitle>
+                      {typeof title === "string" ? (
+                        <ModalTitle>{title}</ModalTitle>
+                      ) : (
+                        title
+                      )}
                       {props.children}
                     </ModalBody>
                   </>
