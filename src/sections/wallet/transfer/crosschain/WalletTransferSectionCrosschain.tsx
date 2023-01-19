@@ -7,7 +7,9 @@ import { CROSSCHAINS } from "./WalletTransferSectionCrosschain.utils"
 export function WalletTransferSectionCrosschain(props: {
   onClose: () => void
 }) {
-  const [active, setActive] = useState<typeof CROSSCHAINS[number] | undefined>()
+  const [active, setActive] = useState<
+    (typeof CROSSCHAINS)[number] | undefined
+  >()
 
   return (
     <>
