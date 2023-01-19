@@ -72,7 +72,10 @@ export const WalletVestingHeader = () => {
             fs={[10, 16]}
             lh={18}
           >
-            {t("value.usd", { amount: totalVestedUSD })}
+            {t("value.usd", {
+              amount: totalVestedUSD,
+              fixedPointScale: nativeAsset?.decimals.toNumber() ?? 12,
+            })}
           </Text>
         </div>
       </div>
