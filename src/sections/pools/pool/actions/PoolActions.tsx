@@ -38,14 +38,13 @@ export const PoolActions: FC<Props> = ({ pool, isExpanded, onExpandClick }) => {
   const [openMyPositions, setOpenMyPositions] = useState(false)
   const { account } = useAccountStore()
   const isDesktop = useMedia(theme.viewport.gte.sm)
+  const farms = usePoolFarms(pool.address)
 
   const deposits = useDeposits(pool.address)
   const accountDepositIds = useAccountDepositIds(account?.address)
   const positions = deposits.data?.filter((deposit) =>
     accountDepositIds.data?.some((ad) => ad.instanceId.eq(deposit.id)),
   )
-
-  const farms = usePoolFarms(pool.address)
 
   const shareToken = usePoolShareToken(pool.address)
   const balance = useTokenBalance(shareToken.data?.token, account?.address)

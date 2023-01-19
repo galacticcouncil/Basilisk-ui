@@ -82,7 +82,7 @@ export const useAssetsTable = (
               ? () =>
                   navigate({
                     to: "/trade",
-                    search: { type: "assetOut", id: row.original.id },
+                    search: { assetOut: row.original.id },
                   })
               : undefined
           }
@@ -91,7 +91,7 @@ export const useAssetsTable = (
               ? () =>
                   navigate({
                     to: "/trade",
-                    search: { type: "assetIn", id: row.original.id },
+                    search: { assetIn: row.original.id },
                   })
               : undefined
           }

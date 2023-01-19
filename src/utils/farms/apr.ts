@@ -137,7 +137,7 @@ export const useAPR = (poolId: AccountId32 | string) => {
         }
       })
 
-      return data.filter((x): x is NonNullable<typeof data[number]> => !!x)
+      return data.filter((x): x is NonNullable<(typeof data)[number]> => !!x)
     },
   )
 }

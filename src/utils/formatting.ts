@@ -117,11 +117,11 @@ export type BalanceFormatOptions = z.infer<typeof BigNumberFormatOptionsSchema>
  *
  *
  * Dollar value:
- * Display only 2 decimals, by cutting them not rounding
- * Separate integers numbers with a space in group of 3 digits
- * If dollar value equals ZERO, only display, 0, without decimals
- * If dollar value is less than 0.01 show 0
- * If dollar value is higher than 999 dont show decimals
+ * - Display only 2 decimals, by cutting them not rounding
+ * - Separate integers numbers with a space in group of 3 digits
+ * - If dollar value equals ZERO, only display, 0, without decimals
+ * - If dollar value is less than 1.00 show the first significant digit
+ * - If dollar value is higher than 999 dont show decimals
  *
  *  Examples:
  *
@@ -174,10 +174,22 @@ export function formatBigNumber(
 
   /*
     If any type value equals ZERO, only display, 0, without decimals
-    If dollar value is less than 0.01 show 0
   */
-  if (num.eq(0) || (options?.type === "dollar" && num.lt(0.01))) {
-    return BigNumber(0).toFormat(fmtConfig)
+  if (num.eq(0)) return BigNumber(0).toFormat(fmtConfig)
+
+  /*
+    If dollar value is less than 1.00 show the first significant digit
+  */
+  if (options?.type === "dollar" && num.abs().lt(1)) {
+    const floatStr = num.toFixed().split(".")[1]
+
+    let zeroesCount = 0
+    for (let i = 0; i < floatStr.length; ++i) {
+      if (floatStr[i] === "0") zeroesCount += 1
+      else break
+    }
+
+    return num.toFormat(zeroesCount + 1, BigNumber.ROUND_HALF_UP, fmtConfig)
   }
 
   /* If dollar value is higher than 999 dont show decimals */

@@ -122,7 +122,7 @@ export const Modal: FC<PropsWithChildren<Props>> = (props) => {
                     />
                   )}
                 </ModalHeader>
-                {isDrawer && <Separator />}
+                {isDrawer && titleDrawer && <Separator />}
                 <RemoveScroll enabled={props.open}>
                   <>
                     <ModalBody isDrawer={isDrawer}>
