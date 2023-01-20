@@ -4,7 +4,7 @@ import { Separator } from "components/Separator/Separator"
 import { theme } from "theme"
 import { useTranslation } from "react-i18next"
 import { Text } from "components/Typography/Text/Text"
-import { Link, useNavigate } from "@tanstack/react-location"
+import { Link } from "@tanstack/react-location"
 import { LiquidityPositionsTableData } from "sections/wallet/assets/table/WalletLiquidityPositionsTable.utils"
 import { WalletLiquidityPositionsTableName } from "sections/wallet/assets/table/data/WalletLiquidityPositionsData"
 import { LINKS } from "utils/navigation"
@@ -24,7 +24,6 @@ export const WalletLiquidityPositionsTableActionsMob = ({
   onTransferClick,
 }: Props) => {
   const { t } = useTranslation()
-  const navigate = useNavigate()
 
   if (!row) return null
 
