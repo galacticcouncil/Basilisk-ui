@@ -73,5 +73,19 @@ export const SWalletButton = styled.button<{
         }
       `
     }
+
+    if (variant === "enkrypt") {
+      return css`
+        background: hsla(282, 100%, 50%, 0.05);
+
+        :hover {
+          background: hsla(282, 100%, 50%, 0.1);
+        }
+
+        :active {
+          background: hsla(282, 100%, 50%, 0.12);
+        }
+      `
+    }
   }}
 `
