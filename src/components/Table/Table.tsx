@@ -9,12 +9,15 @@ export const TableAction = (props: {
   onClick?: () => void
   children: ReactNode
   disabled?: boolean
+  large?: boolean
+  className?: string
 }) => {
   return (
     <Button
+      className={props.className}
       disabled={props.disabled}
       size="small"
-      sx={{ p: "9px 12px" }}
+      sx={{ p: !props.large ? "9px 12px" : "" }}
       onClick={props.onClick}
     >
       <div sx={{ flex: "row", align: "center" }}>
