@@ -19,13 +19,50 @@ export function PoolFarmClaim(props: {
   const isDesktop = useMedia(theme.viewport.gte.sm)
 
   const claimable = useClaimableAmount(props.pool, props.depositNft)
-  const claimAll = useClaimAllMutation(props.pool.address, props.depositNft)
-
   const balance = separateBalance(claimable.data?.bsx, {
     fixedPointScale: 12,
     numberPrefix: "≈",
     type: "token",
   })
+
+  const toast = {
+    onLoading: (
+      <Trans
+        t={t}
+        i18nKey="pools.allFarms.claim.toast.onLoading"
+        tOptions={balance ?? {}}
+      >
+        <span />
+        <span className="highlight" />
+      </Trans>
+    ),
+    onSuccess: (
+      <Trans
+        t={t}
+        i18nKey="pools.allFarms.claim.toast.onSuccess"
+        tOptions={balance ?? {}}
+      >
+        <span />
+        <span className="highlight" />
+      </Trans>
+    ),
+    onError: (
+      <Trans
+        t={t}
+        i18nKey="pools.allFarms.claim.toast.onLoading"
+        tOptions={balance ?? {}}
+      >
+        <span />
+        <span className="highlight" />
+      </Trans>
+    ),
+  }
+
+  const claimAll = useClaimAllMutation(
+    props.pool.address,
+    props.depositNft,
+    toast,
+  )
 
   return (
     <SContainer>
