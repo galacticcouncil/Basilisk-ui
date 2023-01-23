@@ -21,10 +21,7 @@ export const WalletLiquidityPositionsTableActions = (props: Props) => {
   return (
     <>
       <div sx={{ display: ["block", "none"] }}>
-        <ButtonTransparent
-          onClick={props.toggleExpanded}
-          css={{ color: theme.colors.iconGray }}
-        >
+        <ButtonTransparent css={{ color: theme.colors.iconGray }}>
           <ChevronRightIcon />
         </ButtonTransparent>
       </div>

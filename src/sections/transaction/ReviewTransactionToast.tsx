@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react"
 import { useTranslation } from "react-i18next"
 import { UseMutationResult } from "@tanstack/react-query"
 import { useToast } from "state/toasts"
-import { Button } from "components/Button/Button"
+import { ToastMessage } from "state/store"
 
 export function ReviewTransactionToast<
   TData = unknown,
@@ -14,6 +14,7 @@ export function ReviewTransactionToast<
   mutation: UseMutationResult<TData, TError, TVariables, TContext>
   onReview?: () => void
   onClose?: () => void
+  toastMessage?: ToastMessage
 }) {
   const toast = useToast()
   const { t } = useTranslation()
@@ -34,7 +35,9 @@ export function ReviewTransactionToast<
     if (isSuccess) {
       // toast should be still present, even if ReviewTransaction is unmounted
       toastRef.current.success({
-        title: t("pools.reviewTransaction.toast.success"),
+        title: props.toastMessage?.onSuccess ?? (
+          <p>{t("pools.reviewTransaction.toast.success")}</p>
+        ),
       })
 
       closeRef.current?.()
@@ -42,34 +45,25 @@ export function ReviewTransactionToast<
 
     let toRemoveId: string | undefined = undefined
     if (isError) {
-      toRemoveId = toastRef.current.error({
-        persist: true,
-        title: t("pools.reviewTransaction.toast.error"),
-        actions: (
-          <Button
-            type="button"
-            variant="transparent"
-            size="small"
-            sx={{ p: "0 15px", lineHeight: 12 }}
-            onClick={() => reviewRef.current?.()}
-          >
-            {t("pools.reviewTransaction.modal.error.review")}
-          </Button>
+      toastRef.current.error({
+        title: props.toastMessage?.onError ?? (
+          <p>{t("pools.reviewTransaction.toast.error")}</p>
         ),
       })
     }
 
     if (isLoading) {
       toRemoveId = toastRef.current.loading({
-        persist: true,
-        title: t("pools.reviewTransaction.toast.pending"),
+        title: props.toastMessage?.onLoading ?? (
+          <p>{t("pools.reviewTransaction.toast.pending")}</p>
+        ),
       })
     }
 
     return () => {
       if (toRemoveId) toastRef.current.remove(toRemoveId)
     }
-  }, [t, isError, isSuccess, isLoading])
+  }, [t, props.toastMessage, isError, isSuccess, isLoading])
 
   return null
 }

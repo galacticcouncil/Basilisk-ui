@@ -9,17 +9,19 @@ interface Props {
   symbol: string
   balance?: BigNumber
   balanceUsd?: BigNumber
+  className?: string
 }
 
 export const WalletLiquidityPositionsTableDetailsBalance: FC<Props> = ({
   symbol,
   balance,
   balanceUsd,
+  className,
 }) => {
   const { t } = useTranslation()
 
   return (
-    <div>
+    <div className={className}>
       <div
         sx={{
           flex: "row",

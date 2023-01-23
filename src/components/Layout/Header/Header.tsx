@@ -2,16 +2,34 @@ import { BasiliskIcon } from "assets/icons/tokens/BasiliskIcon"
 import { ReactComponent as BasiliskLogo } from "assets/icons/BasiliskLogo.svg"
 import { Icon } from "components/Icon/Icon"
 import { HeaderMenu } from "components/Layout/Header/menu/HeaderMenu"
-import { SHeader } from "components/Layout/Header/Header.styled"
+import {
+  SHeader,
+  SIconButton,
+  STooltip,
+} from "components/Layout/Header/Header.styled"
 import { WalletConnectButton } from "sections/wallet/connect/modal/WalletConnectButton"
-import { IconButton } from "components/IconButton/IconButton"
 import { ReactComponent as BellIcon } from "assets/icons/BellIcon.svg"
 import { useToast } from "state/toasts"
 import { useTranslation } from "react-i18next"
+import { Spinner } from "components/Spinner/Spinner.styled"
+import * as Tooltip from "@radix-ui/react-tooltip"
 
 export const Header = () => {
-  const { setSidebar } = useToast()
+  const { setSidebar, toasts } = useToast()
   const { t } = useTranslation()
+
+  const loadingToasts = toasts.filter((toast) => toast.variant === "progress")
+
+  const isLoadingToast = !!loadingToasts.length
+
+  const bellIcon = (
+    <SIconButton
+      icon={<BellIcon />}
+      name={t("toast.sidebar.title")}
+      onClick={() => setSidebar(true)}
+      isLoading={isLoadingToast}
+    />
+  )
   return (
     <SHeader>
       <div sx={{ flex: "row", justify: "space-between", align: "center" }}>
@@ -24,12 +42,26 @@ export const Header = () => {
         </div>
 
         <div sx={{ flex: "row", align: "center", gap: [12, 24] }}>
-          <IconButton
-            icon={<BellIcon />}
-            name={t("toast.sidebar.title")}
-            sx={{ color: "neutralGray300" }}
-            onClick={() => setSidebar(true)}
-          />
+          {isLoadingToast ? (
+            <Tooltip.Root>
+              <Tooltip.Trigger asChild>
+                <div css={{ position: "relative" }}>
+                  {isLoadingToast && <Spinner width={40} height={40} />}
+                  {bellIcon}
+                </div>
+              </Tooltip.Trigger>
+              <Tooltip.Content>
+                <STooltip>
+                  {t("toast.sidebar.pendingAmount", {
+                    amount: loadingToasts.length,
+                  })}
+                </STooltip>
+                <Tooltip.Arrow css={{ "& > polygon": { fill: "#ABE67E" } }} />
+              </Tooltip.Content>
+            </Tooltip.Root>
+          ) : (
+            bellIcon
+          )}
 
           <WalletConnectButton />
         </div>

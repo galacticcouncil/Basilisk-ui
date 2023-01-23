@@ -20,7 +20,7 @@ import { PoolBase } from "@galacticcouncil/sdk"
 import { usePoolShareToken } from "api/pools"
 import { useTokenBalance } from "api/balances"
 import { useTotalLiquidity } from "api/totalLiquidity"
-import { BN_0, BN_1 } from "utils/constants"
+import { BN_0, BN_1, DEFAULT_DECIMALS } from "utils/constants"
 import { useApiPromise } from "utils/api"
 import { usePaymentInfo } from "api/transaction"
 import { useSpotPrice } from "api/spotPrice"
@@ -104,7 +104,7 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
     shareToken.data?.token,
     account?.address,
   )
-
+  const { data: shareTokenMeta } = useAssetMeta(shareToken.data?.token)
   const totalLiquidity = useTotalLiquidity(pool.address)
 
   const value = form.watch("value")
@@ -133,13 +133,61 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
       .multipliedBy(data.value)
       .dividedToIntegerBy(100)
 
-    return await createTransaction({
-      tx: api.tx.xyk.removeLiquidity(
-        pool.tokens[0].id,
-        pool.tokens[1].id,
-        tokenAmount.toFixed(),
-      ),
-    })
+    return await createTransaction(
+      {
+        tx: api.tx.xyk.removeLiquidity(
+          pool.tokens[0].id,
+          pool.tokens[1].id,
+          tokenAmount.toFixed(),
+        ),
+      },
+      {
+        toast: {
+          onLoading: (
+            <Trans
+              t={t}
+              i18nKey="liquidity.remove.modal.toast.onLoading"
+              tOptions={{
+                value: tokenAmount.toFixed(),
+                fixedPointScale:
+                  shareTokenMeta?.decimals || DEFAULT_DECIMALS.toNumber(),
+              }}
+            >
+              <span />
+              <span className="highlight" />
+            </Trans>
+          ),
+          onSuccess: (
+            <Trans
+              t={t}
+              i18nKey="liquidity.remove.modal.toast.onSuccess"
+              tOptions={{
+                value: tokenAmount.toFixed(),
+                fixedPointScale:
+                  shareTokenMeta?.decimals || DEFAULT_DECIMALS.toNumber(),
+              }}
+            >
+              <span />
+              <span className="highlight" />
+            </Trans>
+          ),
+          onError: (
+            <Trans
+              t={t}
+              i18nKey="liquidity.remove.modal.toast.onLoading"
+              tOptions={{
+                value: tokenAmount.toFixed(),
+                fixedPointScale:
+                  shareTokenMeta?.decimals || DEFAULT_DECIMALS.toNumber(),
+              }}
+            >
+              <span />
+              <span className="highlight" />
+            </Trans>
+          ),
+        },
+      },
+    )
   }
 
   return (

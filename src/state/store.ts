@@ -5,6 +5,7 @@ import { ISubmittableResult } from "@polkadot/types/types"
 import { getWalletBySource } from "@talismn/connect-wallets"
 import { POLKADOT_APP_NAME } from "utils/api"
 import { v4 as uuid } from "uuid"
+import { ReactElement } from "react"
 
 export interface Account {
   name: string
@@ -17,17 +18,28 @@ export interface TransactionInput {
   tx: SubmittableExtrinsic
 }
 
+export interface ToastMessage {
+  onLoading?: ReactElement
+  onSuccess?: ReactElement
+  onError?: ReactElement
+}
+
 export interface Transaction extends TransactionInput {
   hash: string
   id: string
   onSuccess?: (result: ISubmittableResult) => void
   onError?: () => void
+  toastMessage?: ToastMessage
 }
 
 interface Store {
   transactions?: Transaction[]
   createTransaction: (
     transaction: TransactionInput,
+    options?: {
+      onSuccess?: () => void
+      toast?: ToastMessage
+    },
   ) => Promise<ISubmittableResult>
   cancelTransaction: (hash: string) => void
 }
@@ -79,7 +91,7 @@ export const useAccountStore = create(
 )
 
 export const useStore = create<Store>((set) => ({
-  createTransaction: (transaction) => {
+  createTransaction: (transaction, options) => {
     return new Promise<ISubmittableResult>((resolve, reject) => {
       const hash = transaction.tx.hash.toString()
       set((store) => {
@@ -89,6 +101,11 @@ export const useStore = create<Store>((set) => ({
               ...transaction,
               hash,
               id: uuid(),
+              toastMessage: {
+                onLoading: options?.toast?.onLoading,
+                onSuccess: options?.toast?.onSuccess,
+                onError: options?.toast?.onError,
+              },
               onSuccess: resolve,
               onError: () => reject(new Error("Transaction rejected")),
             },
