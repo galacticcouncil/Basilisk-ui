@@ -1,19 +1,15 @@
 import { useMemo } from "react"
 import { getPoolTotal } from "sections/pools/header/PoolsHeader.utils"
-import { BLOCK_TIME, BN_0, BN_1, BN_10 } from "utils/constants"
-import { useYieldFarms } from "api/farms"
-import { usePools, usePoolShareTokens } from "api/pools"
-import { useTotalIssuances } from "api/totalIssuance"
+import { BN_0, BN_1, BN_10 } from "utils/constants"
+import { useGlobalFarm, useYieldFarm, useYieldFarms } from "api/farms"
+import { usePools, usePoolShareToken, usePoolShareTokens } from "api/pools"
+import { useTotalIssuance, useTotalIssuances } from "api/totalIssuance"
 import { useAsset, useUsdPeggedAsset } from "api/asset"
 import { useSpotPrices } from "api/spotPrice"
 import { useAllUserDeposits } from "utils/farms/deposits"
 import { PalletLiquidityMiningYieldFarmEntry } from "@polkadot/types/lookup"
 import { PoolBase } from "@galacticcouncil/sdk"
-import { subSeconds } from "date-fns"
 import { useBestNumber } from "api/chain"
-import { useGlobalFarm, useYieldFarm } from "api/farms"
-import { usePoolShareToken } from "api/pools"
-import { useTotalIssuance } from "api/totalIssuance"
 import * as liquidityMining from "@galacticcouncil/math-liquidity-mining"
 import BN from "bignumber.js"
 
@@ -198,20 +194,6 @@ export const usePoolPosition = ({
     yieldFarm.data,
   ])
 
-  const enteredDate = useMemo(() => {
-    if (!globalFarm.data) return "-"
-
-    const enteredAt = position.enteredAt.toBigNumber()
-    const blocksPerPeriod = globalFarm.data.blocksPerPeriod.toBigNumber()
-    const blockRange = enteredAt
-      .times(blocksPerPeriod)
-      .plus(blocksPerPeriod.plus(1))
-
-    const date = subSeconds(Date.now(), blockRange.times(BLOCK_TIME).toNumber())
-
-    return date
-  }, [globalFarm.data, position.enteredAt])
-
   const data = useMemo(() => {
     if (!yieldFarm.data || !totalIssuance.data) return undefined
 
@@ -244,7 +226,6 @@ export const usePoolPosition = ({
 
   return {
     ...data,
-    enteredDate,
     mined,
     rewardAsset: rewardAsset.data,
     isLoading,

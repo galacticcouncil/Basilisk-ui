@@ -13,6 +13,8 @@ import { Text } from "components/Typography/Text/Text"
 import { PoolPositionFarmRedeposit } from "../../position/farm/PoolPositionFarmRedeposit"
 import { usePoolSharesDeposit } from "./PoolSharesDeposit.utils"
 import { PoolSharesDepositFarm } from "./PoolSharesDepositFarm"
+import { BN_0 } from "utils/constants"
+import { useEnteredDate } from "utils/block"
 
 type Props = {
   index: number
@@ -23,10 +25,20 @@ type Props = {
 export const PoolSharesDeposit: FC<Props> = ({ depositNft, index, pool }) => {
   const { t } = useTranslation()
 
-  const { enteredDate, usdValue, assetA, assetB } = usePoolSharesDeposit({
+  const { usdValue, assetA, assetB } = usePoolSharesDeposit({
     depositNft,
     pool,
   })
+  // use latest entry date
+  const enteredDate = useEnteredDate(
+    depositNft.deposit.yieldFarmEntries.reduce(
+      (acc, curr) =>
+        acc.lt(curr.enteredAt.toBigNumber())
+          ? curr.enteredAt.toBigNumber()
+          : acc,
+      BN_0,
+    ),
+  )
 
   return (
     <SContainer>
@@ -47,7 +59,7 @@ export const PoolSharesDeposit: FC<Props> = ({ depositNft, index, pool }) => {
             </Text>
             <Text fs={14} lh={18} color="white">
               {t("pools.pool.positions.position.entered", {
-                date: enteredDate,
+                date: enteredDate.data,
               })}
             </Text>
           </div>
