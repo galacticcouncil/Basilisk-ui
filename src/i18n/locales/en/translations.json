@@ -31,6 +31,7 @@
   "header.trade": "Trade",
   "header.pools": "Pools & Farms",
   "header.wallet": "Wallet",
+  "header.xcm": "Cross-chain",
   "header.lbp": "LBP",
   "header.bridge": "Bridge",
   "header.more": "More",
