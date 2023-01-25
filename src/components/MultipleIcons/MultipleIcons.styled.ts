@@ -13,8 +13,8 @@ export const IconsWrapper = styled.div<{ size: ResponsiveValue<number> }>`
   display: flex;
 
   & > span > span {
-    width: calc(var(--avatar-size) + 0px);
-    height: calc(var(--avatar-size) + 0px);
+    width: var(--avatar-size);
+    height: var(--avatar-size);
     > svg {
       width: var(--avatar-size);
       height: var(--avatar-size);
