@@ -22,7 +22,7 @@ const PoolPositionFarmRedepositAsset = (props: {
 
   return (
     <div sx={{ flex: "row", align: "center", gap: 6 }}>
-      {asset.data.icon}
+      <div css={{ "> svg": { width: 28, height: 28 } }}>{asset.data.icon} </div>
       {!props.hideName && (
         <Text fs={14} lh={16}>
           {asset.data.name}
