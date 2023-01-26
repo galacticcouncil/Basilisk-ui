@@ -49,13 +49,6 @@ export const MENU_ITEMS = [
     external: false,
     mobVisible: false,
   },
-  {
-    key: "bridge",
-    translationKey: "header.bridge",
-    href: EXTERNAL_LINKS.bridge,
-    external: true,
-    mobVisible: false,
-  },
 ] as const
 
 export type TabKeys = (typeof MENU_ITEMS)[number]["key"]
