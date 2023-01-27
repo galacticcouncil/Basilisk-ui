@@ -49,7 +49,7 @@ export const Pool: FC<Props> = ({ pool }) => {
           )}
         </AnimatePresence>
       )}
-      <PoolFooter pool={pool} />
+      {isDesktop && <PoolFooter pool={pool} />}
     </SContainer>
   )
 }

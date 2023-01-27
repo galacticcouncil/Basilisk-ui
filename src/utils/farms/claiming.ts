@@ -6,7 +6,7 @@ import { usePoolFarms } from "utils/farms/apr"
 import { PoolBase } from "@galacticcouncil/sdk"
 import { useUserDeposits } from "utils/farms/deposits"
 import { NATIVE_ASSET_ID, useApiPromise } from "utils/api"
-import { useStore } from "state/store"
+import { ToastMessage, useStore } from "state/store"
 import { useMutation } from "@tanstack/react-query"
 import { u32 } from "@polkadot/types"
 import { AccountId32 } from "@polkadot/types/interfaces"
@@ -133,6 +133,7 @@ export const useClaimableAmount = (
 export const useClaimAllMutation = (
   poolId: string,
   depositNft?: DepositNftType,
+  toast?: ToastMessage,
 ) => {
   const api = useApiPromise()
   const { createTransaction } = useStore()
@@ -154,13 +155,19 @@ export const useClaimAllMutation = (
         .flat(2) ?? []
 
     if (txs.length > 1) {
-      return await createTransaction({
-        tx: api.tx.utility.batch(txs),
-      })
+      return await createTransaction(
+        {
+          tx: api.tx.utility.batch(txs),
+        },
+        { toast },
+      )
     } else if (txs.length > 0) {
-      return await createTransaction({
-        tx: txs[0],
-      })
+      return await createTransaction(
+        {
+          tx: txs[0],
+        },
+        { toast },
+      )
     }
   })
 

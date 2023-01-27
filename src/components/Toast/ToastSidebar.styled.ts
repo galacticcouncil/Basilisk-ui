@@ -29,6 +29,9 @@ export const SDialogContent = styled(DialogContent)`
   position: absolute;
   z-index: ${theme.zIndices.modal};
 
+  display: flex;
+  flex-direction: column;
+
   top: unset;
   left: 0;
   right: 0;

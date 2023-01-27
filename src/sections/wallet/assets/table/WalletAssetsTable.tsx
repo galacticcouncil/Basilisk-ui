@@ -21,14 +21,20 @@ import { TableSortHeader } from "components/Table/Table"
 import { assetsTableStyles } from "sections/wallet/assets/table/WalletAssetsTable.styled"
 import { WalletTransferModal } from "sections/wallet/transfer/WalletTransferModal"
 import { PoolAddLiquidity } from "sections/pools/pool/modals/addLiquidity/PoolAddLiquidity"
+import { WalletAssetsTableActionsMob } from "./actions/WalletAssetsTableActionsMob"
+import { useMedia } from "react-use"
+import { theme } from "theme"
 
 type Props = { data: AssetsTableData[] }
 
 export const WalletAssetsTable = ({ data }: Props) => {
   const { t } = useTranslation()
   const [showAll, setShowAll] = useState(true)
+  const [row, setRow] = useState<AssetsTableData | undefined>(undefined)
   const [transferAsset, setTransferAsset] = useState<string | null>(null)
   const [poolAddress, setPoolAddress] = useState<string | null>(null)
+
+  const isDesktop = useMedia(theme.viewport.gte.sm)
 
   const filteredData = useMemo(
     () => (showAll ? data : data.filter((row) => !row.total.isZero())),
@@ -78,7 +84,10 @@ export const WalletAssetsTable = ({ data }: Props) => {
           <TableBodyContent>
             {table.getRowModel().rows.map((row, i) => (
               <Fragment key={row.id}>
-                <TableRow isOdd={!(i % 2)}>
+                <TableRow
+                  isOdd={!(i % 2)}
+                  onClick={() => !isDesktop && setRow(row.original)}
+                >
                   {row.getVisibleCells().map((cell) => (
                     <TableData key={cell.id}>
                       {flexRender(
@@ -119,6 +128,12 @@ export const WalletAssetsTable = ({ data }: Props) => {
           poolAddress={poolAddress}
         />
       )}
+
+      <WalletAssetsTableActionsMob
+        row={row}
+        onClose={() => setRow(undefined)}
+        onTransferClick={setTransferAsset}
+      />
     </>
   )
 }

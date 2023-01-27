@@ -108,10 +108,18 @@ export const ModalBody = styled.div<{ isDrawer?: boolean }>`
       ? "max-height: calc(100vh - var(--mobile-modal-header-height));"
       : "height: calc(100vh - var(--mobile-modal-header-height));"}
 
+  ::-webkit-scrollbar {
+    width: 0px;
+  }
+
   @media ${theme.viewport.gte.sm} {
     padding: 0 30px 30px;
     max-height: 80vh;
     height: auto;
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
   }
 
   &::-webkit-scrollbar-track {

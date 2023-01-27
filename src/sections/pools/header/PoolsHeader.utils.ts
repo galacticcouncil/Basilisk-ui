@@ -174,7 +174,7 @@ export const useTotalInFarms = () => {
       return { globalFarm, yieldFarm, pool }
     })
     const farms = mappedFarms.filter(
-      (x): x is NonNullable<typeof mappedFarms[number]> => x != null,
+      (x): x is NonNullable<(typeof mappedFarms)[number]> => x != null,
     )
 
     const total = farms

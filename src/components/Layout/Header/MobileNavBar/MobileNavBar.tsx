@@ -4,8 +4,8 @@ import { Link } from "@tanstack/react-location"
 import { ReactComponent as PoolsAndFarmsIcon } from "assets/icons/PoolsAndFarms.svg"
 import { ReactComponent as TradeIcon } from "assets/icons/Trade.svg"
 import { ReactComponent as WalletIcon } from "assets/icons/Wallet.svg"
-import { ReactComponent as LBPIcon } from "assets/icons/LBPIcon.svg"
-import { ReactComponent as BridgeIcon } from "assets/icons/BridgeIcon.svg"
+import { ReactComponent as TransferIcon } from "assets/icons/TransferTabIcon.svg"
+
 import {
   SMobileNavBar,
   SNavBarItem,
@@ -21,8 +21,7 @@ export const MobileNavBar = () => {
     if (name === "trade") return <TradeIcon />
     if (name === "pools") return <PoolsAndFarmsIcon />
     if (name === "wallet") return <WalletIcon />
-    if (name === "lbp") return <LBPIcon />
-    if (name === "bridge") return <BridgeIcon />
+    if (name === "cross-chain") return <TransferIcon />
 
     return null
   }

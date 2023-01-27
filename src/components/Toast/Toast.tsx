@@ -12,9 +12,10 @@ import { TOAST_CLOSE_TIME } from "utils/constants"
 import { Maybe } from "utils/helpers"
 import { ToastContent } from "./ToastContent"
 import { motion } from "framer-motion"
+import { ToastVariant } from "state/toasts"
 
 type Props = {
-  variant: Maybe<"info" | "success" | "error" | "loading">
+  variant: Maybe<ToastVariant>
   title?: string | ReactNode
   actions?: ReactNode
   index?: number
@@ -22,6 +23,7 @@ type Props = {
   onClose?: () => void
   persist?: boolean
   dateCreated?: Date
+  onClick?: () => void
 }
 
 export const Toast: FC<Props> = ({
@@ -33,6 +35,7 @@ export const Toast: FC<Props> = ({
   dateCreated,
   onClose,
   persist,
+  onClick,
 }) => {
   const { t } = useTranslation()
 
@@ -50,6 +53,7 @@ export const Toast: FC<Props> = ({
           title={title}
           actions={actions}
           dateCreated={dateCreated}
+          onClick={onClick}
           meta={
             <div sx={{ flex: "row", gap: 8 }}>
               <Text fs={12} lh={14} fw={500} color="neutralGray400">

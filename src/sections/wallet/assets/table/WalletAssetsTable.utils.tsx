@@ -7,7 +7,7 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table"
-import { useTranslation } from "react-i18next"
+import { Trans, useTranslation } from "react-i18next"
 import { useState } from "react"
 import { useSetAsFeePayment } from "api/payments"
 import {
@@ -75,14 +75,53 @@ export const useAssetsTable = (
       id: "actions",
       cell: ({ row }) => (
         <WalletAssetsTableActions
-          onSetFeeAsPaymentClick={() => setFeeAsPayment(row.original.id)}
+          onSetFeeAsPaymentClick={() =>
+            setFeeAsPayment(row.original.id, {
+              onLoading: (
+                <Trans
+                  t={t}
+                  i18nKey="wallet.assets.table.actions.payment.toast.onLoading"
+                  tOptions={{
+                    asset: row.original.symbol,
+                  }}
+                >
+                  <span />
+                  <span className="highlight" />
+                </Trans>
+              ),
+              onSuccess: (
+                <Trans
+                  t={t}
+                  i18nKey="wallet.assets.table.actions.payment.toast.onSuccess"
+                  tOptions={{
+                    asset: row.original.symbol,
+                  }}
+                >
+                  <span />
+                  <span className="highlight" />
+                </Trans>
+              ),
+              onError: (
+                <Trans
+                  t={t}
+                  i18nKey="wallet.assets.table.actions.payment.toast.onLoading"
+                  tOptions={{
+                    asset: row.original.symbol,
+                  }}
+                >
+                  <span />
+                  <span className="highlight" />
+                </Trans>
+              ),
+            })
+          }
           couldBeSetAsPaymentFee={row.original.couldBeSetAsPaymentFee}
           onBuyClick={
             row.original.inTradeRouter
               ? () =>
                   navigate({
                     to: "/trade",
-                    search: { type: "assetOut", id: row.original.id },
+                    search: { assetOut: row.original.id },
                   })
               : undefined
           }
@@ -91,7 +130,7 @@ export const useAssetsTable = (
               ? () =>
                   navigate({
                     to: "/trade",
-                    search: { type: "assetIn", id: row.original.id },
+                    search: { assetIn: row.original.id },
                   })
               : undefined
           }

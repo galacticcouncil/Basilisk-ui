@@ -3,6 +3,7 @@ import styled from "@emotion/styled"
 import { theme } from "theme"
 import { motion } from "framer-motion"
 import { Maybe } from "utils/helpers"
+import { ToastVariant } from "state/toasts"
 
 export const SRoot = styled(Root)`
   position: relative;
@@ -40,6 +41,13 @@ export const SIcon = styled.div`
 
 export const STitle = styled(Title)`
   display: flex;
+
+  font-weight: 500;
+  font-size: 12px;
+  color: ${theme.colors.neutralGray100};
+  & .highlight {
+    font-weight: 700;
+  }
 `
 
 export const SClose = styled(Close)`
@@ -80,7 +88,7 @@ export const SProgressContainer = styled.div`
 `
 
 export const SProgressBar = styled(motion.div)<{
-  variant: Maybe<"info" | "success" | "error" | "loading">
+  variant: Maybe<ToastVariant>
 }>`
   height: 2px;
 

@@ -6,6 +6,7 @@ export const LINKS = {
   walletAssets: "/wallet/assets",
   walletTransactions: "/wallet/transactions",
   walletVesting: "/wallet/vesting",
+  cross_chain: "/cross-chain",
 }
 
 export const EXTERNAL_LINKS = {
@@ -16,15 +17,9 @@ export const EXTERNAL_LINKS = {
 } as const
 
 const isWalletPageEnabled = import.meta.env.VITE_FF_WALLET_ENABLED === "true"
+const isXcmPageEnabled = import.meta.env.VITE_FF_XCM_ENABLED === "true"
 
 export const MENU_ITEMS = [
-  {
-    key: "lbp",
-    translationKey: "header.lbp",
-    href: EXTERNAL_LINKS.lbp,
-    external: true,
-    mobVisible: false,
-  },
   {
     key: "trade",
     translationKey: "header.trade",
@@ -47,13 +42,14 @@ export const MENU_ITEMS = [
     mobVisible: true,
   },
   {
-    key: "bridge",
-    translationKey: "header.bridge",
-    href: EXTERNAL_LINKS.bridge,
-    external: true,
+    key: "cross-chain",
+    translationKey: "header.xcm",
+    href: LINKS.cross_chain,
+    enabled: isXcmPageEnabled,
+    external: false,
     mobVisible: false,
   },
 ] as const
 
-export type TabKeys = typeof MENU_ITEMS[number]["key"]
-export type TabObject = typeof MENU_ITEMS[number]
+export type TabKeys = (typeof MENU_ITEMS)[number]["key"]
+export type TabObject = (typeof MENU_ITEMS)[number]
