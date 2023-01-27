@@ -1,5 +1,5 @@
 import { useApiPromise } from "utils/api"
-import { useAccountStore, useStore } from "../state/store"
+import { ToastMessage, useAccountStore, useStore } from "../state/store"
 import BigNumber from "bignumber.js"
 import { usePaymentInfo } from "./transaction"
 import { useMutation } from "@tanstack/react-query"
@@ -20,16 +20,27 @@ export function useAddLiquidityMutation() {
   const { account } = useAccountStore()
 
   return useMutation(
-    async ([assetA, assetB]: [AddLiquidityAsset, AddLiquidityAsset]) => {
+    async ({
+      assetA,
+      assetB,
+      toast,
+    }: {
+      assetA: AddLiquidityAsset
+      assetB: AddLiquidityAsset
+      toast: ToastMessage
+    }) => {
       if (!account) throw new Error("Missing account")
-      return await createTransaction({
-        tx: api.tx.xyk.addLiquidity(
-          assetA.id,
-          assetB.id,
-          assetA.amount.toFixed(),
-          assetB.amount.toFixed(),
-        ),
-      })
+      return await createTransaction(
+        {
+          tx: api.tx.xyk.addLiquidity(
+            assetA.id,
+            assetB.id,
+            assetA.amount.toFixed(),
+            assetB.amount.toFixed(),
+          ),
+        },
+        { toast },
+      )
     },
   )
 }

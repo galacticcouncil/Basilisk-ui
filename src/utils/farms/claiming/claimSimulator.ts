@@ -107,7 +107,12 @@ export class XYKLiquidityMiningClaimSim {
       BN.min(reward_currency_ed, global_farm_balance),
     )
 
-    let reward = reward_per_period.multipliedBy(periods_since_last_update)
+    let reward = new BN(
+      liquidityMining.calculate_rewards_for_periods(
+        reward_per_period.toFixed(),
+        periods_since_last_update.toFixed(),
+      ),
+    )
     if (left_to_distribute.lt(reward)) reward = left_to_distribute
 
     if (!reward.isZero()) {

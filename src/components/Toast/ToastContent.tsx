@@ -7,27 +7,29 @@ import { Text } from "components/Typography/Text/Text"
 import { Spinner } from "components/Spinner/Spinner.styled"
 import { Maybe, useNow } from "utils/helpers"
 import { useTranslation } from "react-i18next"
+import { ToastVariant } from "state/toasts"
 
 export function ToastContent(props: {
-  variant: Maybe<"info" | "success" | "error" | "loading">
+  variant: Maybe<ToastVariant>
   title?: string | ReactNode
   actions?: ReactNode
   meta?: ReactNode
   dateCreated?: Date
   children?: ReactNode
+  onClick?: () => void
 }) {
   const { t } = useTranslation()
 
   useNow(props.dateCreated != null)
 
   return (
-    <SContainer>
+    <SContainer onClick={props.onClick}>
       <SIcon>
         {props.variant === "success" ? (
           <SuccessIcon />
         ) : props.variant === "error" ? (
           <FailIcon />
-        ) : props.variant === "loading" ? (
+        ) : props.variant === "progress" ? (
           <Spinner width={28} height={28} />
         ) : (
           <BasiliskIcon />
@@ -37,9 +39,7 @@ export function ToastContent(props: {
         <div sx={{ flex: "row", justify: "space-between", align: "flex-end" }}>
           <STitle>
             {typeof props.title === "string" ? (
-              <Text fs={12} lh={16} fw={500} color="neutralGray100">
-                {props.title}
-              </Text>
+              <p dangerouslySetInnerHTML={{ __html: props.title }} />
             ) : (
               props.title
             )}

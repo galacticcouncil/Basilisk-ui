@@ -3,7 +3,7 @@ import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query"
 import { QUERY_KEYS } from "utils/queryKeys"
 import { Maybe, undefinedNoop, normalizeId } from "utils/helpers"
 import { NATIVE_ASSET_ID, useApiPromise } from "utils/api"
-import { useAccountStore, useStore } from "state/store"
+import { ToastMessage, useAccountStore, useStore } from "state/store"
 import { u32 } from "@polkadot/types-codec"
 import { AccountId32 } from "@open-web3/orml-types/interfaces"
 
@@ -37,11 +37,14 @@ export const useSetAsFeePayment = () => {
   const { createTransaction } = useStore()
   const queryClient = useQueryClient()
 
-  return async (tokenId?: string) => {
+  return async (tokenId?: string, toast?: ToastMessage) => {
     if (!tokenId) return
-    const transaction = await createTransaction({
-      tx: api.tx.multiTransactionPayment.setCurrency(tokenId),
-    })
+    const transaction = await createTransaction(
+      {
+        tx: api.tx.multiTransactionPayment.setCurrency(tokenId),
+      },
+      { toast },
+    )
     if (transaction.isError) return
     await queryClient.refetchQueries({
       queryKey: QUERY_KEYS.accountCurrency(account?.address),

@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next"
+import { Trans, useTranslation } from "react-i18next"
 import { PoolBase } from "@galacticcouncil/sdk"
 import { Button } from "components/Button/Button"
 import { useAccountStore, useStore } from "state/store"
@@ -6,7 +6,7 @@ import { useApiPromise } from "utils/api"
 import { useForm, Controller } from "react-hook-form"
 import { WalletConnectButton } from "sections/wallet/connect/modal/WalletConnectButton"
 import { useActiveYieldFarms, useGlobalFarms } from "api/farms"
-import { BN_0, BN_BILL } from "utils/constants"
+import { BN_0, BN_BILL, DEFAULT_DECIMALS } from "utils/constants"
 import { AprFarm } from "utils/farms/apr"
 import { FormValues } from "utils/helpers"
 import { getFloatingPointAmount } from "utils/balance"
@@ -62,17 +62,63 @@ export const PoolFarmDeposit = (props: PoolJoinFarmDepositProps) => {
       throw new Error("Missing active yield farms data")
 
     const [firstActive, ...restActive] = activeYieldFarms.data
-    const firstDeposit = await createTransaction({
-      tx: api.tx.xykLiquidityMining.depositShares(
-        firstActive.globalFarmId,
-        firstActive.yieldFarmId,
-        {
-          assetIn: assetIn.id,
-          assetOut: assetOut.id,
+
+    const firstDeposit = await createTransaction(
+      {
+        tx: api.tx.xykLiquidityMining.depositShares(
+          firstActive.globalFarmId,
+          firstActive.yieldFarmId,
+          {
+            assetIn: assetIn.id,
+            assetOut: assetOut.id,
+          },
+          value.toString(),
+        ),
+      },
+      {
+        toast: {
+          onLoading: (
+            <Trans
+              t={t}
+              i18nKey="farms.deposit.toast.onLoading"
+              tOptions={{
+                amount: value.toString(),
+                fixedPointScale: DEFAULT_DECIMALS.toNumber(),
+              }}
+            >
+              <span />
+              <span className="highlight" />
+            </Trans>
+          ),
+          onSuccess: (
+            <Trans
+              t={t}
+              i18nKey="farms.deposit.toast.onSuccess"
+              tOptions={{
+                amount: value.toString(),
+                fixedPointScale: DEFAULT_DECIMALS.toNumber(),
+              }}
+            >
+              <span />
+              <span className="highlight" />
+            </Trans>
+          ),
+          onError: (
+            <Trans
+              t={t}
+              i18nKey="farms.deposit.toast.onLoading"
+              tOptions={{
+                amount: value.toString(),
+                fixedPointScale: DEFAULT_DECIMALS.toNumber(),
+              }}
+            >
+              <span />
+              <span className="highlight" />
+            </Trans>
+          ),
         },
-        value.toString(),
-      ),
-    })
+      },
+    )
 
     for (const record of firstDeposit.events) {
       if (api.events.xykLiquidityMining.SharesDeposited.is(record.event)) {
