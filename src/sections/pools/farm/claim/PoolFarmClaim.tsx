@@ -9,6 +9,9 @@ import { useClaimableAmount, useClaimAllMutation } from "utils/farms/claiming"
 import { separateBalance } from "utils/balance"
 import { DepositNftType } from "api/deposits"
 import { useMedia } from "react-use"
+import { useAssetMetaList } from "api/assetMeta"
+import { Fragment, useMemo } from "react"
+import { Separator } from "components/Separator/Separator"
 
 export function PoolFarmClaim(props: {
   pool: PoolBase
@@ -19,42 +22,69 @@ export function PoolFarmClaim(props: {
   const isDesktop = useMedia(theme.viewport.gte.sm)
 
   const claimable = useClaimableAmount(props.pool, props.depositNft)
-  const balance = separateBalance(claimable.data?.bsx, {
-    fixedPointScale: 12,
-    numberPrefix: "≈",
-    type: "token",
-  })
+
+  const assetsMeta = useAssetMetaList(Object.keys(claimable.data?.assets || {}))
+
+  const { claimableAssets, toastValue } = useMemo(() => {
+    if (!assetsMeta.data) return { claimableAssets: [], toastValue: undefined }
+
+    let claimableAssets = []
+
+    for (let key in claimable.data?.assets) {
+      const { decimals, symbol } =
+        assetsMeta.data?.find((meta) => meta.id === key) || {}
+
+      const balance = separateBalance(claimable.data?.assets[key], {
+        fixedPointScale: decimals || 12,
+        type: "token",
+      })
+
+      claimableAssets.push({ ...balance, symbol })
+    }
+
+    const toastValue = claimableAssets.map((asset, index) => {
+      return (
+        <>
+          {index > 0 && <span> {t("and")} </span>}
+          <Trans
+            t={t}
+            i18nKey="pools.allFarms.claim.toast.asset"
+            tOptions={asset}
+          >
+            <span />
+            <span className="highlight" />
+          </Trans>
+        </>
+      )
+    })
+
+    return { claimableAssets, toastValue }
+  }, [assetsMeta.data, claimable.data?.assets])
 
   const toast = {
     onLoading: (
-      <Trans
-        t={t}
-        i18nKey="pools.allFarms.claim.toast.onLoading"
-        tOptions={balance ?? {}}
-      >
-        <span />
-        <span className="highlight" />
-      </Trans>
+      <>
+        <Trans i18nKey={"pools.allFarms.claim.toast.onLoading"}>
+          <span />
+        </Trans>
+        {toastValue}
+      </>
     ),
     onSuccess: (
-      <Trans
-        t={t}
-        i18nKey="pools.allFarms.claim.toast.onSuccess"
-        tOptions={balance ?? {}}
-      >
-        <span />
-        <span className="highlight" />
-      </Trans>
+      <>
+        <Trans i18nKey={"pools.allFarms.claim.toast.onSuccess"}>
+          <span />
+        </Trans>
+        {toastValue}
+      </>
     ),
     onError: (
-      <Trans
-        t={t}
-        i18nKey="pools.allFarms.claim.toast.onLoading"
-        tOptions={balance ?? {}}
-      >
-        <span />
-        <span className="highlight" />
-      </Trans>
+      <>
+        <Trans i18nKey={"pools.allFarms.claim.toast.onLoading"}>
+          <span />
+        </Trans>
+        {toastValue}
+      </>
     ),
   }
 
@@ -70,35 +100,40 @@ export function PoolFarmClaim(props: {
         <Text color="primary200" fs={16} sx={{ mb: 6 }}>
           {t("pools.allFarms.modal.claim.title")}
         </Text>
-        <Text
-          fw={900}
-          sx={{ mb: 4, fontSize: [24, 28] }}
-          css={{ wordBreak: "break-all" }}
-        >
-          <Trans
-            t={t}
-            i18nKey={
-              !claimable.data?.bsx.isNaN()
-                ? "pools.allFarms.modal.claim.bsx"
-                : "pools.allFarms.modal.claim.bsx.nan"
-            }
-            tOptions={balance ?? {}}
-          >
-            <span
-              css={css`
-                color: rgba(${theme.rgbColors.white}, 0.4);
-                font-size: 18px;
-              `}
-            />
-          </Trans>
-        </Text>
+        {claimableAssets.map((claimableAsset) => (
+          <Fragment key={claimableAsset.symbol}>
+            <Text
+              fw={900}
+              sx={{ mb: 4, fontSize: [24, 28] }}
+              css={{ wordBreak: "break-all" }}
+            >
+              <Trans
+                t={t}
+                i18nKey={"pools.allFarms.modal.claim.asset"}
+                tOptions={claimableAsset ?? {}}
+              >
+                <span
+                  css={css`
+                    color: rgba(${theme.rgbColors.white}, 0.4);
+                    font-size: 18px;
+                  `}
+                />
+              </Trans>
+            </Text>
+            <Separator />
+          </Fragment>
+        ))}
         <Text
           css={css`
+            margin-top: 6px;
             color: rgba(255, 255, 255, 0.4);
             word-break: break-all;
           `}
         >
-          {t("value.usd", { amount: claimable.data?.usd, fixedPointScale: 12 })}
+          {t("pools.allFarms.modal.claim.usd", {
+            amount: claimable.data?.usd,
+            fixedPointScale: 12,
+          })}
         </Text>
       </div>
 
@@ -110,7 +145,7 @@ export function PoolFarmClaim(props: {
           p: ["10px 16px", "16px 36px"],
           width: ["100%", "max-content"],
         }}
-        disabled={!!claimable.data?.bsx.isZero()}
+        disabled={!claimableAssets.length || !!claimable.data?.usd.isZero()}
         isLoading={claimAll.mutation.isLoading}
         onClick={() => claimAll.mutation.mutate()}
       >
