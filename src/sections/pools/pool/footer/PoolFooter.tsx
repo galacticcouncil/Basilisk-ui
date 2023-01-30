@@ -8,7 +8,7 @@ import { ReactComponent as FlagIcon } from "assets/icons/FlagIcon.svg"
 import { useClaimableAmount } from "utils/farms/claiming"
 import { separateBalance } from "utils/balance"
 import { useAssetMetaList } from "api/assetMeta"
-import { useMemo } from "react"
+import { Fragment, useMemo } from "react"
 
 type Props = { pool: PoolBase }
 
@@ -35,7 +35,7 @@ export const PoolFooter = ({ pool }: Props) => {
       })
 
       claimableAssets.push(
-        <>
+        <Fragment key={index}>
           {index > 0 && <span> {t("and")} </span>}
           <Trans
             t={t}
@@ -45,12 +45,12 @@ export const PoolFooter = ({ pool }: Props) => {
             <span />
             <span className="highlight" />
           </Trans>
-        </>,
+        </Fragment>,
       )
     }
 
     return claimableAssets
-  }, [assetsMeta.data, claimable.data?.assets])
+  }, [assetsMeta.data, claimable.data, t])
 
   const toast = {
     onLoading: (
