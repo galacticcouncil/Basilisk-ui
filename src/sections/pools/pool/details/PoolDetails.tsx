@@ -20,7 +20,7 @@ export const PoolDetails = (props: {
           <Text fs={14} lh={26} fw={400} color="neutralGray400">
             {t("pools.pool.title", { poolType: props.pool.type })}
           </Text>
-          <div sx={{ flex: "row", align: "center" }}>
+          <div sx={{ flex: "row", align: "center", gap: 4 }}>
             <MultipleIcons
               icons={[
                 { icon: getAssetLogo(assetA) },
