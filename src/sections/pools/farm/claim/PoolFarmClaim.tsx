@@ -59,7 +59,7 @@ export function PoolFarmClaim(props: {
     })
 
     return { claimableAssets, toastValue }
-  }, [assetsMeta.data, claimable.data?.assets])
+  }, [assetsMeta.data, claimable.data?.assets, t])
 
   const toast = {
     onLoading: (
