@@ -89,8 +89,14 @@ export const useAssetsTableData = () => {
           tradeAssets.data.find((i) => i.id === asset.id?.toString()) != null,
         total: balance?.total ?? BN_0,
         totalUSD: balance?.totalUSD ?? BN_0,
-        locked: balance?.locked,
-        lockedUSD: balance?.lockedUsd,
+        lockedMax: balance?.lockedMax ?? BN_0,
+        lockedMaxUSD: balance?.lockedMaxUSD ?? BN_0,
+        lockedVesting: balance?.lockedVesting ?? BN_0,
+        lockedVestingUSD: balance?.lockedVestingUSD ?? BN_0,
+        lockedDemocracy: balance?.lockedDemocracy ?? BN_0,
+        lockedDemocracyUSD: balance?.lockedDemocracyUSD ?? BN_0,
+        reserved: balance?.reserved ?? BN_0,
+        reservedUSD: balance?.reservedUSD ?? BN_0,
         origin: "TODO",
         assetType: asset.assetType,
         isPaymentFee: asset.id?.toString() === accountCurrency.data,
@@ -141,24 +147,8 @@ export const useAssetsBalances = () => {
       return undefined
 
     const locks = locksQueries.reduce(
-      (
-        acc: {
-          id: string
-          amount: BN
-        }[],
-        cur,
-      ) => {
-        if (!!cur.data?.length) {
-          acc.push(
-            ...cur?.data?.map((cur) => ({
-              id: cur.id,
-              amount: cur.amount.toBigNumber(),
-            })),
-          )
-        }
-        return acc
-      },
-      [],
+      (acc, cur) => (cur.data ? [...acc, ...cur.data] : acc),
+      [] as { id: string; amount: BN; type: string }[],
     )
 
     const tokens: (AssetsTableDataBalances | null)[] =
@@ -172,8 +162,11 @@ export const useAssetsBalances = () => {
 
         const dp = BN_10.pow(meta.decimals.toBigNumber())
         const free = ab.data.free.toBigNumber()
-        const reserved = ab.data.reserved.toBigNumber()
+        const reservedBN = ab.data.reserved.toBigNumber()
         const frozen = ab.data.frozen.toBigNumber()
+
+        const reserved = reservedBN.div(dp)
+        const reservedUSD = reserved.times(spotPrice.data.spotPrice)
 
         const total = free.plus(reserved).div(dp)
         const totalUSD = total.times(spotPrice.data.spotPrice)
@@ -183,6 +176,31 @@ export const useAssetsBalances = () => {
         const locked = (lock?.amount ?? BN_0).div(dp)
         const lockedUsd = locked.times(spotPrice.data.spotPrice)
 
+        const lockMax = locks.reduce(
+          (max, curr) =>
+            curr.id === id.toString() && curr.amount.gt(max)
+              ? curr.amount
+              : max,
+          BN_0,
+        )
+
+        const lockedMax = lockMax.div(dp)
+        const lockedMaxUSD = lockedMax.times(spotPrice.data.spotPrice)
+
+        const lockVesting = locks.find(
+          (lock) => lock.id === id.toString() && lock.type === "ormlvest",
+        )
+        const lockedVesting = lockVesting?.amount.div(dp) ?? BN_0
+        const lockedVestingUSD = lockedVesting.times(spotPrice.data.spotPrice)
+
+        const lockDemocracy = locks.find(
+          (lock) => lock.id === id.toString() && lock.type === "democrac",
+        )
+        const lockedDemocracy = lockDemocracy?.amount.div(dp) ?? BN_0
+        const lockedDemocracyUSD = lockedDemocracy.times(
+          spotPrice.data.spotPrice,
+        )
+
         return {
           id,
           total,
@@ -191,24 +209,46 @@ export const useAssetsBalances = () => {
           transferableUSD,
           locked,
           lockedUsd,
+          lockedMax,
+          lockedMaxUSD,
+          lockedVesting,
+          lockedVestingUSD,
+          lockedDemocracy,
+          lockedDemocracyUSD,
+          reserved,
+          reservedUSD,
         }
       })
 
     const nativeBalance = accountBalances.data.native.data
+
     const nativeDecimals = assetMetas.data
       .find((am) => am?.id === NATIVE_ASSET_ID)
-      ?.decimals.toBigNumber()
+      ?.decimals?.toBigNumber()
+
     const nativeSpotPrice = spotPrices.find(
       (sp) => sp.data?.tokenIn === NATIVE_ASSET_ID,
     )?.data?.spotPrice
 
-    const nativeLock = locks.find((lock) => lock.id === NATIVE_ASSET_ID)?.amount
+    const nativeLockMax = locks.reduce(
+      (max, curr) =>
+        curr.id === NATIVE_ASSET_ID && curr.amount.gt(max) ? curr.amount : max,
+      BN_0,
+    )
+    const nativeLockVesting = locks.find(
+      (lock) => lock.id === NATIVE_ASSET_ID && lock.type === "ormlvest",
+    )?.amount
+    const nativeLockDemocracy = locks.find(
+      (lock) => lock.id === NATIVE_ASSET_ID && lock.type === "democrac",
+    )?.amount
 
     const native = getNativeBalances(
       nativeBalance,
       nativeDecimals,
       nativeSpotPrice,
-      nativeLock,
+      nativeLockMax,
+      nativeLockVesting,
+      nativeLockDemocracy,
     )
 
     return [native, ...tokens].filter(
@@ -223,23 +263,34 @@ const getNativeBalances = (
   balance: PalletBalancesAccountData,
   decimals?: BN,
   spotPrice?: BN,
-  lock?: BN,
+  lockMax?: BN,
+  lockVesting?: BN,
+  lockDemocracy?: BN,
 ): AssetsTableDataBalances | null => {
   if (!decimals || !spotPrice) return null
 
   const dp = BN_10.pow(decimals)
   const free = balance.free.toBigNumber()
-  const reserved = balance.reserved.toBigNumber()
+  const reservedBN = balance.reserved.toBigNumber()
   const feeFrozen = balance.feeFrozen.toBigNumber()
   const miscFrozen = balance.miscFrozen.toBigNumber()
 
-  const total = free.plus(reserved).div(dp)
+  const total = free.plus(reservedBN).div(dp)
   const totalUSD = total.times(spotPrice)
   const transferable = free.minus(BN.max(feeFrozen, miscFrozen)).div(dp)
   const transferableUSD = transferable.times(spotPrice)
 
-  const locked = (lock ?? BN_0).div(dp)
-  const lockedUsd = locked.times(spotPrice)
+  const reserved = reservedBN.div(dp)
+  const reservedUSD = reserved.times(spotPrice)
+
+  const lockedMax = lockMax?.div(dp) ?? BN_0
+  const lockedMaxUSD = lockedMax.times(spotPrice)
+
+  const lockedVesting = lockVesting?.div(dp) ?? BN_0
+  const lockedVestingUSD = lockedVesting.times(spotPrice)
+
+  const lockedDemocracy = lockDemocracy?.div(dp) ?? BN_0
+  const lockedDemocracyUSD = lockedDemocracy.times(spotPrice)
 
   return {
     id: NATIVE_ASSET_ID,
@@ -247,8 +298,14 @@ const getNativeBalances = (
     totalUSD,
     transferable,
     transferableUSD,
-    locked,
-    lockedUsd,
+    lockedMax,
+    lockedMaxUSD,
+    lockedVesting,
+    lockedVestingUSD,
+    lockedDemocracy,
+    lockedDemocracyUSD,
+    reserved,
+    reservedUSD,
   }
 }
 
@@ -258,6 +315,12 @@ type AssetsTableDataBalances = {
   totalUSD: BN
   transferable: BN
   transferableUSD: BN
-  locked: BN
-  lockedUsd: BN
+  lockedMax: BN
+  lockedMaxUSD: BN
+  lockedVesting: BN
+  lockedVestingUSD: BN
+  lockedDemocracy: BN
+  lockedDemocracyUSD: BN
+  reserved: BN
+  reservedUSD: BN
 }
