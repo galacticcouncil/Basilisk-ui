@@ -24,10 +24,13 @@ export function InfoTooltip({ text, textOnClick, children }: InfoTooltipProps) {
     >
       <STrigger
         onClick={(e) => {
-          textOnClick && e.preventDefault()
-          textOnClick && e.stopPropagation()
-          // change the content on the click if the text is provided
-          textOnClick && setContent(textOnClick)
+          if (textOnClick) {
+            e.preventDefault()
+            e.stopPropagation()
+            // change the content on the click if the text is provided
+            setContent(textOnClick)
+          }
+
           setOpen(true)
         }}
         onPointerDown={(e) => {

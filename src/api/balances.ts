@@ -123,7 +123,7 @@ export const getTokenLock =
       const res = await api.query.balances.locks(address)
       return res.map((lock) => ({
         id,
-        amount: lock.amount.toBigNumber(),
+        amount: lock.amount,
         type: lock.id.toString(),
       }))
     }
@@ -131,7 +131,7 @@ export const getTokenLock =
     const res = await api.query.tokens.locks(address, id)
     return res.map((lock) => ({
       id,
-      amount: lock.amount.toBigNumber(),
+      amount: lock.amount,
       type: lock.id.toString(),
     }))
   }

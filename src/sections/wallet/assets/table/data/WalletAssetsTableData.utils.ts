@@ -147,7 +147,13 @@ export const useAssetsBalances = () => {
       return undefined
 
     const locks = locksQueries.reduce(
-      (acc, cur) => (cur.data ? [...acc, ...cur.data] : acc),
+      (acc, cur) => [
+        ...acc,
+        ...(cur.data?.map((el) => ({
+          ...el,
+          amount: el.amount.toBigNumber(),
+        })) ?? []),
+      ],
       [] as { id: string; amount: BN; type: string }[],
     )
 
