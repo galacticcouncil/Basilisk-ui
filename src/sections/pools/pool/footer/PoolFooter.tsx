@@ -7,6 +7,8 @@ import { Button } from "components/Button/Button"
 import { ReactComponent as FlagIcon } from "assets/icons/FlagIcon.svg"
 import { useClaimableAmount } from "utils/farms/claiming"
 import { separateBalance } from "utils/balance"
+import { useAssetMetaList } from "api/assetMeta"
+import { Fragment, useMemo } from "react"
 
 type Props = { pool: PoolBase }
 
@@ -15,42 +17,65 @@ export const PoolFooter = ({ pool }: Props) => {
 
   const claimable = useClaimableAmount(pool)
 
-  const balance = separateBalance(claimable.data?.bsx, {
-    fixedPointScale: 12,
-    numberPrefix: "≈",
-    type: "token",
-  })
+  const assetsMeta = useAssetMetaList(Object.keys(claimable.data?.assets || {}))
+
+  const toastValue = useMemo(() => {
+    if (!assetsMeta.data || !claimable.data) return undefined
+
+    let claimableAssets = []
+
+    for (let key in claimable.data?.assets) {
+      const index = Object.keys(claimable.data?.assets).indexOf(key)
+      const { decimals, symbol } =
+        assetsMeta.data?.find((meta) => meta.id === key) || {}
+
+      const balance = separateBalance(claimable.data?.assets[key], {
+        fixedPointScale: decimals || 12,
+        type: "token",
+      })
+
+      claimableAssets.push(
+        <Fragment key={index}>
+          {index > 0 && <span> {t("and")} </span>}
+          <Trans
+            t={t}
+            i18nKey="pools.allFarms.claim.toast.asset"
+            tOptions={{ ...balance, symbol }}
+          >
+            <span />
+            <span className="highlight" />
+          </Trans>
+        </Fragment>,
+      )
+    }
+
+    return claimableAssets
+  }, [assetsMeta.data, claimable.data, t])
 
   const toast = {
     onLoading: (
-      <Trans
-        t={t}
-        i18nKey="pools.allFarms.claim.toast.onLoading"
-        tOptions={balance ?? {}}
-      >
-        <span />
-        <span className="highlight" />
-      </Trans>
+      <>
+        <Trans i18nKey={"pools.allFarms.claim.toast.onLoading"}>
+          <span />
+        </Trans>
+        {toastValue}
+      </>
     ),
     onSuccess: (
-      <Trans
-        t={t}
-        i18nKey="pools.allFarms.claim.toast.onSuccess"
-        tOptions={balance ?? {}}
-      >
-        <span />
-        <span className="highlight" />
-      </Trans>
+      <>
+        <Trans i18nKey={"pools.allFarms.claim.toast.onSuccess"}>
+          <span />
+        </Trans>
+        {toastValue}
+      </>
     ),
     onError: (
-      <Trans
-        t={t}
-        i18nKey="pools.allFarms.claim.toast.onLoading"
-        tOptions={balance ?? {}}
-      >
-        <span />
-        <span className="highlight" />
-      </Trans>
+      <>
+        <Trans i18nKey={"pools.allFarms.claim.toast.onLoading"}>
+          <span />
+        </Trans>
+        {toastValue}
+      </>
     ),
   }
 
@@ -76,7 +101,7 @@ export const PoolFooter = ({ pool }: Props) => {
         )}
       </div>
       <div sx={{ flex: "row", justify: "end" }}>
-        {!claimable.data?.bsx.isZero() && (
+        {claimable.data?.usd && !claimable.data?.usd.isZero() && (
           <Button
             variant="gradient"
             size="small"
