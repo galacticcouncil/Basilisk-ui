@@ -56,6 +56,7 @@ export const WalletConnectAccountSelectItem: FC<Props> = ({
             name={t("walletConnect.accountSelect.asset.network")}
             address={basiliskAddress}
             theme="substrate"
+            isActive={isActive}
           />
           <Separator
             color={isActive ? "primary200" : "backgroundGray700"}
@@ -65,6 +66,7 @@ export const WalletConnectAccountSelectItem: FC<Props> = ({
             name={t("walletConnect.accountSelect.asset.parachain")}
             address={kusamaAddress}
             theme={provider}
+            isActive={isActive}
           />
         </div>
       </SSelectItem>
