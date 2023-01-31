@@ -82,7 +82,7 @@ export const AssetSelectInput = (props: {
         css={{ gridArea: "input" }}
       >
         <SSelectAssetButton size="small" onClick={props.onSelectAssetClick}>
-          <Icon icon={props.assetIcon} />
+          <Icon icon={props.assetIcon} size={32} />
           {props.assetName && (
             <div>
               <Text fw={700} color="white">

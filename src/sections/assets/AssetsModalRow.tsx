@@ -40,7 +40,7 @@ export const AssetsModalRow: FC<AssetsModalRowProps> = ({ id, onClick }) => {
           display: "flex",
         }}
       >
-        <Icon icon={asset.data?.icon} sx={{ mr: 10 }} />
+        <Icon icon={asset.data?.icon} sx={{ mr: 10 }} size={32} />
         <div sx={{ mr: 6 }}>
           <Text fw={700} color="white" fs={16} lh={22}>
             {asset.data?.name}

@@ -10,6 +10,7 @@ import { useAsset } from "api/asset"
 import { theme } from "theme"
 import { Fragment } from "react"
 import { SContainer, SInnerContainer } from "./PoolPositionFarmRedeposit.styled"
+import { Icon } from "components/Icon/Icon"
 
 const PoolPositionFarmRedepositAsset = (props: {
   pool: PoolBase
@@ -22,7 +23,7 @@ const PoolPositionFarmRedepositAsset = (props: {
 
   return (
     <div sx={{ flex: "row", align: "center", gap: 6 }}>
-      {asset.data.icon}
+      <Icon size={28}>{asset.data.icon} </Icon>
       {!props.hideName && (
         <Text fs={14} lh={16}>
           {asset.data.name}

@@ -30,10 +30,11 @@ export const WalletLiquidityPositionsTableActionsMob = ({
   return (
     <Modal open={!!row} isDrawer onClose={onClose}>
       <>
-        <div sx={{ pb: 30, mx: 16, mt: "-15px" }}>
+        <div sx={{ pb: 30, mx: 16 }}>
           <WalletLiquidityPositionsTableName
             symbolA={row.assetA.symbol}
             symbolB={row.assetB.symbol}
+            large
           />
         </div>
         <Separator

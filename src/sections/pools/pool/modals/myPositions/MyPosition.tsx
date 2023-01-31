@@ -8,16 +8,13 @@ import { PoolBase } from "@galacticcouncil/sdk"
 import { Text } from "components/Typography/Text/Text"
 import { Separator } from "components/Separator/Separator"
 import { getAssetLogo } from "components/AssetIcon/AssetIcon"
-import {
-  SAssetContainer,
-  SAssetIcon,
-} from "../../shares/deposit/PoolSharesDepositFarm.styled"
 import { SMobContainer } from "./MyPositions.styled"
 import { PoolPositionFarmRedeposit } from "../../position/farm/PoolPositionFarmRedeposit"
 import { Icon } from "components/Icon/Icon"
 import { ReactComponent as ChevronRight } from "assets/icons/ChevronRight.svg"
 import { PoolFarmPositionDetail } from "sections/pools/farm/modals/positionDetail/PoolFarmPositionDetail"
 import { useState } from "react"
+import { MultipleIcons } from "components/MultipleIcons/MultipleIcons"
 
 type MyPositionProps = {
   depositNft: DepositNftType
@@ -45,7 +42,7 @@ export const MyPosition = ({ pool, depositNft, index }: MyPositionProps) => {
       ),
     ) ?? []
 
-  const assetList = useAssetMetaList(activeAprs.map((i) => i.assetId))
+  const { data: assetList } = useAssetMetaList(activeAprs.map((i) => i.assetId))
 
   return (
     <>
@@ -60,13 +57,15 @@ export const MyPosition = ({ pool, depositNft, index }: MyPositionProps) => {
             >
               {t("pools.pool.positions.position.title", { index })}
             </GradientText>
-            <SAssetContainer>
-              {assetList.data?.map((asset) => (
-                <SAssetIcon key={asset.symbol}>
-                  {getAssetLogo(asset.symbol)}
-                </SAssetIcon>
-              ))}
-            </SAssetContainer>
+            {assetList && (
+              <MultipleIcons
+                icons={assetList.map((asset) => {
+                  return {
+                    icon: getAssetLogo(asset.symbol),
+                  }
+                })}
+              />
+            )}
           </div>
           <div sx={{ flex: "row", justify: "space-between" }}>
             <Text fs={12} lh={16} color="neutralGray500">

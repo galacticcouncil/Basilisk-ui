@@ -34,7 +34,7 @@ export const WalletAssetsTableActionsMob = ({
   return (
     <Modal open={!!row} isDrawer onClose={onClose}>
       <>
-        <div sx={{ pb: 30, mx: 16, mt: "-15px" }}>
+        <div sx={{ pb: 30, mx: 16 }}>
           <WalletAssetsTableName {...row} large />
         </div>
         <Separator
