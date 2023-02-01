@@ -122,14 +122,16 @@ export const getTokenLock =
     if (id === NATIVE_ASSET_ID) {
       const res = await api.query.balances.locks(address)
       return res.map((lock) => ({
-        id: id.toString(),
+        id,
         amount: lock.amount,
+        type: lock.id.toString(),
       }))
     }
 
     const res = await api.query.tokens.locks(address, id)
     return res.map((lock) => ({
-      id: lock.id.toString(),
+      id,
       amount: lock.amount,
+      type: lock.id.toString(),
     }))
   }

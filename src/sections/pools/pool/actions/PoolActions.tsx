@@ -76,7 +76,7 @@ export const PoolActions: FC<Props> = ({ pool, isExpanded, onExpandClick }) => {
       <Button
         fullWidth
         size="small"
-        disabled={disabledAddLP}
+        disabled={!account || disabledAddLP}
         onClick={() => {
           setOpenAdd(true)
           closeActionsDrawer()
@@ -91,7 +91,7 @@ export const PoolActions: FC<Props> = ({ pool, isExpanded, onExpandClick }) => {
       <Button
         fullWidth
         size="small"
-        disabled={disabledRemoveLP}
+        disabled={!account || disabledRemoveLP}
         onClick={() => {
           setOpenRemove(true)
           closeActionsDrawer()
@@ -106,7 +106,7 @@ export const PoolActions: FC<Props> = ({ pool, isExpanded, onExpandClick }) => {
       <Button
         fullWidth
         size="small"
-        disabled={disabledJoinFarm}
+        disabled={!account || disabledJoinFarm}
         onClick={() => {
           setOpenFarms(true)
           closeActionsDrawer()
