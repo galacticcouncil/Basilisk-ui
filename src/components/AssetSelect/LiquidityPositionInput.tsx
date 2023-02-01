@@ -3,7 +3,7 @@ import { useTokenBalance } from "api/balances"
 import { usePoolShareToken } from "api/pools"
 import { getAssetLogo } from "components/AssetIcon/AssetIcon"
 import { AssetInput } from "components/AssetInput/AssetInput"
-import { DualAssetIcons } from "components/DualAssetIcons/DualAssetIcons"
+import { MultipleIcons } from "components/MultipleIcons/MultipleIcons"
 import { Text } from "components/Typography/Text/Text"
 import { Trans, useTranslation } from "react-i18next"
 import { useAccountStore } from "state/store"
@@ -70,9 +70,11 @@ export const LiquidityPositionInput = (props: {
         css={{ gridArea: "input" }}
       >
         <div sx={{ flex: "row", flexShrink: 0, align: "center" }}>
-          <DualAssetIcons
-            firstIcon={{ icon: getAssetLogo(assetIn.symbol) }}
-            secondIcon={{ icon: getAssetLogo(assetOut.symbol) }}
+          <MultipleIcons
+            icons={[
+              { icon: getAssetLogo(assetIn.symbol) },
+              { icon: getAssetLogo(assetOut.symbol) },
+            ]}
           />
           <div sx={{ flex: "column", mr: 20, flexShrink: 0 }}>
             <Text fw={700} fs={16}>

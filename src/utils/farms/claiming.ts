@@ -5,7 +5,7 @@ import { useUsdPeggedAsset } from "api/asset"
 import { usePoolFarms } from "utils/farms/apr"
 import { PoolBase } from "@galacticcouncil/sdk"
 import { useUserDeposits } from "utils/farms/deposits"
-import { NATIVE_ASSET_ID, useApiPromise } from "utils/api"
+import { useApiPromise } from "utils/api"
 import { ToastMessage, useStore } from "state/store"
 import { useMutation } from "@tanstack/react-query"
 import { u32 } from "@polkadot/types"
@@ -39,7 +39,6 @@ export const useClaimableAmount = (
 
   const assetList = useAssetDetailsList(assetIds)
 
-  const bsxSpotPrices = useSpotPrices(assetIds, NATIVE_ASSET_ID)
   const usdSpotPrices = useSpotPrices(assetIds, usd.data?.id)
 
   const accountAddresses =
@@ -100,31 +99,37 @@ export const useClaimableAmount = (
           bestNumber.relaychainBlockNumber.toBigNumber(),
         )
 
-        const bsx = bsxSpotPrices.find(
-          (spot) => spot.data?.tokenIn === reward?.assetId,
-        )?.data
-
         const usd = usdSpotPrices.find(
           (spot) => spot.data?.tokenIn === reward?.assetId,
         )?.data
 
-        if (!reward || !bsx || !usd) return null
+        if (!reward || !usd) return null
 
         return {
-          bsx: reward.value.multipliedBy(bsx.spotPrice),
           usd: reward.value.multipliedBy(usd.spotPrice),
+          asset: { id: reward?.assetId, value: reward.value },
         }
       }),
     )
     .flat(2)
-    .reduce<Record<"bsx" | "usd", BN>>(
+    .reduce<{
+      usd: BN
+      assets: Record<string, BN>
+    }>(
       (memo, item) => {
         if (item == null) return memo
-        memo.bsx = memo.bsx.plus(item.bsx)
+
+        const { id, value } = item.asset
+
         memo.usd = memo.usd.plus(item.usd)
+
+        !memo.assets[id]
+          ? (memo.assets[id] = value)
+          : (memo.assets[id] = memo.assets[id].plus(value))
+
         return memo
       },
-      { bsx: BN_0, usd: BN_0 },
+      { usd: BN_0, assets: {} },
     )
 
   return { data: rewardSum, isLoading }

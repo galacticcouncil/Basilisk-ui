@@ -1,4 +1,4 @@
-import { DualAssetIcons } from "components/DualAssetIcons/DualAssetIcons"
+import { MultipleIcons } from "components/MultipleIcons/MultipleIcons"
 import { Separator } from "components/Separator/Separator"
 import { Text } from "components/Typography/Text/Text"
 import { useTranslation } from "react-i18next"
@@ -20,10 +20,12 @@ export const PoolDetails = (props: {
           <Text fs={14} lh={26} fw={400} color="neutralGray400">
             {t("pools.pool.title", { poolType: props.pool.type })}
           </Text>
-          <div sx={{ flex: "row", align: "center" }}>
-            <DualAssetIcons
-              firstIcon={{ icon: getAssetLogo(assetA) }}
-              secondIcon={{ icon: getAssetLogo(assetB) }}
+          <div sx={{ flex: "row", align: "center", gap: 4 }}>
+            <MultipleIcons
+              icons={[
+                { icon: getAssetLogo(assetA) },
+                { icon: getAssetLogo(assetB) },
+              ]}
             />
             <div sx={{ flex: "column", gap: 1 }}>
               <Text fw={700} color="white">

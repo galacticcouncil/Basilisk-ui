@@ -2,7 +2,7 @@ import { FC } from "react"
 import { LiquidityPositionsTableData } from "../WalletLiquidityPositionsTable.utils"
 import { WalletLiquidityPositionsTableDetailsBalance } from "./WalletLiquidityPositionsTableDetailsBalance"
 import { Separator } from "../../../../../components/Separator/Separator"
-import { WalletLiquidityPositionsTableDetailsChain } from "./WalletLiquidityPositionsTableDetailsChain"
+//import { WalletLiquidityPositionsTableDetailsChain } from "./WalletLiquidityPositionsTableDetailsChain"
 
 interface Props {
   assetA: LiquidityPositionsTableData["assetA"]
@@ -18,7 +18,7 @@ export const WalletLiquidityPositionsTableDetails: FC<Props> = ({
       <div
         sx={{
           flex: "row",
-          flexBasis: "50%",
+          //flexBasis: "50%",
           justify: "flex-start",
           gap: 160,
           align: "center",
@@ -29,16 +29,16 @@ export const WalletLiquidityPositionsTableDetails: FC<Props> = ({
           balance={assetA.balance}
           balanceUsd={assetA.balanceUsd}
         />
-        <WalletLiquidityPositionsTableDetailsChain
+        {/*<WalletLiquidityPositionsTableDetailsChain
           symbol={assetA.symbol}
           chain={assetA.chain}
-        />
+        />*/}
       </div>
       <Separator orientation="vertical" size={1} color="white" opacity={0.06} />
       <div
         sx={{
           flex: "row",
-          flexBasis: "50%",
+          //flexBasis: "50%",
           justify: "flex-end",
           gap: 160,
           align: "center",
@@ -49,10 +49,10 @@ export const WalletLiquidityPositionsTableDetails: FC<Props> = ({
           balance={assetB.balance}
           balanceUsd={assetB.balanceUsd}
         />
-        <WalletLiquidityPositionsTableDetailsChain
+        {/*<WalletLiquidityPositionsTableDetailsChain
           symbol={assetB.symbol}
           chain={assetB.chain}
-        />
+        />*/}
       </div>
     </div>
   )

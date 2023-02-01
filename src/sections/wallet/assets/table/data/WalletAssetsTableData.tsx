@@ -38,7 +38,7 @@ export const WalletAssetsTableName = (props: {
           fw={700}
           sx={{
             mt: 2,
-            ml: props.large ? 50 : [32, 40],
+            ml: props.large ? 40 : [32, 40],
           }}
           color="primary300"
           tTransform="uppercase"

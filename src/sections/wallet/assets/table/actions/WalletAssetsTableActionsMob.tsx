@@ -33,16 +33,23 @@ export const WalletAssetsTableActionsMob = ({
 
   return (
     <Modal open={!!row} isDrawer onClose={onClose}>
-      <>
-        <div sx={{ pb: 30, mx: 16, mt: "-15px" }}>
+      <div sx={{ px: 6 }}>
+        <div sx={{ pb: 30 }}>
           <WalletAssetsTableName {...row} large />
         </div>
         <Separator
           css={{ background: `rgba(${theme.rgbColors.white}, 0.06)` }}
         />
-        <div sx={{ flex: "row", justify: "space-between", py: 30, mx: 16 }}>
+        <div
+          sx={{ py: 30 }}
+          css={{
+            display: "grid",
+            gridTemplateColumns: "1fr auto 1fr",
+            gridColumnGap: 8,
+          }}
+        >
           <div sx={{ flex: "column", gap: 4 }}>
-            <Text fs={14} lh={16} color="neutralGray300">
+            <Text fs={12} lh={14} color="neutralGray300">
               {t("wallet.assets.table.header.total")}
             </Text>
             <Text fs={14} lh={14} color="white">
@@ -56,29 +63,57 @@ export const WalletAssetsTableActionsMob = ({
             orientation="vertical"
             css={{ background: `rgba(${theme.rgbColors.white}, 0.06)` }}
           />
-          <div sx={{ flex: "column", gap: 4 }}>
-            <Text fs={14} lh={16} color="neutralGray300">
+          <div
+            sx={{ flex: "column", gap: 4 }}
+            css={{ justifySelf: "flex-end" }}
+          >
+            <Text fs={12} lh={14} color="neutralGray300">
               {t("wallet.assets.table.header.transferable")}
             </Text>
             <Text fs={14} lh={14} color="white">
               {t("value", { value: row.transferable })}
             </Text>
-            <Text fs={12} lh={17} color="neutralGray500">
+            <Text fs={12} lh={14} color="neutralGray500">
               {t("value.usd", { amount: row.transferableUSD })}
             </Text>
           </div>
         </div>
         <div sx={{ bg: "backgroundGray1000", m: "-15px" }}>
-          <div sx={{ flex: "row", justify: "space-between", mx: 31 }}>
-            <div sx={{ flex: "column", gap: 4, pt: 20, pb: 30 }}>
-              <Text fs={14} lh={16} color="neutralGray300">
-                {t("pools.pool.positions.position.locked")}
+          <div
+            sx={{ py: 30, mx: 14 }}
+            css={{
+              display: "grid",
+              gridTemplateColumns: "1fr auto 1fr",
+              gridColumnGap: 8,
+            }}
+          >
+            <div sx={{ flex: "column", gap: 4 }}>
+              <Text fs={12} lh={14} color="neutralGray300">
+                {t("wallet.assets.table.details.lockedDemocracy")}
               </Text>
               <Text fs={14} lh={14} color="white">
-                {t("value", { value: row.locked })}
+                {t("value", { value: row.lockedDemocracy })}
               </Text>
-              <Text fs={12} lh={17} color="neutralGray500">
-                {t("value.usd", { amount: row.lockedUSD })}
+              <Text fs={12} lh={14} color="neutralGray500">
+                {t("value.usd", { amount: row.lockedDemocracyUSD })}
+              </Text>
+            </div>
+            <Separator
+              orientation="vertical"
+              css={{ background: `rgba(${theme.rgbColors.white}, 0.06)` }}
+            />
+            <div
+              sx={{ flex: "column", gap: 4 }}
+              css={{ justifySelf: "flex-end" }}
+            >
+              <Text fs={12} lh={14} color="neutralGray300">
+                {t("wallet.assets.table.details.lockedVesting")}
+              </Text>
+              <Text fs={14} lh={14} color="white">
+                {t("value", { value: row.lockedVesting })}
+              </Text>
+              <Text fs={12} lh={14} color="neutralGray500">
+                {t("value.usd", { amount: row.lockedVestingUSD })}
               </Text>
             </div>
           </div>
@@ -129,21 +164,18 @@ export const WalletAssetsTableActionsMob = ({
                 {t("wallet.assets.table.actions.transfer")}
               </Button>
             </div>
-            {row.couldBeSetAsPaymentFee && (
-              <div>
-                <Button
-                  sx={{ width: "100%" }}
-                  size="small"
-                  onClick={() => setFeeAsPayment(row.id)}
-                >
-                  <DollarIcon />
-                  {t("wallet.assets.table.actions.payment.asset")}
-                </Button>
-              </div>
-            )}
+            <Button
+              sx={{ width: "100%" }}
+              size="small"
+              disabled={!row.couldBeSetAsPaymentFee}
+              onClick={() => setFeeAsPayment(row.id)}
+            >
+              <DollarIcon />
+              {t("wallet.assets.table.actions.payment.asset")}
+            </Button>
           </div>
         </div>
-      </>
+      </div>
     </Modal>
   )
 }
