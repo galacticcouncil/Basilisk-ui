@@ -1,8 +1,8 @@
 import { flexRender } from "@tanstack/react-table"
 import {
   Table,
-  TableContainer,
   TableBodyContent,
+  TableContainer,
   TableData,
   TableHeaderContent,
   TableRow,
@@ -19,13 +19,18 @@ import {
   useLiquidityPositionsTable,
 } from "./WalletLiquidityPositionsTable.utils"
 import { WalletLiquidityPositionsTableDetails } from "./details/WalletLiquidityPositionsTableDetails"
+import { WalletLiquidityPositionsTableActionsMob } from "sections/wallet/assets/table/actions/WalletLiquidityPositionsTableActionsMob"
+import { useMedia } from "react-use"
+import { theme } from "theme"
 
 type Props = { data: LiquidityPositionsTableData[] }
 
 export const WalletLiquidityPositionsTable = ({ data }: Props) => {
   const { t } = useTranslation()
-
+  const [row, setRow] = useState<LiquidityPositionsTableData | undefined>()
   const [poolAddress, setPoolAddress] = useState<string | null>(null)
+
+  const isDesktop = useMedia(theme.viewport.gte.sm)
   const table = useLiquidityPositionsTable(data, {
     onTransfer: setPoolAddress,
   })
@@ -60,7 +65,10 @@ export const WalletLiquidityPositionsTable = ({ data }: Props) => {
         <TableBodyContent>
           {table.getRowModel().rows.map((row, i) => (
             <Fragment key={row.id}>
-              <TableRow isOdd={!(i % 2)}>
+              <TableRow
+                isOdd={!(i % 2)}
+                onClick={() => !isDesktop && setRow(row.original)}
+              >
                 {row.getVisibleCells().map((cell) => (
                   <TableData key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -88,6 +96,11 @@ export const WalletLiquidityPositionsTable = ({ data }: Props) => {
           onClose={() => setPoolAddress(null)}
         />
       )}
+      <WalletLiquidityPositionsTableActionsMob
+        row={row}
+        onClose={() => setRow(undefined)}
+        onTransferClick={setPoolAddress}
+      />
     </TableContainer>
   )
 }

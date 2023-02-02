@@ -57,28 +57,57 @@ export const useAssetAccountDetails = (
 }
 
 const getAssetDetails = (api: ApiPromise) => async () => {
-  const [system, entries] = await Promise.all([
+  const [system, entries, meta] = await Promise.all([
     api.rpc.system.properties(),
     api.query.assetRegistry.assets.entries(),
+    api.query.assetRegistry.assetMetadataMap.entries(),
   ])
 
+  const assetsMeta = meta.map(([key, data]) => {
+    return {
+      id: key.args[0].toString(),
+      symbol: data.unwrap().symbol.toUtf8(),
+    }
+  })
+
+  if (!assetsMeta.find((i) => i.id === NATIVE_ASSET_ID)) {
+    const [symbol] = system.tokenSymbol.unwrap()
+
+    assetsMeta.push({
+      id: NATIVE_ASSET_ID,
+      symbol: symbol.toString(),
+    })
+  }
+
   const assets = entries.map(([key, data]) => {
+    const { symbol = "N/A" } =
+      assetsMeta.find(
+        (assetMeta) => assetMeta.id.toString() === key.args[0].toString(),
+      ) || {}
+
     return {
       id: key.args[0].toString(),
       name: data.unwrap().name.toUtf8(),
       locked: data.unwrap().locked.toPrimitive(),
       assetType: data.unwrap().assetType.type,
       existentialDeposit: data.unwrap().existentialDeposit.toBigNumber(),
+      symbol,
     }
   })
 
   if (!assets.find((i) => i.id === NATIVE_ASSET_ID)) {
+    const { symbol = "N/A" } =
+      assetsMeta.find(
+        (assetMeta) => assetMeta.id.toString() === NATIVE_ASSET_ID,
+      ) || {}
+
     assets.push({
       id: NATIVE_ASSET_ID,
       locked: false,
       name: system.tokenSymbol.unwrap()[0].toString(),
       assetType: "Token",
       existentialDeposit: BN_0,
+      symbol,
     })
   }
 

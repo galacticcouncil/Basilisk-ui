@@ -3,18 +3,34 @@ import { Text } from "components/Typography/Text/Text"
 import { ReactNode, useState } from "react"
 import { STrigger } from "./InfoTooltip.styled"
 
-export function InfoTooltip(props: { text: ReactNode; children: ReactNode }) {
+type InfoTooltipProps = {
+  text: ReactNode
+  textOnClick?: ReactNode
+  children: ReactNode
+}
+
+export function InfoTooltip({ text, textOnClick, children }: InfoTooltipProps) {
   const [open, setOpen] = useState(false)
+  const [content, setContent] = useState(text)
   return (
     <Tooltip.Root
       delayDuration={0}
       open={open}
-      onOpenChange={(data) => setOpen(data)}
+      onOpenChange={(isOpen) => {
+        setOpen(isOpen)
+        // reset state of the content
+        textOnClick && !isOpen && setContent(text)
+      }}
     >
       <STrigger
         onClick={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
+          if (textOnClick) {
+            e.preventDefault()
+            e.stopPropagation()
+            // change the content on the click if the text is provided
+            setContent(textOnClick)
+          }
+
           setOpen(true)
         }}
         onPointerDown={(e) => {
@@ -22,7 +38,7 @@ export function InfoTooltip(props: { text: ReactNode; children: ReactNode }) {
           e.stopPropagation()
         }}
       >
-        {props.children}
+        {children}
       </STrigger>
       <Tooltip.Portal>
         <Tooltip.Content
@@ -38,7 +54,7 @@ export function InfoTooltip(props: { text: ReactNode; children: ReactNode }) {
           alignOffset={-10}
           collisionPadding={12}
         >
-          <Text sx={{ fontSize: 12, fontWeight: 400 }}>{props.text}</Text>
+          <Text sx={{ fontSize: 12, fontWeight: 400 }}>{content}</Text>
           <Tooltip.Arrow />
         </Tooltip.Content>
       </Tooltip.Portal>

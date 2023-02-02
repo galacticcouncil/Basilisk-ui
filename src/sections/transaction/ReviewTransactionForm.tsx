@@ -13,6 +13,10 @@ import { useEra } from "api/era"
 import { useBestNumber } from "api/chain"
 import { useAccountCurrency } from "../../api/payments"
 import { useAssetMeta } from "../../api/assetMeta"
+import BigNumber from "bignumber.js"
+import { BN_1 } from "utils/constants"
+import { useSpotPrice } from "api/spotPrice"
+import { NATIVE_ASSET_ID } from "utils/api"
 
 export const ReviewTransactionForm = (
   props: {
@@ -25,9 +29,14 @@ export const ReviewTransactionForm = (
   const { account } = useAccountStore()
   const bestNumber = useBestNumber()
   const accountCurrency = useAccountCurrency(account?.address)
-  const feeMeta = useAssetMeta(accountCurrency.data)
+
+  const feeMeta = useAssetMeta(
+    props.overrides?.currencyId ?? accountCurrency.data,
+  )
 
   const nonce = useNextNonce(account?.address)
+
+  const spotPrice = useSpotPrice(NATIVE_ASSET_ID, feeMeta.data?.id)
 
   const signTx = useMutation(async () => {
     const address = account?.address?.toString()
@@ -79,7 +88,10 @@ export const ReviewTransactionForm = (
                 <>
                   <Text color="white">
                     {t("pools.addLiquidity.modal.row.transactionCostValue", {
-                      amount: paymentInfoData.partialFee,
+                      amount: (
+                        props.overrides?.fee ??
+                        new BigNumber(paymentInfoData.partialFee.toHex())
+                      ).multipliedBy(spotPrice.data?.spotPrice ?? BN_1),
                       symbol: feeMeta.data?.symbol,
                       fixedPointScale: 12,
                       type: "token",

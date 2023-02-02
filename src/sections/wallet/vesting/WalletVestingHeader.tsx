@@ -38,41 +38,46 @@ export const WalletVestingHeader = () => {
       sx={{ flex: ["column", "row"], mb: 40 }}
       css={{ "> *:not([role='separator'])": { flex: 1 } }}
     >
-      <div sx={{ flex: ["row", "column"], justify: ["start", "center"] }}>
-        <Text color="neutralGray300" sx={{ mb: 14 }}>
+      <div sx={{ flex: ["row", "column"], justify: "space-between" }}>
+        <Text color="neutralGray300" fs={[14, 16]} sx={{ mb: 14 }}>
           {t("wallet.vesting.total_vested")}
         </Text>
-        <div sx={{ flex: "row", align: "start" }}>
-          <Heading as="h3" sx={{ fontSize: [16, 34], fontWeight: 900 }}>
-            <Trans
-              t={t}
-              i18nKey="wallet.vesting.total_vested.value"
-              tOptions={{
-                ...separateBalance(totalVestedValue, {
-                  fixedPointScale: nativeAsset?.decimals ?? 12,
-                  type: "token",
-                }),
-              }}
-            >
-              <span
-                css={css`
-                  color: rgba(${theme.rgbColors.white}, 0.4);
-                  font-size: 16px;
-                `}
-              />
-            </Trans>
-          </Heading>
+        <div sx={{ flex: "column", align: ["end", "start"] }}>
+          <div sx={{ flex: "row", align: "start" }}>
+            <Heading as="h3" sx={{ fontSize: [16, 34], fontWeight: 900 }}>
+              <Trans
+                t={t}
+                i18nKey="wallet.vesting.total_vested.value"
+                tOptions={{
+                  ...separateBalance(totalVestedValue, {
+                    fixedPointScale: nativeAsset?.decimals ?? 12,
+                    type: "token",
+                  }),
+                }}
+              >
+                <span
+                  css={css`
+                    color: rgba(${theme.rgbColors.white}, 0.4);
+                    font-size: 16px;
+                  `}
+                />
+              </Trans>
+            </Heading>
+          </div>
+          <Text
+            sx={{
+              mt: 3,
+            }}
+            color="neutralGray300"
+            fs={[10, 16]}
+            lh={18}
+          >
+            {t("value.usd", {
+              amount: totalVestedUSD,
+              fixedPointScale: nativeAsset?.decimals.toNumber() ?? 12,
+            })}
+          </Text>
         </div>
-        <Text
-          sx={{
-            mt: 3,
-          }}
-          color="neutralGray300"
-          fs={16}
-          lh={18}
-        >
-          {t("value.usd", { amount: totalVestedUSD })}
-        </Text>
       </div>
 
       {vestingScheduleEnd && (

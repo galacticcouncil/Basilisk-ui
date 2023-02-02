@@ -3,6 +3,7 @@ import { Separator } from "components/Separator/Separator"
 import { FarmAssetIcon } from "./FarmAssetIcon"
 import { AprFarm, getMinAndMaxAPR } from "utils/farms/apr"
 import { useTranslation } from "react-i18next"
+import { MultipleIcons } from "components/MultipleIcons/MultipleIcons"
 
 type Props = {
   farms: AprFarm[]
@@ -15,16 +16,16 @@ export const MultiplePoolIncentivesRow = ({ farms }: Props) => {
     <>
       <div sx={{ flex: "row", justify: "space-between" }}>
         <div sx={{ flex: "row" }}>
-          {farms.map((farm, index) => (
-            <FarmAssetIcon
-              key={farm.assetId.toString()}
-              assetId={farm.assetId}
-              css={{
-                right: `${index * 10}px`,
-                position: "relative",
-              }}
-            />
-          ))}
+          <MultipleIcons
+            icons={farms.map((farm) => ({
+              icon: (
+                <FarmAssetIcon
+                  key={farm.assetId.toString()}
+                  assetId={farm.assetId}
+                />
+              ),
+            }))}
+          />
         </div>
         {!!farms.length && (
           <Text color="primary200">

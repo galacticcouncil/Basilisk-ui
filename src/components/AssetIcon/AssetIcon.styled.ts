@@ -9,15 +9,10 @@ export const AssetIconWrapper = styled(Icon)`
 export const SIcon = styled(Icon)`
   width: 28px;
   height: 28px;
-  background: ${theme.colors.black};
   border-radius: 50%;
 
   > svg {
     position: absolute;
-    top: 1px;
-    left: 1px;
-    width: 26px;
-    height: 26px;
   }
 `
 export const SChainedIcon = styled(Icon)`

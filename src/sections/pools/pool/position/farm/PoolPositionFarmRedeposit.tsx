@@ -10,6 +10,7 @@ import { useAsset } from "api/asset"
 import { theme } from "theme"
 import { Fragment } from "react"
 import { SContainer, SInnerContainer } from "./PoolPositionFarmRedeposit.styled"
+import { Icon } from "components/Icon/Icon"
 
 const PoolPositionFarmRedepositAsset = (props: {
   pool: PoolBase
@@ -22,10 +23,10 @@ const PoolPositionFarmRedepositAsset = (props: {
 
   return (
     <div sx={{ flex: "row", align: "center", gap: 6 }}>
-      {asset.data.icon}
+      <Icon size={28}>{asset.data.icon} </Icon>
       {!props.hideName && (
         <Text fs={14} lh={16}>
-          {asset.data.name}
+          {asset.data.symbol}
         </Text>
       )}
       <Text fs={14} lh={16} color="primary200">
@@ -63,33 +64,44 @@ export const PoolPositionFarmRedeposit = (props: {
   return (
     <SContainer isMultiple={isMultiple}>
       <SInnerContainer isMultiple={isMultiple}>
-        <GradientText fs={12} fw={400}>
-          {t("pools.pool.positions.farms.redeposit.title")}
-        </GradientText>
+        <div
+          sx={{
+            flex: ["column", "row"],
+            align: ["start", "center"],
+            gap: [10, 0],
+          }}
+        >
+          <GradientText fs={12} fw={400}>
+            {t("pools.pool.positions.farms.redeposit.title")}
+          </GradientText>
 
-        <div sx={{ flex: "row", gap: 20, align: "center", ml: 12, mr: 20 }}>
-          {availableYieldFarms.map((farm, i) => (
-            <Fragment key={`${farm.globalFarm.id}-${farm.yieldFarm.id}`}>
-              <PoolPositionFarmRedepositAsset
-                hideName={!isMultiple}
-                farm={farm}
-                pool={props.pool}
-              />
-
-              {i + 1 !== availableYieldFarms.length && (
-                <span
-                  sx={{ width: 1, height: 35 }}
-                  css={{ background: `rgba(${theme.rgbColors.white}, 0.06)` }}
+          <div
+            sx={{ flex: "row", gap: 20, align: "center", ml: [0, 12], mr: 20 }}
+          >
+            {availableYieldFarms.map((farm, i) => (
+              <Fragment key={`${farm.globalFarm.id}-${farm.yieldFarm.id}`}>
+                <PoolPositionFarmRedepositAsset
+                  hideName={!isMultiple}
+                  farm={farm}
+                  pool={props.pool}
                 />
-              )}
-            </Fragment>
-          ))}
+
+                {i + 1 !== availableYieldFarms.length && (
+                  <span
+                    sx={{ width: 1, height: 35 }}
+                    css={{ background: `rgba(${theme.rgbColors.white}, 0.06)` }}
+                  />
+                )}
+              </Fragment>
+            ))}
+          </div>
         </div>
 
         <Button
           size="small"
           variant="primary"
           disabled={redeposit.isLoading}
+          sx={{ width: 120 }}
           onClick={() => redeposit.mutate()}
         >
           {t("pools.pool.positions.farms.redeposit.join")}

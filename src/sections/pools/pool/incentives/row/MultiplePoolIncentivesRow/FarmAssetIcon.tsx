@@ -1,14 +1,9 @@
 import { u32 } from "@polkadot/types-codec"
 import { useAsset } from "api/asset"
-import { SIcon } from "components/AssetIcon/AssetIcon.styled"
+import { ReactComponent as PlaceholderIcon } from "assets/icons/tokens/PlaceholderIcon.svg"
 
-type FarmAssetIconProps = {
-  assetId: u32
-  className?: string
-}
+export const FarmAssetIcon = ({ assetId }: { assetId: u32 }) => {
+  const { data: asset } = useAsset(assetId)
 
-export const FarmAssetIcon = ({ assetId, className }: FarmAssetIconProps) => {
-  const asset = useAsset(assetId)
-
-  return <SIcon css={className}>{asset.data?.icon}</SIcon>
+  return asset?.icon ?? <PlaceholderIcon />
 }

@@ -1,9 +1,5 @@
 import { FC, useState } from "react"
-import {
-  SAssetContainer,
-  SAssetIcon,
-  SContainer,
-} from "sections/pools/pool/shares/deposit/PoolSharesDepositFarm.styled"
+import { SContainer } from "sections/pools/pool/shares/deposit/PoolSharesDepositFarm.styled"
 import { useAPR } from "utils/farms/apr"
 import { Text } from "components/Typography/Text/Text"
 import { useTranslation } from "react-i18next"
@@ -14,6 +10,7 @@ import { DepositNftType } from "api/deposits"
 import { getAssetLogo } from "components/AssetIcon/AssetIcon"
 import { useAssetMetaList } from "api/assetMeta"
 import BN from "bignumber.js"
+import { MultipleIcons } from "components/MultipleIcons/MultipleIcons"
 
 type Props = {
   pool: PoolBase
@@ -44,7 +41,7 @@ export const PoolSharesDepositFarm: FC<Props> = ({ pool, depositNft }) => {
       [null, null],
     ) ?? []
 
-  const assetList = useAssetMetaList(activeAprs.map((i) => i.assetId))
+  const { data: assetList } = useAssetMetaList(activeAprs.map((i) => i.assetId))
 
   return (
     <SContainer>
@@ -53,13 +50,16 @@ export const PoolSharesDepositFarm: FC<Props> = ({ pool, depositNft }) => {
           {t("pools.pool.positions.farms.joinedFarms")}
         </Text>
         <div sx={{ flex: "row", align: "center", gap: 6 }}>
-          <SAssetContainer>
-            {assetList.data?.map((asset) => (
-              <SAssetIcon key={asset.symbol}>
-                {getAssetLogo(asset.symbol)}
-              </SAssetIcon>
-            ))}
-          </SAssetContainer>
+          {assetList && (
+            <MultipleIcons
+              icons={assetList.map((asset) => {
+                return {
+                  icon: getAssetLogo(asset.symbol),
+                }
+              })}
+            />
+          )}
+
           {fromApr != null && toApr != null && (
             <Text fs={14} lh={16} color="primary200">
               {fromApr.eq(toApr)

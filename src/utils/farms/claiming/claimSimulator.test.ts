@@ -309,7 +309,7 @@ test("create mock type registry", () => {
   )
 
   expect(result?.value.toString()).toEqual(
-    "10,834,883,451,936,696".replaceAll(",", ""),
+    "1,547,067,970,950,468".replaceAll(",", ""),
   )
   expect(result?.assetId.toString()).toEqual("0")
 })

@@ -20,7 +20,7 @@ import { getFixedPointAmount, getFloatingPointAmount } from "utils/balance"
 import BigNumber from "bignumber.js"
 import { PoolBase } from "@galacticcouncil/sdk"
 import { useAccountStore } from "state/store"
-import { useTranslation } from "react-i18next"
+import { Trans, useTranslation } from "react-i18next"
 import { u32 } from "@polkadot/types"
 import { getTradeFee } from "sections/pools/pool/Pool.utils"
 import { useAssetMeta } from "api/assetMeta"
@@ -44,6 +44,7 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
   const { account } = useAccountStore()
   const { data: shareToken } = usePoolShareToken(pool.address)
   const { data: shareTokenMeta } = useAssetMeta(shareToken?.token)
+
   const accountCurrency = useAccountCurrency(account?.address)
   const feeMeta = useAssetMeta(accountCurrency.data)
   const [openSettings, setOpenSettings] = useState(false)
@@ -181,22 +182,63 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
     const curr = input.lastUpdated
     const next = input.lastUpdated === 0 ? 1 : 0
 
-    handleAddLiquidity.mutate([
-      {
+    handleAddLiquidity.mutate({
+      assetA: {
         id: pool.tokens[curr].id,
         amount: getFixedPointAmount(
           new BigNumber(input.values[curr]),
           pool.tokens[curr].decimals,
         ),
       },
-      {
+      assetB: {
         id: pool.tokens[next].id,
         amount: getFixedPointAmount(
           new BigNumber(input.values[next]),
           pool.tokens[next].decimals,
         ).times(1.0 + 0.3), // TODO: add provision percentage configuration
       },
-    ])
+      toast: {
+        onLoading: (
+          <Trans
+            t={t}
+            i18nKey="liquidity.add.modal.toast.onLoading"
+            tOptions={{
+              shares: calculatedShares,
+              fixedPointScale: shareTokenDecimals,
+            }}
+          >
+            <span />
+            <span className="highlight" />
+          </Trans>
+        ),
+        onSuccess: (
+          <Trans
+            t={t}
+            i18nKey="liquidity.add.modal.toast.onSuccess"
+            tOptions={{
+              shares: calculatedShares,
+              fixedPointScale: shareTokenDecimals,
+            }}
+          >
+            <span />
+            <span className="highlight" />
+          </Trans>
+        ),
+        onError: (
+          <Trans
+            t={t}
+            i18nKey="liquidity.add.modal.toast.onLoading"
+            tOptions={{
+              shares: calculatedShares,
+              fixedPointScale: shareTokenDecimals,
+            }}
+          >
+            <span />
+            <span className="highlight" />
+          </Trans>
+        ),
+      },
+    })
   }
 
   return (
@@ -216,7 +258,6 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
           asset={pool.tokens[0].id}
           balance={balances[0].data?.balance}
           decimals={pool.tokens[0].decimals}
-          assetName={pool.tokens[0].symbol}
           assetIcon={getAssetLogo(pool.tokens[0].symbol)}
           value={input.values[0]}
           onChange={(value) => handleChange(value, 0)}
@@ -238,7 +279,6 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
           asset={pool.tokens[1].id}
           balance={balances[1].data?.balance}
           decimals={pool.tokens[1].decimals}
-          assetName={pool.tokens[1].symbol}
           assetIcon={getAssetLogo(pool.tokens[1].symbol)}
           value={input.values[1]}
           onChange={(value) => handleChange(value, 1)}
