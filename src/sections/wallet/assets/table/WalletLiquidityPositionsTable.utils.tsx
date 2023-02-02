@@ -40,8 +40,8 @@ export const useLiquidityPositionsTable = (
       header: t("wallet.assets.table.header.name"),
       cell: ({ row }) => (
         <WalletLiquidityPositionsTableName
-          symbolA={row.original.assetA.symbol}
-          symbolB={row.original.assetB.symbol}
+          assetA={row.original.assetA}
+          assetB={row.original.assetB}
         />
       ),
     }),
@@ -96,12 +96,16 @@ export type LiquidityPositionsTableData = {
   name?: string
   poolAddress: string
   assetA: {
+    id: string
+    name: string
     symbol: string
     balance?: BigNumber
     balanceUsd?: BigNumber
     chain: string
   }
   assetB: {
+    id: string
+    name: string
     symbol: string
     balance?: BigNumber
     balanceUsd?: BigNumber

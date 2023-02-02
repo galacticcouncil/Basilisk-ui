@@ -12,7 +12,6 @@ type Props = {
 
   asset: u32 | string
   assetIcon: ReactNode
-  assetName: string
   balance: BigNumber | undefined
   decimals: number
 

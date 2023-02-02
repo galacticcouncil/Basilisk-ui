@@ -47,6 +47,7 @@ export const WalletAssets = () => {
               }}
             >
               <WalletAssetsTable data={assetTableQuery.data} />
+
               <WalletLiquidityPositionsTable
                 data={liquidityPositionsQuery.data}
               />

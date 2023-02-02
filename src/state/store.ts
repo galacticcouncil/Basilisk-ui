@@ -6,6 +6,7 @@ import { getWalletBySource } from "@talismn/connect-wallets"
 import { POLKADOT_APP_NAME } from "utils/api"
 import { v4 as uuid } from "uuid"
 import { ReactElement } from "react"
+import BigNumber from "bignumber.js"
 
 export interface Account {
   name: string
@@ -16,6 +17,10 @@ export interface Account {
 export interface TransactionInput {
   title?: string
   tx: SubmittableExtrinsic
+  overrides?: {
+    fee: BigNumber
+    currencyId?: string
+  }
 }
 
 export interface ToastMessage {

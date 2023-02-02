@@ -59,7 +59,7 @@ export const MyPositionsHeader = ({ pool }: { pool: PoolBase }) => {
 
     const toastValue = claimableAssets.map((asset, index) => {
       return (
-        <>
+        <Fragment key={index}>
           {index > 0 && <span> {t("and")} </span>}
           <Trans
             t={t}
@@ -69,12 +69,12 @@ export const MyPositionsHeader = ({ pool }: { pool: PoolBase }) => {
             <span />
             <span className="highlight" />
           </Trans>
-        </>
+        </Fragment>
       )
     })
 
     return { claimableAssets, toastValue }
-  }, [assetsMeta.data, claimable.data?.assets])
+  }, [assetsMeta.data, claimable.data?.assets, t])
 
   const toast = {
     onLoading: (
@@ -103,7 +103,7 @@ export const MyPositionsHeader = ({ pool }: { pool: PoolBase }) => {
     ),
   }
 
-  const claimAll = useClaimAllMutation(pool.address, undefined)
+  const claimAll = useClaimAllMutation(pool.address, undefined, toast)
 
   const sortedAPR = useMemo(() => {
     if (!APRs.data) return undefined

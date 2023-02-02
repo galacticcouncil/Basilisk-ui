@@ -11,6 +11,8 @@ import { QUERY_KEYS } from "utils/queryKeys"
 
 const worker = wrap<typeof WorkerType>(new Worker())
 
+export const AXISX_SCALE = 3000
+
 export const useLoyaltyRates = (
   farm: AprFarm,
   loyaltyCurve: Maybe<PalletLiquidityMiningLoyaltyCurve>,
@@ -37,7 +39,12 @@ export const useLoyaltyRates = (
           )
 
           return result.map((y, x) => ({
-            x: new BN(x).div(BLOCK_TIME).div(60).div(24).toNumber(),
+            x: new BN(x)
+              .div(BLOCK_TIME)
+              .div(60)
+              .div(24)
+              .multipliedBy(AXISX_SCALE)
+              .toNumber(),
             y: new BN(y).times(farm.apr.div(100)).toNumber(),
           }))
         }

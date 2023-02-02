@@ -8,10 +8,9 @@ import { SSelectAssetButton } from "./AssetSelectInput.styled"
 import { u32 } from "@polkadot/types"
 import BigNumber from "bignumber.js"
 import { getFloatingPointAmount } from "utils/balance"
-import { useUsdPeggedAsset } from "api/asset"
+import { useAsset, useUsdPeggedAsset } from "api/asset"
 import { useSpotPrice } from "api/spotPrice"
 import { Maybe } from "utils/helpers"
-import { getAssetName } from "components/AssetIcon/AssetIcon"
 import { TokenInputContainer, TokenInputMaxButton } from "./TokenInput"
 
 export const AssetSelectInput = (props: {
@@ -22,7 +21,6 @@ export const AssetSelectInput = (props: {
   className?: string
 
   asset: u32 | string
-  assetName: Maybe<string>
   assetIcon: Maybe<ReactNode>
   decimals: Maybe<number>
   balance: Maybe<BigNumber>
@@ -36,6 +34,7 @@ export const AssetSelectInput = (props: {
 
   const usd = useUsdPeggedAsset()
   const spotPrice = useSpotPrice(props.asset, usd.data?.id)
+  const asset = useAsset(props.asset)
 
   const aUSDValue = useMemo(() => {
     if (!props.value) return 0
@@ -83,10 +82,10 @@ export const AssetSelectInput = (props: {
       >
         <SSelectAssetButton size="small" onClick={props.onSelectAssetClick}>
           <Icon icon={props.assetIcon} size={32} />
-          {props.assetName && (
+          {asset.data && (
             <div>
               <Text fw={700} color="white">
-                {props.assetName}
+                {asset.data?.symbol}
               </Text>
               <Text
                 css={{ whiteSpace: "nowrap" }}
@@ -94,7 +93,7 @@ export const AssetSelectInput = (props: {
                 fs={12}
                 lh={14}
               >
-                {getAssetName(props.assetName)}
+                {asset.data?.name}
               </Text>
             </div>
           )}
@@ -107,7 +106,7 @@ export const AssetSelectInput = (props: {
           onChange={props.onChange}
           error={props.error}
           dollars={t("value.usd", { amount: aUSDValue })}
-          unit={props.assetName}
+          unit={asset.data?.symbol}
           placeholder="0"
         />
       </div>

@@ -18,17 +18,20 @@ export const useLiquidityPositionsTableData = () => {
     ? [NATIVE_ASSET_ID, ...accountBalances.data.balances.map((b) => b.id)]
     : []
 
-  const assets = useAssetDetailsList(tokenIds, {
+  const assetsPool = useAssetDetailsList(tokenIds, {
     assetType: ["PoolShare"],
   })
+
+  const assets = useAssetDetailsList(tokenIds)
 
   const usd = useUsdPeggedAsset()
 
   const poolsWithShareTokens = usePoolsWithShareTokens()
 
   const participatedLiquidityPools = useMemo(() => {
-    if (assets.data && poolsWithShareTokens.data) {
-      const shareAssetsIds = assets.data.map((asset) => asset.id)
+    if (assetsPool.data && poolsWithShareTokens.data) {
+      const shareAssetsIds = assetsPool.data.map((asset) => asset.id)
+
       return poolsWithShareTokens.data
         .filter((pool) => {
           if (pool.shareToken) {
@@ -38,27 +41,40 @@ export const useLiquidityPositionsTableData = () => {
         })
         .map((pool) => {
           const shareTokenId = pool.shareToken?.token.toString()
-          const name = assets.data.find(
+          const name = assetsPool.data.find(
             (shareToken) => shareToken.id === shareTokenId,
           )?.name
+
+          const assetAName = assets.data?.find(
+            (asset) => asset.id === pool.tokens[0].id,
+          )
+          const assetBName = assets.data?.find(
+            (asset) => asset.id === pool.tokens[1].id,
+          )
 
           return {
             address: pool.address,
             shareTokenName: name,
             shareTokenId,
-            assetA: pool.tokens[0],
-            assetB: pool.tokens[1],
+            assetA: { ...pool.tokens[0], name: assetAName?.name },
+            assetB: { ...pool.tokens[1], name: assetBName?.name },
           }
         })
     }
     return []
-  }, [poolsWithShareTokens.data, assets.data])
+  }, [poolsWithShareTokens.data, assetsPool.data, assets])
 
   const shares = useShareOfPools(
     participatedLiquidityPools.map((pool) => pool.shareTokenId ?? "") ?? [],
   )
 
-  const queries = [accountBalances, assets, poolsWithShareTokens, shares, usd]
+  const queries = [
+    accountBalances,
+    assetsPool,
+    poolsWithShareTokens,
+    shares,
+    usd,
+  ]
   const isLoading = queries.some((query) => query.isLoading)
 
   const balances = useMemo(() => {
@@ -167,6 +183,8 @@ export const useLiquidityPositionsTableData = () => {
           name: pool.shareTokenName,
           poolAddress: pool.address,
           assetA: {
+            id: pool.assetA.id,
+            name: pool.assetA.name ?? "N/A",
             symbol: pool.assetA.symbol,
             balance: assetA?.total,
             balanceUsd: totalAssetAUsd,
@@ -174,6 +192,8 @@ export const useLiquidityPositionsTableData = () => {
             chain: "Basilisk", // TODO: find out proper chain
           },
           assetB: {
+            id: pool.assetB.id,
+            name: pool.assetB.name ?? "N/A",
             symbol: pool.assetB.symbol,
             balance: assetB?.total,
             balanceUsd: totalAssetBUsd,

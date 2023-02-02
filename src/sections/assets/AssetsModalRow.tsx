@@ -10,7 +10,6 @@ import { Trans, useTranslation } from "react-i18next"
 import { useSpotPrice } from "../../api/spotPrice"
 import { BN_0 } from "../../utils/constants"
 import { Maybe } from "utils/helpers"
-import { getAssetName } from "components/AssetIcon/AssetIcon"
 import { DollarAssetValue } from "components/DollarAssetValue/DollarAssetValue"
 
 interface AssetsModalRowProps {
@@ -43,10 +42,10 @@ export const AssetsModalRow: FC<AssetsModalRowProps> = ({ id, onClick }) => {
         <Icon icon={asset.data?.icon} sx={{ mr: 10 }} size={32} />
         <div sx={{ mr: 6 }}>
           <Text fw={700} color="white" fs={16} lh={22}>
-            {asset.data?.name}
+            {asset.data?.symbol}
           </Text>
           <Text color="neutralGray400" fs={12} lh={16}>
-            {getAssetName(asset.data?.name)}
+            {asset.data?.name}
           </Text>
         </div>
       </div>
@@ -65,7 +64,7 @@ export const AssetsModalRow: FC<AssetsModalRowProps> = ({ id, onClick }) => {
               tOptions={{
                 balance: balance.data.balance,
                 fixedPointScale: asset.data.decimals,
-                numberSuffix: ` ${asset.data.name}`,
+                numberSuffix: ` ${asset.data.symbol}`,
                 type: "token",
               }}
             >

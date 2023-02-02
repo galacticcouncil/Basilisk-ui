@@ -11,6 +11,8 @@ export const worker = {
   ) {
     const result = []
     for (let periods = 0; periods < plannedYieldingPeriods; periods++) {
+      //reduce the number of periods by taking one period each 3000 periods
+      if (periods % 3000 !== 0) continue
       const tau = periods / ((initialRewardPercentage + 1) * scaleCoef)
       const tauAddTauMulInitialRewardPercentage =
         tau + tau * initialRewardPercentage

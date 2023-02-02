@@ -11,7 +11,6 @@ import { AssetsTableData } from "sections/wallet/assets/table/WalletAssetsTable.
 import { PalletBalancesAccountData } from "@polkadot/types/lookup"
 import { u32 } from "@polkadot/types"
 import { useAssetDetailsList } from "api/assetDetails"
-import { getAssetName } from "components/AssetIcon/AssetIcon"
 import { useTokensLocks } from "api/balances"
 import { useAcceptedCurrencies, useAccountCurrency } from "api/payments"
 import { usePools } from "api/pools"
@@ -40,6 +39,7 @@ export const useAssetsTableData = () => {
     pools,
     ...acceptedCurrenciesQuery,
   ]
+
   const isLoading = queries.some((q) => q.isLoading)
 
   const data = useMemo(() => {
@@ -81,8 +81,8 @@ export const useAssetsTableData = () => {
 
       return {
         id: asset.id?.toString(),
-        symbol: asset.name,
-        name: getAssetName(asset.name),
+        symbol: asset.symbol,
+        name: asset.name,
         transferable: balance?.transferable ?? BN_0,
         transferableUSD: balance?.transferableUSD ?? BN_0,
         inTradeRouter:
@@ -131,6 +131,7 @@ export const useAssetsBalances = () => {
     : []
   const assetMetas = useAssetMetaList(tokenIds)
   const usd = useUsdPeggedAsset()
+
   const spotPrices = useSpotPrices(tokenIds, usd.data?.id)
   const locksQueries = useTokensLocks(tokenIds)
 

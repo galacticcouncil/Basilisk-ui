@@ -42,20 +42,71 @@ export const PoolFarmDeposit = (props: PoolJoinFarmDepositProps) => {
   const form = useForm<{ value: string }>({})
 
   async function handleSubmit(data: FormValues<typeof form>) {
-    const value = new BN(data.value).times(BN_BILL)
+    const value = new BN(data.value)
+      .multipliedBy(BN_BILL)
+      .toFormat({ decimalSeparator: "" })
+
     if (!account) throw new Error("No account found")
+
+    const toast = {
+      onLoading: (
+        <Trans
+          t={t}
+          i18nKey="farms.deposit.toast.onLoading"
+          tOptions={{
+            amount: value,
+            fixedPointScale: DEFAULT_DECIMALS.toNumber(),
+          }}
+        >
+          <span />
+          <span className="highlight" />
+        </Trans>
+      ),
+      onSuccess: (
+        <Trans
+          t={t}
+          i18nKey="farms.deposit.toast.onSuccess"
+          tOptions={{
+            amount: value,
+            fixedPointScale: DEFAULT_DECIMALS.toNumber(),
+          }}
+        >
+          <span />
+          <span className="highlight" />
+        </Trans>
+      ),
+      onError: (
+        <Trans
+          t={t}
+          i18nKey="farms.deposit.toast.onLoading"
+          tOptions={{
+            amount: value,
+            fixedPointScale: DEFAULT_DECIMALS.toNumber(),
+          }}
+        >
+          <span />
+          <span className="highlight" />
+        </Trans>
+      ),
+    }
+
     if (props.farm) {
-      return await createTransaction({
-        tx: api.tx.xykLiquidityMining.depositShares(
-          props.farm.globalFarm.id,
-          props.farm.yieldFarm.id,
-          {
-            assetIn: assetIn.id,
-            assetOut: assetOut.id,
-          },
-          value.toString(),
-        ),
-      })
+      return await createTransaction(
+        {
+          tx: api.tx.xykLiquidityMining.depositShares(
+            props.farm.globalFarm.id,
+            props.farm.yieldFarm.id,
+            {
+              assetIn: assetIn.id,
+              assetOut: assetOut.id,
+            },
+            value.toString(),
+          ),
+        },
+        {
+          toast,
+        },
+      )
     }
 
     if (!activeYieldFarms.data)
@@ -76,47 +127,7 @@ export const PoolFarmDeposit = (props: PoolJoinFarmDepositProps) => {
         ),
       },
       {
-        toast: {
-          onLoading: (
-            <Trans
-              t={t}
-              i18nKey="farms.deposit.toast.onLoading"
-              tOptions={{
-                amount: value.toString(),
-                fixedPointScale: DEFAULT_DECIMALS.toNumber(),
-              }}
-            >
-              <span />
-              <span className="highlight" />
-            </Trans>
-          ),
-          onSuccess: (
-            <Trans
-              t={t}
-              i18nKey="farms.deposit.toast.onSuccess"
-              tOptions={{
-                amount: value.toString(),
-                fixedPointScale: DEFAULT_DECIMALS.toNumber(),
-              }}
-            >
-              <span />
-              <span className="highlight" />
-            </Trans>
-          ),
-          onError: (
-            <Trans
-              t={t}
-              i18nKey="farms.deposit.toast.onLoading"
-              tOptions={{
-                amount: value.toString(),
-                fixedPointScale: DEFAULT_DECIMALS.toNumber(),
-              }}
-            >
-              <span />
-              <span className="highlight" />
-            </Trans>
-          ),
-        },
+        toast,
       },
     )
 
