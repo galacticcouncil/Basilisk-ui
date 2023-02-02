@@ -26,7 +26,7 @@ const PoolPositionFarmRedepositAsset = (props: {
       <Icon size={28}>{asset.data.icon} </Icon>
       {!props.hideName && (
         <Text fs={14} lh={16}>
-          {asset.data.name}
+          {asset.data.symbol}
         </Text>
       )}
       <Text fs={14} lh={16} color="primary200">

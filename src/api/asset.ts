@@ -17,7 +17,8 @@ export const useAsset = (id: Maybe<u32 | string>) => {
     return {
       ...detail,
       decimals: meta?.decimals,
-      icon: getAssetLogo(detail?.name),
+      symbol: meta?.symbol,
+      icon: getAssetLogo(detail?.symbol),
     }
   })
 }
@@ -26,7 +27,7 @@ export const useUsdPeggedAsset = () => {
   return useQuerySelect(useAssetDetailsList(), (data) =>
     data.find(
       (asset) =>
-        asset.name.toLowerCase() ===
+        asset.symbol.toLowerCase() ===
         import.meta.env.VITE_USD_PEGGED_ASSET_NAME.toLowerCase(),
     ),
   )

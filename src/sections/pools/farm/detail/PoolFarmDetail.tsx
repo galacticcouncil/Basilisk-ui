@@ -51,7 +51,7 @@ export const PoolFarmDetail = (props: {
       >
         <div sx={{ flex: "row", align: "center", gap: 8 }}>
           {asset.data?.icon}
-          <Text fw={700}>{asset.data?.name}</Text>
+          <Text fw={700}>{asset.data?.symbol}</Text>
         </div>
         <Text fs={20} lh={28} fw={600} color="primary200">
           {t("pools.allFarms.modal.apr.single", { value: props.farm.apr })}

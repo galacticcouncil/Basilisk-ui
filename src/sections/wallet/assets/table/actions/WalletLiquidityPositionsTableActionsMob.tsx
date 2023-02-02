@@ -32,8 +32,8 @@ export const WalletLiquidityPositionsTableActionsMob = ({
       <>
         <div sx={{ pb: 30, mx: 16 }}>
           <WalletLiquidityPositionsTableName
-            symbolA={row.assetA.symbol}
-            symbolB={row.assetB.symbol}
+            assetA={row.assetA}
+            assetB={row.assetB}
             large
           />
         </div>

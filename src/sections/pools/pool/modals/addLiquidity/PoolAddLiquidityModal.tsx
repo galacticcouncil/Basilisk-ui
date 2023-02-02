@@ -255,7 +255,6 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
           asset={pool.tokens[0].id}
           balance={balances[0].data?.balance}
           decimals={pool.tokens[0].decimals}
-          assetName={pool.tokens[0].symbol}
           assetIcon={getAssetLogo(pool.tokens[0].symbol)}
           value={input.values[0]}
           onChange={(value) => handleChange(value, 0)}
@@ -277,7 +276,6 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
           asset={pool.tokens[1].id}
           balance={balances[1].data?.balance}
           decimals={pool.tokens[1].decimals}
-          assetName={pool.tokens[1].symbol}
           assetIcon={getAssetLogo(pool.tokens[1].symbol)}
           value={input.values[1]}
           onChange={(value) => handleChange(value, 1)}
