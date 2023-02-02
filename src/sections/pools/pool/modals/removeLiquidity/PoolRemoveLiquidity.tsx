@@ -226,8 +226,7 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
             </Text>
 
             <PoolRemoveLiquidityReward
-              name="Token"
-              symbol={pool.tokens[0].symbol}
+              id={pool.tokens[0].id}
               amount={t("value", {
                 value: removeAmount[0],
                 fixedPointScale: pool.tokens[0].decimals,
@@ -235,8 +234,7 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
               })}
             />
             <PoolRemoveLiquidityReward
-              name="Token"
-              symbol={pool.tokens[1].symbol}
+              id={pool.tokens[1].id}
               amount={t("value", {
                 value: removeAmount[1],
                 fixedPointScale: pool.tokens[1].decimals,

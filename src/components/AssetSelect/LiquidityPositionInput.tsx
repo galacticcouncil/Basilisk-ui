@@ -9,6 +9,7 @@ import { Trans, useTranslation } from "react-i18next"
 import { useAccountStore } from "state/store"
 import { getFloatingPointAmount } from "utils/balance"
 import { TokenInputContainer, TokenInputMaxButton } from "./TokenInput"
+import { useAsset } from "api/asset"
 
 export const LiquidityPositionInput = (props: {
   name: string
@@ -29,7 +30,8 @@ export const LiquidityPositionInput = (props: {
   const shareToken = usePoolShareToken(props.pool.address)
   const balance = useTokenBalance(shareToken.data?.token, account?.address)
 
-  const [assetIn, assetOut] = props.pool?.tokens
+  const assetIn = useAsset(props.pool?.tokens[0].id)
+  const assetOut = useAsset(props.pool?.tokens[1].id)
 
   return (
     <TokenInputContainer className={props.className}>
@@ -69,19 +71,19 @@ export const LiquidityPositionInput = (props: {
         sx={{ flex: "row", align: "center", justify: "space-between" }}
         css={{ gridArea: "input" }}
       >
-        <div sx={{ flex: "row", flexShrink: 0, align: "center" }}>
+        <div sx={{ flex: "row", flexShrink: 0, gap: 6, align: "center" }}>
           <MultipleIcons
             icons={[
-              { icon: getAssetLogo(assetIn.symbol) },
-              { icon: getAssetLogo(assetOut.symbol) },
+              { icon: getAssetLogo(assetIn.data?.symbol) },
+              { icon: getAssetLogo(assetOut.data?.symbol) },
             ]}
           />
           <div sx={{ flex: "column", mr: 20, flexShrink: 0 }}>
             <Text fw={700} fs={16}>
-              {assetIn.symbol}/{assetOut.symbol}
+              {assetIn.data?.symbol}/{assetOut.data?.symbol}
             </Text>
             <Text fw={500} fs={12} color="neutralGray500">
-              {t("farms.deposit.assetType")}
+              {assetIn.data?.name}/{assetOut.data?.name}
             </Text>
           </div>
         </div>

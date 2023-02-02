@@ -44,7 +44,7 @@ export function PoolFarmClaim(props: {
 
     const toastValue = claimableAssets.map((asset, index) => {
       return (
-        <>
+        <Fragment key={index}>
           {index > 0 && <span> {t("and")} </span>}
           <Trans
             t={t}
@@ -54,7 +54,7 @@ export function PoolFarmClaim(props: {
             <span />
             <span className="highlight" />
           </Trans>
-        </>
+        </Fragment>
       )
     })
 

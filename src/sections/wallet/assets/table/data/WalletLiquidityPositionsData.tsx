@@ -1,10 +1,11 @@
 import { MultipleIcons } from "components/MultipleIcons/MultipleIcons"
-import { getAssetLogo, getAssetName } from "components/AssetIcon/AssetIcon"
+import { getAssetLogo } from "components/AssetIcon/AssetIcon"
 import { Text } from "components/Typography/Text/Text"
+import { LiquidityPositionsTableData } from "../WalletLiquidityPositionsTable.utils"
 
 export const WalletLiquidityPositionsTableName = (props: {
-  symbolA: string
-  symbolB: string
+  assetA: LiquidityPositionsTableData["assetA"]
+  assetB: LiquidityPositionsTableData["assetB"]
   large?: boolean
 }) => {
   return (
@@ -12,10 +13,10 @@ export const WalletLiquidityPositionsTableName = (props: {
       <MultipleIcons
         icons={[
           {
-            icon: getAssetLogo(props.symbolA),
+            icon: getAssetLogo(props.assetA.symbol),
           },
           {
-            icon: getAssetLogo(props.symbolB),
+            icon: getAssetLogo(props.assetB.symbol),
           },
         ]}
         size={props.large ? 34 : [24, 32]}
@@ -27,7 +28,7 @@ export const WalletLiquidityPositionsTableName = (props: {
           lh={props.large ? 24 : 16}
           color="white"
         >
-          {props.symbolA}/{props.symbolB}
+          {props.assetA.symbol}/{props.assetB.symbol}
         </Text>
         <Text
           fw={500}
@@ -35,7 +36,7 @@ export const WalletLiquidityPositionsTableName = (props: {
           lh={props.large ? 18 : 14}
           color="neutralGray400"
         >
-          {getAssetName(props.symbolA)}/{getAssetName(props.symbolB)}
+          {props.assetA.name}/{props.assetB.name}
         </Text>
       </div>
     </div>
