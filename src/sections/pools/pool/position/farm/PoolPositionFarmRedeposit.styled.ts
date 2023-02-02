@@ -11,6 +11,7 @@ export const SContainer = styled.div<{ isMultiple?: boolean }>`
       return {
         marginTop: 12,
         gridColumn: "1 / span 4",
+        justifySelf: "end",
       }
     }
 
