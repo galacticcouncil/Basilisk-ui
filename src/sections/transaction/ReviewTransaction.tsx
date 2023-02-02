@@ -75,6 +75,7 @@ export const ReviewTransaction: React.FC<Transaction> = (props) => {
             title={props.title}
             onCancel={handleClose}
             onSigned={(signed) => sendTx.mutateAsync(signed)}
+            overrides={props.overrides}
           />
         )}
       </Modal>
