@@ -28,6 +28,7 @@ export const MobileNavBar = () => {
 
   const [visibleTabs, hiddenTabs] = MENU_ITEMS.reduce(
     (result, value) => {
+      if (!value.enabled) return result
       const isVisible = value.mobVisible
       result[isVisible ? 0 : 1].push(value)
       return result
@@ -36,10 +37,14 @@ export const MobileNavBar = () => {
   )
 
   const hiddenTabItems = hiddenTabs.map((hiddenTab, index) => (
-    <SNavBarItemHidden href={hiddenTab.href} key={index}>
-      <Icon size={20} icon={getIcon(hiddenTab.key)} />
-      {t(hiddenTab.translationKey)}
-    </SNavBarItemHidden>
+    <Link to={hiddenTab.href} key={index}>
+      {({ isActive }) => (
+        <SNavBarItemHidden active={isActive} key={index}>
+          <Icon size={20} icon={getIcon(hiddenTab.key)} />
+          {t(hiddenTab.translationKey)}
+        </SNavBarItemHidden>
+      )}
+    </Link>
   ))
 
   return (
@@ -67,7 +72,7 @@ export const MobileNavBar = () => {
           </Link>
         )
       })}
-      <MoreButton tabs={hiddenTabItems} />
+      {hiddenTabItems.length ? <MoreButton tabs={hiddenTabItems} /> : null}
     </SMobileNavBar>
   )
 }

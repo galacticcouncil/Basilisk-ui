@@ -43,12 +43,14 @@ export const SNavBarItem = styled.span<{ active?: boolean }>`
     active ? theme.colors.primary400 : theme.colors.backgroundGray600};
 `
 
-export const SNavBarItemHidden = styled.a`
+export const SNavBarItemHidden = styled.a<{ active: boolean }>`
   display: flex;
   gap: 12px;
   background: ${theme.colors.backgroundGray800};
-  color: ${theme.colors.neutralGray300};
   padding: 30px 20px;
+
+  color: ${({ active }) =>
+    active ? theme.colors.primary400 : theme.colors.neutralGray300};
 
   &:not(:last-child) {
     border-bottom: 1px solid rgba(${theme.rgbColors.white}, 0.06);
