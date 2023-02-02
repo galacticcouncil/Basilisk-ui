@@ -5,7 +5,7 @@ import {
   SSlippage,
   STradingPairContainer,
 } from "sections/pools/pool/modals/removeLiquidity/PoolRemoveLiquidity.styled"
-import { Button, ButtonTransparent } from "components/Button/Button"
+import { Button } from "components/Button/Button"
 import { Heading } from "components/Typography/Heading/Heading"
 import { Slider } from "components/Slider/Slider"
 import { BoxSwitch } from "components/BoxSwitch/BoxSwitch"
@@ -27,8 +27,6 @@ import { useSpotPrice } from "api/spotPrice"
 import { FormValues } from "utils/helpers"
 import { useAccountCurrency } from "../../../../../api/payments"
 import { useAssetMeta } from "../../../../../api/assetMeta"
-import { Settings, SettingsModal } from "components/SettingsModal/SettingsModal"
-import { useLocalStorage } from "react-use"
 
 const options = [
   { label: "25%", value: 25 },
@@ -93,11 +91,9 @@ const PoolRemoveLiquidityInput = (props: {
 
 export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
   const { t } = useTranslation()
-  const [openSettings, setOpenSettings] = useState(false)
   const form = useForm<{ value: number }>({ defaultValues: { value: 25 } })
   const { createTransaction } = useStore()
   const { account } = useAccountStore()
-  const [settings, setSettings] = useLocalStorage<Settings>("settings")
   const accountCurrency = useAccountCurrency(account?.address)
   const feeMeta = useAssetMeta(accountCurrency.data)
 
@@ -252,24 +248,6 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
               sx={{ flex: "row", align: "center", justify: "space-between" }}
             >
               <Text color="neutralGray500" fs={15}>
-                {t("pools.removeLiquidity.modal.tradeLimit")}
-              </Text>
-              <div sx={{ flex: "row", align: "center", gap: 4 }}>
-                <Text fs={14}>
-                  {t("value.percentage", { value: settings?.tradeLimit })}
-                </Text>
-                <ButtonTransparent onClick={() => setOpenSettings(true)}>
-                  <Text fs={14} color="primary300">
-                    {t("edit")}
-                  </Text>
-                </ButtonTransparent>
-              </div>
-            </div>
-            <Separator sx={{ my: 8 }} size={2} />
-            <div
-              sx={{ flex: "row", align: "center", justify: "space-between" }}
-            >
-              <Text color="neutralGray500" fs={15}>
                 {t("pools.removeLiquidity.modal.cost")}
               </Text>
               <div sx={{ flex: "row", align: "center", gap: 4 }}>
@@ -313,15 +291,6 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
           <WalletConnectButton css={{ marginTop: 20, width: "100%" }} />
         )}
       </form>
-      {openSettings && (
-        <SettingsModal
-          isOpen={openSettings}
-          onClose={(newSettings) => {
-            setOpenSettings(false)
-            if (newSettings) setSettings(newSettings)
-          }}
-        />
-      )}
     </Modal>
   )
 }

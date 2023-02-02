@@ -48,7 +48,9 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
   const accountCurrency = useAccountCurrency(account?.address)
   const feeMeta = useAssetMeta(accountCurrency.data)
   const [openSettings, setOpenSettings] = useState(false)
-  const [settings, setSettings] = useLocalStorage<Settings>("settings")
+  const [settings, setSettings] = useLocalStorage<Settings>(
+    `settings_${account?.address}`,
+  )
   const [input, setInput] = useState<{
     values: [string, string]
     lastUpdated: 0 | 1
@@ -195,7 +197,11 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
         amount: getFixedPointAmount(
           new BigNumber(input.values[next]),
           pool.tokens[next].decimals,
-        ).times(1.0 + 0.3), // TODO: add provision percentage configuration
+        ).times(
+          BigNumber(settings?.tradeLimit ?? 3)
+            .dividedBy(100)
+            .plus(1),
+        ),
       },
       toast: {
         onLoading: (

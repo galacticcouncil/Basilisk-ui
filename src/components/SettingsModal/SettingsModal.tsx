@@ -10,14 +10,16 @@ import { Button } from "components/Button/Button"
 import { ReactComponent as ChevronRight } from "assets/icons/ChevronRight.svg"
 import { Controller, useForm } from "react-hook-form"
 import BN from "bignumber.js"
+import { useAccountStore } from "state/store"
 
 type Props = { isOpen: boolean; onClose: (newSettings?: Settings) => void }
 
 export const SettingsModal = ({ isOpen, onClose }: Props) => {
   const { t } = useTranslation()
+  const { account } = useAccountStore()
 
   const [settings, setSettings] = useLocalStorage<Settings>(
-    "settings",
+    `settings_${account?.address}`,
     DEFAULT_SETTINGS,
   )
   const form = useForm<Settings>({
@@ -60,6 +62,7 @@ export const SettingsModal = ({ isOpen, onClose }: Props) => {
               control={form.control}
               render={({ field }) => (
                 <Switch
+                  disabled
                   value={field.value}
                   onCheckedChange={field.onChange}
                   label=""
@@ -83,9 +86,11 @@ export const SettingsModal = ({ isOpen, onClose }: Props) => {
                   },
                   positive: (value) =>
                     new BN(value).gt(0) || t("error.positive"),
+                  maxlimit: (value) =>
+                    !BN(value).gt(100) || t("error.maxPercentage"),
                 },
               }}
-              render={({ field }) => (
+              render={({ field, fieldState: { error } }) => (
                 <>
                   <BoxSwitch
                     selected={field.value}
@@ -98,14 +103,12 @@ export const SettingsModal = ({ isOpen, onClose }: Props) => {
                     label=""
                     name={field.name}
                     placeholder={t("custom")}
+                    error={error?.message}
                   />
                 </>
               )}
             />
           </SLimitSwitch>
-          <Text fs={14} lh={18} fw={400} color="neutralGray400">
-            {t("settings.modal.tradeLimit.description")}
-          </Text>
         </div>
         <div sx={{ flex: "row", justify: "space-between" }}>
           <Button variant="secondary" onClick={() => onClose()}>

@@ -21,6 +21,7 @@
   "and": "and",
   "error.positive": "Must be positive",
   "error.validNumber": "Must be a number",
+  "error.maxPercentage": "Should not be bigger than 100",
   "modal.closeButton.name": "Close modal button",
   "selectAssets.balance": "<0>{{ balance, bignumber }}</0>",
   "selectAssets.asset": "Asset",
