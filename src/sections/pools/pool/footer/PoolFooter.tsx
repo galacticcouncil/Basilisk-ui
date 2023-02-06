@@ -79,7 +79,7 @@ export const PoolFooter = ({ pool }: Props) => {
     ),
   }
 
-  const { locked, claimAll } = usePoolFooterValues(pool, toast)
+  const { locked, available, claimAll } = usePoolFooterValues(pool, toast)
 
   if (!locked || locked.isZero()) return null
 
@@ -87,7 +87,7 @@ export const PoolFooter = ({ pool }: Props) => {
     <SContainer>
       <div>
         <Text color="primary100" fs={16} fw={600} lh={22}>
-          {t("pools.pool.claim.total", { locked })}
+          {t("pools.pool.claim.totals", { locked, available })}
         </Text>
       </div>
       <div sx={{ flex: "row", justify: "center" }}>
