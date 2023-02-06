@@ -119,6 +119,7 @@ export type BalanceFormatOptions = z.infer<typeof BigNumberFormatOptionsSchema>
  * Dollar value:
  * - Display only 2 decimals, by cutting them not rounding
  * - Separate integers numbers with a space in group of 3 digits
+ * - Show at least two decimal places
  * - If dollar value equals ZERO, only display, 0, without decimals
  * - If dollar value is less than 1.00 show the first significant digit
  * - If dollar value is higher than 999 dont show decimals
@@ -128,6 +129,7 @@ export type BalanceFormatOptions = z.infer<typeof BigNumberFormatOptionsSchema>
  * - 984.3498765   =>    984.34
  * - 1000          =>     1 000
  * - 0.009         =>         0
+ * - 0.1           =>      0.10
  * - 999           =>     1 000
  *
  *
@@ -189,7 +191,11 @@ export function formatBigNumber(
       else break
     }
 
-    return num.toFormat(zeroesCount + 1, BigNumber.ROUND_HALF_UP, fmtConfig)
+    return num.toFormat(
+      Math.max(2, zeroesCount + 1),
+      BigNumber.ROUND_HALF_UP,
+      fmtConfig,
+    )
   }
 
   /* If dollar value is higher than 999 dont show decimals */
