@@ -123,7 +123,7 @@
   "pools.removeLiquidity.modal.row.transactionCostValue": "≈ {{ amount, bignumber(type: 'token') }} {{ symbol }}",
   "pools.removeLiquidity.modal.row.spotPrice": "{{ firstAmount, bignumber(type: 'token') }} {{ firstCurrency }} ≈ {{ secondAmount, bignumber(type: 'token') }} {{ secondCurrency }}",
   "liquidity.remove.modal.toast.onLoading": "<0>Withdrawing </0><1>{{value, bignumber(type: 'token')}}</1><0> Shares</0>",
-  "liquidity.remove.modal.toast.onSuccess": "<0>You withdrawed </0><1>{{value, bignumber(type: 'token')}}</1><0> Shares</0",
+  "liquidity.remove.modal.toast.onSuccess": "<0>You withdrew </0><1>{{value, bignumber(type: 'token')}}</1><0> Shares</0",
   "pools.allFarms.modal.title": "All {{ symbol1 }}/{{ symbol2 }} Farms",
   "pools.allFarms.detail.modal.title": "Farm Detail",
   "pools.allFarms.modal.apr.single": "{{ value, bignumber(numberSuffix: '% APR'; type: 'percentage') }}",
