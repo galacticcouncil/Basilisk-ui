@@ -130,4 +130,8 @@ const TRADE_LIMIT_OPTS = [
   { label: "3%", value: 3 },
 ]
 export type Settings = { tradeLimit: number; tradeLimitAuto: boolean }
-export const DEFAULT_SETTINGS = { tradeLimit: 3, tradeLimitAuto: false }
+export const DEFAULT_TRADE_LIMIT = 3
+export const DEFAULT_SETTINGS = {
+  tradeLimit: DEFAULT_TRADE_LIMIT,
+  tradeLimitAuto: false,
+}

@@ -27,7 +27,12 @@ import { useAssetMeta } from "api/assetMeta"
 import { useAccountCurrency } from "api/payments"
 import * as xyk from "@galacticcouncil/math-xyk"
 import { useLocalStorage } from "react-use"
-import { Settings, SettingsModal } from "components/SettingsModal/SettingsModal"
+import {
+  DEFAULT_SETTINGS,
+  DEFAULT_TRADE_LIMIT,
+  Settings,
+  SettingsModal,
+} from "components/SettingsModal/SettingsModal"
 
 interface PoolAddLiquidityModalProps {
   pool: PoolBase
@@ -50,6 +55,7 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
   const [openSettings, setOpenSettings] = useState(false)
   const [settings, setSettings] = useLocalStorage<Settings>(
     `settings_${account?.address}`,
+    DEFAULT_SETTINGS,
   )
   const [input, setInput] = useState<{
     values: [string, string]
@@ -198,7 +204,7 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
           new BigNumber(input.values[next]),
           pool.tokens[next].decimals,
         ).times(
-          BigNumber(settings?.tradeLimit ?? 3)
+          BigNumber(settings?.tradeLimit ?? DEFAULT_TRADE_LIMIT)
             .dividedBy(100)
             .plus(1),
         ),
@@ -295,7 +301,9 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
           right={
             <div sx={{ flex: "row", align: "center", gap: 4 }}>
               <Text fs={14}>
-                {t("value.percentage", { value: settings?.tradeLimit })}
+                {t("value.percentage", {
+                  value: settings?.tradeLimit ?? DEFAULT_TRADE_LIMIT,
+                })}
               </Text>
               <ButtonTransparent onClick={() => setOpenSettings(true)}>
                 <Text fs={14} color="primary300">
