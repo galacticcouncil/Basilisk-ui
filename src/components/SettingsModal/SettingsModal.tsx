@@ -49,6 +49,7 @@ export const SettingsModal = ({ isOpen, onClose }: Props) => {
           flex: "column",
           justify: "space-between",
           pt: 20,
+          height: "calc(100% - var(--modal-header-title-height))",
           minHeight: "50vh",
         }}
       >
