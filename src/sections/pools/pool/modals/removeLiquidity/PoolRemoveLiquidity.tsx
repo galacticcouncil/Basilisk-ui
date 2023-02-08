@@ -219,7 +219,6 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
             rules={{
               validate: {
                 validNumber: (value) => {
-                  console.log(value)
                   try {
                     if (!new BN(value).isNaN()) return true
                   } catch {}
