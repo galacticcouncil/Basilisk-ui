@@ -185,7 +185,7 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
             ).toFixed(),
           ),
           assetDecimals.toString(),
-        ).toFixed(4)
+        ).toString()
 
         form.setValue(name, value, { shouldValidate: true })
         form.setValue(opposite(name), pairTokenValue, { shouldValidate: true })
