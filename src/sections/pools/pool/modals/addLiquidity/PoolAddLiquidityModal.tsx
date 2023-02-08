@@ -40,6 +40,7 @@ import {
   getValidationRules,
   opposite,
 } from "./PoolAddLiquidity.utils"
+import { NATIVE_ASSET_ID } from "utils/api"
 
 type AssetMetaType = NonNullable<ReturnType<typeof useAssetMeta>["data"]>
 interface PoolAddLiquidityModalProps {
@@ -66,6 +67,7 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
 
   const accountCurrency = useAccountCurrency(account?.address)
   const feeMeta = useAssetMeta(accountCurrency.data)
+  const feeSpotPrice = useSpotPrice(NATIVE_ASSET_ID, feeMeta.data?.id)
   const [openSettings, setOpenSettings] = useState(false)
   const [settings, setSettings] = useLocalStorage<Settings>(
     `settings_${account?.address}`,
@@ -187,8 +189,11 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
           assetDecimals.toString(),
         ).toString()
 
-        form.setValue(name, value, { shouldValidate: true })
-        form.setValue(opposite(name), pairTokenValue, { shouldValidate: true })
+        form.setValue(name, value, { shouldValidate: true, shouldTouch: true })
+        form.setValue(opposite(name), pairTokenValue, {
+          shouldValidate: true,
+          shouldTouch: true,
+        })
         form.setValue("lastUpdated", name)
       }
     },
@@ -394,9 +399,12 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
             paymentInfo && (
               <Text>
                 {t("pools.addLiquidity.modal.row.transactionCostValue", {
-                  amount: paymentInfo.data?.partialFee,
+                  amount: paymentInfo.data?.partialFee
+                    .toBigNumber()
+                    .multipliedBy(feeSpotPrice.data?.spotPrice ?? BN_1),
                   symbol: feeMeta.data?.symbol,
                   fixedPointScale: feeMeta.data?.decimals ?? 12,
+                  type: "token",
                 })}
               </Text>
             )
