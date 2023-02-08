@@ -1,7 +1,11 @@
+import { css } from "@emotion/react"
 import styled from "@emotion/styled"
 import { theme } from "theme"
 
-export const SLabelWrapper = styled.label<{ error?: string }>`
+export const SLabelWrapper = styled.label<{
+  error?: string
+  disabled?: boolean
+}>`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -18,10 +22,14 @@ export const SLabelWrapper = styled.label<{ error?: string }>`
   border: 1px solid
     ${(p) => (p.error ? theme.colors.error : theme.colors.backgroundGray600)};
 
-  :focus-within,
-  :hover {
-    background: ${theme.colors.backgroundGray700};
-  }
+  ${({ disabled }) =>
+    !disabled &&
+    css`
+      :focus-within,
+      :hover {
+        background: ${theme.colors.backgroundGray700};
+      }
+    `}
 
   :focus-within {
     border-color: ${theme.colors.primary300};
@@ -74,6 +82,10 @@ export const SInput = styled.input`
 
   :focus-visible {
     outline: none;
+  }
+
+  &[disabled] {
+    cursor: not-allowed;
   }
 `
 

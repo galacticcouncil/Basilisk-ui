@@ -29,6 +29,7 @@ export const AssetSelectInput = (props: {
   onSelectAssetClick: () => void
 
   error?: string
+  disabled?: boolean
 }) => {
   const { t } = useTranslation()
 
@@ -65,6 +66,7 @@ export const AssetSelectInput = (props: {
           </Trans>
         </Text>
         <TokenInputMaxButton
+          disabled={!!props.disabled}
           onClick={() => {
             if (props.decimals != null && props.balance != null) {
               props.onChange(
@@ -82,7 +84,7 @@ export const AssetSelectInput = (props: {
       >
         <SSelectAssetButton size="small" onClick={props.onSelectAssetClick}>
           <Icon icon={props.assetIcon} size={32} />
-          {asset.data && (
+          {asset.data ? (
             <div>
               <Text fw={700} color="white">
                 {asset.data?.symbol}
@@ -96,8 +98,10 @@ export const AssetSelectInput = (props: {
                 {asset.data?.name}
               </Text>
             </div>
+          ) : (
+            <Text css={{ whiteSpace: "nowrap" }}>{t("selectAsset.title")}</Text>
           )}
-          <Icon icon={<ChevronDown />} />
+          <Icon sx={{ color: "iconGray" }} icon={<ChevronDown />} />
         </SSelectAssetButton>
         <AssetInput
           name={props.name}
@@ -108,6 +112,7 @@ export const AssetSelectInput = (props: {
           dollars={t("value.usd", { amount: aUSDValue })}
           unit={asset.data?.symbol}
           placeholder="0"
+          disabled={props.disabled}
         />
       </div>
     </TokenInputContainer>

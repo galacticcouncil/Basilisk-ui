@@ -22,6 +22,7 @@ export type AssetInputProps = {
   error?: string
   withLabel?: boolean
   className?: string
+  disabled?: boolean
 }
 
 export const AssetInput: FC<AssetInputProps> = (props) => {
@@ -30,7 +31,11 @@ export const AssetInput: FC<AssetInputProps> = (props) => {
       className={props.className}
       css={{ position: "relative", width: "100%" }}
     >
-      <SLabelWrapper htmlFor={props.name} error={props.error}>
+      <SLabelWrapper
+        htmlFor={props.name}
+        error={props.error}
+        disabled={props.disabled}
+      >
         <SInputWrapper>
           <SInput
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,11 +49,13 @@ export const AssetInput: FC<AssetInputProps> = (props) => {
             id={props.name}
             type={props.type}
             placeholder={props.placeholder}
+            disabled={props.disabled}
           />
-
           {props.unit && <SUnit>{props.unit}</SUnit>}
         </SInputWrapper>
-        {props.dollars && <SDollars>{`≈  ${props.dollars}`}</SDollars>}
+        {!props.disabled && props.dollars && (
+          <SDollars>{`≈  ${props.dollars}`}</SDollars>
+        )}
       </SLabelWrapper>
       {props.error && <SErrorMessage>{props.error}</SErrorMessage>}
     </div>

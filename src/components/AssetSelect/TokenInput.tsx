@@ -1,7 +1,10 @@
 import { useTranslation } from "react-i18next"
 import { SMaxButton } from "./TokenInput.styled"
 
-export const TokenInputMaxButton = (props: { onClick: () => void }) => {
+export const TokenInputMaxButton = (props: {
+  onClick: () => void
+  disabled: boolean
+}) => {
   const { t } = useTranslation()
   return (
     <SMaxButton
@@ -9,6 +12,7 @@ export const TokenInputMaxButton = (props: { onClick: () => void }) => {
       text={t("tokenInput.button.max")}
       capitalize
       onClick={props.onClick}
+      disabled={props.disabled}
     />
   )
 }

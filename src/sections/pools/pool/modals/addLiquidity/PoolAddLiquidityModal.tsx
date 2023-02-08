@@ -1,7 +1,7 @@
 import { PoolAddLiquidityAssetSelect } from "./assetSelect/PoolAddLiquidityAssetSelect"
 import { getAssetLogo } from "components/AssetIcon/AssetIcon"
 import { PoolAddLiquidityConversion } from "./conversion/PoolAddLiquidityConversion"
-import { BN_1, BN_100, DEFAULT_DECIMALS } from "utils/constants"
+import { BN_1, BN_10, BN_100, DEFAULT_DECIMALS } from "utils/constants"
 import { Row } from "components/Row/Row"
 import { Separator } from "components/Separator/Separator"
 import { Text } from "components/Typography/Text/Text"
@@ -18,7 +18,7 @@ import { useTokensBalances } from "api/balances"
 import { useSpotPrice } from "api/spotPrice"
 import { getFixedPointAmount, getFloatingPointAmount } from "utils/balance"
 import BigNumber from "bignumber.js"
-import { PoolBase } from "@galacticcouncil/sdk"
+import { PoolBase, PoolFee, PoolToken } from "@galacticcouncil/sdk"
 import { useAccountStore } from "state/store"
 import { Trans, useTranslation } from "react-i18next"
 import { u32 } from "@polkadot/types"
@@ -26,6 +26,8 @@ import { getTradeFee } from "sections/pools/pool/Pool.utils"
 import { useAssetMeta } from "api/assetMeta"
 import { useAccountCurrency } from "api/payments"
 import * as xyk from "@galacticcouncil/math-xyk"
+import { Controller, useForm } from "react-hook-form"
+import { BN_0 } from "../../../../../utils/constants"
 import { useLocalStorage } from "react-use"
 import {
   DEFAULT_SETTINGS,
@@ -34,20 +36,44 @@ import {
   SettingsModal,
 } from "components/SettingsModal/SettingsModal"
 
+type AssetMetaType = NonNullable<ReturnType<typeof useAssetMeta>["data"]>
 interface PoolAddLiquidityModalProps {
-  pool: PoolBase
+  tradeFee: PoolFee | undefined
   setPoolAddress: (address: string) => void
+  assetA: PoolToken | AssetMetaType
+  assetB: PoolToken | undefined
+  poolAddress: string
 }
 
+const getAllowedTokensId = (
+  pools: PoolBase[] | undefined,
+  pairedTokenId: string,
+) =>
+  pools?.reduce((acc, item) => {
+    if (item.tokens.some((token) => token.id === pairedTokenId)) {
+      const allowedTokenId = item.tokens.find(
+        (token) => token.id !== pairedTokenId,
+      )?.id
+      if (allowedTokenId) acc.push(allowedTokenId)
+    }
+    return acc
+  }, [] as string[])
+
+const opposite = (value: "assetA" | "assetB") =>
+  value === "assetA" ? "assetB" : "assetA"
+
 export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
-  pool,
+  tradeFee,
+  poolAddress,
+  assetA,
+  assetB,
   setPoolAddress,
 }) => {
   const { t } = useTranslation()
   const pools = usePools()
 
   const { account } = useAccountStore()
-  const { data: shareToken } = usePoolShareToken(pool.address)
+  const { data: shareToken } = usePoolShareToken(poolAddress)
   const { data: shareTokenMeta } = useAssetMeta(shareToken?.token)
 
   const accountCurrency = useAccountCurrency(account?.address)
@@ -57,26 +83,44 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
     `settings_${account?.address}`,
     DEFAULT_SETTINGS,
   )
-  const [input, setInput] = useState<{
-    values: [string, string]
-    lastUpdated: 0 | 1
-  }>({ values: ["", ""], lastUpdated: 0 })
+
+  const [assets, setAssets] = useState({
+    assetA,
+    assetB: assetB ?? { id: "", symbol: "", decimals: 12 },
+  })
+
+  const form = useForm<{
+    assetA: string
+    assetB: string
+    lastUpdated: "assetA" | "assetB"
+  }>({
+    defaultValues: { assetA: "", assetB: "", lastUpdated: "assetA" },
+  })
+
+  const [assetValueA, assetValueB] = form.watch(["assetA", "assetB"])
+
+  const assetValues = useMemo(
+    () => ({ assetA: assetValueA, assetB: assetValueB }),
+    [assetValueA, assetValueB],
+  )
 
   const paymentInfo = useAddLiquidityPaymentInfo(
-    pool.tokens[0].id,
-    pool.tokens[1].id,
+    assets.assetA.id,
+    assets.assetB.id,
   )
 
   const handleAddLiquidity = useAddLiquidityMutation()
+
   const shareIssuance = useTotalIssuance(shareToken?.token)
-  const spotPrice = useSpotPrice(pool.tokens[0].id, pool.tokens[1].id)
+  const spotPrice = useSpotPrice(assets.assetA.id, assets.assetB.id)
 
   const reserves = useTokensBalances(
-    pool.tokens.map((i) => i.id),
-    pool.address,
+    [assets.assetA.id, assets.assetB.id],
+    poolAddress,
   )
-  const balances = useTokensBalances(
-    pool.tokens.map((i) => i.id),
+
+  const [{ data: assetABalance }, { data: assetBBalance }] = useTokensBalances(
+    [assets.assetA.id, assets.assetB.id],
     account?.address,
   )
 
@@ -94,17 +138,18 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
       reserves[0].data &&
       shareIssuance.data &&
       shareTokenDecimals &&
-      input.values[0]
+      assetValues.assetA &&
+      assets.assetA
     ) {
       return new BigNumber(
         xyk.calculate_shares(
           getFixedPointAmount(
             reserves[0].data.balance,
-            pool.tokens[0].decimals,
+            assets.assetA.decimals.toString(),
           ).toFixed(),
           getFixedPointAmount(
-            new BigNumber(input.values[0]),
-            pool.tokens[0].decimals,
+            new BigNumber(assetValues.assetA),
+            assets.assetA.decimals.toString(),
           ).toFixed(),
           getFixedPointAmount(
             shareIssuance.data.total,
@@ -115,13 +160,7 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
     }
 
     return null
-  }, [
-    reserves,
-    shareIssuance.data,
-    shareTokenDecimals,
-    input.values,
-    pool.tokens,
-  ])
+  }, [reserves, shareIssuance.data, shareTokenDecimals, assetValues, assets])
 
   let calculatedRatio =
     shareIssuance.data &&
@@ -133,76 +172,82 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
   }
 
   const handleChange = useCallback(
-    (value: string, currPosition: 0 | 1) => {
+    (value: string, currPosition: 0 | 1, name: "assetA" | "assetB") => {
       const nextPosition = currPosition === 0 ? 1 : 0
+
+      const assetDecimals = assets[name].decimals
 
       const currReserves = reserves[currPosition].data
       const nextReserves = reserves[nextPosition].data
 
       if (currReserves && nextReserves && xyk) {
-        const values: [string, string] = ["", ""]
-
-        values[currPosition] = value
-        values[nextPosition] = getFloatingPointAmount(
+        const pairTokenValue = getFloatingPointAmount(
           xyk.calculate_liquidity_in(
             currReserves.balance.toFixed(),
             nextReserves.balance.toFixed(),
             getFixedPointAmount(
               new BigNumber(value),
-              pool.tokens[currPosition].decimals,
+              assetDecimals.toString(),
             ).toFixed(),
           ),
-          pool.tokens[currPosition].decimals,
+          assetDecimals.toString(),
         ).toFixed(4)
 
-        setInput({ values, lastUpdated: currPosition })
+        form.setValue(name, value)
+        form.setValue(opposite(name), pairTokenValue)
+        form.setValue("lastUpdated", name)
       }
     },
-    [pool.tokens, reserves],
+    [assets, reserves, form],
   )
 
   const handleSelectAsset = useCallback(
-    (assetId: u32 | string, currPosition: 0 | 1) => {
-      const nextPosition = currPosition === 0 ? 1 : 0
+    (assetId: u32 | string, name: "assetA" | "assetB") => {
+      const pairTokenId = assets[opposite(name)].id
 
-      const possibleNextPools = pools.data?.filter(
-        (nextPool) => nextPool.tokens[currPosition].id === assetId,
+      const nextPool = pools.data?.find(
+        (nextPool) =>
+          nextPool.tokens.some((token) => token.id === assetId) &&
+          nextPool.tokens.some((token) => token.id === pairTokenId),
       )
-      const nextPool = possibleNextPools?.find(
-        (nexPool) =>
-          nexPool.tokens[nextPosition].id === pool?.tokens[nextPosition].id,
-      )
+
       if (nextPool) {
-        // Try to find pool with same second asset
         setPoolAddress(nextPool.address)
-      } else if (possibleNextPools?.[currPosition]) {
-        // Select first pool with same first asset
-        setPoolAddress(possibleNextPools[currPosition].address)
+        const newTokens = {
+          assetA: nextPool.tokens[0],
+          assetB: nextPool.tokens[1],
+        }
+
+        // set assets in correct order
+        if (newTokens[name].id === assetId) {
+          //setAssets(newTokens)
+          setAssets(newTokens)
+        } else {
+          setAssets({ assetA: newTokens.assetB, assetB: newTokens.assetA })
+        }
       }
 
-      // reset the value input
-      handleChange("0", currPosition)
+      form.reset()
     },
-    [pool, pools, setPoolAddress, handleChange],
+    [assets, pools, setPoolAddress, form],
   )
 
   async function handleSubmit() {
-    const curr = input.lastUpdated
-    const next = input.lastUpdated === 0 ? 1 : 0
+    const lastUpdated = form.watch("lastUpdated")
 
     handleAddLiquidity.mutate({
       assetA: {
-        id: pool.tokens[curr].id,
+        id: assets[lastUpdated].id,
         amount: getFixedPointAmount(
-          new BigNumber(input.values[curr]),
-          pool.tokens[curr].decimals,
+          new BigNumber(assetValues[lastUpdated]),
+          assets[lastUpdated].decimals.toString(),
         ),
       },
       assetB: {
-        id: pool.tokens[next].id,
+        id: assets[opposite(lastUpdated)].id,
         amount: getFixedPointAmount(
-          new BigNumber(input.values[next]),
-          pool.tokens[next].decimals,
+          new BigNumber(assetValues[lastUpdated]),
+          assets[opposite(lastUpdated)].decimals.toString(),
         ).times(
           BigNumber(settings?.tradeLimit ?? DEFAULT_TRADE_LIMIT)
             .dividedBy(100)
@@ -253,8 +298,31 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
     })
   }
 
+  const getValidationRules = (balance: BigNumber, decimals: string) => ({
+    required: t("error.required"),
+    validate: {
+      validNumber: (value: string) => {
+        try {
+          if (!new BigNumber(value).isNaN()) return true
+        } catch {}
+        return t("error.validNumber")
+      },
+      positive: (value: string) =>
+        new BigNumber(value).gt(0) || t("error.positive"),
+      maxBalance: (value: string) => {
+        try {
+          if (!balance) throw new Error("Missing asset meta")
+          if (balance.gte(BigNumber(value).multipliedBy(BN_10.pow(decimals))))
+            return true
+        } catch {}
+        return t("liquidity.add.modal.validation.notEnoughBalance")
+      },
+    },
+  })
+
   return (
-    <div
+    <form
+      onSubmit={form.handleSubmit(handleSubmit)}
       sx={{
         flex: "column",
         justify: "space-between",
@@ -262,39 +330,67 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
       }}
     >
       <div>
-        <PoolAddLiquidityAssetSelect
+        <Controller
           name="assetA"
-          allowedAssets={pools.data
-            ?.filter((nextPool) => nextPool.tokens[1].id === pool?.tokens[1].id)
-            .map((nextPool) => nextPool.tokens[0].id)}
-          asset={pool.tokens[0].id}
-          balance={balances[0].data?.balance}
-          decimals={pool.tokens[0].decimals}
-          assetIcon={getAssetLogo(pool.tokens[0].symbol)}
-          value={input.values[0]}
-          onChange={(value) => handleChange(value, 0)}
-          onSelectAsset={(assetId) => handleSelectAsset(assetId, 0)}
-          sx={{ mt: 16 }}
+          control={form.control}
+          rules={getValidationRules(
+            assetABalance?.balance ?? BN_0,
+            assets.assetA.decimals.toString(),
+          )}
+          render={({ field: { name, value }, fieldState: { error } }) => (
+            <PoolAddLiquidityAssetSelect
+              name={name}
+              allowedAssets={getAllowedTokensId(pools.data, assets.assetB.id)}
+              hiddenAssets={[assets.assetA.id, assets.assetB.id]}
+              asset={assets.assetA.id}
+              balance={assetABalance?.balance}
+              decimals={BigNumber(assets.assetA.decimals.toString()).toNumber()}
+              assetIcon={getAssetLogo(assets.assetA.symbol)}
+              value={value}
+              onChange={(value) => {
+                handleChange(value, 0, name)
+              }}
+              onSelectAsset={(assetId) => handleSelectAsset(assetId, name)}
+              error={error?.message}
+              sx={{ mt: 16 }}
+            />
+          )}
         />
-        <PoolAddLiquidityConversion
-          firstValue={{ amount: BN_1, currency: pool.tokens[0].symbol }}
-          secondValue={{
-            amount: spotPrice.data?.spotPrice ?? BN_1,
-            currency: pool.tokens[1].symbol,
-          }}
-        />
-        <PoolAddLiquidityAssetSelect
+
+        {assetB ? (
+          <PoolAddLiquidityConversion
+            firstValue={{ amount: BN_1, currency: assets.assetA.symbol }}
+            secondValue={{
+              amount: spotPrice.data?.spotPrice ?? BN_1,
+              currency: assets.assetB.symbol,
+            }}
+          />
+        ) : (
+          <Separator color="backgroundGray800" sx={{ my: 29 }} />
+        )}
+        <Controller
           name="assetB"
-          allowedAssets={pools.data
-            ?.filter((nextPool) => nextPool.tokens[0].id === pool?.tokens[0].id)
-            .map((nextPool) => nextPool.tokens[1].id)}
-          asset={pool.tokens[1].id}
-          balance={balances[1].data?.balance}
-          decimals={pool.tokens[1].decimals}
-          assetIcon={getAssetLogo(pool.tokens[1].symbol)}
-          value={input.values[1]}
-          onChange={(value) => handleChange(value, 1)}
-          onSelectAsset={(assetId) => handleSelectAsset(assetId, 1)}
+          control={form.control}
+          rules={getValidationRules(
+            assetBBalance?.balance ?? BN_0,
+            assets.assetB.decimals.toString(),
+          )}
+          render={({ field: { name, value }, fieldState: { error } }) => (
+            <PoolAddLiquidityAssetSelect
+              name={name}
+              disabled={!assets.assetB.id}
+              allowedAssets={getAllowedTokensId(pools.data, assets.assetA.id)}
+              hiddenAssets={[assets.assetA.id, assets.assetB.id]}
+              asset={assets.assetB.id}
+              balance={assetBBalance?.balance}
+              decimals={BigNumber(assets.assetB.decimals.toString()).toNumber()}
+              assetIcon={getAssetLogo(assets.assetB.symbol)}
+              value={value}
+              onChange={(value) => handleChange(value, 1, name)}
+              onSelectAsset={(assetId) => handleSelectAsset(assetId, name)}
+              error={error?.message}
+            />
+          )}
         />
         <Row
           left={t("pools.addLiquidity.modal.row.tradeLimit")}
@@ -316,7 +412,7 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
         <Separator />
         <Row
           left={t("pools.addLiquidity.modal.row.tradeFee")}
-          right={t("value.percentage", { value: getTradeFee(pool.tradeFee) })}
+          right={t("value.percentage", { value: getTradeFee(tradeFee) })}
         />
         <Separator />
         <Row
@@ -358,10 +454,11 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
       </div>
       {account ? (
         <Button
+          disabled={!assetB}
           text={t("pools.addLiquidity.modal.confirmButton")}
           variant="primary"
+          type="submit"
           fullWidth
-          onClick={handleSubmit}
           sx={{ mt: 30 }}
         />
       ) : (
@@ -376,6 +473,6 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
           }}
         />
       )}
-    </div>
+    </form>
   )
 }
