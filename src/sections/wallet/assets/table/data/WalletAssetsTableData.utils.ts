@@ -76,7 +76,9 @@ export const useAssetsTableData = () => {
       )
 
       const poolLiquidityAddress = pools.data?.find(
-        (pool) => pool.tokens[0].id === asset.id.toString(),
+        (pool) =>
+          pool.tokens[0].id === asset.id.toString() ||
+          pool.tokens[1].id === asset.id.toString(),
       )?.address
 
       return {

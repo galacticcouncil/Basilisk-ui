@@ -137,7 +137,7 @@ export const useAssetsTable = (
           couldAddLiquidity={!!row.original.poolLiquidityAddress}
           onAddLiquidityClick={() =>
             row.original.poolLiquidityAddress != null &&
-            actions.onAddLiquidity(row.original.poolLiquidityAddress)
+            actions.onAddLiquidity(row.original.id)
           }
           toggleExpanded={() => row.toggleExpanded()}
           onTransferClick={() => actions.onTransfer(row.original.id)}
