@@ -3,7 +3,7 @@ import { SMaxButton } from "./TokenInput.styled"
 
 export const TokenInputMaxButton = (props: {
   onClick: () => void
-  disabled: boolean
+  disabled?: boolean
 }) => {
   const { t } = useTranslation()
   return (
