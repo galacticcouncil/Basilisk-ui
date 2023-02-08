@@ -38,7 +38,7 @@ import {
 
 type AssetMetaType = NonNullable<ReturnType<typeof useAssetMeta>["data"]>
 interface PoolAddLiquidityModalProps {
-  tradeFee: PoolFee | undefined
+  tradeFee?: PoolFee
   setPoolAddress: (address: string) => void
   assetA: PoolToken | AssetMetaType
   assetB: PoolToken | undefined
@@ -220,7 +220,6 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
 
         // set assets in correct order
         if (newTokens[name].id === assetId) {
-          //setAssets(newTokens)
           setAssets(newTokens)
         } else {
           setAssets({ assetA: newTokens.assetB, assetB: newTokens.assetA })
