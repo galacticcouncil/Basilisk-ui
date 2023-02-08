@@ -4,9 +4,11 @@ import { SContainer } from "./TradePage.styled"
 import * as React from "react"
 import * as Apps from "@galacticcouncil/apps"
 import { createComponent } from "@lit-labs/react"
+import { useUsdPeggedAsset } from "api/asset"
 import { useAccountStore } from "state/store"
 import { z } from "zod"
 import { MakeGenerics, useSearch } from "@tanstack/react-location"
+import { PoolType } from "@galacticcouncil/sdk"
 
 export const TradeApp = createComponent({
   tagName: "gc-trade-app",
@@ -34,6 +36,7 @@ export function TradePage() {
 
   const ref = React.useRef<Apps.TradeApp>(null)
   const rawSearch = useSearch<SearchGenerics>()
+  const usd = useUsdPeggedAsset()
   const search = TradeAppSearch.safeParse(rawSearch)
 
   return (
@@ -45,10 +48,10 @@ export function TradePage() {
           accountProvider={account?.provider}
           accountAddress={account?.address}
           apiAddress={import.meta.env.VITE_PROVIDER_URL}
-          stableCoinAssetId="4"
+          stableCoinAssetId={usd.data?.id}
           assetIn={search.success ? search.data.assetIn : undefined}
           assetOut={search.success ? search.data.assetOut : undefined}
-          pools="XYK"
+          pools={PoolType.XYK}
         />
       </SContainer>
     </Page>

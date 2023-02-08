@@ -32,7 +32,7 @@ export const WalletAssetsTable = ({ data }: Props) => {
   const [showAll, setShowAll] = useState(true)
   const [row, setRow] = useState<AssetsTableData | undefined>(undefined)
   const [transferAsset, setTransferAsset] = useState<string | null>(null)
-  const [poolAddress, setPoolAddress] = useState<string | null>(null)
+  const [assetId, setAssetId] = useState<string | null>(null)
 
   const isDesktop = useMedia(theme.viewport.gte.sm)
 
@@ -43,7 +43,7 @@ export const WalletAssetsTable = ({ data }: Props) => {
 
   const table = useAssetsTable(filteredData, {
     onTransfer: setTransferAsset,
-    onAddLiquidity: setPoolAddress,
+    onAddLiquidity: setAssetId,
   })
 
   return (
@@ -117,11 +117,12 @@ export const WalletAssetsTable = ({ data }: Props) => {
         )}
       </TableContainer>
 
-      {poolAddress != null && (
+      {assetId != null && (
         <PoolAddLiquidity
           isOpen
-          onClose={() => setPoolAddress(null)}
-          poolAddress={poolAddress}
+          onClose={() => setAssetId(null)}
+          poolAddress={""}
+          selectedAsset={assetId}
         />
       )}
 

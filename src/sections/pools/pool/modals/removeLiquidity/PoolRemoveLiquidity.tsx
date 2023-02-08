@@ -13,7 +13,7 @@ import { Input } from "components/Input/Input"
 import { Text } from "components/Typography/Text/Text"
 import { PoolRemoveLiquidityReward } from "sections/pools/pool/modals/removeLiquidity/reward/PoolRemoveLiquidityReward"
 import { Separator } from "components/Separator/Separator"
-import { useForm, Controller } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import { useAccountStore, useStore } from "state/store"
 import { WalletConnectButton } from "sections/wallet/connect/modal/WalletConnectButton"
 import { PoolBase } from "@galacticcouncil/sdk"
@@ -27,6 +27,8 @@ import { useSpotPrice } from "api/spotPrice"
 import { FormValues } from "utils/helpers"
 import { useAccountCurrency } from "../../../../../api/payments"
 import { useAssetMeta } from "../../../../../api/assetMeta"
+import BN from "bignumber.js"
+import { NATIVE_ASSET_ID } from "../../../../../utils/api"
 
 const options = [
   { label: "25%", value: 25 },
@@ -43,17 +45,14 @@ type Props = {
 
 const PoolRemoveLiquidityInput = (props: {
   value: number
-  onChange: (value: number) => void
+  onChange: (value: number | string) => void
+  error?: string
 }) => {
   const [input, setInput] = useState("")
 
   const onChange = (value: string) => {
     setInput(value)
-
-    const parsedValue = Number.parseFloat(value)
-    if (!Number.isNaN(parsedValue) && parsedValue >= 0 && parsedValue <= 100) {
-      props.onChange(parsedValue)
-    }
+    props.onChange(value)
   }
 
   const onSelect = (value: number) => {
@@ -83,6 +82,7 @@ const PoolRemoveLiquidityInput = (props: {
           name="custom"
           label="Custom"
           placeholder="Custom"
+          error={props.error}
         />
       </SSlippage>
     </>
@@ -91,11 +91,15 @@ const PoolRemoveLiquidityInput = (props: {
 
 export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
   const { t } = useTranslation()
-  const form = useForm<{ value: number }>({ defaultValues: { value: 25 } })
+  const form = useForm<{ value: number }>({
+    mode: "onChange",
+    defaultValues: { value: 25 },
+  })
   const { createTransaction } = useStore()
   const { account } = useAccountStore()
   const accountCurrency = useAccountCurrency(account?.address)
   const feeMeta = useAssetMeta(accountCurrency.data)
+  const feeSpotPrice = useSpotPrice(NATIVE_ASSET_ID, feeMeta.data?.id)
 
   const api = useApiPromise()
 
@@ -212,10 +216,24 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
           <Controller
             name="value"
             control={form.control}
-            render={({ field }) => (
+            rules={{
+              validate: {
+                validNumber: (value) => {
+                  try {
+                    if (!new BN(value).isNaN()) return true
+                  } catch {}
+                  return t("error.validNumber")
+                },
+                positive: (value) => new BN(value).gt(0) || t("error.positive"),
+                maxlimit: (value) =>
+                  !BN(value).gt(100) || t("error.maxPercentage"),
+              },
+            }}
+            render={({ field, fieldState }) => (
               <PoolRemoveLiquidityInput
                 value={field.value}
                 onChange={field.onChange}
+                error={fieldState.error?.message}
               />
             )}
           />
@@ -253,9 +271,12 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
               <div sx={{ flex: "row", align: "center", gap: 4 }}>
                 <Text fs={14}>
                   {t("pools.removeLiquidity.modal.row.transactionCostValue", {
-                    amount: paymentInfoEstimate.data?.partialFee,
+                    amount: paymentInfoEstimate.data?.partialFee
+                      .toBigNumber()
+                      .multipliedBy(feeSpotPrice.data?.spotPrice ?? BN_1),
                     symbol: feeMeta.data?.symbol,
                     fixedPointScale: feeMeta.data?.decimals ?? 12,
+                    type: "token",
                   })}
                 </Text>
               </div>

@@ -16,8 +16,11 @@ type Props = {
   decimals: number
 
   allowedAssets?: Maybe<u32 | string>[]
+  hiddenAssets?: Maybe<u32 | string>[]
   onSelectAsset?: (id: u32 | string) => void
 
+  error?: string
+  disabled?: boolean
   value: string
   onChange: (v: string) => void
 }
@@ -27,6 +30,7 @@ export const PoolAddLiquidityAssetSelect: FC<Props> = (props) => {
   const { openModal, modal } = useAssetsModal({
     allowedAssets: props.allowedAssets,
     onSelect: props.onSelectAsset,
+    hiddenAssets: props.hiddenAssets,
   })
 
   return (

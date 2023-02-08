@@ -24,7 +24,7 @@ import { useAccountDepositIds, useDeposits } from "api/deposits"
 import { MyPositionsModal } from "../modals/myPositions/MyPositionsModal"
 import { useCurrentSharesValue } from "../shares/value/PoolSharesValue.utils"
 import { usePoolShareToken } from "api/pools"
-import { useTokenBalance, useTokensBalances } from "api/balances"
+import { useTokenBalance } from "api/balances"
 import { usePoolFarms } from "utils/farms/apr"
 
 type Props = { pool: PoolBase; isExpanded: boolean; onExpandClick: () => void }
@@ -48,10 +48,6 @@ export const PoolActions: FC<Props> = ({ pool, isExpanded, onExpandClick }) => {
 
   const shareToken = usePoolShareToken(pool.address)
   const balance = useTokenBalance(shareToken.data?.token, account?.address)
-  const [assetA, assetB] = useTokensBalances(
-    pool.tokens.map((i) => i.id),
-    account?.address,
-  )
 
   const { dollarValue } = useCurrentSharesValue({
     shareToken: shareToken.data?.token,
@@ -60,9 +56,6 @@ export const PoolActions: FC<Props> = ({ pool, isExpanded, onExpandClick }) => {
   })
 
   const closeActionsDrawer = () => setOpenActions(false)
-
-  const disabledAddLP =
-    assetA.data?.balance.isZero() || assetB.data?.balance.isZero()
 
   const disabledRemoveLP = balance.data?.balance.isZero()
 
@@ -76,7 +69,7 @@ export const PoolActions: FC<Props> = ({ pool, isExpanded, onExpandClick }) => {
       <Button
         fullWidth
         size="small"
-        disabled={!account || disabledAddLP}
+        disabled={!account}
         onClick={() => {
           setOpenAdd(true)
           closeActionsDrawer()

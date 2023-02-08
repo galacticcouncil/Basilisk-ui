@@ -1,6 +1,7 @@
 import { Button } from "components/Button/Button"
 import styled from "@emotion/styled"
 import { theme } from "theme"
+import { css } from "@emotion/react"
 
 export const SContainer = styled.div`
   border-radius: 12px;
@@ -24,6 +25,12 @@ export const SMaxButton = styled(Button)`
   background: rgba(${theme.rgbColors.white}, 0.06);
   color: ${theme.colors.white};
   font-weight: 600;
+
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      opacity: 0.3;
+    `}
 
   :hover {
     background: rgba(${theme.rgbColors.white}, 0.15);

@@ -13,13 +13,19 @@ import { useAssetAccountDetails } from "api/assetDetails"
 
 interface AssetsModalProps {
   allowedAssets?: Maybe<u32 | string>[]
+  hiddenAssets?: Maybe<u32 | string>[]
   onSelect?: (id: u32 | string) => void
   onClose: () => void
 }
 
+type AccountDetailsType = NonNullable<
+  ReturnType<typeof useAssetAccountDetails>["data"]
+>
+
 export const AssetsModal: FC<AssetsModalProps> = ({
   onClose,
   allowedAssets,
+  hiddenAssets,
   onSelect,
 }) => {
   const { t } = useTranslation()
@@ -28,15 +34,23 @@ export const AssetsModal: FC<AssetsModalProps> = ({
 
   const assetsRows = useAssetAccountDetails(account?.address)
 
-  const mainAssets =
-    (allowedAssets != null
-      ? assetsRows.data?.filter((asset) => allowedAssets.includes(asset.id))
-      : assetsRows.data) ?? []
+  const { isPair, notPair } = assetsRows.data?.reduce(
+    (acc, item) => {
+      if (!allowedAssets || hiddenAssets?.includes(item.id)) return acc
 
-  const otherAssets =
-    (allowedAssets != null
-      ? assetsRows.data?.filter((asset) => !allowedAssets?.includes(asset.id))
-      : []) ?? []
+      if (allowedAssets.includes(item.id)) {
+        acc.isPair.push(item)
+      } else {
+        acc.notPair.push(item)
+      }
+
+      return acc
+    },
+    { isPair: [] as AccountDetailsType, notPair: [] as AccountDetailsType },
+  ) ?? {
+    isPair: [],
+    notPair: [],
+  }
 
   return (
     <Modal
@@ -45,7 +59,7 @@ export const AssetsModal: FC<AssetsModalProps> = ({
       isDrawer={!isDesktop}
       titleDrawer={t("selectAsset.title")}
     >
-      {!!mainAssets?.length && (
+      {!!isPair?.length && (
         <>
           <SAssetsModalHeader sx={{ m: ["0 -14px", "0 -30px"] }}>
             <Text
@@ -65,7 +79,7 @@ export const AssetsModal: FC<AssetsModalProps> = ({
               {t("selectAssets.your_balance")}
             </Text>
           </SAssetsModalHeader>
-          {mainAssets?.map((asset) => (
+          {isPair?.map((asset) => (
             <AssetsModalRow
               key={asset.id}
               id={asset.id}
@@ -74,7 +88,7 @@ export const AssetsModal: FC<AssetsModalProps> = ({
           ))}
         </>
       )}
-      {!!otherAssets?.length && (
+      {!!notPair?.length && (
         <>
           <SAssetsModalHeader shadowed sx={{ m: ["0 -14px", "0 -30px"] }}>
             <Text
@@ -86,12 +100,8 @@ export const AssetsModal: FC<AssetsModalProps> = ({
               {t("selectAssets.asset_without_pair")}
             </Text>
           </SAssetsModalHeader>
-          {otherAssets?.map((asset) => (
-            <AssetsModalRow
-              key={asset.id}
-              id={asset.id}
-              onClick={() => onSelect?.(asset.id)}
-            />
+          {notPair?.map((asset) => (
+            <AssetsModalRow key={asset.id} id={asset.id} notPair />
           ))}
         </>
       )}

@@ -8,6 +8,8 @@ import { ReactComponent as KAR } from "assets/icons/tokens/KAR.svg"
 import { ReactComponent as PHA } from "assets/icons/tokens/PHA.svg"
 import { ReactComponent as KSM } from "assets/icons/tokens/KSM.svg"
 import { ReactComponent as TNKR } from "assets/icons/tokens/TNKR.svg"
+import { ReactComponent as ZTG } from "assets/icons/tokens/ZTG.svg"
+import { ReactComponent as XRT } from "assets/icons/tokens/XRT.svg"
 import { ReactComponent as PlaceholderIcon } from "assets/icons/tokens/PlaceholderIcon.svg"
 
 export type AssetIconProps = {
@@ -38,6 +40,8 @@ export function getAssetLogo(symbol: string | null | undefined) {
   if (_symbol === "KSM") return <KSM />
   if (_symbol === "PHA") return <PHA />
   if (_symbol === "TNKR") return <TNKR />
+  if (_symbol === "ZTG") return <ZTG />
+  if (_symbol === "XRT") return <XRT />
 
   return <PlaceholderIcon width={32} height={32} />
 }
