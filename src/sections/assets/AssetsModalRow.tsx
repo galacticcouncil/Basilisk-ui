@@ -14,13 +14,13 @@ import { DollarAssetValue } from "components/DollarAssetValue/DollarAssetValue"
 
 interface AssetsModalRowProps {
   id: Maybe<u32 | string>
-  noPair?: boolean
+  notPair?: boolean
   onClick?: () => void
 }
 
 export const AssetsModalRow: FC<AssetsModalRowProps> = ({
   id,
-  noPair,
+  notPair,
   onClick,
 }) => {
   const { account } = useAccountStore()
@@ -38,7 +38,7 @@ export const AssetsModalRow: FC<AssetsModalRowProps> = ({
   }, [balance, spotPrice])
 
   return (
-    <SAssetRow onClick={onClick} noPair={noPair}>
+    <SAssetRow onClick={onClick} notPair={notPair}>
       <div
         sx={{
           display: "flex",

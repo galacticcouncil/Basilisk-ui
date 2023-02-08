@@ -66,7 +66,7 @@ export const AssetSelectInput = (props: {
           </Trans>
         </Text>
         <TokenInputMaxButton
-          disabled={!!props.disabled}
+          disabled={props.disabled}
           onClick={() => {
             if (props.decimals != null && props.balance != null) {
               props.onChange(

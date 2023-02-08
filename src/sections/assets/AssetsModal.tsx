@@ -34,21 +34,23 @@ export const AssetsModal: FC<AssetsModalProps> = ({
 
   const assetsRows = useAssetAccountDetails(account?.address)
 
-  const { isPair, notPair } =
-    assetsRows.data?.reduce(
-      (acc, item) => {
-        if (!allowedAssets || hiddenAssets?.includes(item.id)) return acc
+  const { isPair, notPair } = assetsRows.data?.reduce(
+    (acc, item) => {
+      if (!allowedAssets || hiddenAssets?.includes(item.id)) return acc
 
-        if (allowedAssets.includes(item.id)) {
-          acc.isPair.push(item)
-        } else {
-          acc.notPair.push(item)
-        }
+      if (allowedAssets.includes(item.id)) {
+        acc.isPair.push(item)
+      } else {
+        acc.notPair.push(item)
+      }
 
-        return acc
-      },
-      { isPair: [] as AccountDetailsType, notPair: [] as AccountDetailsType },
-    ) ?? {}
+      return acc
+    },
+    { isPair: [] as AccountDetailsType, notPair: [] as AccountDetailsType },
+  ) ?? {
+    isPair: [],
+    notPair: [],
+  }
 
   return (
     <Modal
@@ -99,7 +101,7 @@ export const AssetsModal: FC<AssetsModalProps> = ({
             </Text>
           </SAssetsModalHeader>
           {notPair?.map((asset) => (
-            <AssetsModalRow key={asset.id} id={asset.id} noPair />
+            <AssetsModalRow key={asset.id} id={asset.id} notPair />
           ))}
         </>
       )}

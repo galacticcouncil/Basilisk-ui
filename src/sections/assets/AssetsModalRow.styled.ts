@@ -2,7 +2,7 @@ import styled from "@emotion/styled"
 import { theme } from "../../theme"
 import { css } from "@emotion/react"
 
-export const SAssetRow = styled.div<{ noPair?: boolean }>`
+export const SAssetRow = styled.div<{ notPair?: boolean }>`
   display: flex;
   cursor: pointer;
   padding: 9px 0px;
@@ -18,8 +18,8 @@ export const SAssetRow = styled.div<{ noPair?: boolean }>`
     box-sizing: content-box;
   }
 
-  ${({ noPair }) =>
-    noPair
+  ${({ notPair }) =>
+    notPair
       ? css`
           cursor: not-allowed;
           opacity: 0.3;
