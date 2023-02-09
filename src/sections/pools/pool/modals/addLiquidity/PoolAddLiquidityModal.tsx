@@ -244,13 +244,15 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
       assetB: {
         id: assets[opposite(lastUpdated)].id,
         amount: getFixedPointAmount(
-          new BigNumber(assetValues[lastUpdated]),
+          new BigNumber(assetValues[opposite(lastUpdated)]),
           assets[opposite(lastUpdated)].decimals.toString(),
-        ).times(
-          BigNumber(settings?.tradeLimit ?? DEFAULT_TRADE_LIMIT)
-            .dividedBy(100)
-            .plus(1),
-        ),
+        )
+          .times(
+            BigNumber(settings?.tradeLimit ?? DEFAULT_TRADE_LIMIT)
+              .dividedBy(100)
+              .plus(1),
+          )
+          .decimalPlaces(0),
       },
       toast: {
         onLoading: (
