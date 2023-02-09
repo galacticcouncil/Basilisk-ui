@@ -249,6 +249,7 @@
   "wallet.assets.transfer.toast.onSuccess": "<0>Sent </0><1>{{ value, bignumber(type: 'token') }} {{symbol}}</1><0> to </0><1>{{address}}</1>",
   "wallet.assets.header.total": "Total Balance",
   "wallet.assets.header.transferable": "Transferable Balance",
+  "wallet.assets.header.totalInPools": "Total in Pools",
   "wallet.assets.header.value": "{{num}}<0>{{denom}}</0>",
   "wallet.assets.transfer.crosschain.title": "Transfer asset cross-chain",
   "wallet.assets.transfer.crosschain.description": "Select cross chain transfer provider for getting assets into Basilisk.",
