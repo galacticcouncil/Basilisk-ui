@@ -21,9 +21,9 @@ export function XcmPage() {
       <SContainer>
         <XcmApp
           ref={ref}
-          srcChain="basilisk"
-          dstChain="karura"
-          chains="basilisk,karura"
+          srcChain="kusama"
+          dstChain="basilisk"
+          chains="basilisk,karura,kusama"
           accountName={account?.name}
           accountProvider={account?.provider}
           accountAddress={account?.address}
