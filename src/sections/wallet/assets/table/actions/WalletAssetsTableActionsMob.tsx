@@ -123,6 +123,7 @@ export const WalletAssetsTableActionsMob = ({
                 <Button
                   sx={{ width: "100%" }}
                   size="small"
+                  disabled={!row.inTradeRouter}
                   onClick={
                     row.inTradeRouter
                       ? () =>
@@ -139,6 +140,7 @@ export const WalletAssetsTableActionsMob = ({
                 <Button
                   sx={{ width: "100%" }}
                   size="small"
+                  disabled={!row.inTradeRouter}
                   onClick={
                     row.inTradeRouter
                       ? () =>
@@ -158,6 +160,7 @@ export const WalletAssetsTableActionsMob = ({
               <Button
                 sx={{ width: "100%" }}
                 size="small"
+                disabled={row.total.isZero()}
                 onClick={() => onTransferClick(row.id)}
               >
                 <TransferIcon />
