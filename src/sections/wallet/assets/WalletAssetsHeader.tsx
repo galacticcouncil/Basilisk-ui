@@ -9,21 +9,25 @@ import { separateBalance } from "../../../utils/balance"
 import { css } from "@emotion/react"
 import { theme } from "../../../theme"
 import Skeleton from "react-loading-skeleton"
+import BN from "bignumber.js"
+import { LiquidityPositionsTableData } from "./table/WalletLiquidityPositionsTable.utils"
 
 interface WalletAssetsHeaderProps {
-  data?: AssetsTableData[]
+  assetsData?: AssetsTableData[]
+  lpData?: LiquidityPositionsTableData[]
   isLoading?: boolean
 }
 
 export const WalletAssetsHeader: FC<WalletAssetsHeaderProps> = ({
-  data,
+  assetsData,
+  lpData,
   isLoading,
 }) => {
   const { t } = useTranslation()
 
   const totalUsd = useMemo(() => {
-    if (data) {
-      return data.reduce((acc, cur) => {
+    if (assetsData) {
+      return assetsData.reduce((acc, cur) => {
         if (!cur.totalUSD.isNaN()) {
           return acc.plus(cur.totalUSD)
         }
@@ -31,18 +35,24 @@ export const WalletAssetsHeader: FC<WalletAssetsHeaderProps> = ({
       }, BN_0)
     }
     return null
-  }, [data])
+  }, [assetsData])
 
   const transferableUsd = useMemo(() => {
-    if (data) {
-      return data.reduce((acc, cur) => {
+    if (assetsData) {
+      return assetsData.reduce((acc, cur) => {
         if (!cur.transferableUSD.isNaN()) {
           return acc.plus(cur.transferableUSD)
         }
         return acc
       }, BN_0)
     }
-  }, [data])
+  }, [assetsData])
+
+  const totalInPools = useMemo(() => {
+    if (!lpData) return BN_0
+
+    return lpData.reduce((acc, { totalUsd }) => acc.plus(BN(totalUsd)), BN_0)
+  }, [lpData])
 
   return (
     <div
@@ -128,6 +138,57 @@ export const WalletAssetsHeader: FC<WalletAssetsHeaderProps> = ({
                 i18nKey="wallet.assets.header.value"
                 tOptions={{
                   ...separateBalance(transferableUsd, {
+                    numberPrefix: "$",
+                    type: "dollar",
+                  }),
+                }}
+              >
+                <span
+                  sx={{
+                    fontSize: [16, 26],
+                  }}
+                  css={css`
+                    color: rgba(${theme.rgbColors.white}, 0.4);
+                  `}
+                />
+              </Trans>
+            </Heading>
+          )
+        )}
+      </div>
+      <Separator
+        sx={{ mb: 15, display: ["inherit", "none"] }}
+        css={{ background: `rgba(${theme.rgbColors.white}, 0.06)` }}
+      />
+
+      <div
+        sx={{
+          flexGrow: 1,
+          flex: ["row", "column"],
+          justify: "space-between",
+          align: ["center", "start"],
+          mb: [15, 0],
+        }}
+      >
+        <Text color="neutralGray300" sx={{ fontSize: [14, 16], mb: [0, 14] }}>
+          {t("wallet.assets.header.totalInPools")}
+        </Text>
+
+        {isLoading ? (
+          <Skeleton
+            sx={{
+              width: [97, 168],
+              height: [27, 42],
+            }}
+          />
+        ) : (
+          transferableUsd && (
+            <Heading as="h3" sx={{ fontSize: [16, 52], fontWeight: 900 }}>
+              <Trans
+                t={t}
+                i18nKey="wallet.assets.header.value"
+                tOptions={{
+                  ...separateBalance(totalInPools, {
                     numberPrefix: "$",
                     type: "dollar",
                   }),
