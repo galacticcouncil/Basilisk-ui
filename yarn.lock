@@ -1961,10 +1961,10 @@
     "@floating-ui/dom" "^0.5.3"
     use-isomorphic-layout-effect "^1.1.1"
 
-"@galacticcouncil/apps@^1.1.4":
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/@galacticcouncil/apps/-/apps-1.1.4.tgz#87059de6e59774b0f428876799f4897fec962647"
-  integrity sha512-bAZRUpgh+hgN1nRuhl72TAn9abKgbvqPgjqoZMtuGsDIA7xfmbTtKMcNVCcTk8wemo1NBKKeqVRGxUYE9r4Fjg==
+"@galacticcouncil/apps@^1.1.7":
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/@galacticcouncil/apps/-/apps-1.1.7.tgz#895cb5a234015acb14cd6d8fc9ffd530e1deae98"
+  integrity sha512-3B2ykiejjRQBRanf6PHtBj3hWUyhtZMQWDJ/Q8QJJE6yHT/qvdncqCo00zhOwIKejmDOXlNVyd88ZBeCw5dibA==
   dependencies:
     "@talismn/connect-wallets" "^1.2.1"
     "@thi.ng/atom" "^5.1.3"
@@ -1975,10 +1975,10 @@
     lightweight-charts "^3.8.0"
     short-uuid "^4.2.0"
 
-"@galacticcouncil/bridge@^0.0.1-rc20":
-  version "0.0.1-rc20"
-  resolved "https://registry.yarnpkg.com/@galacticcouncil/bridge/-/bridge-0.0.1-rc20.tgz#bbaf456645ecd14489b5d7369c177b61bc38760e"
-  integrity sha512-iwCGIfIf7AoOu527OePPKL+Ti7/4jZdvIFeHZXy7crkMbwk5LA0gUI368afxgApykMzNLQ4DsrNOIkekQPErcw==
+"@galacticcouncil/bridge@^0.0.1-rc32":
+  version "0.0.1-rc32"
+  resolved "https://registry.yarnpkg.com/@galacticcouncil/bridge/-/bridge-0.0.1-rc32.tgz#3a14796903a4b81b8704355871bfc9ff919b5c3b"
+  integrity sha512-cE1OmekAxWheScYnvgetYpxzy2D5OwrvV2BDYnLUCRX3tH/n0sFDeICPHLX9sCrr3pgEu8jDJU04apJv1zhTHQ==
   dependencies:
     "@acala-network/api" "4.1.8-9"
     "@acala-network/sdk" "4.1.8-9"
@@ -2027,10 +2027,10 @@
     bignumber.js "^9.1.0"
     lodash.clonedeep "^4.5.0"
 
-"@galacticcouncil/ui@^1.0.63":
-  version "1.0.63"
-  resolved "https://registry.yarnpkg.com/@galacticcouncil/ui/-/ui-1.0.63.tgz#fa2fe3d44a5b5b51d4718c1ff7ae7ff15ad1d7f0"
-  integrity sha512-t8IUeBU6ag9fanv2AYUvg57kJ6g9T2r7J9DDaoJSoZW/vnVmq4iKhotxRO3bIDIWSF56E45tZCfHIpINuNvAIg==
+"@galacticcouncil/ui@^1.0.65":
+  version "1.0.65"
+  resolved "https://registry.yarnpkg.com/@galacticcouncil/ui/-/ui-1.0.65.tgz#a6d1227198f865b47ed83b48258e3a8c8c524929"
+  integrity sha512-aI6ZZlD8HoPmHp3+kM7Y4dj8WRcrd1FODWnZpoz7Qr/VjKZY5aycUDMZ1Ii8ZtU2LbHSxGadb5SjdvgozYWIBw==
   dependencies:
     "@lit/reactive-element" "^1.0.0"
     imask "^6.4.3"
