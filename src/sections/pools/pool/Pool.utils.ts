@@ -26,7 +26,7 @@ export const useTotalInPool = ({ pool }: Props) => {
     )
     const balanceB = getFloatingPointAmount(
       new BN(assetB.balance),
-      assetA.decimals,
+      assetB.decimals,
     )
 
     const AtoAUSD = spotAtoAUSD.data.spotPrice
@@ -42,6 +42,7 @@ export const useTotalInPool = ({ pool }: Props) => {
     assetA.balance,
     assetA.decimals,
     assetB.balance,
+    assetB.decimals,
     spotAtoAUSD.data,
     spotBtoAUSD.data,
   ])
