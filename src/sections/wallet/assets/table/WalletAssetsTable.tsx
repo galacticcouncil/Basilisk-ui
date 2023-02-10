@@ -29,7 +29,7 @@ type Props = { data: AssetsTableData[] }
 
 export const WalletAssetsTable = ({ data }: Props) => {
   const { t } = useTranslation()
-  const [showAll, setShowAll] = useState(true)
+  const [showAll, setShowAll] = useState(false)
   const [row, setRow] = useState<AssetsTableData | undefined>(undefined)
   const [transferAsset, setTransferAsset] = useState<string | null>(null)
   const [assetId, setAssetId] = useState<string | null>(null)
