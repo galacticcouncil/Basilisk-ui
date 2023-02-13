@@ -15,6 +15,8 @@ import { ReactComponent as DAI } from "assets/icons/tokens/DAI.svg"
 import { ReactComponent as KBTC } from "assets/icons/tokens/KBTC.svg"
 import { ReactComponent as USDC } from "assets/icons/tokens/USDC.svg"
 import { ReactComponent as USDT } from "assets/icons/tokens/USDT.svg"
+import { ReactComponent as WBTC } from "assets/icons/tokens/WBTC.svg"
+import { ReactComponent as WETH } from "assets/icons/tokens/WETH.svg"
 import { ReactComponent as PlaceholderIcon } from "assets/icons/tokens/PlaceholderIcon.svg"
 
 export type AssetIconProps = {
@@ -49,9 +51,11 @@ export function getAssetLogo(symbol: string | null | undefined) {
   if (_symbol === "XRT") return <XRT />
   if (_symbol === "KINT") return <KINT />
   if (_symbol === "DAI") return <DAI />
+  if (_symbol === "WBTC") return <WBTC />
+  if (_symbol === "WETH") return <WETH />
   if (_symbol === "KBTC") return <KBTC />
-  if (_symbol === "USDC") return <USDC />
-  if (_symbol === "USDT") return <USDT />
+  if (_symbol === "USDC" || _symbol === "USDCET") return <USDC />
+  if (_symbol === "USDT" || _symbol === "WUSDT") return <USDT />
 
   return <PlaceholderIcon width={32} height={32} />
 }
