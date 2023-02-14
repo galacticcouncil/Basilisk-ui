@@ -32,7 +32,7 @@ export const PoolsPage = () => {
           <div sx={{ width: "100%", flex: "row", justify: "center" }}>
             <Spinner width={32} height={32} />
           </div>
-        ) : data?.length ? (
+        ) : !!data?.length ? (
           data?.map((pool) => <Pool key={pool.address} pool={pool} />)
         ) : (
           <EmptyPoolsState />
