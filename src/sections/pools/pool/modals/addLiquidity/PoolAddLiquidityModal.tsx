@@ -172,6 +172,7 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
   const handleChange = useCallback(
     (value: string, name: "assetA" | "assetB") => {
       const assetDecimals = assets[name].decimals
+      const pairAssetDecimals = assets[opposite(name)].decimals
 
       const currReserves = reserves[name]
       const nextReserves = reserves[opposite(name)]
@@ -186,7 +187,7 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
               assetDecimals.toString(),
             ).toFixed(),
           ),
-          assetDecimals.toString(),
+          pairAssetDecimals.toString(),
         ).toString()
 
         form.setValue(name, value, { shouldValidate: true, shouldTouch: true })
