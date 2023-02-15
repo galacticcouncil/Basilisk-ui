@@ -20,11 +20,12 @@ type Props = {
   symbol: string
   onBuyClick: (() => void) | undefined
   onSellClick: (() => void) | undefined
-  onTransferClick: (() => void) | undefined
+  onTransferClick: () => void
   couldAddLiquidity: boolean
   onAddLiquidityClick: () => void
   onSetFeeAsPaymentClick: () => void
   couldBeSetAsPaymentFee: boolean
+  isBalanceZero: boolean
 }
 
 export const WalletAssetsTableActions = (props: Props) => {
@@ -61,7 +62,7 @@ export const WalletAssetsTableActions = (props: Props) => {
         </TableAction>
         <TableAction
           icon={<TransferIcon />}
-          disabled={props.onTransferClick == null}
+          disabled={props.isBalanceZero}
           onClick={props.onTransferClick}
         >
           {t("wallet.assets.table.actions.transfer")}
