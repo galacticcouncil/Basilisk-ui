@@ -12,17 +12,15 @@ import { TOAST_CLOSE_TIME } from "utils/constants"
 import { Maybe } from "utils/helpers"
 import { ToastContent } from "./ToastContent"
 import { motion } from "framer-motion"
-import { ToastVariant } from "state/toasts"
+import { ToastVariant } from "components/AppProviders/ToastContext"
 
 type Props = {
   variant: Maybe<ToastVariant>
   title?: string | ReactNode
   link?: string
-  actions?: ReactNode
   index?: number
   count?: number
   onClose?: () => void
-  persist?: boolean
   dateCreated?: Date
   onClick?: () => void
 }
@@ -31,12 +29,10 @@ export const Toast: FC<Props> = ({
   variant = "info",
   title,
   link,
-  actions,
   index,
   count,
   dateCreated,
   onClose,
-  persist,
   onClick,
 }) => {
   const { t } = useTranslation()
@@ -54,7 +50,6 @@ export const Toast: FC<Props> = ({
           variant={variant ?? "info"}
           title={title}
           link={link}
-          actions={actions}
           dateCreated={dateCreated}
           onClick={onClick}
           meta={
@@ -72,7 +67,7 @@ export const Toast: FC<Props> = ({
             <SProgressBar
               variant={variant}
               initial={{ width: "0%" }}
-              animate={!persist && { width: "100%" }}
+              animate={{ width: "100%" }}
               transition={{ duration: TOAST_CLOSE_TIME / 1000 }}
               onAnimationComplete={onClose}
             />

@@ -4,17 +4,17 @@ import { ReactComponent as SuccessIcon } from "assets/icons/IconSuccessSmall.svg
 import { ReactComponent as FailIcon } from "assets/icons/IconFailureSmall.svg"
 import { ReactComponent as BasiliskIcon } from "assets/icons/BasiliskIcon.svg"
 import { ReactComponent as LinkIcon } from "assets/icons/LinkIcon.svg"
+import { ReactComponent as Unknown } from "assets/icons/Unknown.svg"
 import { Text } from "components/Typography/Text/Text"
 import { Spinner } from "components/Spinner/Spinner.styled"
 import { Maybe, useNow } from "utils/helpers"
 import { useTranslation } from "react-i18next"
-import { ToastVariant } from "state/toasts"
+import { ToastVariant } from "components/AppProviders/ToastContext"
 
 export function ToastContent(props: {
   variant: Maybe<ToastVariant>
   title?: string | ReactNode
   link?: string
-  actions?: ReactNode
   meta?: ReactNode
   dateCreated?: Date
   children?: ReactNode
@@ -33,6 +33,8 @@ export function ToastContent(props: {
           <FailIcon />
         ) : props.variant === "progress" ? (
           <Spinner width={28} height={28} />
+        ) : props.variant === "unknown" ? (
+          <Unknown />
         ) : (
           <BasiliskIcon />
         )}
@@ -46,8 +48,6 @@ export function ToastContent(props: {
               props.title
             )}
           </STitle>
-
-          {props.actions}
         </div>
         <div sx={{ flex: "row", justify: "space-between", align: "flex-end" }}>
           {props.dateCreated && (

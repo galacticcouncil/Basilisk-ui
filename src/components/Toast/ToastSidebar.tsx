@@ -6,10 +6,10 @@ import { ReactComponent as CrossIcon } from "assets/icons/CrossIcon.svg"
 import { ReactNode } from "react"
 import { SWrapper, SDialogContent, SCloseButton } from "./ToastSidebar.styled"
 import { ToastContent } from "./ToastContent"
-import { useToast } from "state/toasts"
 import { useTranslation } from "react-i18next"
 import { RemoveScroll } from "react-remove-scroll"
 import { ReactComponent as NoActivities } from "assets/icons/NoActivities.svg"
+import { useToastStorage } from "components/AppProviders/ToastContext"
 
 const ToastGroupHeader = (props: { children?: ReactNode }) => (
   <Text
@@ -23,7 +23,7 @@ const ToastGroupHeader = (props: { children?: ReactNode }) => (
 )
 
 export function ToastSidebar() {
-  const store = useToast()
+  const store = useToastStorage()
   const onClose = () => store.setSidebar(false)
 
   const sortedToasts = store.toasts.sort(
@@ -97,7 +97,6 @@ export function ToastSidebar() {
                                 }}
                               />
                             }
-                            actions={toast.actions}
                             dateCreated={
                               typeof toast.dateCreated === "string"
                                 ? new Date(toast.dateCreated)
@@ -126,7 +125,6 @@ export function ToastSidebar() {
                                 }}
                               />
                             }
-                            actions={toast.actions}
                             dateCreated={
                               typeof toast.dateCreated === "string"
                                 ? new Date(toast.dateCreated)

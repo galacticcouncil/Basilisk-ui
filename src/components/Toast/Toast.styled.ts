@@ -3,7 +3,7 @@ import styled from "@emotion/styled"
 import { theme } from "theme"
 import { motion } from "framer-motion"
 import { Maybe } from "utils/helpers"
-import { ToastVariant } from "state/toasts"
+import { ToastVariant } from "components/AppProviders/ToastContext"
 
 export const SRoot = styled(Root)`
   position: relative;
