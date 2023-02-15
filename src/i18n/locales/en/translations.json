@@ -49,6 +49,7 @@
   "value.APR": "{{ apr, bignumber(numberSuffix: '% APR'; type: 'percentage') }}",
   "value.APR.range": "{{ from, bignumber(type: 'percentage') }}-{{ to, bignumber(type: 'percentage') }}% APR",
   "value.multiAPR": "Between {{minApr, bignumber(type: 'percentage')}}-{{maxApr, bignumber(type: 'percentage')}}% APR",
+  "value.multiAPR.short": "{{minApr, bignumber(type: 'percentage')}}-{{maxApr, bignumber(type: 'percentage')}}% APR",
   "farms.deposit.title": "Amount to deposit",
   "farms.deposit.balance": "<0>Share token balance:</0> {{ balance, bignumber(fixedPointScale: 12; type: 'token') }}",
   "farms.deposit.assetType": "Token/Token",

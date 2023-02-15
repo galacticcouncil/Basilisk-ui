@@ -11,6 +11,8 @@ import { theme } from "theme"
 import { Fragment } from "react"
 import { SContainer, SInnerContainer } from "./PoolPositionFarmRedeposit.styled"
 import { Icon } from "components/Icon/Icon"
+import { useMedia } from "react-use"
+import { MultiplePoolIncentivesRow } from "../../incentives/row/MultiplePoolIncentivesRow/MultiplePoolIncentivesRow"
 
 const PoolPositionFarmRedepositAsset = (props: {
   pool: PoolBase
@@ -42,6 +44,7 @@ export const PoolPositionFarmRedeposit = (props: {
   className?: string
 }) => {
   const { t } = useTranslation()
+  const isDesktop = useMedia(theme.viewport.gte.sm)
   const apr = useAPR(props.pool.address)
 
   let availableYieldFarms =
@@ -78,22 +81,31 @@ export const PoolPositionFarmRedeposit = (props: {
           <div
             sx={{ flex: "row", gap: 20, align: "center", ml: [0, 12], mr: 20 }}
           >
-            {availableYieldFarms.map((farm, i) => (
-              <Fragment key={`${farm.globalFarm.id}-${farm.yieldFarm.id}`}>
-                <PoolPositionFarmRedepositAsset
-                  hideName={!isMultiple}
-                  farm={farm}
-                  pool={props.pool}
-                />
-
-                {i + 1 !== availableYieldFarms.length && (
-                  <span
-                    sx={{ width: 1, height: 35 }}
-                    css={{ background: `rgba(${theme.rgbColors.white}, 0.06)` }}
+            {isDesktop || !isMultiple ? (
+              availableYieldFarms.map((farm, i) => (
+                <Fragment key={`${farm.globalFarm.id}-${farm.yieldFarm.id}`}>
+                  <PoolPositionFarmRedepositAsset
+                    hideName={!isMultiple}
+                    farm={farm}
+                    pool={props.pool}
                   />
-                )}
-              </Fragment>
-            ))}
+
+                  {i + 1 !== availableYieldFarms.length && (
+                    <span
+                      sx={{ width: 1, height: 35 }}
+                      css={{
+                        background: `rgba(${theme.rgbColors.white}, 0.06)`,
+                      }}
+                    />
+                  )}
+                </Fragment>
+              ))
+            ) : (
+              <MultiplePoolIncentivesRow
+                farms={availableYieldFarms}
+                isRedeposit
+              />
+            )}
           </div>
         </div>
 

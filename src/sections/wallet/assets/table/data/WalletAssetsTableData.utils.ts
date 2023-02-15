@@ -18,12 +18,8 @@ import { usePools } from "api/pools"
 export const useAssetsTableData = () => {
   const { account } = useAccountStore()
   const tradeAssets = useTradeAssets()
-  const accountBalances = useAccountBalances(account?.address)
-  const tokenIds = accountBalances.data?.balances
-    ? [NATIVE_ASSET_ID, ...accountBalances.data.balances.map((b) => b.id)]
-    : []
   const balances = useAssetsBalances()
-  const assets = useAssetDetailsList(tokenIds)
+  const assets = useAssetDetailsList()
   const pools = usePools()
 
   const acceptedCurrenciesQuery = useAcceptedCurrencies(
@@ -69,11 +65,12 @@ export const useAssetsTableData = () => {
         (b) => b.id.toString() === asset.id.toString(),
       )
 
-      const couldBeSetAsPaymentFee = acceptedCurrencies.some(
-        (currency) =>
-          currency.id === asset.id?.toString() &&
-          currency.id !== accountCurrency.data,
-      )
+      const couldBeSetAsPaymentFee =
+        acceptedCurrencies.some(
+          (currency) =>
+            currency.id === asset.id?.toString() &&
+            currency.id !== accountCurrency.data,
+        ) && !!balance?.total
 
       const poolLiquidityAddress = pools.data?.find(
         (pool) =>
