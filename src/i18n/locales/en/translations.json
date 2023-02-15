@@ -65,6 +65,7 @@
   "pools.header.myLocked": "My balance in Pools",
   "pools.header.myFarms": "Total balance locked in Farms",
   "pools.pool.title": "{{ poolType }} Pool",
+  "pools.emptyState.description": "You have no active positions <br /> Provide liquidity to support the protocol",
   "pools.pool.poolDetails.fee": "Trade Fee",
   "pools.pool.poolDetails.total": "Total Value",
   "pools.pool.poolDetails.24hours": "24h Volume",
