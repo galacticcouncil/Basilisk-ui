@@ -17,6 +17,7 @@ type ToastData = ToastParams & {
 
 interface ToastParams {
   id?: string
+  link?: string
   title: ReactElement
   actions?: ReactNode
   persist?: boolean

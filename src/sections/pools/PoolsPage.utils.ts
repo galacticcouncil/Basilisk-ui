@@ -1,5 +1,5 @@
 import { useAccountStore } from "state/store"
-import { usePools } from "api/pools"
+import { usePoolShareTokens, usePools } from "api/pools"
 import { useAccountDepositIds, useAllDeposits } from "api/deposits"
 import { useMemo } from "react"
 import { useSpotPrices } from "api/spotPrice"
@@ -8,6 +8,8 @@ import { getFloatingPointAmount } from "utils/balance"
 import BN from "bignumber.js"
 import { BN_1 } from "utils/constants"
 import { PoolToken } from "@galacticcouncil/sdk"
+import { useTokensBalances } from "api/balances"
+import { u32 } from "@polkadot/types"
 
 export type PoolsPageFilter = { showMyPositions: boolean }
 
@@ -16,6 +18,15 @@ export const useFilteredPools = ({ showMyPositions }: PoolsPageFilter) => {
   const pools = usePools()
   const accountDeposits = useAccountDepositIds(account?.address)
   const allDeposits = useAllDeposits(pools.data?.map((pool) => pool.address))
+
+  const shareTokens = usePoolShareTokens(
+    showMyPositions ? pools.data?.map((p) => p.address) ?? [] : [],
+  )
+
+  const userPoolBalances = useTokensBalances(
+    shareTokens.map((st) => st.data?.token).filter((x): x is u32 => !!x) ?? [],
+    showMyPositions ? account?.address : undefined,
+  )
 
   const usd = useUsdPeggedAsset()
 
@@ -29,7 +40,14 @@ export const useFilteredPools = ({ showMyPositions }: PoolsPageFilter) => {
 
   const spotPrices = useSpotPrices(poolAssetsId ?? [], usd.data?.id)
 
-  const queries = [pools, accountDeposits, usd, ...allDeposits, ...spotPrices]
+  const queries = [
+    pools,
+    accountDeposits,
+    usd,
+    ...allDeposits,
+    ...spotPrices,
+    ...userPoolBalances,
+  ]
 
   // https://github.com/TanStack/query/issues/3584
   const isLoading = queries.some((q) => q.isLoading && q.fetchStatus !== "idle")
@@ -92,9 +110,23 @@ export const useFilteredPools = ({ showMyPositions }: PoolsPageFilter) => {
       accountDeposits.data?.some((ad) => ad.instanceId.eq(deposit.id)),
     )
 
-    const relevantPools = sortedPools?.filter((pool) =>
-      usersDeposits.some(({ deposit }) => deposit.ammPoolId.eq(pool.address)),
-    )
+    const relevantPools = sortedPools?.filter((pool) => {
+      const hasBalance = !userPoolBalances
+        .find(
+          (balance) =>
+            balance.data?.assetId.toString() ===
+            shareTokens
+              .find((shareToken) => shareToken.data?.poolId === pool.address)
+              ?.data?.token.toString(),
+        )
+        ?.data?.balance.isZero()
+
+      return (
+        usersDeposits.some(({ deposit }) =>
+          deposit.ammPoolId.eq(pool.address),
+        ) || hasBalance
+      )
+    })
 
     return relevantPools
   }, [
@@ -105,6 +137,8 @@ export const useFilteredPools = ({ showMyPositions }: PoolsPageFilter) => {
     accountDeposits.data,
     allDeposits,
     showMyPositions,
+    userPoolBalances,
+    shareTokens,
   ])
 
   return { data, isLoading }

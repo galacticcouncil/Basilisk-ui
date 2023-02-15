@@ -65,6 +65,7 @@ const gradients = {
   cardGradient:
     "linear-gradient(180deg, #1C2527 0%, #14161A 80.73%, #121316 100%)",
   mobNavigationGradient: "linear-gradient(0deg, #141414, #141414), #1C1A1F",
+  bgDark: "linear-gradient(180deg, #1C2527 0%, #14161A 80.73%, #121316 100%)",
 } as const
 
 const zIndices = {

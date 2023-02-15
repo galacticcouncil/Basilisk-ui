@@ -21,8 +21,8 @@ export function usePoolDetailsTradeVolume(poolAddress: string) {
         if (memo[assetOut] == null) memo[assetOut] = BN_0
 
         if (item.name === "XYK.BuyExecuted") {
-          memo[assetIn] = memo[assetIn].plus(item.args.amount)
-          memo[assetOut] = memo[assetOut].plus(item.args.buyPrice)
+          memo[assetIn] = memo[assetIn].plus(item.args.buyPrice)
+          memo[assetOut] = memo[assetOut].plus(item.args.amount)
         }
 
         if (item.name === "XYK.SellExecuted") {
@@ -43,8 +43,11 @@ export function usePoolDetailsTradeVolume(poolAddress: string) {
   return useMemo(() => {
     if (volume.isLoading) return null
 
-    const combinedAssets = spotPrices.map((spotPrice, idx) => {
-      const asset = assets.data?.[idx]
+    const combinedAssets = spotPrices.map((spotPrice) => {
+      const asset = assets.data?.find(
+        (asset) => asset.id === spotPrice.data?.tokenIn,
+      )
+
       if (asset == null || spotPrice.data == null) return null
       return {
         spotPrice: spotPrice.data,

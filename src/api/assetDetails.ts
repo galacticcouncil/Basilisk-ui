@@ -79,21 +79,23 @@ const getAssetDetails = (api: ApiPromise) => async () => {
     })
   }
 
-  const assets = entries.map(([key, data]) => {
-    const { symbol = "N/A" } =
-      assetsMeta.find(
-        (assetMeta) => assetMeta.id.toString() === key.args[0].toString(),
-      ) || {}
+  const assets = entries
+    .map(([key, data]) => {
+      const { symbol = "N/A" } =
+        assetsMeta.find(
+          (assetMeta) => assetMeta.id.toString() === key.args[0].toString(),
+        ) || {}
 
-    return {
-      id: key.args[0].toString(),
-      name: data.unwrap().name.toUtf8(),
-      locked: data.unwrap().locked.toPrimitive(),
-      assetType: data.unwrap().assetType.type,
-      existentialDeposit: data.unwrap().existentialDeposit.toBigNumber(),
-      symbol,
-    }
-  })
+      return {
+        id: key.args[0].toString(),
+        name: data.unwrap().name.toUtf8(),
+        locked: data.unwrap().locked.toPrimitive(),
+        assetType: data.unwrap().assetType.type,
+        existentialDeposit: data.unwrap().existentialDeposit.toBigNumber(),
+        symbol,
+      }
+    })
+    .filter((asset) => !asset.name.includes("deprecated"))
 
   if (!assets.find((i) => i.id === NATIVE_ASSET_ID)) {
     const { symbol = "N/A" } =

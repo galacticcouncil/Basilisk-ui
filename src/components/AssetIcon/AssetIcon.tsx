@@ -10,7 +10,13 @@ import { ReactComponent as KSM } from "assets/icons/tokens/KSM.svg"
 import { ReactComponent as TNKR } from "assets/icons/tokens/TNKR.svg"
 import { ReactComponent as ZTG } from "assets/icons/tokens/ZTG.svg"
 import { ReactComponent as XRT } from "assets/icons/tokens/XRT.svg"
+import { ReactComponent as KINT } from "assets/icons/tokens/KINT.svg"
+import { ReactComponent as DAI } from "assets/icons/tokens/DAI.svg"
+import { ReactComponent as KBTC } from "assets/icons/tokens/KBTC.svg"
+import { ReactComponent as USDC } from "assets/icons/tokens/USDC.svg"
 import { ReactComponent as USDT } from "assets/icons/tokens/USDT.svg"
+import { ReactComponent as WBTC } from "assets/icons/tokens/WBTC.svg"
+import { ReactComponent as WETH } from "assets/icons/tokens/WETH.svg"
 import { ReactComponent as PlaceholderIcon } from "assets/icons/tokens/PlaceholderIcon.svg"
 
 export type AssetIconProps = {
@@ -43,23 +49,13 @@ export function getAssetLogo(symbol: string | null | undefined) {
   if (_symbol === "TNKR") return <TNKR />
   if (_symbol === "ZTG") return <ZTG />
   if (_symbol === "XRT") return <XRT />
-  if (_symbol === "USDT") return <USDT />
+  if (_symbol === "KINT") return <KINT />
+  if (_symbol === "DAI") return <DAI />
+  if (_symbol === "WBTC") return <WBTC />
+  if (_symbol === "WETH") return <WETH />
+  if (_symbol === "KBTC") return <KBTC />
+  if (_symbol === "USDC" || _symbol === "USDCET") return <USDC />
+  if (_symbol === "USDT" || _symbol === "WUSDT") return <USDT />
 
   return <PlaceholderIcon width={32} height={32} />
-}
-
-export function getAssetName(symbol: string | null | undefined) {
-  const _symbol = symbol?.toUpperCase()
-
-  if (_symbol === "AUSD") return "Acala Dollar"
-  if (_symbol === "BSX") return "Basilisk"
-  if (_symbol === "KAR") return "Karura"
-  if (_symbol === "KSM") return "Kusama"
-  if (_symbol === "PHA") return "Phala"
-  if (_symbol === "TNKR") return "Tinkernet"
-  if (_symbol === "ZTG") return "Zeitgeist"
-  if (_symbol === "XRT") return "Robonomics"
-  if (_symbol === "USDT") return "Statemine USDT"
-
-  return "-"
 }
