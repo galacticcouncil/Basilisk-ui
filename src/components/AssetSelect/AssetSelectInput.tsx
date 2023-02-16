@@ -70,9 +70,10 @@ export const AssetSelectInput = (props: {
           onClick={() => {
             if (props.decimals != null && props.balance != null) {
               props.onChange(
-                getFloatingPointAmount(props.balance, props.decimals).toFixed(
-                  4,
-                ),
+                getFloatingPointAmount(
+                  props.balance,
+                  props.decimals,
+                ).toString(),
               )
             }
           }}
