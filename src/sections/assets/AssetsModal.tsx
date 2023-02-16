@@ -36,7 +36,10 @@ export const AssetsModal: FC<AssetsModalProps> = ({
 
   const { isPair, notPair } = assetsRows.data?.reduce(
     (acc, item) => {
-      if (!allowedAssets || hiddenAssets?.includes(item.id)) return acc
+      if (!allowedAssets || hiddenAssets?.includes(item.id)) {
+        acc.isPair.push(item)
+        return acc
+      }
 
       if (allowedAssets.includes(item.id)) {
         acc.isPair.push(item)

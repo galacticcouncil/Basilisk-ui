@@ -7,14 +7,15 @@ import { MultipleIcons } from "components/MultipleIcons/MultipleIcons"
 
 type Props = {
   farms: AprFarm[]
+  isRedeposit?: boolean
 }
 
-export const MultiplePoolIncentivesRow = ({ farms }: Props) => {
+export const MultiplePoolIncentivesRow = ({ farms, isRedeposit }: Props) => {
   const { t } = useTranslation()
 
   return (
     <>
-      <div sx={{ flex: "row", justify: "space-between" }}>
+      <div sx={{ flex: "row", justify: "space-between", gap: 4 }}>
         <div sx={{ flex: "row" }}>
           <MultipleIcons
             icons={farms.map((farm) => ({
@@ -28,12 +29,15 @@ export const MultiplePoolIncentivesRow = ({ farms }: Props) => {
           />
         </div>
         {!!farms.length && (
-          <Text color="primary200">
-            {t("value.multiAPR", getMinAndMaxAPR(farms))}
+          <Text color="primary200" fs={isRedeposit ? 12 : 16}>
+            {t(
+              `value.multiAPR${isRedeposit ? ".short" : ""}`,
+              getMinAndMaxAPR(farms),
+            )}
           </Text>
         )}
       </div>
-      <Separator sx={{ mt: 18 }} />
+      {!isRedeposit && <Separator sx={{ mt: 18 }} />}
     </>
   )
 }

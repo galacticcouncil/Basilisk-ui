@@ -140,6 +140,7 @@ export const useAssetsTable = (
             actions.onAddLiquidity(row.original.id)
           }
           toggleExpanded={() => row.toggleExpanded()}
+          isBalanceZero={row.original.total.isZero()}
           onTransferClick={() => actions.onTransfer(row.original.id)}
           symbol={row.original.symbol}
         />

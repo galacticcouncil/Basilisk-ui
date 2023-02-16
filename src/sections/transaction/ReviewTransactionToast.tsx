@@ -12,6 +12,7 @@ export function ReviewTransactionToast<
 >(props: {
   id: string
   mutation: UseMutationResult<TData, TError, TVariables, TContext>
+  link?: string
   onReview?: () => void
   onClose?: () => void
   toastMessage?: ToastMessage
@@ -38,6 +39,7 @@ export function ReviewTransactionToast<
         title: props.toastMessage?.onSuccess ?? (
           <p>{t("pools.reviewTransaction.toast.success")}</p>
         ),
+        link: props.link,
       })
 
       closeRef.current?.()
@@ -63,7 +65,7 @@ export function ReviewTransactionToast<
     return () => {
       if (toRemoveId) toastRef.current.remove(toRemoveId)
     }
-  }, [t, props.toastMessage, isError, isSuccess, isLoading])
+  }, [t, props.toastMessage, isError, isSuccess, isLoading, props.link])
 
   return null
 }
