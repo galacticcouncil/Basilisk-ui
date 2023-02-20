@@ -8,7 +8,9 @@ export function PoolDetailsTradeFee(props: { pool: PoolBase }) {
 
   return (
     <div sx={{ flex: "row", align: "center" }}>
-      <div sx={{ flex: "column", justify: "center", width: ["auto", "auto", 120] }}>
+      <div
+        sx={{ flex: "column", justify: "center", width: ["auto", "auto", 120] }}
+      >
         <Text fs={14} fw={400} color="neutralGray400" lh={26}>
           {t("pools.pool.poolDetails.fee")}
         </Text>

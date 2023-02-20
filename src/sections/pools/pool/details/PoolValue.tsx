@@ -27,7 +27,9 @@ export const PoolValue = ({ pool, className }: Props) => {
           {t("value.usd", { amount: data })}
         </Text>
       </div>
-      <div sx={{ flex: "column", width: ["auto", "auto", 120], align: "start" }}>
+      <div
+        sx={{ flex: "column", width: ["auto", "auto", 120], align: "start" }}
+      >
         <div sx={{ flex: "row", align: "center", gap: 6 }}>
           <Text
             fs={14}
