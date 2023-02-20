@@ -27,9 +27,19 @@ import { usePoolShareToken } from "api/pools"
 import { useTokenBalance } from "api/balances"
 import { usePoolFarms } from "utils/farms/apr"
 
-type Props = { pool: PoolBase; isExpanded: boolean; onExpandClick: () => void }
+type Props = {
+  pool: PoolBase
+  isExpanded: boolean
+  onExpandClick: () => void
+  className?: string
+}
 
-export const PoolActions: FC<Props> = ({ pool, isExpanded, onExpandClick }) => {
+export const PoolActions: FC<Props> = ({
+  pool,
+  isExpanded,
+  onExpandClick,
+  className,
+}) => {
   const { t } = useTranslation()
   const [openAdd, setOpenAdd] = useState(false)
   const [openRemove, setOpenRemove] = useState(false)
@@ -116,7 +126,7 @@ export const PoolActions: FC<Props> = ({ pool, isExpanded, onExpandClick }) => {
   return (
     <>
       {isDesktop ? (
-        <SActionsContainer>
+        <SActionsContainer className={className}>
           {actionButtons}
           <SButtonOpen
             isActive={isExpanded}

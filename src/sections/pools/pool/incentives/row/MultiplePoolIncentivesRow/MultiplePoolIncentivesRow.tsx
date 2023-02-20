@@ -14,30 +14,27 @@ export const MultiplePoolIncentivesRow = ({ farms, isRedeposit }: Props) => {
   const { t } = useTranslation()
 
   return (
-    <>
-      <div sx={{ flex: "row", justify: "space-between", gap: 4 }}>
-        <div sx={{ flex: "row" }}>
-          <MultipleIcons
-            icons={farms.map((farm) => ({
-              icon: (
-                <FarmAssetIcon
-                  key={farm.assetId.toString()}
-                  assetId={farm.assetId}
-                />
-              ),
-            }))}
-          />
-        </div>
-        {!!farms.length && (
-          <Text color="primary200" fs={isRedeposit ? 12 : 16}>
-            {t(
-              `value.multiAPR${isRedeposit ? ".short" : ""}`,
-              getMinAndMaxAPR(farms),
-            )}
-          </Text>
-        )}
+    <div sx={{ flex: "row", justify: "space-between", gap: 4 }}>
+      <div sx={{ flex: "row" }}>
+        <MultipleIcons
+          icons={farms.map((farm) => ({
+            icon: (
+              <FarmAssetIcon
+                key={farm.assetId.toString()}
+                assetId={farm.assetId}
+              />
+            ),
+          }))}
+        />
       </div>
-      {!isRedeposit && <Separator sx={{ mt: 18 }} />}
-    </>
+      {!!farms.length && (
+        <Text color="primary200" fs={isRedeposit ? 12 : 16}>
+          {t(
+            `value.multiAPR${isRedeposit ? ".short" : ""}`,
+            getMinAndMaxAPR(farms),
+          )}
+        </Text>
+      )}
+    </div>
   )
 }

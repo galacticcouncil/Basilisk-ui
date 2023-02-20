@@ -14,25 +14,33 @@ export const SGridContainer = styled.div`
   grid-column-gap: 0px;
   grid-row-gap: 18px;
 
-  @media ${theme.viewport.gte.sm} {
+  grid-template-areas: "details" "incentives" "values" "actions";
+
+  @media ${theme.viewport.gte.sm} and ${theme.viewport.lt.md} {
     padding: 24px;
     display: grid;
-    grid-template-columns: 1fr repeat(2, min-content);
+
+    grid-template-areas:
+      "details actions"
+      "incentives actions"
+      "values actions";
+
+    grid-template-columns: 1fr auto;
+
+    grid-column-gap: 48px;
+    grid-row-gap: 16px;
+  }
+
+  @media ${theme.viewport.gte.md} {
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 1fr 256px min-content;
     grid-template-rows: repeat(2, 1fr);
     grid-column-gap: 48px;
     grid-row-gap: 0px;
 
-    > div:nth-of-type(1) {
-      grid-area: 1 / 1 / 2 / 2;
-    }
-    > div:nth-of-type(2) {
-      grid-area: 1 / 2 / 3 / 3;
-    }
-    > div:nth-of-type(3) {
-      grid-area: 2 / 1 / 3 / 2;
-    }
-    > div:nth-of-type(4) {
-      grid-area: 1 / 3 / 3 / 4;
-    }
+    grid-template-areas:
+      "details incentives actions"
+      "values incentives actions";
   }
 `

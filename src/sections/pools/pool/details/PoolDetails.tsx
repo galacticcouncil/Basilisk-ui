@@ -11,6 +11,7 @@ import { useMemo } from "react"
 export const PoolDetails = (props: {
   pool: PoolBase
   onClick?: () => void
+  className?: string
 }) => {
   const { t } = useTranslation()
   const assets = useAssetDetailsList()
@@ -24,7 +25,7 @@ export const PoolDetails = (props: {
   }, [props.pool.tokens, assets.data])
 
   return (
-    <div sx={{ flex: "column" }}>
+    <div sx={{ flex: "column" }} className={props.className}>
       <div sx={{ flex: "row", justify: "space-between" }}>
         <div>
           <Text fs={14} lh={26} fw={400} color="neutralGray400">
@@ -49,7 +50,7 @@ export const PoolDetails = (props: {
         </div>
         <PoolDetailsTradeFee pool={props.pool} />
       </div>
-      <Separator sx={{ mt: [18, 34] }} />
+      <Separator sx={{ mt: [18, 18, 34] }} />
     </div>
   )
 }

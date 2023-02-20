@@ -25,13 +25,17 @@ export const Pool: FC<Props> = ({ pool }) => {
         poolId={pool.address}
       />
       <SGridContainer>
-        <PoolDetails pool={pool} />
-        <PoolIncentives poolId={pool.address} />
-        <PoolValue pool={pool} />
+        <PoolDetails pool={pool} css={{ gridArea: "details" }} />
+        <PoolIncentives
+          poolId={pool.address}
+          css={{ gridArea: "incentives" }}
+        />
+        <PoolValue pool={pool} css={{ gridArea: "values" }} />
         <PoolActions
           pool={pool}
           isExpanded={isExpanded}
           onExpandClick={() => setIsExpanded((prev) => !prev)}
+          css={{ gridArea: "actions" }}
         />
       </SGridContainer>
       {isDesktop && (
