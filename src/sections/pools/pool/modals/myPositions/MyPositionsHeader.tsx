@@ -19,7 +19,13 @@ import Skeleton from "react-loading-skeleton"
 import { useAssetMeta, useAssetMetaList } from "api/assetMeta"
 import { NATIVE_ASSET_ID } from "utils/api"
 
-export const MyPositionsHeader = ({ pool }: { pool: PoolBase }) => {
+export const MyPositionsHeader = ({
+  pool,
+  arePositions,
+}: {
+  pool: PoolBase
+  arePositions: boolean
+}) => {
   const { t } = useTranslation()
   const { account } = useAccountStore()
 
@@ -166,64 +172,68 @@ export const MyPositionsHeader = ({ pool }: { pool: PoolBase }) => {
           </Text>
         )}
       </div>
-      <SClaimAllCard>
-        <Text color="primary200">{t("pools.allFarms.modal.claim.title")}</Text>
-        {claimable.data ? (
-          <>
-            {claimableAssets.map((claimableAsset) => (
-              <Fragment key={claimableAsset.symbol}>
-                <Text
-                  fw={900}
-                  sx={{ mb: 4, fontSize: [24, 28] }}
-                  css={{ wordBreak: "break-all" }}
-                >
-                  <Trans
-                    t={t}
-                    i18nKey={"pools.allFarms.modal.claim.asset"}
-                    tOptions={claimableAsset ?? {}}
+      {arePositions && (
+        <SClaimAllCard>
+          <Text color="primary200">
+            {t("pools.allFarms.modal.claim.title")}
+          </Text>
+          {claimable.data ? (
+            <>
+              {claimableAssets.map((claimableAsset) => (
+                <Fragment key={claimableAsset.symbol}>
+                  <Text
+                    fw={900}
+                    sx={{ mb: 4, fontSize: [24, 28] }}
+                    css={{ wordBreak: "break-all" }}
                   >
-                    <span
-                      css={css`
-                        color: rgba(${theme.rgbColors.white}, 0.4);
-                        font-size: 18px;
-                      `}
-                    />
-                  </Trans>
-                </Text>
-                <Separator />
-              </Fragment>
-            ))}
-            <Text
-              css={css`
-                color: rgba(255, 255, 255, 0.4);
-                word-break: break-all;
-              `}
-            >
-              {t("pools.allFarms.modal.claim.usd", {
-                amount: claimable.data?.usd,
-                fixedPointScale: meta?.decimals.toNumber() ?? 12,
-              })}
-            </Text>
-          </>
-        ) : (
-          <>
-            <Skeleton width={150} height={28} />
-            <Skeleton width={100} height={18} />
-          </>
-        )}
+                    <Trans
+                      t={t}
+                      i18nKey={"pools.allFarms.modal.claim.asset"}
+                      tOptions={claimableAsset ?? {}}
+                    >
+                      <span
+                        css={css`
+                          color: rgba(${theme.rgbColors.white}, 0.4);
+                          font-size: 18px;
+                        `}
+                      />
+                    </Trans>
+                  </Text>
+                  <Separator />
+                </Fragment>
+              ))}
+              <Text
+                css={css`
+                  color: rgba(255, 255, 255, 0.4);
+                  word-break: break-all;
+                `}
+              >
+                {t("pools.allFarms.modal.claim.usd", {
+                  amount: claimable.data?.usd,
+                  fixedPointScale: meta?.decimals.toNumber() ?? 12,
+                })}
+              </Text>
+            </>
+          ) : (
+            <>
+              <Skeleton width={150} height={28} />
+              <Skeleton width={100} height={18} />
+            </>
+          )}
 
-        <Button
-          variant="gradient"
-          size="small"
-          sx={{ p: "12px 21px", mt: 22 }}
-          isLoading={claimAll.isLoading}
-          onClick={() => claimAll.mutation.mutate()}
-          disabled={!claimableAssets.length || claimable?.data?.usd.isZero()}
-        >
-          <FlagIcon />
-          {t("pools.pool.claim.button")}
-        </Button>
-      </SClaimAllCard>
+          <Button
+            variant="gradient"
+            size="small"
+            sx={{ p: "12px 21px", mt: 22 }}
+            isLoading={claimAll.isLoading}
+            onClick={() => claimAll.mutation.mutate()}
+            disabled={!claimableAssets.length || claimable?.data?.usd.isZero()}
+          >
+            <FlagIcon />
+            {t("pools.pool.claim.button")}
+          </Button>
+        </SClaimAllCard>
+      )}
     </>
   )
 }

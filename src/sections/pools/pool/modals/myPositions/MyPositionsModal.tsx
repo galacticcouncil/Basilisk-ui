@@ -9,12 +9,14 @@ type MyPositionsModalProps = {
   pool: PoolBase
   isOpen: boolean
   onClose: () => void
+  arePositions: boolean
 }
 
 export const MyPositionsModal = ({
   pool,
   isOpen,
   onClose,
+  arePositions,
 }: MyPositionsModalProps) => {
   const { t } = useTranslation()
   const [{ symbol: assetA }, { symbol: assetB }] = pool.tokens
@@ -32,7 +34,7 @@ export const MyPositionsModal = ({
     >
       {isOpen && (
         <>
-          <MyPositionsHeader pool={pool} />
+          <MyPositionsHeader pool={pool} arePositions={arePositions} />
           <MyPositionsList pool={pool} />
         </>
       )}
