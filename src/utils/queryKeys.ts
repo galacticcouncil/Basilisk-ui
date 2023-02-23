@@ -118,11 +118,13 @@ export const QUERY_KEYS = {
     plannedYieldingPeriods: u32,
     initialRewardPercentage: Maybe<u128>,
     scaleCoef: Maybe<u32>,
+    periodsInFarm: Maybe<string>,
   ) => [
     "mathLoyaltyRates",
     plannedYieldingPeriods,
     initialRewardPercentage?.toString(),
     scaleCoef?.toString(),
+    periodsInFarm,
   ],
   tradeVolume: (poolId: Maybe<string>) => [
     QUERY_KEY_PREFIX,

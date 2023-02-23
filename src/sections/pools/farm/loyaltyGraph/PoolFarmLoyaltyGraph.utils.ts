@@ -21,6 +21,7 @@ export const useLoyaltyRates = (
       farm.globalFarm.plannedYieldingPeriods,
       loyaltyCurve?.initialRewardPercentage,
       loyaltyCurve?.scaleCoef,
+      periodsInFarm?.toString(),
     ),
     loyaltyCurve != null
       ? async () => {
