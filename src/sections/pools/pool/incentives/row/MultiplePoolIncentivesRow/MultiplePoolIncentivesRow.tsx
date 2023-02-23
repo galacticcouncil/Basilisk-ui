@@ -28,7 +28,7 @@ export const MultiplePoolIncentivesRow = ({ farms, isRedeposit }: Props) => {
             }))}
           />
         </div>
-        {!!farms.length && (
+        {!!farms.length && !isRedeposit && (
           <Text color="primary200" fs={isRedeposit ? 12 : 16}>
             {t(
               `value.multiAPR${isRedeposit ? ".short" : ""}`,

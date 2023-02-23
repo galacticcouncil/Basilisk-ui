@@ -7,8 +7,10 @@ import { useBestNumber } from "api/chain"
 import { useQueryReduce } from "utils/helpers"
 import {
   PalletLiquidityMiningGlobalFarmData,
+  PalletLiquidityMiningLoyaltyCurve,
   PalletLiquidityMiningYieldFarmData,
 } from "@polkadot/types/lookup"
+import * as liquidityMining from "@galacticcouncil/math-liquidity-mining"
 
 export type PoolFarm = NonNullable<
   Exclude<ReturnType<typeof usePoolFarms>["data"], undefined>[number]
@@ -56,6 +58,12 @@ export const useAPR = (poolId: AccountId32 | string) => {
       const data = poolFarms.map((farm) => {
         const { globalFarm, yieldFarm } = farm
 
+        const loyaltyFactor = yieldFarm.loyaltyCurve
+          .unwrap()
+          .initialRewardPercentage.toBigNumber()
+          .div(BN_QUINTILL)
+
+        const loyaltyCurve = yieldFarm.loyaltyCurve.unwrap()
         const totalSharesZ = globalFarm.totalSharesZ.toBigNumber()
         const plannedYieldingPeriods =
           globalFarm.plannedYieldingPeriods.toBigNumber()
@@ -98,6 +106,7 @@ export const useAPR = (poolId: AccountId32 | string) => {
         // this is correct in terms of inputs but for the user,
         // they are not depositing only half of the position, they are depositing 2 assets
         apr = apr.div(2)
+        const minApr = apr.times(loyaltyFactor)
 
         // max distribution of rewards
         // https://www.notion.so/Screen-elements-mapping-Farms-baee6acc456542ca8d2cccd1cc1548ae?p=4a2f16a9f2454095945dbd9ce0eb1b6b&pm=s
@@ -127,12 +136,15 @@ export const useAPR = (poolId: AccountId32 | string) => {
           .div(maxRewardPerPeriod)
 
         return {
+          minApr,
           apr,
           distributedRewards,
           maxRewards,
           fullness,
           estimatedEndBlock: estimatedEndBlock,
           assetId: globalFarm.rewardCurrency,
+          currentPeriod,
+          loyaltyCurve,
           ...farm,
         }
       })
@@ -162,8 +174,28 @@ export const getPoolYieldPerPeriod = (
 }
 
 export const getMinAndMaxAPR = (aprFarms: AprFarm[]) => {
-  const aprs = aprFarms.map((aprFarm) => aprFarm.apr)
-  const minApr = BN.minimum(...aprs)
+  const aprs = aprFarms.map(({ apr }) => apr)
+  const minAprs = aprFarms.map(({ minApr }) => minApr)
+
+  const minApr = BN.minimum(...minAprs)
   const maxApr = BN.maximum(...aprs)
-  return { minApr, maxApr }
+  return {
+    minApr,
+    maxApr,
+  }
+}
+
+export const getCurrentLoyaltyFactor = (
+  loyaltyCurve: PalletLiquidityMiningLoyaltyCurve,
+  currentPeriod: BN,
+) => {
+  return BN(
+    liquidityMining.calculate_loyalty_multiplier(
+      currentPeriod.toFixed(),
+      loyaltyCurve.initialRewardPercentage.toBigNumber().toFixed(),
+      loyaltyCurve.scaleCoef.toBigNumber().toFixed(),
+    ),
+  )
+    .div(BN_QUINTILL)
+    .toNumber()
 }

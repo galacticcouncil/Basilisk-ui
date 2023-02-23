@@ -5,14 +5,23 @@ import { Spinner } from "components/Spinner/Spinner.styled"
 import { useLoyaltyRates } from "./PoolFarmLoyaltyGraph.utils"
 import { Text } from "components/Typography/Text/Text"
 import { PalletLiquidityMiningLoyaltyCurve } from "@polkadot/types/lookup"
+import BN from "bignumber.js"
 
 export function PoolFarmLoyaltyGraph(props: {
   farm: AprFarm
   loyaltyCurve: PalletLiquidityMiningLoyaltyCurve
   showDisclaimer?: boolean
+  enteredAt?: BN
 }) {
   const { t } = useTranslation()
-  const rates = useLoyaltyRates(props.farm, props.loyaltyCurve)
+
+  const rates = useLoyaltyRates(
+    props.farm,
+    props.loyaltyCurve,
+    props.enteredAt
+      ? props.farm.currentPeriod.minus(props.enteredAt)
+      : undefined,
+  )
 
   return (
     <div sx={{ flex: "column", gap: 32 }}>

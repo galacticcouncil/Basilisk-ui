@@ -84,7 +84,7 @@ export const SFarm = styled.button<{
 
 export const SFarmRow = styled.div`
   display: grid;
-  grid-template-columns: 92px 1fr;
+  grid-template-columns: auto max-content;
   grid-column-gap: 12px;
   align-items: center;
 
