@@ -11,6 +11,7 @@ export default {
 const data = Array.from({ length: 80 }).map((_, i) => ({
   x: i,
   y: Math.log(i + 1) * 20,
+  currentLoyalty: false,
 }))
 
 const SContainer = styled.div`
