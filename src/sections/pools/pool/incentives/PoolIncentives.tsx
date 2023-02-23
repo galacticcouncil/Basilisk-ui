@@ -28,14 +28,16 @@ export const PoolIncentives = ({ poolId, className }: PoolIncentivesProps) => {
       </Text>
 
       {isDesktop ? (
-        data?.map((row, i) => (
-          <PoolIncentivesRow
-            key={i}
-            assetId={row.assetId}
-            apr={row.apr}
-            minApr={row.minApr}
-          />
-        ))
+        <div>
+          {data?.map((row, i) => (
+            <PoolIncentivesRow
+              key={i}
+              assetId={row.assetId}
+              apr={row.apr}
+              minApr={row.minApr}
+            />
+          ))}
+        </div>
       ) : (
         <MultiplePoolIncentivesRow farms={data ?? []} />
       )}
