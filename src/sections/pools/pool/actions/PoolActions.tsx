@@ -69,7 +69,7 @@ export const PoolActions: FC<Props> = ({
 
   const disabledRemoveLP = balance.data?.balance.isZero()
 
-  const disabledJoinFarm = !farms.data?.length && balance.data?.balance.isZero()
+  const disabledJoinFarm = !farms.data?.length || balance.data?.balance.isZero()
 
   const disabledMyPositions =
     !account || (!positions?.length && (!dollarValue || dollarValue.isZero()))
@@ -152,6 +152,7 @@ export const PoolActions: FC<Props> = ({
             pool={pool}
             isOpen={openMyPositions}
             onClose={() => setOpenMyPositions(false)}
+            arePositions={!!positions?.length}
           />
           <div sx={{ flex: "row", gap: 12 }}>
             <SMobActionButton size="small" onClick={() => setOpenActions(true)}>
