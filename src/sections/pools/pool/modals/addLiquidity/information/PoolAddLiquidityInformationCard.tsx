@@ -1,11 +1,11 @@
 import { Text } from "components/Typography/Text/Text"
 import { useTranslation } from "react-i18next"
-import { SCardContainer, SLink } from "./InformationCard.styled"
+import { SCardContainer, SLink } from "./PoolAddLiquidityInformationCard.styled"
 import { ReactComponent as LinkIcon } from "assets/icons/LinkIcon.svg"
 import { ReactComponent as InfoIcon } from "assets/icons/LPInfoIcon.svg"
 import { Icon } from "components/Icon/Icon"
 
-export const InformationCard = () => {
+export const PoolAddLiquidityInformationCard = () => {
   const { t } = useTranslation()
 
   return (

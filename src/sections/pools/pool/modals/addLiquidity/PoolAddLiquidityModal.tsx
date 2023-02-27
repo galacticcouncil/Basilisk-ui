@@ -41,7 +41,7 @@ import {
   opposite,
 } from "./PoolAddLiquidity.utils"
 import { NATIVE_ASSET_ID } from "utils/api"
-import { InformationCard } from "./information/InformationCard"
+import { PoolAddLiquidityInformationCard } from "./information/PoolAddLiquidityInformationCard"
 
 type AssetMetaType = NonNullable<ReturnType<typeof useAssetMeta>["data"]>
 interface PoolAddLiquidityModalProps {
@@ -436,7 +436,7 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
             )
           }
         />
-        <InformationCard />
+        <PoolAddLiquidityInformationCard />
       </div>
       {account ? (
         <Button
