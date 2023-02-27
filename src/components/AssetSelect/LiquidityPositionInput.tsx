@@ -60,7 +60,7 @@ export const LiquidityPositionInput = (props: {
           onClick={() => {
             if (balance.data?.balance != null) {
               props.onChange(
-                getFloatingPointAmount(balance.data.balance, 12).toFixed(4),
+                getFloatingPointAmount(balance.data.balance, 12).toString(),
               )
             }
           }}
