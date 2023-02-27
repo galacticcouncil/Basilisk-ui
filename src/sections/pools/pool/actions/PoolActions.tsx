@@ -27,9 +27,19 @@ import { usePoolShareToken } from "api/pools"
 import { useTokenBalance } from "api/balances"
 import { usePoolFarms } from "utils/farms/apr"
 
-type Props = { pool: PoolBase; isExpanded: boolean; onExpandClick: () => void }
+type Props = {
+  pool: PoolBase
+  isExpanded: boolean
+  onExpandClick: () => void
+  className?: string
+}
 
-export const PoolActions: FC<Props> = ({ pool, isExpanded, onExpandClick }) => {
+export const PoolActions: FC<Props> = ({
+  pool,
+  isExpanded,
+  onExpandClick,
+  className,
+}) => {
   const { t } = useTranslation()
   const [openAdd, setOpenAdd] = useState(false)
   const [openRemove, setOpenRemove] = useState(false)
@@ -59,7 +69,7 @@ export const PoolActions: FC<Props> = ({ pool, isExpanded, onExpandClick }) => {
 
   const disabledRemoveLP = balance.data?.balance.isZero()
 
-  const disabledJoinFarm = !farms.data?.length && balance.data?.balance.isZero()
+  const disabledJoinFarm = !farms.data?.length || balance.data?.balance.isZero()
 
   const disabledMyPositions =
     !account || (!positions?.length && (!dollarValue || dollarValue.isZero()))
@@ -116,7 +126,7 @@ export const PoolActions: FC<Props> = ({ pool, isExpanded, onExpandClick }) => {
   return (
     <>
       {isDesktop ? (
-        <SActionsContainer>
+        <SActionsContainer className={className}>
           {actionButtons}
           <SButtonOpen
             isActive={isExpanded}
@@ -142,6 +152,7 @@ export const PoolActions: FC<Props> = ({ pool, isExpanded, onExpandClick }) => {
             pool={pool}
             isOpen={openMyPositions}
             onClose={() => setOpenMyPositions(false)}
+            arePositions={!!positions?.length}
           />
           <div sx={{ flex: "row", gap: 12 }}>
             <SMobActionButton size="small" onClick={() => setOpenActions(true)}>

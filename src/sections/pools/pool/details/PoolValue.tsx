@@ -7,15 +7,18 @@ import { usePoolDetailsTradeVolume } from "./PoolDetails.utils"
 import { InfoTooltip } from "components/InfoTooltip/InfoTooltip"
 import { SInfoIcon } from "./PoolValue.styled"
 
-type Props = { pool: PoolBase }
+type Props = { pool: PoolBase; className?: string }
 
-export const PoolValue = ({ pool }: Props) => {
+export const PoolValue = ({ pool, className }: Props) => {
   const { t } = useTranslation()
   const { data } = useTotalInPool({ pool })
   const volume = usePoolDetailsTradeVolume(pool.address)
 
   return (
-    <div sx={{ flex: "row", justify: "space-between", align: "end", mb: 12 }}>
+    <div
+      sx={{ flex: "row", justify: "space-between", align: "end", mb: 12 }}
+      className={className}
+    >
       <div>
         <Text fs={14} color="neutralGray400" lh={26}>
           {t("pools.pool.poolDetails.total")}
@@ -24,7 +27,9 @@ export const PoolValue = ({ pool }: Props) => {
           {t("value.usd", { amount: data })}
         </Text>
       </div>
-      <div sx={{ flex: "column", width: ["auto", 120], align: "start" }}>
+      <div
+        sx={{ flex: "column", width: ["auto", "auto", 120], align: "start" }}
+      >
         <div sx={{ flex: "row", align: "center", gap: 6 }}>
           <Text
             fs={14}
@@ -43,7 +48,7 @@ export const PoolValue = ({ pool }: Props) => {
         <Text
           lh={22}
           color="white"
-          tAlign={["right", "left"]}
+          tAlign={["right", "right", "left"]}
           sx={{ width: "calc(100% - 20px)" }}
         >
           {t("value.usd", { amount: volume })}
