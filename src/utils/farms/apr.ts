@@ -1,7 +1,7 @@
 import BN from "bignumber.js"
 import { useActiveYieldFarms, useGlobalFarms, useYieldFarms } from "api/farms"
 import { AccountId32 } from "@polkadot/types/interfaces/runtime"
-import { BLOCK_TIME, BN_QUINTILL } from "utils/constants"
+import { BLOCK_TIME, BN_1, BN_QUINTILL } from "utils/constants"
 import { secondsInYear } from "date-fns"
 import { useBestNumber } from "api/chain"
 import { useQueryReduce } from "utils/helpers"
@@ -58,12 +58,14 @@ export const useAPR = (poolId: AccountId32 | string) => {
       const data = poolFarms.map((farm) => {
         const { globalFarm, yieldFarm } = farm
 
-        const loyaltyFactor = yieldFarm.loyaltyCurve
-          .unwrap()
-          .initialRewardPercentage.toBigNumber()
-          .div(BN_QUINTILL)
+        const loyaltyFactor = yieldFarm.loyaltyCurve.isNone
+          ? BN_1
+          : yieldFarm.loyaltyCurve
+              .unwrap()
+              .initialRewardPercentage.toBigNumber()
+              .div(BN_QUINTILL)
 
-        const loyaltyCurve = yieldFarm.loyaltyCurve.unwrap()
+        const loyaltyCurve = yieldFarm.loyaltyCurve.unwrapOr(null)
         const totalSharesZ = globalFarm.totalSharesZ.toBigNumber()
         const plannedYieldingPeriods =
           globalFarm.plannedYieldingPeriods.toBigNumber()
@@ -186,9 +188,10 @@ export const getMinAndMaxAPR = (aprFarms: AprFarm[]) => {
 }
 
 export const getCurrentLoyaltyFactor = (
-  loyaltyCurve: PalletLiquidityMiningLoyaltyCurve,
+  loyaltyCurve: PalletLiquidityMiningLoyaltyCurve | null,
   currentPeriod: BN,
 ) => {
+  if (!loyaltyCurve) return 0
   return BN(
     liquidityMining.calculate_loyalty_multiplier(
       currentPeriod.toFixed(),

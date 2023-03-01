@@ -8,7 +8,7 @@ import { DepositNftType } from "api/deposits"
 import { getAssetLogo } from "components/AssetIcon/AssetIcon"
 import { Icon } from "components/Icon/Icon"
 import { Separator } from "components/Separator/Separator"
-import { useAssetMeta } from "../../../../../api/assetMeta"
+import { useAssetMeta } from "api/assetMeta"
 import { PalletLiquidityMiningYieldFarmEntry } from "@polkadot/types/lookup"
 
 type Props = {

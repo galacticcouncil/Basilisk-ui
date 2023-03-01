@@ -14,7 +14,7 @@ export const worker = {
     const result = []
 
     for (let periods = 0; periods <= plannedYieldingPeriods; periods++) {
-      //reduce the number of periods by taking one period each 3000 periods
+      //reduce the number of periods by taking one period each axisScale periods
       if (
         periods % axisScale !== 0 &&
         periods !== periodsInFarm &&
