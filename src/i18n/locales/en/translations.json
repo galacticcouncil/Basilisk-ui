@@ -118,6 +118,8 @@
   "pools.addLiquidity.modal.row.shareTokens": "Received amount of Share Tokens",
   "pools.addLiquidity.modal.confirmButton": "Confirm",
   "pools.addLiquidity.modal.conversion.price": "Price:",
+  "pools.addLiquidity.modal.information.text": "Providing liquidity will generate rewards through generating fees, but is also exposed to certain risks. Please be aware.",
+  "pools.addLiquidity.modal.information.linkText": "Learn more about risks",
   "liquidity.add.modal.toast.onLoading": "<0>Adding liquidity in exchange for </0><1>{{shares, bignumber(type: 'token')}}</1><0> asset shares.</0>",
   "liquidity.add.modal.toast.onSuccess": "<0>Added liquidity in exchange for </0><1>{{shares, bignumber(type: 'token')}}</1><0> asset shares.</0>",
   "liquidity.add.modal.validation.notEnoughBalance": "Insufficient balance on your account.",
