@@ -191,7 +191,7 @@ export const getCurrentLoyaltyFactor = (
   loyaltyCurve: PalletLiquidityMiningLoyaltyCurve | null,
   currentPeriod: BN,
 ) => {
-  if (!loyaltyCurve) return 0
+  if (!loyaltyCurve) return 1
   return BN(
     liquidityMining.calculate_loyalty_multiplier(
       currentPeriod.toFixed(),
