@@ -63,6 +63,7 @@
   "pools.header.switch": "My Positions",
   "pools.header.totalLocked": "Total value in Pools",
   "pools.header.totalFarms": "Total value in Farms",
+  "pools.header.total24volumes": "24h Volume",
   "pools.header.myLocked": "My balance in Pools",
   "pools.header.myFarms": "Total balance locked in Farms",
   "pools.pool.title": "{{ poolType }} Pool",
