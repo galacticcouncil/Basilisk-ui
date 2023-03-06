@@ -2,12 +2,14 @@ import { FC, memo } from "react"
 import {
   CartesianGrid,
   Line,
+  ReferenceLine,
   ResponsiveContainer,
   XAxis,
   YAxis,
 } from "recharts"
 import { SChart } from "components/Graph/Graph.styled"
 import { theme } from "theme"
+import { ReactComponent as CurrentLoyaltyFactor } from "assets/icons/CurrentLoyaltyFactor.svg"
 
 const tickProps = {
   stroke: theme.colors.white,
@@ -25,12 +27,30 @@ const labelProps = {
 }
 
 type Props = {
-  data: { x: number; y: number }[]
+  data: { x: number; y: number; currentLoyalty: boolean }[]
   labelX?: string
   labelY?: string
 }
 
+const CustomizedDot = ({
+  payload,
+  cx,
+  cy,
+}: {
+  payload: Props["data"][0]
+  cx: number
+  cy: number
+}) => {
+  if (payload.currentLoyalty) {
+    return <CurrentLoyaltyFactor x={cx - 13} y={cy - 13.5} />
+  }
+
+  return null
+}
+
 export const Graph: FC<Props> = memo(({ data, labelX, labelY }) => {
+  const currentLoyaltyFactor = data.find((point) => point.currentLoyalty)
+
   return (
     <ResponsiveContainer width="100%" height="100%">
       <SChart data={data} margin={{ top: 0, right: 0, bottom: 16, left: 16 }}>
@@ -82,7 +102,23 @@ export const Graph: FC<Props> = memo(({ data, labelX, labelY }) => {
           stroke="url(#lineGradient)"
           strokeLinecap="round"
           strokeWidth={4}
-          dot={false}
+          dot={(props) => <CustomizedDot {...props} />}
+        />
+        <ReferenceLine
+          stroke="white"
+          strokeDasharray="3 3"
+          segment={[
+            { y: currentLoyaltyFactor?.y, x: 0 },
+            { y: currentLoyaltyFactor?.y, x: currentLoyaltyFactor?.x },
+          ]}
+        />
+        <ReferenceLine
+          stroke="white"
+          strokeDasharray="3 3"
+          segment={[
+            { y: 0, x: currentLoyaltyFactor?.x },
+            { y: currentLoyaltyFactor?.y, x: currentLoyaltyFactor?.x },
+          ]}
         />
       </SChart>
     </ResponsiveContainer>

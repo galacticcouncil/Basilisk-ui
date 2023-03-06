@@ -10,9 +10,10 @@ import { SContainer } from "sections/pools/pool/incentives/PoolIncentives.styled
 type Props = {
   assetId: u32
   apr: BN
+  minApr: BN
 }
 
-export const PoolIncentivesRow: FC<Props> = ({ assetId, apr }) => {
+export const PoolIncentivesRow: FC<Props> = ({ assetId, apr, minApr }) => {
   const { t } = useTranslation()
   const asset = useAsset(assetId)
 
@@ -23,7 +24,10 @@ export const PoolIncentivesRow: FC<Props> = ({ assetId, apr }) => {
         {asset.data?.symbol}
       </Text>
       <Text fw={500} color="primary200" sx={{ ml: "auto" }}>
-        {t("value.APR", { apr })}
+        {t("value.APR.range", {
+          from: minApr,
+          to: apr,
+        })}
       </Text>
     </SContainer>
   )
