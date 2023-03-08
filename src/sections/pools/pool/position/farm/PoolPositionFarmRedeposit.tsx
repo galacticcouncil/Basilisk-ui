@@ -19,21 +19,17 @@ const PoolPositionFarmRedepositAsset = (props: {
   farm: AprFarm
   hideName?: boolean
 }) => {
-  const { t } = useTranslation()
   const asset = useAsset(props.farm.assetId)
   if (!asset.data) return null
 
   return (
     <div sx={{ flex: "row", align: "center", gap: 6 }}>
-      <Icon size={28}>{asset.data.icon} </Icon>
+      <Icon size={21}>{asset.data.icon} </Icon>
       {!props.hideName && (
         <Text fs={14} lh={16}>
           {asset.data.symbol}
         </Text>
       )}
-      <Text fs={14} lh={16} color="primary200">
-        {t("value.APR", { apr: props.farm.apr })}
-      </Text>
     </div>
   )
 }

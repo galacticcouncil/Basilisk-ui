@@ -15,6 +15,8 @@ import { usePoolSharesDeposit } from "./PoolSharesDeposit.utils"
 import { PoolSharesDepositFarm } from "./PoolSharesDepositFarm"
 import { BN_0 } from "utils/constants"
 import { useEnteredDate } from "utils/block"
+import { Separator } from "components/Separator/Separator"
+import { PoolSharesDetailsButton } from "./PoolSharesDetailsButton"
 
 type Props = {
   index: number
@@ -63,6 +65,7 @@ export const PoolSharesDeposit: FC<Props> = ({ depositNft, index, pool }) => {
               })}
             </Text>
           </div>
+          <Separator sx={{ my: "5px" }} orientation="vertical" />
           <div sx={{ flex: "column", gap: 6 }}>
             <Text fs={12} lh={16} color="neutralGray500">
               {t("pools.pool.positions.position.locked")}
@@ -78,6 +81,7 @@ export const PoolSharesDeposit: FC<Props> = ({ depositNft, index, pool }) => {
               })}
             </Text>
           </div>
+          <Separator sx={{ my: "5px" }} orientation="vertical" />
           <div sx={{ flex: "column", gap: 6 }}>
             <Text fs={12} lh={16} color="neutralGray500">
               {t("pools.pool.positions.position.current")}
@@ -96,10 +100,15 @@ export const PoolSharesDeposit: FC<Props> = ({ depositNft, index, pool }) => {
               </Text>
             </div>
           </div>
+          <Separator sx={{ my: "5px" }} orientation="vertical" />
+          <PoolSharesDetailsButton pool={pool} depositNft={depositNft} />
+        </SPositionContainer>
+        <Separator />
+        <div sx={{ flex: "row", justify: "space-between" }}>
           <PoolSharesDepositFarm pool={pool} depositNft={depositNft} />
 
           <PoolPositionFarmRedeposit pool={pool} depositNft={depositNft} />
-        </SPositionContainer>
+        </div>
       </div>
     </SContainer>
   )

@@ -1,6 +1,6 @@
 import { Text } from "components/Typography/Text/Text"
 import { Trans, useTranslation } from "react-i18next"
-import { useAPR } from "utils/farms/apr"
+import { useAPR, getMinAndMaxAPR } from "utils/farms/apr"
 import { Fragment, useMemo } from "react"
 import { usePoolShareToken } from "api/pools"
 import { useTokenBalance } from "api/balances"
@@ -164,11 +164,11 @@ export const MyPositionsHeader = ({
         {!!sortedAPR?.length && (
           <Text fs={14} lh={18} color="white">
             {sortedAPR.length > 1
-              ? t("pools.pool.liquidity.apr.value", {
-                  min: sortedAPR[0].apr,
-                  max: sortedAPR[sortedAPR.length - 1].apr,
-                })
-              : t("value.APR", { apr: sortedAPR[0].apr })}
+              ? t("value.multiAPR.short", getMinAndMaxAPR(sortedAPR))
+              : t("value.APR.range", {
+                  from: sortedAPR[0].minApr,
+                  to: sortedAPR[0].apr,
+                })}
           </Text>
         )}
       </div>

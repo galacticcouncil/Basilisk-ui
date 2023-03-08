@@ -30,7 +30,12 @@ export const PoolIncentives = ({ poolId, className }: PoolIncentivesProps) => {
       {isDesktop ? (
         <div>
           {data?.map((row, i) => (
-            <PoolIncentivesRow key={i} assetId={row.assetId} apr={row.apr} />
+            <PoolIncentivesRow
+              key={i}
+              assetId={row.assetId}
+              apr={row.apr}
+              minApr={row.minApr}
+            />
           ))}
         </div>
       ) : (

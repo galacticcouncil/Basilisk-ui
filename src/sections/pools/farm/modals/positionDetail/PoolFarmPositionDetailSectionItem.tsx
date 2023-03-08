@@ -43,6 +43,7 @@ export function PoolFarmPositionDetailSectionItem(props: {
             farm={props.farm}
             loyaltyCurve={loyaltyCurve}
             showDisclaimer={!props.position}
+            enteredAt={props.position?.enteredAt.toBigNumber()}
           />
         )}
 
