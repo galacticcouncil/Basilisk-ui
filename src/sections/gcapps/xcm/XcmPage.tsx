@@ -23,7 +23,7 @@ export function XcmPage() {
           ref={ref}
           srcChain="kusama"
           dstChain="basilisk"
-          chains="basilisk,karura,kusama,tinkernet,statemine"
+          chains="basilisk,karura,kusama,tinkernet,statemine,robonomics"
           accountName={account?.name}
           accountProvider={account?.provider}
           accountAddress={account?.address}
