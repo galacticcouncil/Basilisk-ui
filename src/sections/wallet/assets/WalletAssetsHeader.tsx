@@ -1,15 +1,15 @@
-import { Text } from "../../../components/Typography/Text/Text"
-import { Heading } from "../../../components/Typography/Heading/Heading"
-import { Separator } from "../../../components/Separator/Separator"
-import { Trans, useTranslation } from "react-i18next"
-import { AssetsTableData } from "./table/WalletAssetsTable.utils"
-import { FC, useMemo } from "react"
-import { BN_0 } from "../../../utils/constants"
-import { separateBalance } from "../../../utils/balance"
 import { css } from "@emotion/react"
-import { theme } from "../../../theme"
-import Skeleton from "react-loading-skeleton"
 import BN from "bignumber.js"
+import { Separator } from "components/Separator/Separator"
+import { Heading } from "components/Typography/Heading/Heading"
+import { Text } from "components/Typography/Text/Text"
+import { FC, useMemo } from "react"
+import { Trans, useTranslation } from "react-i18next"
+import Skeleton from "react-loading-skeleton"
+import { theme } from "theme"
+import { separateBalance } from "utils/balance"
+import { BN_0 } from "utils/constants"
+import { AssetsTableData } from "./table/WalletAssetsTable.utils"
 import { LiquidityPositionsTableData } from "./table/WalletLiquidityPositionsTable.utils"
 
 interface WalletAssetsHeaderProps {
@@ -171,7 +171,7 @@ export const WalletAssetsHeader: FC<WalletAssetsHeaderProps> = ({
         }}
       >
         <Text color="neutralGray300" sx={{ fontSize: [14, 16], mb: [0, 14] }}>
-          {t("wallet.assets.header.totalInPools")}
+          {t("wallet.assets.header.totalLocked")}
         </Text>
 
         {isLoading ? (
