@@ -1,27 +1,27 @@
-import { usePools, usePoolShareTokens } from "api/pools"
-import { getFloatingPointAmount } from "utils/balance"
-import { BN_0 } from "utils/constants"
-import { useMemo } from "react"
-import BN from "bignumber.js"
+import { PoolToken } from "@galacticcouncil/sdk"
+import { u32 } from "@polkadot/types"
+import { useQueries } from "@tanstack/react-query"
 import { useUsdPeggedAsset } from "api/asset"
-import { SpotPrice, useSpotPrices } from "api/spotPrice"
+import { useAssetDetailsList } from "api/assetDetails"
+import { useTokensBalances } from "api/balances"
 import {
   FarmIds,
   getActiveYieldFarms,
   useGlobalFarms,
   useYieldFarms,
 } from "api/farms"
-import { useQueries } from "@tanstack/react-query"
-import { QUERY_KEYS } from "utils/queryKeys"
-import { useApiPromise } from "utils/api"
+import { usePools, usePoolShareTokens } from "api/pools"
+import { SpotPrice, useSpotPrices } from "api/spotPrice"
 import { useTotalIssuances } from "api/totalIssuance"
-import { PoolToken } from "@galacticcouncil/sdk"
-import { useTokensBalances } from "api/balances"
-import { u32 } from "@polkadot/types"
-import { useAssetDetailsList } from "api/assetDetails"
+import BN from "bignumber.js"
+import { useMemo } from "react"
 import { useAccountStore } from "state/store"
+import { useApiPromise } from "utils/api"
+import { getFloatingPointAmount } from "utils/balance"
+import { BN_0 } from "utils/constants"
+import { QUERY_KEYS } from "utils/queryKeys"
 
-export const useTotalsInPools = () => {
+export const useTotalsLocked = () => {
   const pools = usePools()
   const assets = useAssetDetailsList()
   const usd = useUsdPeggedAsset()
@@ -35,7 +35,6 @@ export const useTotalsInPools = () => {
   const totalIssuances = useTotalIssuances(
     shareTokens.map((q) => q.data?.token),
   )
-
   const { account } = useAccountStore()
   const balances = useTokensBalances(
     shareTokens.map((st) => st.data?.token).filter((x): x is u32 => !!x) ?? [],
@@ -58,6 +57,7 @@ export const useTotalsInPools = () => {
       !pools.data ||
       !assets.data ||
       !usd.data ||
+      balances.some((q) => !q.data) ||
       spotPrices.some((q) => !q.data) ||
       shareTokens.some((q) => !q.data) ||
       totalIssuances.some((q) => !q.data)
@@ -70,13 +70,15 @@ export const useTotalsInPools = () => {
         spotPrices.map((q) => q.data),
       )
 
-      const token = shareTokens.find((st) => st.data?.poolId === pool.address)
-        ?.data?.token
+      const token = shareTokens.find(
+        (st) => st.data?.poolId.toString() === pool.address,
+      )?.data?.token
       const issuance = totalIssuances.find(
         (ti) => ti.data?.token.toString() === token?.toString(),
       )?.data?.total
-      const balance = balances.find((b) => token?.eq(b.data?.assetId))?.data
-        ?.balance
+      const balance = balances.find(
+        (b) => token?.toString() === b.data?.assetId.toString(),
+      )?.data?.balance
 
       if (!balance || balance.isZero() || !issuance || issuance.isZero())
         return { poolTotal, userTotal: BN_0 }
@@ -125,10 +127,12 @@ export const useTotalInFarms = () => {
       enabled: !!pools.data?.length,
     })),
   })
-  const farmIds = activeYieldFarms
-    .map((farms) => farms.data)
-    .filter((x): x is FarmIds[] => !!x)
-    .reduce((acc, curr) => [...acc, ...curr], [])
+  const farmIds = useMemo(() => {
+    return activeYieldFarms
+      .map((farms) => farms.data)
+      .filter((x): x is FarmIds[] => !!x)
+      .reduce((acc, curr) => [...acc, ...curr], [])
+  }, [activeYieldFarms])
 
   const globalFarms = useGlobalFarms(farmIds.map((farm) => farm.globalFarmId))
   const yieldFarms = useYieldFarms(farmIds)
@@ -157,10 +161,10 @@ export const useTotalInFarms = () => {
     usd,
     ...spotPrices,
   ]
-  const isInitialLoading = queries.some((q) => q.isInitialLoading)
+  const isLoading = queries.some((q) => q.isInitialLoading)
 
   const data = useMemo(() => {
-    if (isInitialLoading) return undefined
+    if (isLoading) return undefined
 
     const mappedFarms = farmIds.map((ids) => {
       const globalFarm = globalFarms.data?.find((gf) =>
@@ -184,7 +188,7 @@ export const useTotalInFarms = () => {
           spotPrices.map((sp) => sp.data),
         )
         const shareToken = shareTokens.find(
-          (st) => farm.pool.address === st.data?.poolId,
+          (st) => farm.pool.address === st.data?.poolId.toString(),
         )?.data?.token
         const totalIssuance = totalIssuances.find(
           (ti) => ti.data?.token.toString() === shareToken?.toString(),
@@ -192,7 +196,7 @@ export const useTotalInFarms = () => {
 
         const farmIssuance = farm.yieldFarm.totalShares
         const ratio =
-          totalIssuance !== undefined && !totalIssuance?.isZero()
+          totalIssuance !== undefined && !totalIssuance.isZero()
             ? farmIssuance.toBigNumber().div(totalIssuance)
             : BN_0
 
@@ -206,7 +210,7 @@ export const useTotalInFarms = () => {
   }, [
     farmIds,
     globalFarms.data,
-    isInitialLoading,
+    isLoading,
     pools.data,
     shareTokens,
     spotPrices,
@@ -214,7 +218,7 @@ export const useTotalInFarms = () => {
     yieldFarms.data,
   ])
 
-  return { data, isLoading: isInitialLoading }
+  return { data, isLoading }
 }
 
 export const getPoolTotal = (

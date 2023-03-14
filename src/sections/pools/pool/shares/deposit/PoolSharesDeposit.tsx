@@ -1,21 +1,21 @@
+import { PoolBase } from "@galacticcouncil/sdk"
+import { DepositNftType } from "api/deposits"
+import { ReactComponent as FarmIcon } from "assets/icons/FarmIcon.svg"
+import { Separator } from "components/Separator/Separator"
+import { GradientText } from "components/Typography/GradientText/GradientText"
+import { Text } from "components/Typography/Text/Text"
 import { FC } from "react"
+import { useTranslation } from "react-i18next"
 import {
   SContainer,
   SIcon,
   SPositionContainer,
 } from "sections/pools/pool/shares/deposit/PoolSharesDeposit.styled"
-import { GradientText } from "components/Typography/GradientText/GradientText"
-import { useTranslation } from "react-i18next"
-import { ReactComponent as FarmIcon } from "assets/icons/FarmIcon.svg"
-import { PoolBase } from "@galacticcouncil/sdk"
-import { DepositNftType } from "api/deposits"
-import { Text } from "components/Typography/Text/Text"
+import { useEnteredDate } from "utils/block"
+import { BN_0 } from "utils/constants"
 import { PoolPositionFarmRedeposit } from "../../position/farm/PoolPositionFarmRedeposit"
 import { usePoolSharesDeposit } from "./PoolSharesDeposit.utils"
 import { PoolSharesDepositFarm } from "./PoolSharesDepositFarm"
-import { BN_0 } from "utils/constants"
-import { useEnteredDate } from "utils/block"
-import { Separator } from "components/Separator/Separator"
 import { PoolSharesDetailsButton } from "./PoolSharesDetailsButton"
 
 type Props = {
@@ -31,6 +31,7 @@ export const PoolSharesDeposit: FC<Props> = ({ depositNft, index, pool }) => {
     depositNft,
     pool,
   })
+
   // use latest entry date
   const enteredDate = useEnteredDate(
     depositNft.deposit.yieldFarmEntries.reduce(

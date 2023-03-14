@@ -1,11 +1,11 @@
-import {
-  useTotalInFarms,
-  useTotalsInPools,
-} from "sections/pools/header/PoolsHeader.utils"
 import { Heading } from "components/Typography/Heading/Heading"
 import { useTranslation } from "react-i18next"
-import { useTotalInPositions } from "utils/farms/positions"
 import Skeleton from "react-loading-skeleton"
+import {
+  useTotalInFarms,
+  useTotalsLocked,
+} from "sections/pools/header/PoolsHeader.utils"
+import { useTotalInPositions } from "utils/farms/positions"
 
 type Props = { myPositions: boolean; variant: "pools" | "farms" }
 
@@ -27,7 +27,7 @@ export const PoolsHeaderTotal = ({ myPositions, variant }: Props) => {
 
 const PoolsHeaderTotalPools = () => {
   const { t } = useTranslation()
-  const { data, isLoading } = useTotalsInPools()
+  const { data, isLoading } = useTotalsLocked()
 
   return (
     <Heading as="h3" sx={{ fontSize: [16, 42], fontWeight: 900 }}>
@@ -44,7 +44,7 @@ const PoolsHeaderTotalPools = () => {
 
 const PoolsHeaderTotalPoolsUser = () => {
   const { t } = useTranslation()
-  const { data, isLoading } = useTotalsInPools()
+  const { data, isLoading } = useTotalsLocked()
 
   return (
     <Heading as="h3" sx={{ fontSize: [16, 42], fontWeight: 900 }}>
