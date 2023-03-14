@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import { theme } from "../../../theme"
+import { theme } from "theme"
 
 export const SSchedule = styled.div`
   background: linear-gradient(
@@ -11,13 +11,21 @@ export const SSchedule = styled.div`
     rgba(255, 255, 255, 0.03);
   border-radius: 12px;
   border: 1px solid rgba(${theme.rgbColors.white}, 0.06);
+  background-origin: border-box;
   margin-top: 26px;
 `
 
 export const SInner = styled.div`
-  padding: 46px 74px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: center;
+  gap: 20px;
+  padding: 29px 25px;
+
+  @media (${theme.viewport.gte.sm}) {
+    flex-direction: row;
+    align-items: center;
+
+    padding: 46px 74px;
+  }
 `
