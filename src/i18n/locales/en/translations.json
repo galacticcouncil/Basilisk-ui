@@ -190,6 +190,7 @@
   "pools.reviewTransaction.modal.error.review": "Review Action Log",
   "pools.reviewTransaction.toast.pending": "Transaction submitted",
   "pools.reviewTransaction.toast.success": "Transaction successful",
+  "pools.reviewTransaction.toast.unknown": "Transaction status unknown",
   "pools.reviewTransaction.toast.error": "Transaction failed",
   "transaction.mortal.expire": "{{ date, dd/MM/yyyy hh:mm:ss }}",
   "transaction.immortal.expire": "Never",
