@@ -1,17 +1,17 @@
+import * as liquidityMining from "@galacticcouncil/math-liquidity-mining"
+import { PoolBase } from "@galacticcouncil/sdk"
+import { PalletLiquidityMiningYieldFarmEntry } from "@polkadot/types/lookup"
+import { useAsset, useUsdPeggedAsset } from "api/asset"
+import { useBestNumber } from "api/chain"
+import { useGlobalFarm, useYieldFarm, useYieldFarms } from "api/farms"
+import { usePools, usePoolShareTokens } from "api/pools"
+import { useSpotPrices } from "api/spotPrice"
+import { useTotalIssuances } from "api/totalIssuance"
+import BN from "bignumber.js"
 import { useMemo } from "react"
 import { getPoolTotal } from "sections/pools/header/PoolsHeader.utils"
-import { BN_0, BN_1, BN_10 } from "utils/constants"
-import { useGlobalFarm, useYieldFarm, useYieldFarms } from "api/farms"
-import { usePools, usePoolShareToken, usePoolShareTokens } from "api/pools"
-import { useTotalIssuance, useTotalIssuances } from "api/totalIssuance"
-import { useAsset, useUsdPeggedAsset } from "api/asset"
-import { useSpotPrices } from "api/spotPrice"
+import { BN_0, BN_1 } from "utils/constants"
 import { useAllUserDeposits } from "utils/farms/deposits"
-import { PalletLiquidityMiningYieldFarmEntry } from "@polkadot/types/lookup"
-import { PoolBase } from "@galacticcouncil/sdk"
-import { useBestNumber } from "api/chain"
-import * as liquidityMining from "@galacticcouncil/math-liquidity-mining"
-import BN from "bignumber.js"
 
 export const useTotalInPositions = () => {
   const deposits = useAllUserDeposits()
@@ -111,7 +111,7 @@ export const useTotalInPositions = () => {
   return { data, isLoading }
 }
 
-export const usePoolPosition = ({
+export const usePositionMinedValue = ({
   position,
   pool,
 }: {
@@ -124,28 +124,10 @@ export const usePoolPosition = ({
     globalFarmId: position.globalFarmId,
     poolId: pool.address,
   })
-
-  const shareToken = usePoolShareToken(pool.address)
-  const totalIssuance = useTotalIssuance(shareToken.data?.token)
-  const usd = useUsdPeggedAsset()
-  const spotPrices = useSpotPrices(
-    pool.tokens.map((token) => token.id),
-    usd.data?.id,
-  )
-
-  const rewardAsset = useAsset(globalFarm.data?.rewardCurrency)
   const bestNumber = useBestNumber()
+  const rewardAsset = useAsset(globalFarm.data?.rewardCurrency)
 
-  const queries = [
-    globalFarm,
-    yieldFarm,
-    shareToken,
-    totalIssuance,
-    usd,
-    rewardAsset,
-    bestNumber,
-    ...spotPrices,
-  ]
+  const queries = [globalFarm, yieldFarm, bestNumber, rewardAsset]
   const isLoading = queries.some((q) => q.isLoading)
 
   const mined = useMemo(() => {
@@ -194,38 +176,7 @@ export const usePoolPosition = ({
     yieldFarm.data,
   ])
 
-  const data = useMemo(() => {
-    if (!yieldFarm.data || !totalIssuance.data) return undefined
-
-    const farmTotalValued = yieldFarm.data.totalValuedShares.toBigNumber()
-    const farmTotal = yieldFarm.data.totalShares.toBigNumber()
-    const positionTotalValued = position.valuedShares.toBigNumber()
-    const positionRatio = positionTotalValued.div(farmTotalValued)
-
-    const farmRatio = farmTotal.div(totalIssuance.data.total)
-    const poolTotal = getPoolTotal(
-      pool.tokens,
-      spotPrices.map((sp) => sp.data),
-    )
-
-    const farmValue = poolTotal.times(farmRatio)
-    const usdValue = farmValue.times(positionRatio)
-
-    const [assetA, assetB] = pool.tokens.map((token) => {
-      const balance = new BN(token.balance).div(
-        BN_10.pow(new BN(token.decimals)),
-      )
-      const farmAmount = balance.times(farmRatio)
-      const positionAmount = farmAmount.times(positionRatio)
-
-      return { symbol: token.symbol, amount: positionAmount }
-    })
-
-    return { usdValue, assetA, assetB }
-  }, [yieldFarm.data, totalIssuance.data, spotPrices, position, pool])
-
   return {
-    ...data,
     mined,
     rewardAsset: rewardAsset.data,
     isLoading,

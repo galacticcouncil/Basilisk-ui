@@ -1,21 +1,28 @@
-import { useTranslation } from "react-i18next"
-import { AprFarm } from "utils/farms/apr"
 import { PoolBase } from "@galacticcouncil/sdk"
+import { PalletLiquidityMiningYieldFarmEntry } from "@polkadot/types/lookup"
+import { DepositNftType } from "api/deposits"
 import { Row } from "components/Row/Row"
 import { Separator } from "components/Separator/Separator"
-import { PalletLiquidityMiningYieldFarmEntry } from "@polkadot/types/lookup"
-import { usePoolPosition } from "utils/farms/positions"
+import { useTranslation } from "react-i18next"
+import { usePoolSharesDeposit } from "sections/pools/pool/shares/deposit/PoolSharesDeposit.utils"
 import { useEnteredDate } from "utils/block"
+import { AprFarm } from "utils/farms/apr"
+import { usePositionMinedValue } from "utils/farms/positions"
 
 export function PoolFarmPosition(props: {
   pool: PoolBase
   farm: AprFarm
+  depositNft: DepositNftType
   position: PalletLiquidityMiningYieldFarmEntry
 }) {
   const { t } = useTranslation()
 
-  const { mined, rewardAsset, assetA, assetB } = usePoolPosition({
+  const { mined, rewardAsset } = usePositionMinedValue({
     position: props.position,
+    pool: props.pool,
+  })
+  const { assetA, assetB } = usePoolSharesDeposit({
+    depositNft: props.depositNft,
     pool: props.pool,
   })
   const enteredDate = useEnteredDate(props.position.enteredAt.toBigNumber())
