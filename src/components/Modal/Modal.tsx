@@ -37,6 +37,7 @@ type Props = {
   width?: number
   isDrawer?: boolean
   titleDrawer?: string
+  gradientBg?: boolean
 }
 
 type PropsOverride = Pick<
@@ -100,7 +101,10 @@ export const Modal: FC<PropsWithChildren<Props>> = (props) => {
             >
               {props.topContent}
 
-              <ModalWindowContainer isDrawer={isDrawer}>
+              <ModalWindowContainer
+                isDrawer={isDrawer}
+                gradientBg={props.gradientBg}
+              >
                 <ModalHeader>
                   {titleDrawer && isDrawer && (
                     <Text color="neutralGray100" fs={16} fw={500}>

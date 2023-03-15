@@ -9,6 +9,7 @@ import { useAccountStore } from "state/store"
 import { z } from "zod"
 import { MakeGenerics, useSearch } from "@tanstack/react-location"
 import { PoolType } from "@galacticcouncil/sdk"
+import { useProviderRpcUrlStore } from "api/provider"
 
 export const TradeApp = createComponent({
   tagName: "gc-trade-app",
@@ -33,6 +34,8 @@ type SearchGenerics = MakeGenerics<{
 
 export function TradePage() {
   const { account } = useAccountStore()
+  const preference = useProviderRpcUrlStore()
+  const rpcUrl = preference.rpcUrl ?? import.meta.env.VITE_PROVIDER_URL
 
   const ref = React.useRef<Apps.TradeApp>(null)
   const rawSearch = useSearch<SearchGenerics>()
@@ -47,7 +50,7 @@ export function TradePage() {
           accountName={account?.name}
           accountProvider={account?.provider}
           accountAddress={account?.address}
-          apiAddress={import.meta.env.VITE_PROVIDER_URL}
+          apiAddress={rpcUrl}
           stableCoinAssetId={usd.data?.id}
           assetIn={search.success ? search.data.assetIn : undefined}
           assetOut={search.success ? search.data.assetOut : undefined}
