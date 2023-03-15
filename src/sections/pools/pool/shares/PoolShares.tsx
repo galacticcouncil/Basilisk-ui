@@ -24,7 +24,7 @@ export const PoolShares: FC<Props> = ({ pool }) => {
   const shareToken = usePoolShareToken(pool.address)
   const balance = useTokenBalance(shareToken.data?.token, account?.address)
 
-  const deposits = useDeposits([pool.address])
+  const deposits = useDeposits(pool.address)
   const accountDepositIds = useAccountDepositIds(account?.address)
   const depositNftList = deposits.data?.filter((deposit) =>
     accountDepositIds.data?.some((ad) => ad.instanceId.eq(deposit.id)),

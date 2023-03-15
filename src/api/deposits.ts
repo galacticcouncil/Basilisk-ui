@@ -10,9 +10,9 @@ export type DepositNftType = Awaited<
   ReturnType<ReturnType<typeof getDeposits>>
 >[number]
 
-export const useDeposits = (poolIds?: string[]) => {
+export const useDeposits = (poolId?: string) => {
   const api = useApiPromise()
-  return useQuery(QUERY_KEYS.deposits(poolIds), getDeposits(api, poolIds))
+  return useQuery(QUERY_KEYS.deposits(poolId), getDeposits(api, poolId))
 }
 
 export const useAllDeposits = (poolIds?: string[]) => {
@@ -21,8 +21,8 @@ export const useAllDeposits = (poolIds?: string[]) => {
 
   return useQueries({
     queries: ids.map((id) => ({
-      queryKey: QUERY_KEYS.deposits([id]),
-      queryFn: getDeposits(api, [id]),
+      queryKey: QUERY_KEYS.deposits(id),
+      queryFn: getDeposits(api, id),
       enabled: !!id,
     })),
   })
@@ -48,22 +48,19 @@ export const useAccountDepositIds = (
   )
 }
 
-export const getDeposits =
-  (api: ApiPromise, poolIds?: string[]) => async () => {
-    const res = await api.query.xykWarehouseLM.deposit.entries()
-    const data = res.map(([storageKey, codec]) => {
-      const [id] = storageKey.args
-      const deposit = codec.unwrap()
-      return { id, deposit }
-    })
+export const getDeposits = (api: ApiPromise, poolId?: string) => async () => {
+  const res = await api.query.xykWarehouseLM.deposit.entries()
+  const data = res.map(([storageKey, codec]) => {
+    const [id] = storageKey.args
+    const deposit = codec.unwrap()
+    return { id, deposit }
+  })
 
-    if (poolIds)
-      return data.filter(({ deposit }) =>
-        poolIds.includes(deposit.ammPoolId.toString()),
-      )
+  if (poolId)
+    return data.filter(({ deposit }) => deposit.ammPoolId.toString() === poolId)
 
-    return data
-  }
+  return data
+}
 
 export const getAccountDepositIds =
   (api: ApiPromise, accountId: AccountId32 | string) => async () => {
