@@ -120,6 +120,9 @@ export const ModalBody = styled.div<{ isDrawer?: boolean }>`
   }
 
   @media ${theme.viewport.gte.sm} {
+    display: flex;
+    flex-direction: column;
+
     --modal-body-padding-x: 30px;
     padding-bottom: var(--modal-body-padding-x);
 

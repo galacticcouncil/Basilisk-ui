@@ -12,7 +12,7 @@ export const SContainer = styled.div`
 
   overflow-x: hidden;
   overflow-y: auto;
-  max-height: 300px;
+  max-height: 80vh;
 
   &::-webkit-scrollbar-track {
     margin-bottom: 10px;
