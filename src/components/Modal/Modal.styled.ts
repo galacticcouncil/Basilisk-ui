@@ -81,11 +81,16 @@ export const ModalWindow = styled(DialogContent, {
   }
 `
 
-export const ModalWindowContainer = styled.div<{ isDrawer?: boolean }>`
+export const ModalWindowContainer = styled.div<{
+  isDrawer?: boolean
+  gradientBg?: boolean
+}>`
   border: 1px solid rgba(${theme.rgbColors.white}, 0.06);
   box-shadow: 0px 38px 46px rgba(0, 0, 0, 0.03);
-  background: ${theme.colors.backgroundGray900};
-
+  background: ${({ gradientBg }) =>
+    gradientBg
+      ? "linear-gradient(180deg, #1c2527 0%, #14161a 80.73%, #121316 100%)"
+      : theme.colors.backgroundGray900};
   ${({ isDrawer }) => (isDrawer ? { borderRadius: "20px 20px 0px 0px" } : {})}
 
   @media ${theme.viewport.gte.sm} {
@@ -97,10 +102,14 @@ export const ModalTitle = styled(GradientText)`
   font-size: 24px;
   line-height: var(--modal-header-title-height);
   font-weight: 500;
+
+  width: fit-content;
 `
 
 export const ModalBody = styled.div<{ isDrawer?: boolean }>`
-  padding: 0 14px 19px;
+  --modal-body-padding-x: 14px;
+  padding: 0 var(--modal-body-padding-x) 19px;
+
   overflow-y: auto;
 
   ${({ isDrawer }) =>
@@ -116,7 +125,9 @@ export const ModalBody = styled.div<{ isDrawer?: boolean }>`
     display: flex;
     flex-direction: column;
 
-    padding: 0 30px 30px;
+    --modal-body-padding-x: 30px;
+    padding-bottom: var(--modal-body-padding-x);
+
     max-height: 80vh;
     height: auto;
 

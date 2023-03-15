@@ -295,5 +295,12 @@
   "settings.modal.confirm": "Save & Close",
   "settings.modal.tradeLimit.title": "Trade Limit Settings",
   "settings.modal.tradeLimit.auto": "Auto Trade Limit",
-  "settings.modal.tradeLimit.description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vel augue tincidunt, tincidunt dolor aliquam, viverra justo. Morbi fringilla enim mauris, a posuere velit efficitur nec. Maecenas dignissim neque vitae ex vestibulum finibus. "
+  "rpc.change.modal.title": "Change your RPC",
+  "rpc.change.modal.column.name": "Name",
+  "rpc.change.modal.column.status": "Status",
+  "rpc.change.modal.column.rpc": "RPC Address",
+  "rpc.change.modal.save": "Save",
+  "rpc.status.online": "The most recent block on this network. Prices update on every block.",
+  "rpc.status.slow": "Network error. No new blocks produced at the moment.",
+  "rpc.status.offline": "Network has stopped working. We are working on fixing this issue."
 }
