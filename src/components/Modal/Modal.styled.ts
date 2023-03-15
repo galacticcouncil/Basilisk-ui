@@ -102,6 +102,8 @@ export const ModalTitle = styled(GradientText)`
   font-size: 24px;
   line-height: var(--modal-header-title-height);
   font-weight: 500;
+
+  width: fit-content;
 `
 
 export const ModalBody = styled.div<{ isDrawer?: boolean }>`
