@@ -113,6 +113,9 @@ export const ModalBody = styled.div<{ isDrawer?: boolean }>`
   }
 
   @media ${theme.viewport.gte.sm} {
+    display: flex;
+    flex-direction: column;
+
     padding: 0 30px 30px;
     max-height: 80vh;
     height: auto;
