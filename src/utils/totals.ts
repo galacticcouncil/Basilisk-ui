@@ -154,7 +154,7 @@ export const useTotalInDeposits = (depositNfts: DepositNftType[]) => {
         spotPrices.map((sp) => sp.data),
       )
       const total = getDepositTotal({
-        entries,
+        entries: depositNft.deposit.yieldFarmEntries,
         yieldFarms: yieldFarms.data,
         totalIssuance: totalIssuance.data.total,
         poolTotal,
@@ -173,10 +173,7 @@ export const useUsersTotalInDeposits = () => {
   const deposits = useAllUserDeposits()
   const total = useTotalInDeposits(deposits.data.deposits ?? [])
 
-  const isLoading = deposits.isLoading || total.isLoading
-  const data = useMemo(() => total.data, [total])
-
-  return { data, isLoading }
+  return { data: total.data, isLoading: deposits.isLoading || total.isLoading }
 }
 
 const getDepositTotal = ({

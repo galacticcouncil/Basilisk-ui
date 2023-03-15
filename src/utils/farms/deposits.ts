@@ -1,9 +1,12 @@
-import { useMemo } from "react"
-import { useAccountDepositIds, useAllDeposits, useDeposits } from "api/deposits"
-import { useAccountStore } from "state/store"
+import {
+  DepositNftType,
+  useAccountDepositIds,
+  useAllDeposits,
+  useDeposits,
+} from "api/deposits"
 import { usePools } from "api/pools"
-import { PalletLiquidityMiningDepositData } from "@polkadot/types/lookup"
-import { u128 } from "@polkadot/types-codec"
+import { useMemo } from "react"
+import { useAccountStore } from "state/store"
 import { useQueryReduce } from "utils/helpers"
 
 export const useUserDeposits = (poolId: string) => {
@@ -32,18 +35,17 @@ export const useAllUserDeposits = () => {
   const isInitialLoading = queries.some((q) => q.isInitialLoading)
 
   const deposits = useMemo(() => {
-    if (allDeposits.some((q) => !q.data)) return undefined
+    if (allDeposits.some((q) => !q.data) || !depositIds.data) return undefined
 
     return (
       allDeposits
         .map((d) => d.data)
-        .filter(
-          (x): x is { id: u128; deposit: PalletLiquidityMiningDepositData }[] =>
-            x !== undefined,
-        )
+        .filter((x): x is DepositNftType[] => x !== undefined)
         .flat(2)
         .filter((deposit) =>
-          depositIds.data?.some((id) => id.instanceId.eq(deposit?.id)),
+          depositIds.data?.some(
+            (id) => id.instanceId.toString() === deposit?.id.toString(),
+          ),
         ) ?? []
     )
   }, [allDeposits, depositIds.data])
