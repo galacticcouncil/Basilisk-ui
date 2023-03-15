@@ -1,25 +1,16 @@
 import { PoolToken } from "@galacticcouncil/sdk"
 import { u32 } from "@polkadot/types"
-import { useQueries } from "@tanstack/react-query"
 import { useUsdPeggedAsset } from "api/asset"
 import { useAssetDetailsList } from "api/assetDetails"
 import { useTokensBalances } from "api/balances"
-import {
-  FarmIds,
-  getActiveYieldFarms,
-  useGlobalFarms,
-  useYieldFarms,
-} from "api/farms"
 import { usePools, usePoolShareTokens } from "api/pools"
 import { SpotPrice, useSpotPrices } from "api/spotPrice"
 import { useTotalIssuances } from "api/totalIssuance"
 import BN from "bignumber.js"
 import { useMemo } from "react"
 import { useAccountStore } from "state/store"
-import { useApiPromise } from "utils/api"
 import { getFloatingPointAmount } from "utils/balance"
 import { BN_0 } from "utils/constants"
-import { QUERY_KEYS } from "utils/queryKeys"
 
 export const useTotalsLocked = () => {
   const pools = usePools()
@@ -109,113 +100,6 @@ export const useTotalsLocked = () => {
     spotPrices,
     shareTokens,
     totalIssuances,
-  ])
-
-  return { data, isLoading }
-}
-
-export const useTotalInFarms = () => {
-  const api = useApiPromise()
-
-  const pools = usePools()
-  const poolIds = (pools.data ?? []).map((pool) => pool.address)
-
-  const activeYieldFarms = useQueries({
-    queries: poolIds.map((id) => ({
-      queryKey: QUERY_KEYS.activeYieldFarms(id),
-      queryFn: getActiveYieldFarms(api, id),
-      enabled: !!pools.data?.length,
-    })),
-  })
-  const farmIds = useMemo(() => {
-    return activeYieldFarms
-      .map((farms) => farms.data)
-      .filter((x): x is FarmIds[] => !!x)
-      .reduce((acc, curr) => [...acc, ...curr], [])
-  }, [activeYieldFarms])
-
-  const globalFarms = useGlobalFarms(farmIds.map((farm) => farm.globalFarmId))
-  const yieldFarms = useYieldFarms(farmIds)
-
-  const shareTokens = usePoolShareTokens(poolIds)
-  const totalIssuances = useTotalIssuances(
-    shareTokens.map((q) => q.data?.token),
-  )
-
-  const usd = useUsdPeggedAsset()
-  const spotPrices = useSpotPrices(
-    (pools.data ?? [])
-      .map((pool) => pool.tokens)
-      .reduce((acc, tokens) => [...acc, ...tokens], [])
-      .map((token) => token.id),
-    usd.data?.id,
-  )
-
-  const queries = [
-    pools,
-    ...activeYieldFarms,
-    globalFarms,
-    yieldFarms,
-    ...shareTokens,
-    ...totalIssuances,
-    usd,
-    ...spotPrices,
-  ]
-  const isLoading = queries.some((q) => q.isInitialLoading)
-
-  const data = useMemo(() => {
-    if (isLoading) return undefined
-
-    const mappedFarms = farmIds.map((ids) => {
-      const globalFarm = globalFarms.data?.find((gf) =>
-        ids.globalFarmId.eq(gf.id),
-      )
-      const yieldFarm = yieldFarms.data?.find((yf) => ids.yieldFarmId.eq(yf.id))
-      const pool = pools.data?.find((pool) => ids.poolId.eq(pool.address))
-
-      if (!globalFarm || !yieldFarm || !pool) return undefined
-
-      return { globalFarm, yieldFarm, pool }
-    })
-    const farms = mappedFarms.filter(
-      (x): x is NonNullable<(typeof mappedFarms)[number]> => x != null,
-    )
-
-    const total = farms
-      .map((farm) => {
-        const poolTotal = getPoolTotal(
-          farm.pool.tokens,
-          spotPrices.map((sp) => sp.data),
-        )
-        const shareToken = shareTokens.find(
-          (st) => farm.pool.address === st.data?.poolId.toString(),
-        )?.data?.token
-        const totalIssuance = totalIssuances.find(
-          (ti) => ti.data?.token.toString() === shareToken?.toString(),
-        )?.data?.total
-
-        const farmIssuance = farm.yieldFarm.totalShares
-        const ratio =
-          totalIssuance !== undefined && !totalIssuance.isZero()
-            ? farmIssuance.toBigNumber().div(totalIssuance)
-            : BN_0
-
-        const farmTotal = poolTotal.times(ratio)
-
-        return farmTotal
-      })
-      .reduce((acc, t) => acc.plus(t), BN_0)
-
-    return total
-  }, [
-    farmIds,
-    globalFarms.data,
-    isLoading,
-    pools.data,
-    shareTokens,
-    spotPrices,
-    totalIssuances,
-    yieldFarms.data,
   ])
 
   return { data, isLoading }

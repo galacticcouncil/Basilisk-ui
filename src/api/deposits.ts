@@ -1,18 +1,18 @@
 import { ApiPromise } from "@polkadot/api"
-import { useQueries, useQuery } from "@tanstack/react-query"
-import { DEPOSIT_CLASS_ID, useApiPromise } from "utils/api"
-import { QUERY_KEYS } from "utils/queryKeys"
 import { u128 } from "@polkadot/types-codec"
 import { AccountId32 } from "@polkadot/types/interfaces"
+import { useQueries, useQuery } from "@tanstack/react-query"
+import { DEPOSIT_CLASS_ID, useApiPromise } from "utils/api"
 import { Maybe, undefinedNoop } from "utils/helpers"
+import { QUERY_KEYS } from "utils/queryKeys"
 
 export type DepositNftType = Awaited<
   ReturnType<ReturnType<typeof getDeposits>>
 >[number]
 
-export const useDeposits = (poolId?: string) => {
+export const useDeposits = (poolIds?: string[]) => {
   const api = useApiPromise()
-  return useQuery(QUERY_KEYS.deposits(poolId), getDeposits(api, poolId))
+  return useQuery(QUERY_KEYS.deposits(poolIds), getDeposits(api, poolIds))
 }
 
 export const useAllDeposits = (poolIds?: string[]) => {
@@ -21,8 +21,8 @@ export const useAllDeposits = (poolIds?: string[]) => {
 
   return useQueries({
     queries: ids.map((id) => ({
-      queryKey: QUERY_KEYS.deposits(id),
-      queryFn: getDeposits(api, id),
+      queryKey: QUERY_KEYS.deposits([id]),
+      queryFn: getDeposits(api, [id]),
       enabled: !!id,
     })),
   })
@@ -48,18 +48,22 @@ export const useAccountDepositIds = (
   )
 }
 
-export const getDeposits = (api: ApiPromise, poolId?: string) => async () => {
-  const res = await api.query.xykWarehouseLM.deposit.entries()
-  const data = res.map(([storageKey, codec]) => {
-    const [id] = storageKey.args
-    const deposit = codec.unwrap()
-    return { id, deposit }
-  })
+export const getDeposits =
+  (api: ApiPromise, poolIds?: string[]) => async () => {
+    const res = await api.query.xykWarehouseLM.deposit.entries()
+    const data = res.map(([storageKey, codec]) => {
+      const [id] = storageKey.args
+      const deposit = codec.unwrap()
+      return { id, deposit }
+    })
 
-  if (poolId) return data.filter(({ deposit }) => deposit.ammPoolId.eq(poolId))
+    if (poolIds)
+      return data.filter(({ deposit }) =>
+        poolIds.includes(deposit.ammPoolId.toString()),
+      )
 
-  return data
-}
+    return data
+  }
 
 export const getAccountDepositIds =
   (api: ApiPromise, accountId: AccountId32 | string) => async () => {

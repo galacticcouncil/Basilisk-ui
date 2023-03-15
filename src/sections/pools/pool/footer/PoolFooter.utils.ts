@@ -1,52 +1,52 @@
 import { PoolBase } from "@galacticcouncil/sdk"
-import { ToastMessage, useAccountStore } from "state/store"
-import { useCurrentSharesValue } from "sections/pools/pool/shares/value/PoolSharesValue.utils"
-import { usePoolShareToken } from "api/pools"
 import { useTokenBalance } from "api/balances"
-import { useClaimAllMutation } from "utils/farms/claiming"
-import { useUserDeposits } from "utils/farms/deposits"
-import { BN_0 } from "utils/constants"
+import { usePoolShareToken } from "api/pools"
+import { useTotalIssuance } from "api/totalIssuance"
+import { useMemo } from "react"
+import { useAccountStore } from "state/store"
+import { useTotalInDeposits, useUserDeposits } from "utils/farms/deposits"
+import { useTotalInPool } from "../Pool.utils"
 
-export const usePoolFooterValues = (pool: PoolBase, toast: ToastMessage) => {
+export const usePoolFooterValues = (pool: PoolBase) => {
   const { account } = useAccountStore()
+
+  const poolTotal = useTotalInPool(pool)
+  const deposits = useUserDeposits(pool.address)
+  const depositsTotal = useTotalInDeposits(deposits.data ?? [])
+
   const shareToken = usePoolShareToken(pool.address)
-  const availableSharesCount = useTokenBalance(
+  const shareTokenBalance = useTokenBalance(
     shareToken.data?.token,
     account?.address,
   )
+  const totalIssuance = useTotalIssuance(shareToken.data?.token)
 
-  const deposits = useUserDeposits(pool.address)
-  const farmingSharesCount = deposits.data?.reduce(
-    (memo, i) => memo.plus(i.deposit.shares.toBigNumber()),
-    BN_0,
-  )
-
-  const lockedSharesCount =
-    farmingSharesCount != null
-      ? availableSharesCount.data?.balance.plus(farmingSharesCount)
-      : undefined
-
-  const lockedShares = useCurrentSharesValue({
-    shareToken: shareToken.data?.token,
-    shareTokenBalance: lockedSharesCount,
-    pool,
-  })
-
-  const availableShares = useCurrentSharesValue({
-    shareToken: shareToken.data?.token,
-    shareTokenBalance: availableSharesCount.data?.balance,
-    pool,
-  })
-
-  const claimAll = useClaimAllMutation(pool.address, undefined, toast)
-
-  const queries = [deposits, lockedShares, availableShares, claimAll]
+  const queries = [
+    poolTotal,
+    deposits,
+    depositsTotal,
+    shareToken,
+    shareTokenBalance,
+    totalIssuance,
+  ]
   const isLoading = queries.some((q) => q.isLoading)
 
-  return {
-    locked: lockedShares.dollarValue,
-    available: availableShares.dollarValue,
-    claimAll: claimAll.mutation,
-    isLoading,
-  }
+  const data = useMemo(() => {
+    if (
+      !deposits.data ||
+      !shareTokenBalance.data ||
+      !totalIssuance.data ||
+      !poolTotal.data ||
+      !depositsTotal.data
+    )
+      return { locked: undefined, available: undefined }
+
+    const ratio = shareTokenBalance.data.balance.div(totalIssuance.data.total)
+    const locked = poolTotal.data.times(ratio).plus(depositsTotal.data)
+    const available = locked.minus(depositsTotal.data)
+
+    return { locked, available }
+  }, [deposits.data, totalIssuance.data, poolTotal.data, depositsTotal.data])
+
+  return { ...data, isLoading }
 }

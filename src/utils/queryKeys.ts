@@ -1,7 +1,7 @@
 import type { u32 } from "@polkadot/types"
+import { u128 } from "@polkadot/types-codec"
 import type { AccountId32 } from "@polkadot/types/interfaces"
 import { CodecHash } from "@polkadot/types/interfaces/runtime"
-import { u128 } from "@polkadot/types-codec"
 import type BigNumber from "bignumber.js"
 import { Maybe } from "utils/helpers"
 
@@ -29,7 +29,11 @@ export const QUERY_KEYS = {
     address.toString(),
   ],
   deposit: (id: Maybe<u128>) => [QUERY_KEY_PREFIX, "deposit", id?.toString()],
-  deposits: (poolId?: string) => [QUERY_KEY_PREFIX, "deposits", poolId],
+  deposits: (poolIds?: string[]) => [
+    QUERY_KEY_PREFIX,
+    "deposits",
+    ...(poolIds ?? []),
+  ],
   accountDepositIds: (accountId: Maybe<AccountId32 | string>) => [
     QUERY_KEY_PREFIX,
     "depositIds",

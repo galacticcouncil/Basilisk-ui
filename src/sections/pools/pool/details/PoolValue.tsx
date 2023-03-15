@@ -1,7 +1,7 @@
-import { useTranslation } from "react-i18next"
-import { Text } from "components/Typography/Text/Text"
-import { useTotalInPool } from "../Pool.utils"
 import { PoolBase } from "@galacticcouncil/sdk"
+import { Text } from "components/Typography/Text/Text"
+import { useTranslation } from "react-i18next"
+import { useTotalInPool } from "../Pool.utils"
 import { usePoolDetailsTradeVolume } from "./PoolDetails.utils"
 
 import { InfoTooltip } from "components/InfoTooltip/InfoTooltip"
@@ -11,7 +11,7 @@ type Props = { pool: PoolBase; className?: string }
 
 export const PoolValue = ({ pool, className }: Props) => {
   const { t } = useTranslation()
-  const { data } = useTotalInPool({ pool })
+  const { data } = useTotalInPool(pool)
   const volume = usePoolDetailsTradeVolume(pool.address)
 
   return (
