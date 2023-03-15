@@ -232,7 +232,7 @@ export const useTotalInDeposits = (depositNfts: DepositNftType[]) => {
   return { data, isLoading }
 }
 
-export const useUsersTotalInDeposits = () => {
+export const useTotalInUsersDeposits = () => {
   const deposits = useAllUserDeposits()
   const total = useTotalInDeposits(deposits.data.deposits ?? [])
 

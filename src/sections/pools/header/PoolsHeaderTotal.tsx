@@ -4,7 +4,7 @@ import Skeleton from "react-loading-skeleton"
 import { useTotalsLocked } from "sections/pools/header/PoolsHeader.utils"
 import {
   useTotalInAllDeposits,
-  useUsersTotalInDeposits,
+  useTotalInUsersDeposits,
 } from "utils/farms/deposits"
 
 type Props = { myPositions: boolean; variant: "pools" | "farms" }
@@ -61,7 +61,7 @@ const PoolsHeaderTotalFarms = () => {
 
 const PoolsHeaderTotalFarmsUser = () => {
   const { t } = useTranslation()
-  const { data, isLoading } = useUsersTotalInDeposits()
+  const { data, isLoading } = useTotalInUsersDeposits()
 
   return (
     <Heading as="h3" sx={{ fontSize: [16, 42], fontWeight: 900 }}>
