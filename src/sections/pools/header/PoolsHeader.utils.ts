@@ -204,7 +204,13 @@ export const useUsersTotalLocked = () => {
     const total = sum.plus(userDepositsTotal.data)
 
     return total
-  }, [poolsTotals.data, userDepositsTotal.data, shareTokens, totalIssuances])
+  }, [
+    poolsTotals.data,
+    userDepositsTotal.data,
+    shareTokens,
+    balances,
+    totalIssuances,
+  ])
 
   return { data, isLoading }
 }

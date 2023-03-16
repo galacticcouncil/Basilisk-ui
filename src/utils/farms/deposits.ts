@@ -191,6 +191,7 @@ export const useTotalInDeposits = (depositNfts: DepositNftType[]) => {
       pools === undefined ||
       shareTokens.some((q) => !q.data) ||
       totalIssuances.some((q) => !q.data) ||
+      spotPrices.some((q) => !q.data) ||
       !yieldFarms.data ||
       isLoading
     )
@@ -227,7 +228,15 @@ export const useTotalInDeposits = (depositNfts: DepositNftType[]) => {
     })
 
     return totals.reduce((acc, curr) => acc.plus(curr), BN_0)
-  }, [pools, shareTokens, totalIssuances, yieldFarms.data, isLoading])
+  }, [
+    depositNfts,
+    pools,
+    shareTokens,
+    totalIssuances,
+    spotPrices,
+    yieldFarms.data,
+    isLoading,
+  ])
 
   return { data, isLoading }
 }

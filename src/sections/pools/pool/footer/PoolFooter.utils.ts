@@ -46,7 +46,13 @@ export const usePoolFooterValues = (pool: PoolBase) => {
     const available = locked.minus(depositsTotal.data)
 
     return { locked, available }
-  }, [deposits.data, totalIssuance.data, poolTotal.data, depositsTotal.data])
+  }, [
+    deposits.data,
+    totalIssuance.data,
+    poolTotal.data,
+    depositsTotal.data,
+    shareTokenBalance.data,
+  ])
 
   return { ...data, isLoading }
 }
