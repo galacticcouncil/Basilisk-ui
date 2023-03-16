@@ -1,7 +1,10 @@
 import { Heading } from "components/Typography/Heading/Heading"
 import { useTranslation } from "react-i18next"
 import Skeleton from "react-loading-skeleton"
-import { useTotalsLocked } from "sections/pools/header/PoolsHeader.utils"
+import {
+  useTotalLocked,
+  useUsersTotalLocked,
+} from "sections/pools/header/PoolsHeader.utils"
 import {
   useTotalInAllDeposits,
   useTotalInUsersDeposits,
@@ -20,30 +23,22 @@ export const PoolsHeaderTotal = ({ myPositions, variant }: Props) => {
 
 const PoolsHeaderTotalPools = () => {
   const { t } = useTranslation()
-  const { data, isLoading } = useTotalsLocked()
+  const { data, isLoading } = useTotalLocked()
 
   return (
     <Heading as="h3" sx={{ fontSize: [16, 42], fontWeight: 900 }}>
-      {!isLoading ? (
-        t("value.usd", { amount: data?.poolTotal })
-      ) : (
-        <Skeleton width={256} />
-      )}
+      {!isLoading ? t("value.usd", { amount: data }) : <Skeleton width={256} />}
     </Heading>
   )
 }
 
 const PoolsHeaderTotalPoolsUser = () => {
   const { t } = useTranslation()
-  const { data, isLoading } = useTotalsLocked()
+  const { data, isLoading } = useUsersTotalLocked()
 
   return (
     <Heading as="h3" sx={{ fontSize: [16, 42], fontWeight: 900 }}>
-      {!isLoading ? (
-        t("value.usd", { amount: data?.userTotal })
-      ) : (
-        <Skeleton width={256} />
-      )}
+      {!isLoading ? t("value.usd", { amount: data }) : <Skeleton width={256} />}
     </Heading>
   )
 }

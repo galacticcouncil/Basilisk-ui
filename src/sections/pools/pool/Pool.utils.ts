@@ -47,13 +47,14 @@ export const useTotalInPools = (pools: PoolBase[]) => {
   const isLoading = queries.some((q) => q.isInitialLoading)
 
   const data = useMemo(() => {
-    if (spotPrices.some((sp) => !sp.data)) return undefined
+    if (spotPrices.some((q) => !q.data)) return undefined
 
     const totals = pools.map((pool) => {
+      const poolId = pool.address
       const [assetA, assetB] = pool.tokens
 
-      const spotA = spotPrices.find((sp) => sp.data?.tokenIn === assetA.symbol)
-      const spotB = spotPrices.find((sp) => sp.data?.tokenIn === assetA.symbol)
+      const spotA = spotPrices.find((sp) => sp.data?.tokenIn === assetA.id)
+      const spotB = spotPrices.find((sp) => sp.data?.tokenIn === assetB.id)
       const balanceA = getFloatingPointAmount(
         new BN(assetA.balance),
         assetA.decimals,
@@ -63,16 +64,19 @@ export const useTotalInPools = (pools: PoolBase[]) => {
         assetB.decimals,
       )
 
-      if (!spotA?.data?.spotPrice || !spotB?.data?.spotPrice) return BN_0
+      if (!spotA?.data?.spotPrice || !spotB?.data?.spotPrice)
+        return { total: BN_0, poolId }
 
       const totalA = balanceA.times(spotA.data?.spotPrice)
       const totalB = balanceB.times(spotB.data?.spotPrice)
       const total = totalA.plus(totalB)
 
-      return total
+      return { total, poolId }
     })
 
-    return totals.reduce((acc, curr) => acc.plus(curr), BN_0)
+    const total = totals.reduce((acc, curr) => acc.plus(curr.total), BN_0)
+
+    return { total, totals }
   }, [pools, spotPrices])
 
   return { data, isLoading }
