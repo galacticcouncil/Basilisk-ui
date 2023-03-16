@@ -57,7 +57,7 @@ export const PoolsHeader: FC<Props> = ({
             <PoolsHeaderTotal variant="farms" myPositions={showMyPositions} />
           </div>
         </div>
-
+        <Separator sx={{ mb: 12, display: ["inherit", "none"] }} />
         <div sx={{ flex: ["row", "column"], justify: "space-between" }}>
           <Text color="neutralGray300" sx={{ mb: 14 }}>
             {t("pools.header.total24volumes")}

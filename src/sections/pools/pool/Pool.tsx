@@ -1,5 +1,4 @@
 import { PoolBase } from "@galacticcouncil/sdk"
-import { AnimatePresence, motion } from "framer-motion"
 import { FC, useState } from "react"
 import { useMedia } from "react-use"
 import { PoolActions } from "sections/pools/pool/actions/PoolActions"
@@ -38,21 +37,7 @@ export const Pool: FC<Props> = ({ pool }) => {
           css={{ gridArea: "actions" }}
         />
       </SGridContainer>
-      {isDesktop && (
-        <AnimatePresence>
-          {isExpanded && (
-            <motion.div
-              initial={{ height: 0 }}
-              animate={{ height: "auto" }}
-              exit={{ height: 0 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-              css={{ overflow: "hidden" }}
-            >
-              <PoolShares pool={pool} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      )}
+      {isDesktop && isExpanded && <PoolShares pool={pool} />}
       {isDesktop && <PoolFooter pool={pool} />}
     </SContainer>
   )
