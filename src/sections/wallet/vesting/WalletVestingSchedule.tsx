@@ -1,28 +1,31 @@
 import { SSchedule, SInner } from "./WalletVestingSchedule.styled"
 import { useCallback, useMemo } from "react"
-import { Text } from "../../../components/Typography/Text/Text"
+import { Text } from "components/Typography/Text/Text"
 import { Trans, useTranslation } from "react-i18next"
 import { css } from "@emotion/react"
-import { theme } from "../../../theme"
-import { Heading } from "../../../components/Typography/Heading/Heading"
-import { Button } from "../../../components/Button/Button"
+import { theme } from "theme"
+import { Heading } from "components/Typography/Heading/Heading"
+import { Button } from "components/Button/Button"
 import {
   useNextClaimableDate,
   useVestingTotalClaimableBalance,
-} from "../../../api/vesting"
-import { useUsdPeggedAsset } from "../../../api/asset"
-import { useSpotPrice } from "../../../api/spotPrice"
-import { NATIVE_ASSET_ID, useApiPromise } from "../../../utils/api"
-import { useExistentialDeposit, useTokenBalance } from "../../../api/balances"
-import { useAccountStore, useStore } from "../../../state/store"
-import { usePaymentInfo } from "../../../api/transaction"
+} from "api/vesting"
+import { useUsdPeggedAsset } from "api/asset"
+import { useSpotPrice } from "api/spotPrice"
+import { NATIVE_ASSET_ID, useApiPromise } from "utils/api"
+import { useExistentialDeposit, useTokenBalance } from "api/balances"
+import { useAccountStore, useStore } from "state/store"
+import { usePaymentInfo } from "api/transaction"
 import { separateBalance } from "utils/balance"
+import { useAssetMeta } from "api/assetMeta"
 
 export const WalletVestingSchedule = () => {
   const { t } = useTranslation()
   const api = useApiPromise()
   const { createTransaction } = useStore()
   const { account } = useAccountStore()
+  const meta = useAssetMeta(NATIVE_ASSET_ID)
+
   const { data: claimableBalance } = useVestingTotalClaimableBalance()
 
   const { data: nextClaimableDate } = useNextClaimableDate()
@@ -62,19 +65,19 @@ export const WalletVestingSchedule = () => {
         <div
           sx={{
             flex: "column",
-            gap: 10,
+            gap: [4, 10],
           }}
         >
           <Text color="primary200" fs={16} fw={500}>
             {t("wallet.vesting.claimable_now")}
           </Text>
-          <Heading as="h3" sx={{ fontSize: [16, 42], fontWeight: 900 }}>
+          <Heading as="h3" sx={{ fontSize: [28, 42], fontWeight: 900 }}>
             <Trans
               t={t}
               i18nKey="wallet.vesting.claimable_now_value"
               tOptions={{
                 ...separateBalance(claimableBalance, {
-                  fixedPointScale: 12,
+                  fixedPointScale: meta.data?.decimals ?? 12,
                   type: "token",
                 }),
               }}
@@ -88,12 +91,15 @@ export const WalletVestingSchedule = () => {
             </Trans>
           </Heading>
           <Text color="neutralGray300" fs={16} lh={18}>
-            {t("value.usd", { amount: claimableUSD })}
+            {t("value.usd", {
+              amount: claimableUSD,
+              fixedPointScale: meta.data?.decimals ?? 12,
+            })}
           </Text>
         </div>
         <div
           sx={{
-            textAlign: "center",
+            textAlign: ["start", "center"],
           }}
         >
           {balance.data && claimableBalance && (
@@ -112,9 +118,9 @@ export const WalletVestingSchedule = () => {
           {nextClaimableDate && (
             <Text
               color="neutralGray300"
-              tAlign="center"
+              tAlign={["left", "center"]}
               sx={{
-                mt: 15,
+                mt: [6, 15],
               }}
             >
               {t("wallet.vesting.estimated_claim_date", {

@@ -6,6 +6,7 @@ import { useAccountStore } from "state/store"
 import { Text } from "components/Typography/Text/Text"
 import { Separator } from "components/Separator/Separator"
 import { PoolsHeaderTotal } from "sections/pools/header/PoolsHeaderTotal"
+import { PoolsHeaderVolume } from "./PoolsHeaderVolume"
 
 type Props = {
   showMyPositions: boolean
@@ -55,6 +56,15 @@ export const PoolsHeader: FC<Props> = ({
           </Text>
           <div sx={{ flex: "row", align: "baseline" }}>
             <PoolsHeaderTotal variant="farms" myPositions={showMyPositions} />
+          </div>
+        </div>
+
+        <div sx={{ flex: ["row", "column"], justify: "space-between" }}>
+          <Text color="neutralGray300" sx={{ mb: 14 }}>
+            {t("pools.header.total24volumes")}
+          </Text>
+          <div sx={{ flex: "row", align: "baseline" }}>
+            <PoolsHeaderVolume myPositions={showMyPositions} variant="pools" />
           </div>
         </div>
       </div>

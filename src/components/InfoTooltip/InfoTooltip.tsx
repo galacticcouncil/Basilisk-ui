@@ -7,9 +7,15 @@ type InfoTooltipProps = {
   text: ReactNode
   textOnClick?: ReactNode
   children: ReactNode
+  side?: Tooltip.TooltipContentProps["side"]
 }
 
-export function InfoTooltip({ text, textOnClick, children }: InfoTooltipProps) {
+export function InfoTooltip({
+  text,
+  textOnClick,
+  children,
+  side,
+}: InfoTooltipProps) {
   const [open, setOpen] = useState(false)
   const [content, setContent] = useState(text)
   return (
@@ -48,13 +54,15 @@ export function InfoTooltip({ text, textOnClick, children }: InfoTooltipProps) {
             maxWidth: "calc(100vw - 12px * 2)",
             zIndex: 10,
           }}
-          side="bottom"
+          side={side}
           align="start"
           sideOffset={3}
           alignOffset={-10}
           collisionPadding={12}
         >
-          <Text sx={{ fontSize: 12, fontWeight: 400 }}>{content}</Text>
+          <Text sx={{ fontSize: 12, fontWeight: 400 }}>
+            {textOnClick != null ? content : text}
+          </Text>
           <Tooltip.Arrow />
         </Tooltip.Content>
       </Tooltip.Portal>
