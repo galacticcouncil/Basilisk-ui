@@ -49,15 +49,17 @@ export const useAllUserDeposits = () => {
     if (allDeposits.some((q) => !q.data) || !depositIds.data) return undefined
 
     return (
-      allDeposits
-        .map((d) => d.data)
-        .filter((x): x is DepositNftType[] => x !== undefined)
-        .flat(2)
-        .filter((deposit) =>
-          depositIds.data?.some(
-            (id) => id.instanceId.toString() === deposit?.id.toString(),
-          ),
-        ) ?? []
+      allDeposits.reduce(
+        (acc, curr) => [
+          ...acc,
+          ...(curr.data?.filter((deposit) =>
+            depositIds.data?.some(
+              (id) => id.instanceId.toString() === deposit?.id.toString(),
+            ),
+          ) ?? []),
+        ],
+        [] as DepositNftType[],
+      ) ?? []
     )
   }, [allDeposits, depositIds.data])
 

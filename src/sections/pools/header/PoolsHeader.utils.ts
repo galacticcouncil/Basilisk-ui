@@ -1,6 +1,6 @@
 import { PoolToken } from "@galacticcouncil/sdk"
 import { useTokensBalances } from "api/balances"
-import { useAllDeposits } from "api/deposits"
+import { DepositNftType, useAllDeposits } from "api/deposits"
 import { usePools, usePoolShareTokens } from "api/pools"
 import { SpotPrice } from "api/spotPrice"
 import { useTotalIssuances } from "api/totalIssuance"
@@ -37,10 +37,10 @@ export const useTotalLocked = () => {
   const poolsTotal = useTotalInPools(pools.data ?? [])
   const deposits = useAllDeposits(poolIds)
   const depositsTotal = useTotalInDeposits(
-    deposits
-      .map((deposit) => deposit.data)
-      .filter(isNotNil)
-      .flat() ?? [],
+    deposits.reduce(
+      (acc, curr) => [...acc, ...(curr.data ?? [])],
+      [] as DepositNftType[],
+    ),
   )
 
   const queries = [pools, poolsTotal, ...deposits, depositsTotal]
