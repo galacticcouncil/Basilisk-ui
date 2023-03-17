@@ -57,15 +57,18 @@ export const PROVIDERS = [
     name: "Mainnet via Galactic Council",
     url: "wss://rpc.basilisk.cloud",
     indexerUrl: "https://basilisk-explorer.play.hydration.cloud/graphql",
+    env: "production",
   },
   {
     name: "Mainnet via Dwellir",
     url: "wss://basilisk-rpc.dwellir.com",
     indexerUrl: "https://basilisk-explorer.play.hydration.cloud/graphql",
+    env: "production",
   },
   {
     name: "Rococo via Galactic Council",
     url: "wss://rococo-basilisk-rpc.hydration.dev",
     indexerUrl: "https://basilisk-rococo-explorer.play.hydration.cloud/graphql",
+    env: "rococo",
   },
 ]
