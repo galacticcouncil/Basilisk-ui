@@ -25,7 +25,7 @@ export function PoolFarmPositionDetailSectionList(props: {
       yieldFarmId: u32
       globalFarmId: u32
       yieldFarmEntry?: PalletLiquidityMiningYieldFarmEntry
-      deposit?: { id: u128; deposit: PalletLiquidityMiningDepositData }
+      depositNft?: { id: u128; deposit: PalletLiquidityMiningDepositData }
     } | null,
   ) => void
 }) {
@@ -90,7 +90,7 @@ export function PoolFarmPositionDetailSectionList(props: {
                           globalFarmId: farm.globalFarm.id,
                           yieldFarmId: farm.yieldFarm.id,
                           yieldFarmEntry: entry,
-                          deposit,
+                          depositNft: deposit,
                         })
                       }
                     />

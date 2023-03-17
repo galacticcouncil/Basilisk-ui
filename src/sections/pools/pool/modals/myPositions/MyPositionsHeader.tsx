@@ -1,6 +1,6 @@
 import { Text } from "components/Typography/Text/Text"
 import { Trans, useTranslation } from "react-i18next"
-import { useAPR } from "utils/farms/apr"
+import { useAPR, getMinAndMaxAPR } from "utils/farms/apr"
 import { Fragment, useMemo } from "react"
 import { usePoolShareToken } from "api/pools"
 import { useTokenBalance } from "api/balances"
@@ -19,7 +19,13 @@ import Skeleton from "react-loading-skeleton"
 import { useAssetMeta, useAssetMetaList } from "api/assetMeta"
 import { NATIVE_ASSET_ID } from "utils/api"
 
-export const MyPositionsHeader = ({ pool }: { pool: PoolBase }) => {
+export const MyPositionsHeader = ({
+  pool,
+  arePositions,
+}: {
+  pool: PoolBase
+  arePositions: boolean
+}) => {
   const { t } = useTranslation()
   const { account } = useAccountStore()
 
@@ -158,72 +164,76 @@ export const MyPositionsHeader = ({ pool }: { pool: PoolBase }) => {
         {!!sortedAPR?.length && (
           <Text fs={14} lh={18} color="white">
             {sortedAPR.length > 1
-              ? t("pools.pool.liquidity.apr.value", {
-                  min: sortedAPR[0].apr,
-                  max: sortedAPR[sortedAPR.length - 1].apr,
-                })
-              : t("value.APR", { apr: sortedAPR[0].apr })}
+              ? t("value.multiAPR.short", getMinAndMaxAPR(sortedAPR))
+              : t("value.APR.range", {
+                  from: sortedAPR[0].minApr,
+                  to: sortedAPR[0].apr,
+                })}
           </Text>
         )}
       </div>
-      <SClaimAllCard>
-        <Text color="primary200">{t("pools.allFarms.modal.claim.title")}</Text>
-        {claimable.data ? (
-          <>
-            {claimableAssets.map((claimableAsset) => (
-              <Fragment key={claimableAsset.symbol}>
-                <Text
-                  fw={900}
-                  sx={{ mb: 4, fontSize: [24, 28] }}
-                  css={{ wordBreak: "break-all" }}
-                >
-                  <Trans
-                    t={t}
-                    i18nKey={"pools.allFarms.modal.claim.asset"}
-                    tOptions={claimableAsset ?? {}}
+      {arePositions && (
+        <SClaimAllCard>
+          <Text color="primary200">
+            {t("pools.allFarms.modal.claim.title")}
+          </Text>
+          {claimable.data ? (
+            <>
+              {claimableAssets.map((claimableAsset) => (
+                <Fragment key={claimableAsset.symbol}>
+                  <Text
+                    fw={900}
+                    sx={{ mb: 4, fontSize: [24, 28] }}
+                    css={{ wordBreak: "break-all" }}
                   >
-                    <span
-                      css={css`
-                        color: rgba(${theme.rgbColors.white}, 0.4);
-                        font-size: 18px;
-                      `}
-                    />
-                  </Trans>
-                </Text>
-                <Separator />
-              </Fragment>
-            ))}
-            <Text
-              css={css`
-                color: rgba(255, 255, 255, 0.4);
-                word-break: break-all;
-              `}
-            >
-              {t("pools.allFarms.modal.claim.usd", {
-                amount: claimable.data?.usd,
-                fixedPointScale: meta?.decimals.toNumber() ?? 12,
-              })}
-            </Text>
-          </>
-        ) : (
-          <>
-            <Skeleton width={150} height={28} />
-            <Skeleton width={100} height={18} />
-          </>
-        )}
+                    <Trans
+                      t={t}
+                      i18nKey={"pools.allFarms.modal.claim.asset"}
+                      tOptions={claimableAsset ?? {}}
+                    >
+                      <span
+                        css={css`
+                          color: rgba(${theme.rgbColors.white}, 0.4);
+                          font-size: 18px;
+                        `}
+                      />
+                    </Trans>
+                  </Text>
+                  <Separator />
+                </Fragment>
+              ))}
+              <Text
+                css={css`
+                  color: rgba(255, 255, 255, 0.4);
+                  word-break: break-all;
+                `}
+              >
+                {t("pools.allFarms.modal.claim.usd", {
+                  amount: claimable.data?.usd,
+                  fixedPointScale: meta?.decimals.toNumber() ?? 12,
+                })}
+              </Text>
+            </>
+          ) : (
+            <>
+              <Skeleton width={150} height={28} />
+              <Skeleton width={100} height={18} />
+            </>
+          )}
 
-        <Button
-          variant="gradient"
-          size="small"
-          sx={{ p: "12px 21px", mt: 22 }}
-          isLoading={claimAll.isLoading}
-          onClick={() => claimAll.mutation.mutate()}
-          disabled={!claimableAssets.length || claimable?.data?.usd.isZero()}
-        >
-          <FlagIcon />
-          {t("pools.pool.claim.button")}
-        </Button>
-      </SClaimAllCard>
+          <Button
+            variant="gradient"
+            size="small"
+            sx={{ p: "12px 21px", mt: 22 }}
+            isLoading={claimAll.isLoading}
+            onClick={() => claimAll.mutation.mutate()}
+            disabled={!claimableAssets.length || claimable?.data?.usd.isZero()}
+          >
+            <FlagIcon />
+            {t("pools.pool.claim.button")}
+          </Button>
+        </SClaimAllCard>
+      )}
     </>
   )
 }

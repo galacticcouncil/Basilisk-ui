@@ -3,16 +3,17 @@ import { SFarm, SFarmIcon, SFarmRow } from "./PoolFarmDetail.styled"
 import { Text } from "components/Typography/Text/Text"
 import { FillBar } from "components/FillBar/FillBar"
 import { ReactComponent as ChevronDown } from "assets/icons/ChevronDown.svg"
-import { AprFarm } from "utils/farms/apr"
+import { AprFarm, getCurrentLoyaltyFactor } from "utils/farms/apr"
 import { useAsset } from "api/asset"
 import { addSeconds } from "date-fns"
-import { BLOCK_TIME } from "utils/constants"
+import { BLOCK_TIME, BN_0 } from "utils/constants"
 import { useBestNumber } from "api/chain"
 import { getFloatingPointAmount } from "utils/balance"
 import { GradientText } from "components/Typography/GradientText/GradientText"
 import { DepositNftType } from "api/deposits"
 import { Tag } from "components/Tag/Tag"
 import { PoolBase } from "@galacticcouncil/sdk"
+import { useMemo } from "react"
 
 export const PoolFarmDetail = (props: {
   pool: PoolBase
@@ -24,6 +25,23 @@ export const PoolFarmDetail = (props: {
   const { t } = useTranslation()
 
   const bestNumber = useBestNumber()
+  const currentApr = useMemo(() => {
+    if (props.depositNft) {
+      const depositYield = props.depositNft.deposit.yieldFarmEntries.find(
+        (farm) =>
+          farm.yieldFarmId.toString() === props.farm.yieldFarm.id.toString(),
+      )
+      if (!depositYield) return BN_0
+      const currentLoyaltyFactor = getCurrentLoyaltyFactor(
+        props.farm.loyaltyCurve,
+        props.farm.currentPeriod.minus(depositYield?.enteredAt.toBigNumber()),
+      )
+
+      return props.farm.apr.times(currentLoyaltyFactor)
+    }
+    return BN_0
+  }, [props.depositNft, props.farm])
+
   if (!bestNumber?.data) return null
 
   const blockDurationToEnd = props.farm.estimatedEndBlock.minus(
@@ -53,8 +71,11 @@ export const PoolFarmDetail = (props: {
           {asset.data?.icon}
           <Text fw={700}>{asset.data?.symbol}</Text>
         </div>
-        <Text fs={20} lh={28} fw={600} color="primary200">
-          {t("pools.allFarms.modal.apr.single", { value: props.farm.apr })}
+        <Text fs={16} lh={28} fw={600} color="primary200">
+          {t("value.APR.range", {
+            from: props.farm.minApr,
+            to: props.farm.apr,
+          })}
         </Text>
       </div>
       <div sx={{ flex: "column" }}>
@@ -65,7 +86,7 @@ export const PoolFarmDetail = (props: {
               .times(100)
               .toNumber()}
           />
-          <Text>
+          <Text tAlign="right">
             <Trans
               t={t}
               i18nKey="pools.allFarms.modal.distribution"
@@ -84,28 +105,45 @@ export const PoolFarmDetail = (props: {
         </SFarmRow>
         <SFarmRow>
           <FillBar percentage={props.farm.fullness.times(100).toNumber()} />
-          <Text fs={14} color="neutralGray100">
+          <Text fs={14} color="neutralGray100" tAlign="right">
             {t("pools.allFarms.modal.capacity", {
               capacity: props.farm.fullness.times(100),
             })}
           </Text>
         </SFarmRow>
         {props.depositNft && (
-          <SFarmRow>
-            <GradientText fs={14} fw={550}>
-              {t("pools.allFarms.modal.lockedShares")}
-            </GradientText>
-            <Text fs={14} color="neutralGray100">
-              {t("pools.allFarms.modal.lockedShares.value", {
-                value: getFloatingPointAmount(
-                  props.depositNft.deposit.shares,
-                  12,
-                ),
-                assetA: assetIn.symbol,
-                assetB: assetOut.symbol,
-              })}
-            </Text>
-          </SFarmRow>
+          <>
+            <SFarmRow>
+              <GradientText fs={14} fw={550}>
+                {t("pools.allFarms.modal.lockedShares")}
+              </GradientText>
+              <Text fs={14} color="neutralGray100" tAlign="right">
+                {t("pools.allFarms.modal.lockedShares.value", {
+                  value: getFloatingPointAmount(
+                    props.depositNft.deposit.shares,
+                    12,
+                  ),
+                  assetA: assetIn.symbol,
+                  assetB: assetOut.symbol,
+                })}
+              </Text>
+            </SFarmRow>
+            <SFarmRow>
+              <GradientText fs={14} fw={550}>
+                {t("pools.pool.positions.farms.joinedFarms")}
+              </GradientText>
+              <GradientText
+                fs={14}
+                color="neutralGray100"
+                tAlign="right"
+                sx={{ width: "fit-content" }}
+              >
+                {t("value.APR", {
+                  apr: currentApr,
+                })}
+              </GradientText>
+            </SFarmRow>
+          </>
         )}
         <Text fs={12} lh={16} fw={400} color="neutralGray500">
           {t("pools.allFarms.modal.end", {

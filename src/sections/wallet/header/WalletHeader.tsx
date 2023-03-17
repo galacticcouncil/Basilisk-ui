@@ -59,7 +59,7 @@ export const WalletHeader = () => {
               >
                 {isDesktop
                   ? basiliskAddress
-                  : shortenAccountAddress(basiliskAddress, 18)}
+                  : shortenAccountAddress(basiliskAddress, 16)}
               </Text>
               <ButtonTransparent
                 onClick={() => copy(basiliskAddress.toString())}

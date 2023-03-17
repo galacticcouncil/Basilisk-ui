@@ -31,7 +31,7 @@ const WalletActiveButton = (props: {
             {props.account.name}
           </Text>
           <Text color="neutralGray300" fs={12} lh={12} fw={400}>
-            {shortenAccountAddress(props.account.address.toString())}
+            {shortenAccountAddress(basiliskAddress)}
           </Text>
         </div>
         <div

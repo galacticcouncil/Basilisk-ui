@@ -8,11 +8,11 @@ import { useMemo } from "react"
 import { css } from "@emotion/react"
 import { theme } from "theme"
 import { NATIVE_ASSET_ID } from "utils/api"
-import { useAssetMeta } from "../../../api/assetMeta"
+import { useAssetMeta } from "api/assetMeta"
 import { STable, SSeparator } from "./WalletVestingHeader.styled"
 import { addDays } from "date-fns"
-import { BN_0, DAY_IN_MILLISECONDS } from "../../../utils/constants"
-import { separateBalance } from "../../../utils/balance"
+import { BN_0, DAY_IN_MILLISECONDS } from "utils/constants"
+import { separateBalance } from "utils/balance"
 
 export const WalletVestingHeader = () => {
   const { t } = useTranslation()
@@ -35,10 +35,12 @@ export const WalletVestingHeader = () => {
 
   return (
     <div
-      sx={{ flex: ["column", "row"], mb: 40 }}
+      sx={{ flex: ["column", "row"], align: ["normal", "center"], mb: 40 }}
       css={{ "> *:not([role='separator'])": { flex: 1 } }}
     >
-      <div sx={{ flex: ["row", "column"], justify: "space-between" }}>
+      <div
+        sx={{ flex: ["row", "column"], justify: ["space-between", "normal"] }}
+      >
         <Text color="neutralGray300" fs={[14, 16]} sx={{ mb: 14 }}>
           {t("wallet.vesting.total_vested")}
         </Text>

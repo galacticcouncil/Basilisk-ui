@@ -13,7 +13,6 @@ import { PoolSharesValue } from "sections/pools/pool/shares/value/PoolSharesValu
 import { PoolSharesUnstaked } from "sections/pools/pool/shares/unstaked/PoolSharesUnstaked"
 import { useAccountStore } from "state/store"
 import { useTokenBalance } from "api/balances"
-import { PoolSharesApr } from "sections/pools/pool/shares/apr/PoolSharesAPR"
 
 type Props = { pool: PoolBase }
 
@@ -43,7 +42,6 @@ export const PoolShares: FC<Props> = ({ pool }) => {
           pool={pool}
           shareTokenBalance={balance.data?.balance}
         />
-        <PoolSharesApr poolId={pool.address} />
       </SDetails>
       {!!depositNftList?.length && (
         <div sx={{ flex: "column", gap: 12, mt: 32 }}>

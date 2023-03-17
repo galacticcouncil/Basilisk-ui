@@ -11,21 +11,23 @@ import { QUERY_KEYS } from "utils/queryKeys"
 
 const worker = wrap<typeof WorkerType>(new Worker())
 
-export const AXISX_SCALE = 3000
-
 export const useLoyaltyRates = (
   farm: AprFarm,
   loyaltyCurve: Maybe<PalletLiquidityMiningLoyaltyCurve>,
+  periodsInFarm?: BN,
 ) => {
   return useQuery(
     QUERY_KEYS.mathLoyaltyRates(
       farm.globalFarm.plannedYieldingPeriods,
       loyaltyCurve?.initialRewardPercentage,
       loyaltyCurve?.scaleCoef,
+      periodsInFarm?.toString(),
     ),
     loyaltyCurve != null
       ? async () => {
           const periods = farm.globalFarm.plannedYieldingPeriods.toNumber()
+          const axisScale = periods / 100
+
           const initialRewardPercentage = loyaltyCurve.initialRewardPercentage
             .toBigNumber()
             .div(BN_QUINTILL)
@@ -36,6 +38,8 @@ export const useLoyaltyRates = (
             periods,
             initialRewardPercentage,
             scaleCoef,
+            periodsInFarm?.toNumber(),
+            axisScale,
           )
 
           return result.map((y, x) => ({
@@ -43,9 +47,10 @@ export const useLoyaltyRates = (
               .div(BLOCK_TIME)
               .div(60)
               .div(24)
-              .multipliedBy(AXISX_SCALE)
+              .multipliedBy(axisScale)
               .toNumber(),
-            y: new BN(y).times(farm.apr.div(100)).toNumber(),
+            y: new BN(y.rate).times(farm.apr.div(100)).toNumber(),
+            currentLoyalty: y.currentLoyalty,
           }))
         }
       : undefinedNoop,

@@ -7,7 +7,7 @@ export const SContainer = styled.div<{ isHighlighted?: boolean }>`
   grid-column-gap: 8px;
   align-items: center;
 
-  padding: 10px 12px;
+  padding: 10px 12px 10px 0;
 
   border-radius: 12px;
   ${({ isHighlighted }) =>
