@@ -188,7 +188,9 @@ export function ProviderSelectModal(props: {
           </div>
         </SHeader>
 
-        {PROVIDERS.map((provider) => {
+        {PROVIDERS.filter(
+          (provider) => provider.env === import.meta.env.VITE_ENV,
+        ).map((provider) => {
           return (
             <Fragment key={provider.url}>
               <ProviderSelectItem
