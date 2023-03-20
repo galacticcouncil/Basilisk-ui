@@ -1,18 +1,18 @@
+import { PoolBase } from "@galacticcouncil/sdk"
+import { useTokenBalance } from "api/balances"
+import { useAccountDepositIds, useDeposits } from "api/deposits"
+import { usePoolShareToken } from "api/pools"
+import { GradientText } from "components/Typography/GradientText/GradientText"
 import { FC } from "react"
+import { useTranslation } from "react-i18next"
+import { PoolSharesDeposit } from "sections/pools/pool/shares/deposit/PoolSharesDeposit"
 import {
   SContainer,
   SDetails,
 } from "sections/pools/pool/shares/PoolShares.styled"
-import { useTranslation } from "react-i18next"
-import { GradientText } from "components/Typography/GradientText/GradientText"
-import { useAccountDepositIds, useDeposits } from "api/deposits"
-import { PoolSharesDeposit } from "sections/pools/pool/shares/deposit/PoolSharesDeposit"
-import { PoolBase } from "@galacticcouncil/sdk"
-import { usePoolShareToken } from "api/pools"
-import { PoolSharesValue } from "sections/pools/pool/shares/value/PoolSharesValue"
 import { PoolSharesUnstaked } from "sections/pools/pool/shares/unstaked/PoolSharesUnstaked"
+import { PoolSharesValue } from "sections/pools/pool/shares/value/PoolSharesValue"
 import { useAccountStore } from "state/store"
-import { useTokenBalance } from "api/balances"
 
 type Props = { pool: PoolBase }
 

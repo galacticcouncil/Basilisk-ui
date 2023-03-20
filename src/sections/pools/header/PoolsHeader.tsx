@@ -1,11 +1,11 @@
+import { Separator } from "components/Separator/Separator"
 import { Switch } from "components/Switch/Switch"
 import { GradientText } from "components/Typography/GradientText/GradientText"
+import { Text } from "components/Typography/Text/Text"
 import { FC } from "react"
 import { useTranslation } from "react-i18next"
-import { useAccountStore } from "state/store"
-import { Text } from "components/Typography/Text/Text"
-import { Separator } from "components/Separator/Separator"
 import { PoolsHeaderTotal } from "sections/pools/header/PoolsHeaderTotal"
+import { useAccountStore } from "state/store"
 import { PoolsHeaderVolume } from "./PoolsHeaderVolume"
 
 type Props = {
@@ -18,7 +18,6 @@ export const PoolsHeader: FC<Props> = ({
   onShowMyPositionsChange,
 }) => {
   const { t } = useTranslation()
-
   const { account } = useAccountStore()
 
   return (
@@ -58,7 +57,7 @@ export const PoolsHeader: FC<Props> = ({
             <PoolsHeaderTotal variant="farms" myPositions={showMyPositions} />
           </div>
         </div>
-
+        <Separator sx={{ mb: 12, display: ["inherit", "none"] }} />
         <div sx={{ flex: ["row", "column"], justify: "space-between" }}>
           <Text color="neutralGray300" sx={{ mb: 14 }}>
             {t("pools.header.total24volumes")}
