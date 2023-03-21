@@ -1961,10 +1961,10 @@
     "@floating-ui/dom" "^0.5.3"
     use-isomorphic-layout-effect "^1.1.1"
 
-"@galacticcouncil/apps@^1.1.13":
-  version "1.1.13"
-  resolved "https://registry.yarnpkg.com/@galacticcouncil/apps/-/apps-1.1.13.tgz#bb59bf0d546acf58af56d50d1c6759801706c525"
-  integrity sha512-3MPESjz7hgZMcNxmgtUkkQ2KezErSJRyCfFYBkxaEj9Asje9TdMA6UYklMV8gqlwWL9wE6kitNWsb+OrDsy+FA==
+"@galacticcouncil/apps@^1.1.14":
+  version "1.1.14"
+  resolved "https://registry.yarnpkg.com/@galacticcouncil/apps/-/apps-1.1.14.tgz#d6743283793ca774771bad4da4aee36913bb93ac"
+  integrity sha512-OlOBqnjn9lQtHnTcEILgELzFo6A0Dui6kQYq8qwOGPeMO/Zbu8zO1GSsD+OUDS18wedB9fUnugPPZKK2bu3x4w==
   dependencies:
     "@talismn/connect-wallets" "^1.2.1"
     "@thi.ng/atom" "^5.1.3"
@@ -2016,10 +2016,10 @@
   resolved "https://registry.yarnpkg.com/@galacticcouncil/math-xyk/-/math-xyk-0.0.7.tgz#627d797c0e50737d7525dcb4dc99531835743652"
   integrity sha512-bnW+EQmMUJp8/kRRuHIBuemV4Ehu/L81s8+Ujjh0H94mweqeDorfisATNvP4wI9PWm7FMGkp2BZdsoeGnEIYFQ==
 
-"@galacticcouncil/sdk@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@galacticcouncil/sdk/-/sdk-0.0.6.tgz#1feea098c4e06acbd57ddf8f8f9fe7058ce90a87"
-  integrity sha512-ksIhLB+G+SHgaKTVmE5+mIm9MgVFKF+wbBvG4efyabPcXlETpVfQf1QXrBp75AEv1eF63Jp3NcDpXZTS1zfcQA==
+"@galacticcouncil/sdk@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@galacticcouncil/sdk/-/sdk-0.1.0.tgz#c9b9d8e7612ad3fef1c4a4248834bbbf746bca78"
+  integrity sha512-8TGiSMuXzUA6jdKR3EcUE3KcttszHaZXbWOkwaloQEBbkxbi4Zb6RGInmXB+Pw5PhEKE107/wx8slucNgyE35Q==
   dependencies:
     "@galacticcouncil/math-lbp" "^0.0.7"
     "@galacticcouncil/math-omnipool" "^0.0.7"
