@@ -1,13 +1,12 @@
+import { PoolBase, PoolFee } from "@galacticcouncil/sdk"
+import { useUsdPeggedAsset } from "api/asset"
+import { useSpotPrice, useSpotPrices } from "api/spotPrice"
+import BN from "bignumber.js"
 import { useMemo } from "react"
 import { getFloatingPointAmount } from "utils/balance"
-import { useSpotPrice } from "api/spotPrice"
-import { useUsdPeggedAsset } from "api/asset"
-import { PoolBase, PoolFee } from "@galacticcouncil/sdk"
-import BN from "bignumber.js"
+import { BN_0 } from "utils/constants"
 
-type Props = { pool: PoolBase }
-
-export const useTotalInPool = ({ pool }: Props) => {
+export const useTotalInPool = (pool: PoolBase) => {
   const [assetA, assetB] = pool.tokens
 
   const usd = useUsdPeggedAsset()
@@ -18,7 +17,7 @@ export const useTotalInPool = ({ pool }: Props) => {
   const isLoading = queries.some((q) => q.isLoading)
 
   const data = useMemo(() => {
-    if (!usd.data || !spotAtoAUSD.data || !spotBtoAUSD.data) return undefined
+    if (!spotAtoAUSD.data || !spotBtoAUSD.data) return undefined
 
     const balanceA = getFloatingPointAmount(
       new BN(assetA.balance),
@@ -29,23 +28,56 @@ export const useTotalInPool = ({ pool }: Props) => {
       assetB.decimals,
     )
 
-    const AtoAUSD = spotAtoAUSD.data.spotPrice
-    const BtoAUSD = spotBtoAUSD.data.spotPrice
-
-    const totalA = balanceA.times(AtoAUSD)
-    const totalB = balanceB.times(BtoAUSD)
+    const totalA = balanceA.times(spotAtoAUSD.data.spotPrice)
+    const totalB = balanceB.times(spotBtoAUSD.data.spotPrice)
     const total = totalA.plus(totalB)
 
     return total
-  }, [
-    usd.data,
-    assetA.balance,
-    assetA.decimals,
-    assetB.balance,
-    assetB.decimals,
-    spotAtoAUSD.data,
-    spotBtoAUSD.data,
-  ])
+  }, [assetA, assetB, spotAtoAUSD.data, spotBtoAUSD.data])
+
+  return { data, isLoading }
+}
+
+export const useTotalInPools = (pools: PoolBase[]) => {
+  const tokens = pools.map(({ tokens }) => tokens.map(({ id }) => id)).flat()
+  const usd = useUsdPeggedAsset()
+  const spotPrices = useSpotPrices(tokens, usd.data?.id)
+
+  const queries = [usd, ...spotPrices]
+  const isLoading = queries.some((q) => q.isInitialLoading)
+
+  const data = useMemo(() => {
+    if (spotPrices.some((q) => !q.data)) return undefined
+
+    const totals = pools.map((pool) => {
+      const poolId = pool.address
+      const [assetA, assetB] = pool.tokens
+
+      const spotA = spotPrices.find((sp) => sp.data?.tokenIn === assetA.id)
+      const spotB = spotPrices.find((sp) => sp.data?.tokenIn === assetB.id)
+      const balanceA = getFloatingPointAmount(
+        new BN(assetA.balance),
+        assetA.decimals,
+      )
+      const balanceB = getFloatingPointAmount(
+        new BN(assetB.balance),
+        assetB.decimals,
+      )
+
+      if (!spotA?.data?.spotPrice || !spotB?.data?.spotPrice)
+        return { total: BN_0, poolId }
+
+      const totalA = balanceA.times(spotA.data?.spotPrice)
+      const totalB = balanceB.times(spotB.data?.spotPrice)
+      const total = totalA.plus(totalB)
+
+      return { total, poolId }
+    })
+
+    const total = totals.reduce((acc, curr) => acc.plus(curr.total), BN_0)
+
+    return { total, totals }
+  }, [pools, spotPrices])
 
   return { data, isLoading }
 }

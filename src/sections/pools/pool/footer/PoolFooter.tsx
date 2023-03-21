@@ -1,14 +1,14 @@
-import { Text } from "components/Typography/Text/Text"
-import { SContainer } from "sections/pools/pool/footer/PoolFooter.styled"
-import { Trans, useTranslation } from "react-i18next"
-import { usePoolFooterValues } from "sections/pools/pool/footer/PoolFooter.utils"
 import { PoolBase } from "@galacticcouncil/sdk"
-import { Button } from "components/Button/Button"
-import { ReactComponent as FlagIcon } from "assets/icons/FlagIcon.svg"
-import { useClaimableAmount } from "utils/farms/claiming"
-import { separateBalance } from "utils/balance"
 import { useAssetMetaList } from "api/assetMeta"
+import { ReactComponent as FlagIcon } from "assets/icons/FlagIcon.svg"
+import { Button } from "components/Button/Button"
+import { Text } from "components/Typography/Text/Text"
 import { Fragment, useMemo } from "react"
+import { Trans, useTranslation } from "react-i18next"
+import { separateBalance } from "utils/balance"
+import { useClaimableAmount, useClaimAllMutation } from "utils/farms/claiming"
+import { SContainer } from "./PoolFooter.styled"
+import { usePoolFooterValues } from "./PoolFooter.utils"
 
 type Props = { pool: PoolBase }
 
@@ -16,8 +16,8 @@ export const PoolFooter = ({ pool }: Props) => {
   const { t } = useTranslation()
 
   const claimable = useClaimableAmount(pool)
-
   const assetsMeta = useAssetMetaList(Object.keys(claimable.data?.assets || {}))
+  const { locked, available } = usePoolFooterValues(pool)
 
   const toastValue = useMemo(() => {
     if (!assetsMeta.data || !claimable.data) return undefined
@@ -79,7 +79,7 @@ export const PoolFooter = ({ pool }: Props) => {
     ),
   }
 
-  const { locked, available, claimAll } = usePoolFooterValues(pool, toast)
+  const claimAll = useClaimAllMutation(pool.address, undefined, toast)
 
   if (!locked || locked.isZero()) return null
 
@@ -106,8 +106,8 @@ export const PoolFooter = ({ pool }: Props) => {
             variant="gradient"
             size="small"
             sx={{ p: "12px 21px" }}
-            isLoading={claimAll.isLoading}
-            onClick={() => claimAll.mutate()}
+            isLoading={claimAll.mutation.isLoading}
+            onClick={async () => claimAll.mutation.mutateAsync()}
           >
             <FlagIcon />
             {t("pools.pool.claim.button")}
