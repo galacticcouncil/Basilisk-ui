@@ -1,15 +1,15 @@
-import { useAccountStore } from "state/store"
-import { usePoolShareTokens, usePools } from "api/pools"
-import { useAccountDepositIds, useAllDeposits } from "api/deposits"
-import { useMemo } from "react"
-import { useSpotPrices } from "api/spotPrice"
-import { useUsdPeggedAsset } from "api/asset"
-import { getFloatingPointAmount } from "utils/balance"
-import BN from "bignumber.js"
-import { BN_1 } from "utils/constants"
 import { PoolToken } from "@galacticcouncil/sdk"
-import { useTokensBalances } from "api/balances"
 import { u32 } from "@polkadot/types"
+import { useUsdPeggedAsset } from "api/asset"
+import { useTokensBalances } from "api/balances"
+import { useAccountDepositIds, useAllDeposits } from "api/deposits"
+import { usePools, usePoolShareTokens } from "api/pools"
+import { useSpotPrices } from "api/spotPrice"
+import BN from "bignumber.js"
+import { useMemo } from "react"
+import { useAccountStore } from "state/store"
+import { getFloatingPointAmount } from "utils/balance"
+import { BN_1 } from "utils/constants"
 
 export type PoolsPageFilter = { showMyPositions: boolean }
 
@@ -141,5 +141,14 @@ export const useFilteredPools = ({ showMyPositions }: PoolsPageFilter) => {
     shareTokens,
   ])
 
-  return { data, isLoading }
+  const hasPositions = useMemo(() => {
+    const hasShares = userPoolBalances.some(
+      (balance) => !balance.data?.balance.isZero(),
+    )
+    const hasDeposits = !!accountDeposits.data?.length
+
+    return hasShares || hasDeposits
+  }, [userPoolBalances, accountDeposits.data])
+
+  return { data, hasPositions, isLoading }
 }
