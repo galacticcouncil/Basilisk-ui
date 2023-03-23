@@ -17,17 +17,23 @@ export const getExpectedBlockDate = (
 export const useEnteredDate = (enteredAtBlock: BN) => {
   const bestNumber = useBestNumber()
 
-  return useQueryReduce([bestNumber] as const, (bestNumber) => {
-    const currentBlock = bestNumber.relaychainBlockNumber.toBigNumber()
-    const blockRange = currentBlock.minus(enteredAtBlock)
-    const blockRangeSeconds = blockRange.times(BLOCK_TIME)
+  return useQueryReduce([bestNumber] as const, (bestNumber) =>
+    getEnteredDate(
+      enteredAtBlock,
+      bestNumber.relaychainBlockNumber.toBigNumber(),
+    ),
+  )
+}
 
-    const currentDateSeconds = new BN(Date.now())
-    const enteredAtDateSeconds = currentDateSeconds.minus(blockRangeSeconds)
+export const getEnteredDate = (enteredAtBlock: BN, currentBlock: BN) => {
+  const blockRange = currentBlock.minus(enteredAtBlock)
+  const blockRangeSeconds = blockRange.times(BLOCK_TIME)
 
-    const rangeSeconds = currentDateSeconds.minus(enteredAtDateSeconds)
-    const enteredAtDate = subSeconds(Date.now(), rangeSeconds.toNumber())
+  const currentDateSeconds = new BN(Date.now())
+  const enteredAtDateSeconds = currentDateSeconds.minus(blockRangeSeconds)
 
-    return enteredAtDate
-  })
+  const rangeSeconds = currentDateSeconds.minus(enteredAtDateSeconds)
+  const enteredAtDate = subSeconds(Date.now(), rangeSeconds.toNumber())
+
+  return enteredAtDate
 }

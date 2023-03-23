@@ -12,12 +12,8 @@ export const WalletLiquidityPositionsTableName = (props: {
     <div sx={{ flex: "row", align: "center", gap: 8 }}>
       <MultipleIcons
         icons={[
-          {
-            icon: getAssetLogo(props.assetA.symbol),
-          },
-          {
-            icon: getAssetLogo(props.assetB.symbol),
-          },
+          { icon: getAssetLogo(props.assetA.symbol) },
+          { icon: getAssetLogo(props.assetB.symbol) },
         ]}
         size={props.large ? 34 : [24, 32]}
       />

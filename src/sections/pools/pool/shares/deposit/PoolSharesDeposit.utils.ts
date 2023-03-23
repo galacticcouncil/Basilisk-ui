@@ -7,8 +7,11 @@ import { useUsdPeggedAsset } from "api/asset"
 import { useGlobalFarms, useYieldFarms } from "api/farms"
 import { useMemo } from "react"
 import { usePoolShareToken } from "api/pools"
-import { useSpotPrices } from "api/spotPrice"
+import { SpotPrice, useSpotPrices } from "api/spotPrice"
 import { useTotalIssuance } from "api/totalIssuance"
+import { PalletLiquidityMiningYieldFarmData } from "@polkadot/types/lookup"
+import BigNumber from "bignumber.js"
+import { isNotNil } from "utils/helpers"
 
 export const usePoolSharesDeposit = ({
   depositNft,
@@ -52,49 +55,13 @@ export const usePoolSharesDeposit = ({
   const data = useMemo(() => {
     if (!yieldFarms.data || !totalIssuance.data) return undefined
 
-    // sum for each entry
-    let usdValue = BN_0
-    const [assetA, assetB] = pool.tokens.map((token) => ({
-      symbol: token.symbol,
-      amount: BN_0,
-    }))
-
-    for (const position of depositNft.deposit.yieldFarmEntries) {
-      const yieldFarm = yieldFarms.data.find((i) =>
-        i.id.eq(position.yieldFarmId),
-      )
-
-      if (!yieldFarm) {
-        console.error("Failed to find position")
-        continue
-      }
-
-      const farmTotalValued = yieldFarm.totalValuedShares.toBigNumber()
-      const farmTotal = yieldFarm.totalShares.toBigNumber()
-      const positionTotalValued = position.valuedShares.toBigNumber()
-
-      const farmRatio = farmTotal.div(totalIssuance.data.total)
-      const positionRatio = positionTotalValued.div(farmTotalValued)
-
-      const poolSpotTotal = getPoolTotal(
-        pool.tokens,
-        spotPrices.map((sp) => sp.data),
-      )
-
-      const [assetAValue, assetBValue] = pool.tokens.map((token) => {
-        const balance = getFloatingPointAmount(token.balance, token.decimals)
-        return balance.times(farmRatio).times(positionRatio)
-      })
-
-      usdValue = usdValue.plus(
-        poolSpotTotal.times(farmRatio).times(positionRatio),
-      )
-
-      assetA.amount = assetA.amount.plus(assetAValue)
-      assetB.amount = assetB.amount.plus(assetBValue)
-    }
-
-    return { usdValue, assetA, assetB }
+    return getPositionValues({
+      pool,
+      depositNft,
+      totalIssuance: totalIssuance.data.total,
+      yieldFarms: yieldFarms.data,
+      spotPrices: spotPrices.map((q) => q.data).filter(isNotNil),
+    })
   }, [
     depositNft.deposit.yieldFarmEntries,
     pool.tokens,
@@ -110,3 +77,57 @@ export const usePoolSharesDeposit = ({
     isLoading,
   }
 }
+
+export const getPositionValues = ({
+  pool,
+  depositNft,
+  yieldFarms,
+  totalIssuance,
+  spotPrices,
+}: {
+  pool: PoolBase
+  depositNft: DepositNftType
+  yieldFarms: PalletLiquidityMiningYieldFarmData[]
+  totalIssuance: BigNumber
+  spotPrices: SpotPrice[]
+}) => {
+  let usdValue = BN_0
+  const [assetA, assetB] = pool.tokens.map((token) => ({
+    symbol: token.symbol,
+    amount: BN_0,
+  }))
+
+  for (const position of depositNft.deposit.yieldFarmEntries) {
+    const yieldFarm = yieldFarms.find((i) => i.id.eq(position.yieldFarmId))
+
+    if (!yieldFarm) {
+      console.error("Failed to find position")
+      continue
+    }
+
+    const farmTotalValued = yieldFarm.totalValuedShares.toBigNumber()
+    const farmTotal = yieldFarm.totalShares.toBigNumber()
+    const positionTotalValued = position.valuedShares.toBigNumber()
+
+    const farmRatio = farmTotal.div(totalIssuance)
+    const positionRatio = positionTotalValued.div(farmTotalValued)
+
+    const poolSpotTotal = getPoolTotal(pool.tokens, spotPrices)
+
+    const [assetAValue, assetBValue] = pool.tokens.map((token) => {
+      const balance = getFloatingPointAmount(token.balance, token.decimals)
+      return balance.times(farmRatio).times(positionRatio)
+    })
+
+    usdValue = usdValue.plus(
+      poolSpotTotal.times(farmRatio).times(positionRatio),
+    )
+
+    assetA.amount = assetA.amount.plus(assetAValue)
+    assetB.amount = assetB.amount.plus(assetBValue)
+  }
+
+  return { usdValue, assetA, assetB }
+}
+
+export type PositionValues = ReturnType<typeof getPositionValues>

@@ -101,7 +101,7 @@ export type LiquidityPositionsTableData = {
     symbol: string
     balance?: BigNumber
     balanceUsd?: BigNumber
-    chain: string
+    chain?: string
   }
   assetB: {
     id: string
@@ -109,7 +109,7 @@ export type LiquidityPositionsTableData = {
     symbol: string
     balance?: BigNumber
     balanceUsd?: BigNumber
-    chain: string
+    chain?: string
   }
   total: BigNumber
   totalUsd: BigNumber
