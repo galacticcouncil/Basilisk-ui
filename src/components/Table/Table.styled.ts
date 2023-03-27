@@ -61,7 +61,7 @@ export const TableRow = styled.tr<{ isOdd?: boolean; isSub?: boolean }>`
 `
 
 export const TableHeader = styled.th<{ canSort?: boolean }>`
-  padding: 10px 16px;
+  padding: 10px 0 10px 16px;
 
   font-size: 11px;
   line-height: 14px;
@@ -73,6 +73,10 @@ export const TableHeader = styled.th<{ canSort?: boolean }>`
   white-space: nowrap;
 
   ${({ canSort }) => canSort && "cursor:pointer;"}
+
+  &:last-of-type {
+    padding-right: 16px;
+  }
 
   @media ${theme.viewport.gte.sm} {
     padding: 24px 32px;
