@@ -1,6 +1,12 @@
 import { css } from "@emotion/react"
 import styled from "@emotion/styled"
+import { Text } from "components/Typography/Text/Text"
 import { theme } from "theme"
+
+export const SLabel = styled.label`
+  width: 100%;
+  overflow: hidden;
+`
 
 export const SInput = styled.input<{ error?: string }>`
   all: unset;
@@ -77,6 +83,11 @@ export const SInputWrapper = styled.span<{
 
     return null
   }}
+`
+
+export const SNativeAddress = styled(Text)`
+  white-space: nowrap;
+  overflow: hidden;
 `
 
 export const SErrorMessage = styled.p`
