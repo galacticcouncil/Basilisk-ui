@@ -1,12 +1,12 @@
 import { Page } from "components/Layout/Page/Page"
+import { Spinner } from "components/Spinner/Spinner.styled"
+import { useState } from "react"
 import { PoolsHeader } from "sections/pools/header/PoolsHeader"
 import { Pool } from "sections/pools/pool/Pool"
-import { useState } from "react"
 import {
   PoolsPageFilter,
   useFilteredPools,
 } from "sections/pools/PoolsPage.utils"
-import { Spinner } from "components/Spinner/Spinner.styled"
 import { EmptyPoolsState } from "./pool/empty/EmptyPoolsState"
 
 export const PoolsPage = () => {
@@ -14,18 +14,19 @@ export const PoolsPage = () => {
     showMyPositions: false,
   })
 
-  const { data, isLoading } = useFilteredPools(filter)
+  const { data, hasPositions, isLoading } = useFilteredPools(filter)
 
   return (
     <Page>
       <PoolsHeader
-        showMyPositions={filter.showMyPositions}
-        onShowMyPositionsChange={(value) =>
+        myPositions={filter.showMyPositions}
+        onMyPositionsChange={(value) =>
           setFilter((prev) => ({
             ...prev,
             showMyPositions: value,
           }))
         }
+        disableMyPositions={!hasPositions}
       />
       <div sx={{ display: "flex", flexDirection: "column", gap: 20 }}>
         {isLoading ? (

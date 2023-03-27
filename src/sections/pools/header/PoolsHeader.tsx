@@ -2,21 +2,22 @@ import { Separator } from "components/Separator/Separator"
 import { Switch } from "components/Switch/Switch"
 import { GradientText } from "components/Typography/GradientText/GradientText"
 import { Text } from "components/Typography/Text/Text"
-import { FC } from "react"
 import { useTranslation } from "react-i18next"
 import { PoolsHeaderTotal } from "sections/pools/header/PoolsHeaderTotal"
 import { useAccountStore } from "state/store"
 import { PoolsHeaderVolume } from "./PoolsHeaderVolume"
 
 type Props = {
-  showMyPositions: boolean
-  onShowMyPositionsChange: (value: boolean) => void
+  myPositions: boolean
+  onMyPositionsChange: (value: boolean) => void
+  disableMyPositions: boolean
 }
 
-export const PoolsHeader: FC<Props> = ({
-  showMyPositions,
-  onShowMyPositionsChange,
-}) => {
+export const PoolsHeader = ({
+  myPositions,
+  onMyPositionsChange,
+  disableMyPositions,
+}: Props) => {
   const { t } = useTranslation()
   const { account } = useAccountStore()
 
@@ -28,8 +29,9 @@ export const PoolsHeader: FC<Props> = ({
         </GradientText>
         {!!account && (
           <Switch
-            value={showMyPositions}
-            onCheckedChange={onShowMyPositionsChange}
+            value={myPositions}
+            onCheckedChange={onMyPositionsChange}
+            disabled={disableMyPositions}
             size="small"
             name="my-positions"
             label={t("pools.header.switch")}
@@ -45,7 +47,7 @@ export const PoolsHeader: FC<Props> = ({
             {t("pools.header.totalLocked")}
           </Text>
           <div sx={{ flex: "row", align: "baseline" }}>
-            <PoolsHeaderTotal variant="pools" myPositions={showMyPositions} />
+            <PoolsHeaderTotal variant="pools" myPositions={myPositions} />
           </div>
         </div>
         <Separator sx={{ mb: 12, display: ["inherit", "none"] }} />
@@ -54,7 +56,7 @@ export const PoolsHeader: FC<Props> = ({
             {t("pools.header.totalFarms")}
           </Text>
           <div sx={{ flex: "row", align: "baseline" }}>
-            <PoolsHeaderTotal variant="farms" myPositions={showMyPositions} />
+            <PoolsHeaderTotal variant="farms" myPositions={myPositions} />
           </div>
         </div>
         <Separator sx={{ mb: 12, display: ["inherit", "none"] }} />
@@ -63,7 +65,7 @@ export const PoolsHeader: FC<Props> = ({
             {t("pools.header.total24volumes")}
           </Text>
           <div sx={{ flex: "row", align: "baseline" }}>
-            <PoolsHeaderVolume myPositions={showMyPositions} variant="pools" />
+            <PoolsHeaderVolume myPositions={myPositions} variant="pools" />
           </div>
         </div>
       </div>
