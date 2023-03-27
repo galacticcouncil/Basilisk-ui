@@ -3,8 +3,6 @@ import { TableSortHeader } from "components/Table/Table"
 import {
   Table,
   TableBodyContent,
-  TableContainer,
-  TableData,
   TableHeaderContent,
   TableRow,
   TableTitle,
@@ -13,7 +11,7 @@ import { Text } from "components/Typography/Text/Text"
 import { Fragment } from "react"
 import { useTranslation } from "react-i18next"
 import { WalletFarmingPositionsSkeleton } from "../table/skeleton/WalletFarmingPositionsSkeleton"
-import { assetsTableStyles } from "../table/WalletAssetsTable.styled"
+import { STableContainer, STableData } from "./WalletFarmingPositions.styled"
 import {
   FarmingPositionsTableData,
   useFarmingPositionsData,
@@ -35,7 +33,7 @@ export const WalletFarmingPositions = ({ data }: Props) => {
   const table = useFarmingPositionsTable(data)
 
   return (
-    <TableContainer css={assetsTableStyles}>
+    <STableContainer>
       <TableTitle>
         <Text fs={[16, 20]} lh={[20, 26]} fw={500} color="white">
           {t("wallet.assets.farmingPositions.title")}
@@ -66,15 +64,15 @@ export const WalletFarmingPositions = ({ data }: Props) => {
             <Fragment key={row.id}>
               <TableRow isOdd={!(i % 2)}>
                 {row.getVisibleCells().map((cell) => (
-                  <TableData key={cell.id}>
+                  <STableData key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableData>
+                  </STableData>
                 ))}
               </TableRow>
             </Fragment>
           ))}
         </TableBodyContent>
       </Table>
-    </TableContainer>
+    </STableContainer>
   )
 }

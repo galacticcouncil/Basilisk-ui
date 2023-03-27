@@ -2,13 +2,24 @@ import {
   createColumnHelper,
   getCoreRowModel,
   useReactTable,
+  VisibilityState,
 } from "@tanstack/react-table"
 import { useTranslation } from "react-i18next"
 import Skeleton from "react-loading-skeleton"
+import { useMedia } from "react-use"
+import { theme } from "theme"
 
 export const useFarmingPositionsSkeleton = (enableAnimation = true) => {
   const { t } = useTranslation()
   const { display } = createColumnHelper()
+
+  const isDesktop = useMedia(theme.viewport.gte.sm)
+  const columnVisibility: VisibilityState = {
+    symbol: true,
+    date: isDesktop,
+    shares: isDesktop,
+    position: true,
+  }
 
   const columns = [
     display({
@@ -65,6 +76,7 @@ export const useFarmingPositionsSkeleton = (enableAnimation = true) => {
   return useReactTable({
     data: mockData,
     columns,
+    state: { columnVisibility },
     getCoreRowModel: getCoreRowModel(),
   })
 }

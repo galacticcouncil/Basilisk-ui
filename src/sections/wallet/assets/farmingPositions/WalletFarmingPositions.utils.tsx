@@ -33,7 +33,7 @@ import { WalletLiquidityPositionsTableName } from "../table/data/WalletLiquidity
 
 export const useFarmingPositionsTable = (data: FarmingPositionsTableData[]) => {
   const { t } = useTranslation()
-  const { accessor, display } = createColumnHelper<FarmingPositionsTableData>()
+  const { accessor } = createColumnHelper<FarmingPositionsTableData>()
   const [sorting, setSorting] = useState<SortingState>([])
 
   const isDesktop = useMedia(theme.viewport.gte.sm)
@@ -42,7 +42,6 @@ export const useFarmingPositionsTable = (data: FarmingPositionsTableData[]) => {
     date: isDesktop,
     shares: isDesktop,
     position: true,
-    actions: true,
   }
 
   const columns = [
@@ -90,11 +89,16 @@ export const useFarmingPositionsTable = (data: FarmingPositionsTableData[]) => {
           ? 1
           : -1,
       cell: ({ row }) => (
-        <div sx={{ flex: "column", gap: 2 }}>
+        <div sx={{ flex: "column", align: ["flex-end", "flex-start"], gap: 2 }}>
           <Text fs={14} lh={18} color="white">
             {t("value.usd", { amount: row.original.value?.usdValue })}
           </Text>
-          <Text fs={12} lh={16} color="neutralGray500">
+          <Text
+            fs={12}
+            lh={16}
+            color="neutralGray500"
+            tAlign={["right", "left"]}
+          >
             {t("pools.pool.positions.position.amounts", {
               amountA: row.original.value?.assetA?.amount,
               symbolA: row.original.value?.assetA?.symbol,
@@ -104,10 +108,6 @@ export const useFarmingPositionsTable = (data: FarmingPositionsTableData[]) => {
           </Text>
         </div>
       ),
-    }),
-    display({
-      id: "actions",
-      cell: () => <div />,
     }),
   ]
 
