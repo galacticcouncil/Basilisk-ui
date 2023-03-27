@@ -6,6 +6,7 @@ import { useLoyaltyRates } from "./PoolFarmLoyaltyGraph.utils"
 import { Text } from "components/Typography/Text/Text"
 import { PalletLiquidityMiningLoyaltyCurve } from "@polkadot/types/lookup"
 import BN from "bignumber.js"
+import { useRef } from "react"
 
 export function PoolFarmLoyaltyGraph(props: {
   farm: AprFarm
@@ -14,13 +15,12 @@ export function PoolFarmLoyaltyGraph(props: {
   enteredAt?: BN
 }) {
   const { t } = useTranslation()
+  const currentPeriod = useRef(props.farm.currentPeriod)
 
   const rates = useLoyaltyRates(
     props.farm,
     props.loyaltyCurve,
-    props.enteredAt
-      ? props.farm.currentPeriod.minus(props.enteredAt)
-      : undefined,
+    props.enteredAt ? currentPeriod.current.minus(props.enteredAt) : undefined,
   )
 
   return (
