@@ -8,9 +8,9 @@ import { FormValues } from "utils/helpers"
 import { useAccountStore, useStore } from "state/store"
 import { BASILISK_ADDRESS_PREFIX, useApiPromise } from "utils/api"
 import BigNumber from "bignumber.js"
-import { useTranslation } from "react-i18next"
+import { Trans, useTranslation } from "react-i18next"
 import { WalletTransferAccountInput } from "sections/wallet/transfer/WalletTransferAccountInput"
-import { safeConvertAddressSS58 } from "utils/formatting"
+import { safeConvertAddressSS58, shortenAccountAddress } from "utils/formatting"
 import { LiquidityPositionInput } from "components/AssetSelect/LiquidityPositionInput"
 import { AccountId32 } from "@polkadot/types/interfaces"
 import { getFixedPointAmount } from "utils/balance"
@@ -40,13 +40,61 @@ export function WalletTransferSectionLiquidityPositions(props: {
     if (!pool?.shareToken?.token) throw new Error("Missing share token")
     const amount = getFixedPointAmount(values.amount, 12)
 
-    return await createTransaction({
-      tx: api.tx.tokens.transferKeepAlive(
-        values.dest,
-        pool.shareToken?.token,
-        amount.toFixed(),
-      ),
-    })
+    return await createTransaction(
+      {
+        tx: api.tx.tokens.transferKeepAlive(
+          values.dest,
+          pool.shareToken?.token,
+          amount.toFixed(),
+        ),
+      },
+      {
+        toast: {
+          onLoading: (
+            <Trans
+              t={t}
+              i18nKey="wallet.assets.transfer.toast.onLoading"
+              tOptions={{
+                value: values.amount,
+                symbol: t("shares"),
+                address: shortenAccountAddress(values.dest, 12),
+              }}
+            >
+              <span />
+              <span className="highlight" />
+            </Trans>
+          ),
+          onSuccess: (
+            <Trans
+              t={t}
+              i18nKey="wallet.assets.transfer.toast.onSuccess"
+              tOptions={{
+                value: values.amount,
+                symbol: t("shares"),
+                address: shortenAccountAddress(values.dest, 12),
+              }}
+            >
+              <span />
+              <span className="highlight" />
+            </Trans>
+          ),
+          onError: (
+            <Trans
+              t={t}
+              i18nKey="wallet.assets.transfer.toast.onError"
+              tOptions={{
+                value: values.amount,
+                symbol: t("shares"),
+                address: shortenAccountAddress(values.dest, 12),
+              }}
+            >
+              <span />
+              <span className="highlight" />
+            </Trans>
+          ),
+        },
+      },
+    )
   }
 
   return (
