@@ -91,7 +91,7 @@ export function WalletTransferSectionOnchain(props: {
           onError: (
             <Trans
               t={t}
-              i18nKey="wallet.assets.transfer.toast.onLoading"
+              i18nKey="wallet.assets.transfer.toast.onError"
               tOptions={{
                 value: values.amount,
                 symbol: assetMeta.data?.symbol,
