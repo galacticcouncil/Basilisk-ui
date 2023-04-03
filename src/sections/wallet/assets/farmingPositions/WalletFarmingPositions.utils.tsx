@@ -29,7 +29,7 @@ import { getEnteredDate } from "utils/block"
 import { BN_0 } from "utils/constants"
 import { useAllUserDeposits } from "utils/farms/deposits"
 import { isNotNil } from "utils/helpers"
-import { WalletLiquidityPositionsTableName } from "../table/data/WalletLiquidityPositionsData"
+import { WalletPositionsTableAssetNames } from "../table/data/WalletPositionsTableAssetNames"
 
 export const useFarmingPositionsTable = (data: FarmingPositionsTableData[]) => {
   const { t } = useTranslation()
@@ -53,7 +53,7 @@ export const useFarmingPositionsTable = (data: FarmingPositionsTableData[]) => {
       sortingFn: (a, b) =>
         a.original.assets[0].symbol.localeCompare(b.original.assets[0].symbol),
       cell: ({ row }) => (
-        <WalletLiquidityPositionsTableName
+        <WalletPositionsTableAssetNames
           assetA={row.original.assets[0]}
           assetB={row.original.assets[1]}
         />
