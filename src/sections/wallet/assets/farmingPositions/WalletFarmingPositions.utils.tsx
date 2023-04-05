@@ -203,7 +203,7 @@ export const useFarmingPositionsData = () => {
         )
 
         if (!pool || !totalIssuance) {
-          console.log("Missing data for value calculation")
+          console.error("Missing data for value calculation")
           return { id, assets, date, shares, value: undefined }
         }
 

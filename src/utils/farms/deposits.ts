@@ -119,7 +119,7 @@ export const useDepositValues = (depositNft: DepositNftType) => {
     )?.data?.total
 
     if (!shareTokenIssuance) {
-      console.log("Could not calculate deposit balances")
+      console.error("Could not calculate deposit balances")
       return defaultValue
     }
 
