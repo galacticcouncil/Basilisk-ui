@@ -6,14 +6,14 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table"
-import { useTranslation } from "react-i18next"
-import { useState } from "react"
-import { WalletAssetsTableBalance } from "sections/wallet/assets/table/data/WalletAssetsTableData"
-import { useMedia } from "react-use"
-import { theme } from "theme"
-import { WalletLiquidityPositionsTableName } from "./data/WalletLiquidityPositionsData"
 import BigNumber from "bignumber.js"
+import { useState } from "react"
+import { useTranslation } from "react-i18next"
+import { useMedia } from "react-use"
+import { WalletAssetsTableBalance } from "sections/wallet/assets/table/data/WalletAssetsTableData"
+import { theme } from "theme"
 import { WalletLiquidityPositionsTableActions } from "./actions/WalletLiquidityPositionsTableActions"
+import { WalletPositionsTableAssetNames } from "./data/WalletPositionsTableAssetNames"
 
 export const useLiquidityPositionsTable = (
   data: LiquidityPositionsTableData[],
@@ -39,7 +39,7 @@ export const useLiquidityPositionsTable = (
       id: "name",
       header: t("wallet.assets.table.header.name"),
       cell: ({ row }) => (
-        <WalletLiquidityPositionsTableName
+        <WalletPositionsTableAssetNames
           assetA={row.original.assetA}
           assetB={row.original.assetB}
         />
