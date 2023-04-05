@@ -70,9 +70,7 @@ export const SContainer = styled.div`
   margin-top: 20px;
 `
 
-export const SButton = styled(motion.button)`
-  all: unset;
-
+export const SButton = styled(motion.div)`
   position: relative;
   display: flex;
   align-items: center;
