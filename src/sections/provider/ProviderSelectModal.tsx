@@ -5,20 +5,22 @@ import { Text } from "components/Typography/Text/Text"
 import { Fragment, useEffect, useState } from "react"
 import { theme } from "theme"
 
-import { ReactComponent as ChevronRightIcon } from "assets/icons/ChevronRight.svg"
-import { ProviderStatus } from "./ProviderStatus"
-import {
-  SItem,
-  SCircle,
-  SContainer,
-  SHeader,
-  SButton,
-  SCircleDot,
-} from "./ProviderSelectModal.styled"
-import { useTranslation } from "react-i18next"
-import { useBestNumber } from "api/chain"
 import { ApiPromise, WsProvider } from "@polkadot/api"
 import { u32, u64 } from "@polkadot/types"
+import { useBestNumber } from "api/chain"
+import { ReactComponent as ChevronRightIcon } from "assets/icons/ChevronRight.svg"
+import { Separator } from "components/Separator/Separator"
+import { useTranslation } from "react-i18next"
+import {
+  SButton,
+  SCircle,
+  SCircleDot,
+  SContainer,
+  SHeader,
+  SItem,
+  SName,
+} from "./ProviderSelectModal.styled"
+import { ProviderStatus } from "./ProviderStatus"
 
 function ProviderSelectItemExternal(props: {
   url: string
@@ -234,25 +236,29 @@ export function ProviderSelectButton() {
 
   return (
     <>
-      <SButton tabIndex={0} role="button" onClick={() => setOpen(true)}>
+      <SButton tabIndex={0} onClick={() => setOpen(true)} whileHover="animate">
+        <SName
+          variants={{
+            initial: { width: 0 },
+            animate: { width: "auto" },
+            exit: { width: 0 },
+          }}
+          transition={{ duration: 0.15, ease: "easeInOut" }}
+        >
+          <Text fs={11} fw={500} css={{ whiteSpace: "nowrap" }}>
+            {selectedProvider?.name}
+          </Text>
+          <ChevronRightIcon />
+          <Separator
+            orientation="vertical"
+            sx={{ height: 14, mr: 10, opacity: 0.2 }}
+            color="primary200"
+          />
+        </SName>
         <ProviderStatus
           relaychainBlockNumber={number.data?.relaychainBlockNumber}
           timestamp={number.data?.timestamp}
         />
-
-        <span
-          sx={{
-            display: "block",
-            width: 1,
-            height: 14,
-            bg: "backgroundGray700",
-          }}
-        />
-
-        <span sx={{ display: "flex", align: "center" }}>
-          <span>{selectedProvider?.name}</span>
-          <ChevronRightIcon sx={{ color: "blue200" }} />
-        </span>
       </SButton>
       {open && (
         <ProviderSelectModal open={open} onClose={() => setOpen(false)} />
