@@ -9,7 +9,6 @@ import {
 import { useUsdPeggedAsset } from "api/asset"
 import { useAssetDetailsList } from "api/assetDetails"
 import { useBestNumber } from "api/chain"
-import { useYieldFarms } from "api/farms"
 import { usePools, usePoolShareTokens } from "api/pools"
 import { useSpotPrices } from "api/spotPrice"
 import { useTotalIssuances } from "api/totalIssuance"
@@ -85,13 +84,13 @@ export const useFarmingPositionsTable = (data: FarmingPositionsTableData[]) => {
       id: "value",
       header: t("wallet.assets.farmingPositions.header.value"),
       sortingFn: (a, b) =>
-        a.original.value?.usdValue.gt(b.original.value?.usdValue ?? BN_0)
+        a.original.value?.amountUSD.gt(b.original.value?.amountUSD ?? BN_0)
           ? 1
           : -1,
       cell: ({ row }) => (
         <div sx={{ flex: "column", align: ["flex-end", "flex-start"], gap: 2 }}>
           <Text fs={14} lh={18} color="white">
-            {t("value.usd", { amount: row.original.value?.usdValue })}
+            {t("value.usd", { amount: row.original.value?.amountUSD })}
           </Text>
           <Text
             fs={12}
@@ -130,17 +129,6 @@ export const useFarmingPositionsData = () => {
   const assetDetails = useAssetDetailsList(
     pools.data?.map((pool) => pool.tokens.map((token) => token.id)).flat(),
   )
-  const yieldFarms = useYieldFarms(
-    deposits.data.deposits
-      ?.map((depositNft) =>
-        depositNft.deposit.yieldFarmEntries.map((i) => ({
-          yieldFarmId: i.yieldFarmId,
-          globalFarmId: i.globalFarmId,
-          poolId: depositNft.deposit.ammPoolId,
-        })),
-      )
-      .flat() ?? [],
-  )
   const shareTokens = usePoolShareTokens(
     pools.data?.map((pool) => pool.address) ?? [],
   )
@@ -154,7 +142,15 @@ export const useFarmingPositionsData = () => {
     usd.data?.id,
   )
 
-  const queries = [pools, deposits, bestNumber, assetDetails]
+  const queries = [
+    pools,
+    deposits,
+    bestNumber,
+    assetDetails,
+    ...totalIssuances,
+    usd,
+    ...spotPrices,
+  ]
   const isLoading = queries.some((q) => q.isInitialLoading)
 
   const data = useMemo(() => {
@@ -163,7 +159,8 @@ export const useFarmingPositionsData = () => {
       !deposits.data.deposits ||
       !bestNumber.data ||
       !assetDetails.data ||
-      !yieldFarms.data
+      totalIssuances.some((q) => !q.data) ||
+      spotPrices.some((q) => !q.data)
     )
       return []
 
@@ -206,14 +203,13 @@ export const useFarmingPositionsData = () => {
         )
 
         if (!pool || !totalIssuance) {
-          console.log("Missing data for value calculation")
+          console.error("Missing data for value calculation")
           return { id, assets, date, shares, value: undefined }
         }
 
         const value = getPositionValues({
           pool,
           depositNft,
-          yieldFarms: yieldFarms.data,
           totalIssuance,
           spotPrices: spotPrices.map((q) => q.data).filter(isNotNil),
         })
@@ -223,7 +219,15 @@ export const useFarmingPositionsData = () => {
     )
 
     return rows
-  }, [pools.data, deposits.data.deposits, bestNumber.data, assetDetails.data])
+  }, [
+    pools.data,
+    deposits.data.deposits,
+    bestNumber.data,
+    assetDetails.data,
+    shareTokens,
+    totalIssuances,
+    spotPrices,
+  ])
 
   return { data, isLoading }
 }

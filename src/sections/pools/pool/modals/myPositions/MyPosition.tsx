@@ -1,20 +1,20 @@
-import { useTranslation } from "react-i18next"
-import { usePoolSharesDeposit } from "../../shares/deposit/PoolSharesDeposit.utils"
-import { useAPR } from "utils/farms/apr"
-import { useAssetMetaList } from "api/assetMeta"
-import { GradientText } from "components/Typography/GradientText/GradientText"
-import { DepositNftType } from "api/deposits"
 import { PoolBase } from "@galacticcouncil/sdk"
-import { Text } from "components/Typography/Text/Text"
-import { Separator } from "components/Separator/Separator"
-import { getAssetLogo } from "components/AssetIcon/AssetIcon"
-import { SMobContainer } from "./MyPositions.styled"
-import { PoolPositionFarmRedeposit } from "../../position/farm/PoolPositionFarmRedeposit"
-import { Icon } from "components/Icon/Icon"
+import { useAssetMetaList } from "api/assetMeta"
+import { DepositNftType } from "api/deposits"
 import { ReactComponent as ChevronRight } from "assets/icons/ChevronRight.svg"
-import { PoolFarmPositionDetail } from "sections/pools/farm/modals/positionDetail/PoolFarmPositionDetail"
-import { useState } from "react"
+import { getAssetLogo } from "components/AssetIcon/AssetIcon"
+import { Icon } from "components/Icon/Icon"
 import { MultipleIcons } from "components/MultipleIcons/MultipleIcons"
+import { Separator } from "components/Separator/Separator"
+import { GradientText } from "components/Typography/GradientText/GradientText"
+import { Text } from "components/Typography/Text/Text"
+import { useState } from "react"
+import { useTranslation } from "react-i18next"
+import { PoolFarmPositionDetail } from "sections/pools/farm/modals/positionDetail/PoolFarmPositionDetail"
+import { useAPR } from "utils/farms/apr"
+import { useDepositValues } from "utils/farms/deposits"
+import { PoolPositionFarmRedeposit } from "../../position/farm/PoolPositionFarmRedeposit"
+import { SMobContainer } from "./MyPositions.styled"
 
 type MyPositionProps = {
   depositNft: DepositNftType
@@ -24,13 +24,9 @@ type MyPositionProps = {
 
 export const MyPosition = ({ pool, depositNft, index }: MyPositionProps) => {
   const { t } = useTranslation()
-
   const [openFarm, setOpenFarm] = useState(false)
 
-  const { usdValue, assetA, assetB } = usePoolSharesDeposit({
-    depositNft,
-    pool,
-  })
+  const { amountUSD, assetA, assetB } = useDepositValues(depositNft)
 
   const apr = useAPR(pool.address)
   const activeAprs =
@@ -93,7 +89,7 @@ export const MyPosition = ({ pool, depositNft, index }: MyPositionProps) => {
                 })}
               </Text>
               <Text fs={14} lh={18} color="neutralGray500">
-                {t("value.usd", { amount: usdValue })}
+                {t("value.usd", { amount: amountUSD })}
               </Text>
             </div>
           </div>
