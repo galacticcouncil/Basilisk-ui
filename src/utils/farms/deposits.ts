@@ -139,7 +139,13 @@ export const useDepositValues = (depositNft: DepositNftType) => {
     })
 
     return { assetA, assetB, amountUSD }
-  }, [pool, shareToken.data, spotPrices, totalIssuances])
+  }, [
+    pool,
+    shareToken.data,
+    spotPrices,
+    totalIssuances,
+    depositNft.deposit.shares,
+  ])
 
   return { ...data, isLoading }
 }
@@ -181,7 +187,13 @@ export const useTotalInDeposit = (depositNft: DepositNftType) => {
     const total = poolTotal.times(ratio)
 
     return total
-  }, [pool, totalIssuance.data, spotPrices, isLoading])
+  }, [
+    pool,
+    totalIssuance.data,
+    spotPrices,
+    isLoading,
+    depositNft.deposit.shares,
+  ])
 
   return { data, isLoading }
 }

@@ -1,20 +1,19 @@
-import { Modal, ModalMeta } from "components/Modal/Modal"
-import { useTranslation } from "react-i18next"
-import { useAPR } from "utils/farms/apr"
-import { u128, u32 } from "@polkadot/types"
 import { PoolBase } from "@galacticcouncil/sdk"
-import { Fragment, useState } from "react"
-import { PoolFarmDeposit } from "sections/pools/farm/deposit/PoolFarmDeposit"
-import { PoolFarmDetail } from "sections/pools/farm/detail/PoolFarmDetail"
+import { u128, u32 } from "@polkadot/types"
 import {
   PalletLiquidityMiningDepositData,
   PalletLiquidityMiningYieldFarmEntry,
 } from "@polkadot/types/lookup"
-import { useMedia } from "react-use"
-import { theme } from "theme"
 import { Button } from "components/Button/Button"
-import { accountCursor } from "@galacticcouncil/apps/dist/types/db"
+import { Modal, ModalMeta } from "components/Modal/Modal"
+import { Fragment, useState } from "react"
+import { useTranslation } from "react-i18next"
+import { useMedia } from "react-use"
+import { PoolFarmDeposit } from "sections/pools/farm/deposit/PoolFarmDeposit"
+import { PoolFarmDetail } from "sections/pools/farm/detail/PoolFarmDetail"
 import { useAccountStore } from "state/store"
+import { theme } from "theme"
+import { useAPR } from "utils/farms/apr"
 
 export function PoolFarmJoinSectionList(props: {
   pool: PoolBase
@@ -68,7 +67,7 @@ export function PoolFarmJoinSectionList(props: {
             variant="primary"
             sx={{ width: "100%" }}
             onClick={() => setOpenJoinFarm(true)}
-            disabled={account.isExternalWalletConnected}
+            disabled={account?.isExternalWalletConnected}
           >
             {t("farms.deposit.submit")}
           </Button>
