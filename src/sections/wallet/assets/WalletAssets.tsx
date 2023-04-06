@@ -33,10 +33,8 @@ export const WalletAssets = () => {
       ) : (
         hasData && (
           <>
-            <WalletAssetsHeader
-              assetsData={assetTableQuery.data}
-              lpData={liquidityPositionsQuery.data}
-            />
+            <WalletAssetsHeader assetsData={assetTableQuery.data} />
+
             <div sx={{ display: "flex", flexDirection: "column", gap: 20 }}>
               <WalletAssetsTable data={assetTableQuery.data} />
               <WalletLiquidityPositionsTable
