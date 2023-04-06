@@ -1,21 +1,14 @@
 import { useNavigate } from "@tanstack/react-location"
 import { ReactComponent as ChevronRight } from "assets/icons/ChevronRight.svg"
-import { ReactComponent as CrossIcon } from "assets/icons/CrossIcon.svg"
 import { AddressInput } from "components/AddressInput/AddressInput"
-import { SErrorMessage } from "components/AssetInput/AssetInput.styled"
 import { Button } from "components/Button/Button"
 import { ModalMeta } from "components/Modal/Modal"
-import { Spacer } from "components/Spacer/Spacer"
 import { Text } from "components/Typography/Text/Text"
 import { Controller, useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { externalWallet, useAccountStore } from "state/store"
 import { safeConvertAddressSS58 } from "utils/formatting"
 import { FormValues } from "utils/helpers"
-import {
-  CloseIcon,
-  PasteAddressIcon,
-} from "./ExternalWalletConnectModal.styled"
 
 type ExternalWalletConnectModalProps = {
   onBack: () => void
@@ -80,47 +73,19 @@ export const ExternalWalletConnectModal = ({
             field: { name, value, onChange },
             fieldState: { error },
           }) => {
-            const rightIcon = value ? (
-              <CloseIcon
-                icon={<CrossIcon />}
-                onClick={() => onChange("")}
-                name={t("modal.closeButton.name")}
-              />
-            ) : (
-              <PasteAddressIcon
-                onClick={async () => {
-                  const text = await navigator.clipboard.readText()
-                  onChange(text)
-                }}
-              />
-            )
-
             return (
-              <>
-                <div
-                  css={{
-                    display: "grid",
-                    gridTemplateColumns: "auto 1fr",
-                    alignItems: "center",
-                    gap: 16,
-                    mt: 32,
-                  }}
-                >
-                  <AddressInput
-                    name={name}
-                    onChange={onChange}
-                    value={value}
-                    placeholder={t(
-                      "walletConnect.externalWallet.modal.input.placeholder",
-                    )}
-                    rightIcon={rightIcon}
-                    css={{ width: "100%", height: 35, padding: "0 10px" }}
-                    error={error?.message}
-                  />
-                </div>
-                {error && <SErrorMessage>{error.message}</SErrorMessage>}
-                <Spacer size={35} />
-              </>
+              <div>
+                <AddressInput
+                  name={name}
+                  onChange={onChange}
+                  value={value}
+                  placeholder={t(
+                    "walletConnect.externalWallet.modal.input.placeholder",
+                  )}
+                  css={{ width: "100%", height: 35, padding: "0 10px" }}
+                  error={error?.message}
+                />
+              </div>
             )
           }}
         />
