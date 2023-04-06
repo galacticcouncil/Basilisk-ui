@@ -1,5 +1,5 @@
 import { useAsset } from "api/asset"
-import { forwardRef, InputHTMLAttributes } from "react"
+import { forwardRef, InputHTMLAttributes, ReactNode } from "react"
 import { useTranslation } from "react-i18next"
 import { BASILISK_ADDRESS_PREFIX, NATIVE_ASSET_ID } from "utils/api"
 import { safeConvertAddressSS58 } from "utils/formatting"
@@ -18,13 +18,13 @@ type InputProps = {
   value: Maybe<string>
   disabled?: boolean
   type?: InputHTMLAttributes<HTMLInputElement>["type"]
-
   name: string
-  label: string
+  label?: string
   error?: string
   placeholder?: string
   withLabel?: boolean
   className?: string
+  rightIcon?: ReactNode
 }
 
 export const AddressInput = forwardRef<HTMLInputElement, InputProps>(
@@ -59,6 +59,7 @@ export const AddressInput = forwardRef<HTMLInputElement, InputProps>(
               })}
             </SNativeAddress>
           )}
+          {props.rightIcon ?? null}
         </SInputWrapper>
 
         {props.error && <SErrorMessage>{props.error}</SErrorMessage>}

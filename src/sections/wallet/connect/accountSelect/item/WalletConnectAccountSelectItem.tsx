@@ -27,11 +27,13 @@ export const WalletConnectAccountSelectItem: FC<Props> = ({
   provider,
   setAccount,
 }) => {
-  const basiliskAddress = encodeAddress(
-    decodeAddress(address),
-    BASILISK_ADDRESS_PREFIX,
-  )
-  const kusamaAddress = address
+  const isBasiliskAddress = address[0] === "b"
+  const basiliskAddress = isBasiliskAddress
+    ? address
+    : encodeAddress(decodeAddress(address), BASILISK_ADDRESS_PREFIX)
+  const kusamaAddress = isBasiliskAddress
+    ? encodeAddress(decodeAddress(address))
+    : address
   const { data } = useTokenBalance(NATIVE_ASSET_ID, kusamaAddress)
   const { data: meta } = useAssetMeta(NATIVE_ASSET_ID)
 

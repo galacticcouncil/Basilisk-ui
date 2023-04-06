@@ -227,7 +227,11 @@ export const MyPositionsHeader = ({
             sx={{ p: "12px 21px", mt: 22 }}
             isLoading={claimAll.isLoading}
             onClick={() => claimAll.mutation.mutate()}
-            disabled={!claimableAssets.length || claimable?.data?.usd.isZero()}
+            disabled={
+              !claimableAssets.length ||
+              claimable?.data?.usd.isZero() ||
+              account?.isExternalWalletConnected
+            }
           >
             <FlagIcon />
             {t("pools.pool.claim.button")}

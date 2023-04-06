@@ -13,6 +13,8 @@ import {
 import { useMedia } from "react-use"
 import { theme } from "theme"
 import { Button } from "components/Button/Button"
+import { accountCursor } from "@galacticcouncil/apps/dist/types/db"
+import { useAccountStore } from "state/store"
 
 export function PoolFarmJoinSectionList(props: {
   pool: PoolBase
@@ -26,6 +28,7 @@ export function PoolFarmJoinSectionList(props: {
   ) => void
 }) {
   const { t } = useTranslation()
+  const { account } = useAccountStore()
   const isDesktop = useMedia(theme.viewport.gte.sm)
   const [openJoinFarm, setOpenJoinFarm] = useState(false)
   const apr = useAPR(props.pool.address)
@@ -65,6 +68,7 @@ export function PoolFarmJoinSectionList(props: {
             variant="primary"
             sx={{ width: "100%" }}
             onClick={() => setOpenJoinFarm(true)}
+            disabled={account.isExternalWalletConnected}
           >
             {t("farms.deposit.submit")}
           </Button>
