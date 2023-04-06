@@ -1,32 +1,31 @@
+import { PoolBase } from "@galacticcouncil/sdk"
+import { useTokenBalance } from "api/balances"
+import { DepositNftType, useAccountDepositIds, useDeposits } from "api/deposits"
+import { usePoolShareToken } from "api/pools"
 import { ReactComponent as ChevronDown } from "assets/icons/ChevronDown.svg"
 import { ReactComponent as MinusIcon } from "assets/icons/MinusIcon.svg"
+import { ReactComponent as MoreIcon } from "assets/icons/MoreIcon.svg"
 import { ReactComponent as PlusIcon } from "assets/icons/PlusIcon.svg"
 import { ReactComponent as WindMillIcon } from "assets/icons/WindMillIcon.svg"
-import { ReactComponent as MoreIcon } from "assets/icons/MoreIcon.svg"
 import { Button } from "components/Button/Button"
 import { Icon } from "components/Icon/Icon"
+import { Modal } from "components/Modal/Modal"
 import { FC, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { PoolAddLiquidity } from "sections/pools/pool/modals/addLiquidity/PoolAddLiquidity"
-import { PoolRemoveLiquidity } from "sections/pools/pool/modals/removeLiquidity/PoolRemoveLiquidity"
+import { useMedia } from "react-use"
 import { PoolFarmJoin } from "sections/pools/farm/modals/join/PoolFarmJoin"
-import { PoolBase } from "@galacticcouncil/sdk"
 import {
   SActionsContainer,
   SButtonOpen,
   SMobActionButton,
 } from "sections/pools/pool/actions/PoolActions.styled"
+import { PoolAddLiquidity } from "sections/pools/pool/modals/addLiquidity/PoolAddLiquidity"
+import { PoolRemoveLiquidity } from "sections/pools/pool/modals/removeLiquidity/PoolRemoveLiquidity"
 import { useAccountStore } from "state/store"
-import { useMedia } from "react-use"
 import { theme } from "theme"
-import { Modal } from "components/Modal/Modal"
-import { useAccountDepositIds, useDeposits } from "api/deposits"
+import { usePoolFarms } from "utils/farms/apr"
 import { MyPositionsModal } from "../modals/myPositions/MyPositionsModal"
 import { useCurrentSharesValue } from "../shares/value/PoolSharesValue.utils"
-import { usePoolShareToken } from "api/pools"
-import { useTokenBalance } from "api/balances"
-import { usePoolFarms } from "utils/farms/apr"
-
 type Props = {
   pool: PoolBase
   isExpanded: boolean
@@ -48,8 +47,8 @@ export const PoolActions: FC<Props> = ({
   const [openMyPositions, setOpenMyPositions] = useState(false)
   const { account } = useAccountStore()
   const isDesktop = useMedia(theme.viewport.gte.sm)
-  const farms = usePoolFarms(pool.address)
 
+  const farms = usePoolFarms(pool.address)
   const deposits = useDeposits(pool.address)
   const accountDepositIds = useAccountDepositIds(account?.address)
   const positions = deposits.data?.filter((deposit) =>
@@ -67,9 +66,30 @@ export const PoolActions: FC<Props> = ({
 
   const closeActionsDrawer = () => setOpenActions(false)
 
+  const hasAvailableFarms = (position: DepositNftType) => {
+    const availableYieldFarms =
+      farms.data?.filter(
+        (farm) =>
+          !position.deposit.yieldFarmEntries.some(
+            (entry) =>
+              entry.globalFarmId.toString() === farm.globalFarm.id.toString() &&
+              entry.yieldFarmId.toString() === farm.yieldFarm.id.toString(),
+          ),
+      ) ?? []
+
+    return availableYieldFarms.length > 0
+  }
+
   const disabledRemoveLP = balance.data?.balance.isZero()
 
-  const disabledJoinFarm = !farms.data?.length || balance.data?.balance.isZero()
+  const disabledJoinFarm =
+    !farms.data?.length ||
+    (balance.data?.balance.isZero() &&
+      positions?.every((position) =>
+        position.deposit.yieldFarmEntries.length > 0
+          ? !hasAvailableFarms(position)
+          : true,
+      ))
 
   const disabledMyPositions =
     !account || (!positions?.length && (!dollarValue || dollarValue.isZero()))
