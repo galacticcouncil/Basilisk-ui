@@ -27,7 +27,7 @@ export const PoolFarmRedeposit = (props: Props) => {
   return (
     <Button
       variant="primary"
-      disabled={redeposit.isLoading}
+      disabled={redeposit.isLoading || account.isExternalWalletConnected}
       onClick={() => redeposit.mutate()}
       sx={{ width: "100%" }}
     >
