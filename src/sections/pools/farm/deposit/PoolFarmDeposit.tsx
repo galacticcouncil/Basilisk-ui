@@ -191,7 +191,12 @@ export const PoolFarmDeposit = (props: PoolJoinFarmDepositProps) => {
         }}
       >
         {account ? (
-          <Button type="submit" variant="primary" sx={{ width: "100%" }}>
+          <Button
+            type="submit"
+            variant="primary"
+            sx={{ width: "100%" }}
+            disabled={account.isExternalWalletConnected}
+          >
             {props.isDrawer ? t("confirm") : t("farms.deposit.submit")}
           </Button>
         ) : (

@@ -18,9 +18,8 @@ type InputProps = {
   value: Maybe<string>
   disabled?: boolean
   type?: InputHTMLAttributes<HTMLInputElement>["type"]
-
   name: string
-  label: string
+  label?: string
   error?: string
   placeholder?: string
   withLabel?: boolean

@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next"
 import { WalletPositionsTableAssetNames } from "sections/wallet/assets/table/data/WalletPositionsTableAssetNames"
 import { WalletLiquidityPositionsTableDetailsBalance } from "sections/wallet/assets/table/details/WalletLiquidityPositionsTableDetailsBalance"
 import { LiquidityPositionsTableData } from "sections/wallet/assets/table/WalletLiquidityPositionsTable.utils"
+import { useAccountStore } from "state/store"
 import { theme } from "theme"
 import { LINKS } from "utils/navigation"
 
@@ -24,6 +25,7 @@ export const WalletLiquidityPositionsTableActionsMob = ({
   onTransferClick,
 }: Props) => {
   const { t } = useTranslation()
+  const { account } = useAccountStore()
 
   if (!row) return null
 
@@ -106,6 +108,7 @@ export const WalletLiquidityPositionsTableActionsMob = ({
               icon={<TransferIcon />}
               css={{ width: "100%" }}
               large
+              disabled={account?.isExternalWalletConnected}
             >
               {t("wallet.assets.liquidityPositions.table.actions.transfer")}
             </TableAction>

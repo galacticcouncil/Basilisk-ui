@@ -79,7 +79,7 @@ export const PoolActions: FC<Props> = ({
       <Button
         fullWidth
         size="small"
-        disabled={!account}
+        disabled={!account || account?.isExternalWalletConnected}
         onClick={() => {
           setOpenAdd(true)
           closeActionsDrawer()
@@ -94,7 +94,9 @@ export const PoolActions: FC<Props> = ({
       <Button
         fullWidth
         size="small"
-        disabled={!account || disabledRemoveLP}
+        disabled={
+          !account || disabledRemoveLP || account.isExternalWalletConnected
+        }
         onClick={() => {
           setOpenRemove(true)
           closeActionsDrawer()
@@ -109,7 +111,9 @@ export const PoolActions: FC<Props> = ({
       <Button
         fullWidth
         size="small"
-        disabled={!account || disabledJoinFarm}
+        disabled={
+          !account || disabledJoinFarm || account.isExternalWalletConnected
+        }
         onClick={() => {
           setOpenFarms(true)
           closeActionsDrawer()
