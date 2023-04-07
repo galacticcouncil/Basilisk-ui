@@ -1,7 +1,3 @@
-import BigNumber from "bignumber.js"
-import { Heading } from "components/Typography/Heading/Heading"
-import { useTranslation } from "react-i18next"
-import Skeleton from "react-loading-skeleton"
 import {
   useTotalLocked,
   useUsersTotalLocked,
