@@ -8,7 +8,7 @@ import { Navigate } from "@tanstack/react-location"
 export const routes = [
   {
     path: "/",
-    element: <Navigate to="/pools-and-farms" />,
+    element: <Navigate to="/pools-and-farms" search />,
   },
   { path: "pools-and-farms", element: <PoolsPage /> },
   { path: "trade", element: <TradePage /> },
@@ -17,7 +17,7 @@ export const routes = [
     children: [
       {
         path: "/",
-        element: <Navigate to="assets" />,
+        element: <Navigate to="assets" search />,
       },
       {
         path: "assets",
@@ -39,6 +39,6 @@ export const routes = [
   },
   {
     path: "*",
-    element: <Navigate to="/pools-and-farms" />,
+    element: <Navigate to="/pools-and-farms" search />,
   },
 ]
