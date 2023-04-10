@@ -13,7 +13,7 @@ export const PoolsHeaderTotalValue = ({
   const { t } = useTranslation()
 
   return (
-    <Heading as="h3" fs={[18, 42]} fw={900}>
+    <Heading as="h3" fs={[18, 34]} lh={[24, 42]} fw={900}>
       {!isLoading ? t("value.usd", { amount }) : <Skeleton width={180} />}
     </Heading>
   )

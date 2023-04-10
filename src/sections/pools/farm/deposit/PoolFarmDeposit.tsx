@@ -8,7 +8,7 @@ import { WalletConnectButton } from "sections/wallet/connect/modal/WalletConnect
 import { useActiveYieldFarms, useGlobalFarms } from "api/farms"
 import { BN_0, BN_BILL, DEFAULT_DECIMALS } from "utils/constants"
 import { AprFarm } from "utils/farms/apr"
-import { FormValues } from "utils/helpers"
+import { FormValues, isNotNil } from "utils/helpers"
 import { getFloatingPointAmount } from "utils/balance"
 import { LiquidityPositionInput } from "components/AssetSelect/LiquidityPositionInput"
 import BN from "bignumber.js"
@@ -20,9 +20,13 @@ type PoolJoinFarmDepositProps = {
 }
 
 export const PoolFarmDeposit = (props: PoolJoinFarmDepositProps) => {
-  const activeYieldFarms = useActiveYieldFarms(props.pool.address)
+  const activeYieldFarmsQuery = useActiveYieldFarms([props.pool.address])
+  const activeYieldFarms = activeYieldFarmsQuery
+    .map((q) => q.data)
+    .filter(isNotNil)
+    .flat(2)
   const globalFarms = useGlobalFarms(
-    activeYieldFarms.data?.map((f) => f.globalFarmId) ?? [],
+    activeYieldFarms.map((f) => f.globalFarmId),
   )
 
   const minDeposit =
@@ -109,10 +113,10 @@ export const PoolFarmDeposit = (props: PoolJoinFarmDepositProps) => {
       )
     }
 
-    if (!activeYieldFarms.data)
+    if (activeYieldFarmsQuery.some((q) => !q.data))
       throw new Error("Missing active yield farms data")
 
-    const [firstActive, ...restActive] = activeYieldFarms.data
+    const [firstActive, ...restActive] = activeYieldFarms
 
     const firstDeposit = await createTransaction(
       {

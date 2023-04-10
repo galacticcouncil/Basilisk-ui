@@ -8,6 +8,7 @@ import { PoolsHeaderTotal } from "sections/pools/header/total/PoolsHeaderTotal"
 import { useAccountStore } from "state/store"
 import { PoolsHeaderVolume } from "./volume/PoolsHeaderVolume"
 import { SValue } from "./PoolsHeader.styled"
+import { PoolsHeaderClaim } from "./claim/PoolsHeaderClaim"
 
 type Props = {
   myPositions: boolean
@@ -62,6 +63,8 @@ export const PoolsHeader = ({
           <Text color="neutralGray300">{t("pools.header.total24volumes")}</Text>
           <PoolsHeaderVolume myPositions={myPositions} variant="pools" />
         </SValue>
+
+        <PoolsHeaderClaim />
       </div>
     </div>
   )
