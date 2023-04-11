@@ -5,8 +5,9 @@ import { Separator } from "components/Separator/Separator"
 import { Spacer } from "components/Spacer/Spacer"
 import { Text } from "components/Typography/Text/Text"
 import { useMemo } from "react"
-import { useTranslation } from "react-i18next"
-import { useAccountStore } from "state/store"
+import { Trans, useTranslation } from "react-i18next"
+import { ToastMessage, useAccountStore } from "state/store"
+import { TOAST_MESSAGES } from "state/toasts"
 import { useClaimAllMutation, useClaimableAmount } from "utils/farms/claiming"
 import { SButton, SContent, STrigger } from "./PoolsHeaderClaim.styled"
 
@@ -35,8 +36,25 @@ export const PoolsHeaderClaim = () => {
     return { claimableAssets }
   }, [assetsMeta.data, claimable.data?.assets])
 
-  // TODO: add toast
-  const claimAll = useClaimAllMutation(undefined, undefined, undefined)
+  const toast = TOAST_MESSAGES.reduce((memo, type) => {
+    const msType = type === "onError" ? "onLoading" : type
+    memo[type] = (
+      <>
+        <Trans i18nKey={`pools.allFarms.claim.toast.${msType}`}>
+          <span />
+        </Trans>
+        {t("value", {
+          value: claimable.data?.usd,
+          type: "token",
+          numberPrefix: "$",
+          fixedPointScale: 12,
+        })}
+      </>
+    )
+    return memo
+  }, {} as ToastMessage)
+
+  const claimAll = useClaimAllMutation(undefined, undefined, toast)
 
   return (
     <div sx={{ m: "auto 0" }}>
