@@ -1,4 +1,4 @@
-import { BasiliskIcon } from "assets/icons/tokens/BasiliskIcon"
+import { ReactComponent as BasiliskIcon } from "assets/icons/BasiliskIcon.svg"
 import { ReactComponent as BasiliskLogo } from "assets/icons/BasiliskLogo.svg"
 import { Icon } from "components/Icon/Icon"
 import { HeaderMenu } from "components/Layout/Header/menu/HeaderMenu"

@@ -42,6 +42,7 @@ export const AssetsModalRow: FC<AssetsModalRowProps> = ({
       <div
         sx={{
           display: "flex",
+          align: "center",
         }}
       >
         <Icon icon={asset.data?.icon} sx={{ mr: 10 }} size={32} />
