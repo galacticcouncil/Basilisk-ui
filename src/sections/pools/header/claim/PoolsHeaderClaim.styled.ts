@@ -1,11 +1,8 @@
 import styled from "@emotion/styled"
-import { Trigger } from "@radix-ui/react-dropdown-menu"
+import { Content, Trigger } from "@radix-ui/react-dropdown-menu"
 import { Button } from "components/Button/Button"
+import { fadeInKeyframes } from "components/Dropdown/Dropdown.styled"
 import { theme } from "theme"
-
-export const SContainer = styled.div`
-  margin: auto 0;
-`
 
 export const STrigger = styled(Trigger)`
   all: unset;
@@ -61,14 +58,11 @@ export const STrigger = styled(Trigger)`
 `
 
 export const SButton = styled(Button)`
+  padding: 18px 76px;
   font-weight: 700;
-
-  > span {
-    gap: 4px;
-  }
 `
 
-export const SContent = styled.div`
+export const SContent = styled(Content)`
   padding: 32px;
 
   background: linear-gradient(
@@ -81,4 +75,8 @@ export const SContent = styled.div`
     #111320;
   box-shadow: 0px 55px 49px -6px rgba(1, 2, 5, 0.65);
   border-radius: 20px;
+
+  transform-origin: top center;
+  animation: 0.15s ease-in-out ${fadeInKeyframes};
+  z-index: ${theme.zIndices.toast};
 `
