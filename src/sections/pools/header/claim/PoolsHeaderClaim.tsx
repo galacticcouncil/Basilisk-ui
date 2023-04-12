@@ -56,8 +56,10 @@ export const PoolsHeaderClaim = () => {
 
   const claimAll = useClaimAllMutation(undefined, undefined, toast)
 
+  if (!account) return null
+
   return (
-    <div sx={{ m: "auto 0" }}>
+    <div sx={{ m: ["16px 0", "auto 0"] }}>
       <DropdownMenu.Root>
         <STrigger>
           {t("pools.header.claim.check")}

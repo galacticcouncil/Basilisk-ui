@@ -8,13 +8,15 @@ export const STrigger = styled(Trigger)`
   all: unset;
 
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 10px;
 
   position: relative;
   overflow: hidden;
 
-  padding: 16px 32px;
+  width: 100%;
+  padding: 16px 0;
 
   background: ${theme.gradients.primaryGradient};
   border-radius: 9999px;
@@ -55,6 +57,11 @@ export const STrigger = styled(Trigger)`
       #111320;
     color: ${theme.colors.primary400};
   }
+
+  @media ${theme.viewport.gte.sm} {
+    width: auto;
+    padding: 16px 32px;
+  }
 `
 
 export const SButton = styled(Button)`
@@ -63,7 +70,7 @@ export const SButton = styled(Button)`
 `
 
 export const SContent = styled(Content)`
-  padding: 32px;
+  padding: 20px 32px;
 
   background: linear-gradient(
       180deg,
@@ -79,4 +86,8 @@ export const SContent = styled(Content)`
   transform-origin: top center;
   animation: 0.15s ease-in-out ${fadeInKeyframes};
   z-index: ${theme.zIndices.toast};
+
+  @media ${theme.viewport.gte.sm} {
+    padding: 32px;
+  }
 `
