@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import { Content, Trigger } from "@radix-ui/react-dropdown-menu"
+import { Trigger } from "@radix-ui/react-tooltip"
 import { Button } from "components/Button/Button"
 import { fadeInKeyframes } from "components/Dropdown/Dropdown.styled"
 import { theme } from "theme"
@@ -46,6 +46,10 @@ export const STrigger = styled(Trigger)`
     }
   }
 
+  svg {
+    transition: all 0.15s ease-in-out;
+  }
+
   &[data-state="open"] {
     background: linear-gradient(
         180deg,
@@ -56,6 +60,10 @@ export const STrigger = styled(Trigger)`
       linear-gradient(359.21deg, #111320 -1.12%, #f6297c 77.53%, #fc3f8c 94.14%),
       #111320;
     color: ${theme.colors.primary400};
+
+    svg {
+      transform: rotate(180deg);
+    }
   }
 
   @media ${theme.viewport.gte.sm} {
@@ -69,7 +77,7 @@ export const SButton = styled(Button)`
   font-weight: 700;
 `
 
-export const SContent = styled(Content)`
+export const SContent = styled.div`
   padding: 20px 32px;
 
   background: linear-gradient(
