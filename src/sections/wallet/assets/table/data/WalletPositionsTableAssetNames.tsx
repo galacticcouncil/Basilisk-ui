@@ -20,21 +20,21 @@ export const WalletPositionsTableAssetNames = ({
           { icon: getAssetLogo(assetA.symbol) },
           { icon: getAssetLogo(assetB.symbol) },
         ]}
-        size={large ? 32 : [24, 32]}
+        size={large ? 32 : [24, 27]}
       />
       <div>
         <Text
           fw={600}
-          fs={large ? 18 : [12, 18]}
-          lh={large ? 24 : [16, 24]}
+          fs={large ? 18 : [12, 16]}
+          lh={large ? 24 : [16, 22]}
           color="white"
         >
           {assetA.symbol}/{assetB.symbol}
         </Text>
         <Text
           fw={500}
-          fs={large ? 14 : [11, 14]}
-          lh={large ? 18 : [14, 18]}
+          fs={large ? 14 : [11, 12]}
+          lh={large ? 18 : [14, 16]}
           color="neutralGray400"
         >
           {assetA.name}/{assetB.name}
