@@ -17,6 +17,7 @@ type Props = {
 }
 
 export const WalletAssetsHeader = ({ assetsData, isLoading }: Props) => {
+  const { t } = useTranslation()
   const totalUsd = useMemo(() => {
     if (!assetsData) return null
 
@@ -46,14 +47,22 @@ export const WalletAssetsHeader = ({ assetsData, isLoading }: Props) => {
       sx={{ flex: ["column", "row"], mb: [28, 56], gap: [0, 16] }}
       css={{ flexWrap: "wrap" }}
     >
-      <WalletAssetsHeaderValue isLoading={isLoading} value={totalUsd} />
+      <WalletAssetsHeaderValue
+        isLoading={isLoading}
+        value={totalUsd}
+        label={t("wallet.assets.header.total")}
+      />
 
       <Separator
         sx={{ mb: 15, display: ["inherit", "none"] }}
         css={{ background: `rgba(${theme.rgbColors.white}, 0.06)` }}
       />
 
-      <WalletAssetsHeaderValue isLoading={isLoading} value={transferableUsd} />
+      <WalletAssetsHeaderValue
+        isLoading={isLoading}
+        value={transferableUsd}
+        label={t("wallet.assets.header.transferable")}
+      />
 
       <Separator
         sx={{ mb: 15, display: ["inherit", "none"] }}
@@ -63,6 +72,7 @@ export const WalletAssetsHeader = ({ assetsData, isLoading }: Props) => {
       <WalletAssetsHeaderValue
         isLoading={totalLocked.isLoading}
         value={totalLocked.data}
+        label={t("wallet.assets.header.totalInPools")}
       />
     </div>
   )
@@ -71,6 +81,7 @@ export const WalletAssetsHeader = ({ assetsData, isLoading }: Props) => {
 const WalletAssetsHeaderValue = (props: {
   isLoading?: boolean
   value?: BigNumber | null
+  label: string
 }) => {
   const { t } = useTranslation()
 
@@ -85,7 +96,7 @@ const WalletAssetsHeaderValue = (props: {
       }}
     >
       <Text color="neutralGray300" sx={{ fontSize: [14, 16], mb: [0, 14] }}>
-        {t("wallet.assets.header.total")}
+        {props.label}
       </Text>
 
       {props.isLoading ? (
