@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { useMedia } from "react-use"
 import { useAccountStore } from "state/store"
 import { theme } from "theme"
-import { SContent, STrigger } from "./PoolsHeaderClaim.styled"
+import { SButton, SContent, STrigger } from "./PoolsHeaderClaim.styled"
 import { PoolsHeaderClaimContent } from "./content/PoolsHeaderClaimContent"
 
 export const PoolsHeaderClaim = () => {
@@ -18,19 +18,19 @@ export const PoolsHeaderClaim = () => {
 
   return (
     <div sx={{ m: ["16px 0", "auto 0"] }}>
-      <Root delayDuration={0} open={open} onOpenChange={setOpen}>
-        <STrigger
-          onClick={(e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            setOpen(true)
-          }}
-        >
-          {t("pools.header.claim.check")}
-          <ChevronDown css={{ transform: `rotate(${open ? 180 : 0}deg)` }} />
-        </STrigger>
-
-        {isDesktop ? (
+      {isDesktop ? (
+        <Root delayDuration={0} open={open} onOpenChange={setOpen}>
+          <STrigger
+            isOpen={open}
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              setOpen(true)
+            }}
+          >
+            {t("pools.header.claim.check")}
+            <ChevronDown />
+          </STrigger>
           <Portal>
             <Content asChild side="bottom" align="end" sideOffset={8}>
               <SContent>
@@ -38,14 +38,24 @@ export const PoolsHeaderClaim = () => {
               </SContent>
             </Content>
           </Portal>
-        ) : (
-          open && (
+        </Root>
+      ) : (
+        <>
+          <SButton
+            variant="gradient"
+            onClick={() => setOpen((prev) => !prev)}
+            isOpen={open}
+          >
+            {t("pools.header.claim.check")}
+            <ChevronDown />
+          </SButton>
+          {open && (
             <SContent>
               <PoolsHeaderClaimContent onClaim={() => setOpen(false)} />
             </SContent>
-          )
-        )}
-      </Root>
+          )}
+        </>
+      )}
     </div>
   )
 }

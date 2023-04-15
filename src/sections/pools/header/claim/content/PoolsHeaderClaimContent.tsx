@@ -103,8 +103,8 @@ export const PoolsHeaderClaimContent = ({ onClaim }: Props) => {
           claimAll.isLoading
         }
         onClick={() => {
-          onClaim()
           claimAll.mutation.mutate()
+          onClaim()
         }}
       >
         {t("pools.header.claim.button")}

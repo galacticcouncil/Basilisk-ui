@@ -1,10 +1,31 @@
+import { css } from "@emotion/react"
 import styled from "@emotion/styled"
 import { Trigger } from "@radix-ui/react-tooltip"
 import { Button } from "components/Button/Button"
 import { fadeInKeyframes } from "components/Dropdown/Dropdown.styled"
 import { theme } from "theme"
 
-export const STrigger = styled(Trigger)`
+const openStyles = css`
+  background: linear-gradient(
+      180deg,
+      rgba(35, 56, 55, 0.3) 0%,
+      rgba(0, 0, 0, 0) 100%
+    ),
+    linear-gradient(0deg, #16171c, #16171c),
+    linear-gradient(359.21deg, #111320 -1.12%, #f6297c 77.53%, #fc3f8c 94.14%),
+    #111320;
+  color: ${theme.colors.primary400};
+
+  svg {
+    transform: rotate(180deg);
+  }
+
+  &::after {
+    display: none;
+  }
+`
+
+export const STrigger = styled(Trigger)<{ isOpen: boolean }>`
   all: unset;
 
   display: flex;
@@ -51,21 +72,7 @@ export const STrigger = styled(Trigger)`
     transition: all 0.15s ease-in-out;
   }
 
-  &[data-state="open"] {
-    background: linear-gradient(
-        180deg,
-        rgba(35, 56, 55, 0.3) 0%,
-        rgba(0, 0, 0, 0) 100%
-      ),
-      linear-gradient(0deg, #16171c, #16171c),
-      linear-gradient(359.21deg, #111320 -1.12%, #f6297c 77.53%, #fc3f8c 94.14%),
-      #111320;
-    color: ${theme.colors.primary400};
-
-    svg {
-      transform: rotate(180deg);
-    }
-  }
+  ${({ isOpen }) => isOpen && openStyles}
 
   @media ${theme.viewport.gte.sm} {
     width: auto;
@@ -73,9 +80,21 @@ export const STrigger = styled(Trigger)`
   }
 `
 
-export const SButton = styled(Button)`
-  padding: 18px 76px;
+export const SButton = styled(Button)<{ isOpen?: boolean }>`
+  width: 100%;
+  padding: 14px 0;
   font-weight: 700;
+
+  svg {
+    margin: -4px;
+    transition: all 0.15s ease-in-out;
+  }
+
+  ${({ isOpen }) => isOpen && openStyles}
+
+  @media ${theme.viewport.gte.sm} {
+    padding: 14px 76px;
+  }
 `
 
 export const SContent = styled.div`
