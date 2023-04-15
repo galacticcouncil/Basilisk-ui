@@ -47,6 +47,7 @@ export const STrigger = styled(Trigger)`
   }
 
   svg {
+    margin: -4px;
     transition: all 0.15s ease-in-out;
   }
 
@@ -78,6 +79,7 @@ export const SButton = styled(Button)`
 `
 
 export const SContent = styled.div`
+  margin-top: 8px;
   padding: 20px 32px;
 
   background: linear-gradient(
@@ -96,6 +98,7 @@ export const SContent = styled.div`
   z-index: ${theme.zIndices.toast};
 
   @media ${theme.viewport.gte.sm} {
+    margin-top: 0;
     padding: 32px;
   }
 `
