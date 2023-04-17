@@ -1,9 +1,10 @@
 import { ApiPromise } from "@polkadot/api"
-import { useApiPromise } from "utils/api"
-import { useQuery } from "@tanstack/react-query"
-import { QUERY_KEYS } from "utils/queryKeys"
 import { u32 } from "@polkadot/types-codec"
 import { AccountId32 } from "@polkadot/types/interfaces/runtime"
+import { useQueries, useQuery } from "@tanstack/react-query"
+import { useApiPromise } from "utils/api"
+import { isNotNil, useQueryReduce } from "utils/helpers"
+import { QUERY_KEYS } from "utils/queryKeys"
 
 export const useYieldFarms = (ids: FarmIds[]) => {
   const api = useApiPromise()
@@ -21,12 +22,14 @@ export const useYieldFarm = (ids: {
   })
 }
 
-export const useActiveYieldFarms = (poolId: AccountId32 | string) => {
+export const useActiveYieldFarms = (poolIds: (AccountId32 | string)[]) => {
   const api = useApiPromise()
-  return useQuery(
-    QUERY_KEYS.activeYieldFarms(poolId),
-    getActiveYieldFarms(api, poolId),
-  )
+  return useQueries({
+    queries: poolIds.map((poolId) => ({
+      queryKey: QUERY_KEYS.activeYieldFarms(poolId),
+      queryFn: getActiveYieldFarms(api, poolId),
+    })),
+  })
 }
 
 export const useGlobalFarms = (ids: u32[]) => {
@@ -39,6 +42,34 @@ export const useGlobalFarms = (ids: u32[]) => {
 export const useGlobalFarm = (id: u32) => {
   const api = useApiPromise()
   return useQuery(QUERY_KEYS.globalFarm(id), getGlobalFarm(api, id))
+}
+
+export const useFarms = (poolIds: Array<AccountId32 | string>) => {
+  const activeYieldFarms = useActiveYieldFarms(poolIds)
+
+  const data = activeYieldFarms.reduce(
+    (acc, farm) => (farm.data ? [...acc, ...farm.data] : acc),
+    [] as FarmIds[],
+  )
+
+  const globalFarms = useGlobalFarms(data.map((id) => id.globalFarmId))
+  const yieldFarms = useYieldFarms(data)
+
+  return useQueryReduce(
+    [globalFarms, yieldFarms, ...activeYieldFarms] as const,
+    (globalFarms, yieldFarms, ...activeYieldFarms) => {
+      const farms =
+        activeYieldFarms.flat(2).map((af) => {
+          const globalFarm = globalFarms?.find((gf) =>
+            af.globalFarmId.eq(gf.id),
+          )
+          const yieldFarm = yieldFarms?.find((yf) => af.yieldFarmId.eq(yf.id))
+          if (!globalFarm || !yieldFarm) return undefined
+          return { globalFarm, yieldFarm }
+        }) ?? []
+      return farms.filter(isNotNil)
+    },
+  )
 }
 
 export const getYieldFarms = (api: ApiPromise, ids: FarmIds[]) => async () => {

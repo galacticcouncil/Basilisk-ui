@@ -1,33 +1,51 @@
-import { BN_0 } from "utils/constants"
-import BN from "bignumber.js"
-import { useBestNumber } from "api/chain"
-import { useUsdPeggedAsset } from "api/asset"
-import { usePoolFarms } from "utils/farms/apr"
 import { PoolBase } from "@galacticcouncil/sdk"
-import { useUserDeposits } from "utils/farms/deposits"
-import { useApiPromise } from "utils/api"
-import { ToastMessage, useStore } from "state/store"
-import { useMutation } from "@tanstack/react-query"
 import { u32 } from "@polkadot/types"
 import { AccountId32 } from "@polkadot/types/interfaces"
-import { decodeAddress } from "@polkadot/util-crypto"
 import { u8aToHex } from "@polkadot/util"
+import { decodeAddress } from "@polkadot/util-crypto"
+import { useMutation } from "@tanstack/react-query"
 import { useTokenAccountBalancesList } from "api/accountBalances"
-import { XYKLiquidityMiningClaimSim } from "utils/farms/claiming/claimSimulator"
+import { useUsdPeggedAsset } from "api/asset"
+import { useAssetDetailsList } from "api/assetDetails"
+import { useBestNumber } from "api/chain"
+import { DepositNftType } from "api/deposits"
+import { useFarms } from "api/farms"
+import { usePools } from "api/pools"
+import { useSpotPrices } from "api/spotPrice"
+import BigNumber from "bignumber.js"
+import { ToastMessage, useStore } from "state/store"
+import { useApiPromise } from "utils/api"
+import { BN_0 } from "utils/constants"
 import { getAccountResolver } from "utils/farms/claiming/accountResolver"
+import { XYKLiquidityMiningClaimSim } from "utils/farms/claiming/claimSimulator"
 import { MultiCurrencyContainer } from "utils/farms/claiming/multiCurrency"
 import { createMutableFarmEntries } from "utils/farms/claiming/mutableFarms"
-import { useAssetDetailsList } from "api/assetDetails"
-import { useSpotPrices } from "api/spotPrice"
-import { DepositNftType } from "api/deposits"
+import { useAllUserDeposits } from "utils/farms/deposits"
 
 export const useClaimableAmount = (
-  pool: PoolBase,
+  pool?: PoolBase,
   depositNft?: DepositNftType,
 ) => {
   const bestNumberQuery = useBestNumber()
-  const userDeposits = useUserDeposits(pool.address)
-  const farms = usePoolFarms(pool.address)
+
+  const pools = usePools()
+  const userDeposits = useAllUserDeposits()
+  const filteredDeposits = pool
+    ? {
+        ...userDeposits,
+        data: {
+          deposits:
+            userDeposits.data.deposits?.filter(
+              (deposit) =>
+                deposit.deposit.ammPoolId.toString() === pool?.address,
+            ) ?? [],
+        },
+      }
+    : userDeposits
+
+  const farms = useFarms(
+    pool?.address ? [pool.address] : pools.data?.map((p) => p.address) ?? [],
+  )
   const usd = useUsdPeggedAsset()
 
   const api = useApiPromise()
@@ -56,7 +74,7 @@ export const useClaimableAmount = (
 
   const queries = [
     bestNumberQuery,
-    userDeposits,
+    filteredDeposits,
     farms,
     usd,
     assetList,
@@ -67,7 +85,8 @@ export const useClaimableAmount = (
   if (bestNumberQuery.data == null || accountBalances.data == null)
     return { data: null, isLoading }
 
-  const deposits = depositNft != null ? [depositNft] : userDeposits.data ?? []
+  const deposits =
+    depositNft != null ? [depositNft] : filteredDeposits.data?.deposits ?? []
   const bestNumber = bestNumberQuery.data
 
   const multiCurrency = new MultiCurrencyContainer(
@@ -113,8 +132,8 @@ export const useClaimableAmount = (
     )
     .flat(2)
     .reduce<{
-      usd: BN
-      assets: Record<string, BN>
+      usd: BigNumber
+      assets: Record<string, BigNumber>
     }>(
       (memo, item) => {
         if (item == null) return memo
@@ -136,15 +155,21 @@ export const useClaimableAmount = (
 }
 
 export const useClaimAllMutation = (
-  poolId: string,
+  poolId?: string,
   depositNft?: DepositNftType,
   toast?: ToastMessage,
 ) => {
   const api = useApiPromise()
   const { createTransaction } = useStore()
-  const userDeposits = useUserDeposits(poolId)
+  const userDeposits = useAllUserDeposits()
 
-  const deposits = depositNft ? [depositNft] : userDeposits.data
+  const deposits = depositNft
+    ? [depositNft]
+    : poolId
+    ? userDeposits.data.deposits?.filter(
+        (d) => d.deposit.ammPoolId.toString() === poolId,
+      )
+    : userDeposits.data.deposits
 
   const claim = useMutation(async () => {
     const txs =

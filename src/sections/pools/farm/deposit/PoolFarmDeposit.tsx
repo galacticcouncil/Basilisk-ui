@@ -1,38 +1,39 @@
-import { Trans, useTranslation } from "react-i18next"
 import { PoolBase } from "@galacticcouncil/sdk"
+import { FarmIds, useActiveYieldFarms, useGlobalFarms } from "api/farms"
+import BN from "bignumber.js"
+import { LiquidityPositionInput } from "components/AssetSelect/LiquidityPositionInput"
 import { Button } from "components/Button/Button"
+import { Controller, useForm } from "react-hook-form"
+import { Trans, useTranslation } from "react-i18next"
+import { WalletConnectButton } from "sections/wallet/connect/modal/WalletConnectButton"
 import { useAccountStore, useStore } from "state/store"
 import { useApiPromise } from "utils/api"
-import { useForm, Controller } from "react-hook-form"
-import { WalletConnectButton } from "sections/wallet/connect/modal/WalletConnectButton"
-import { useActiveYieldFarms, useGlobalFarms } from "api/farms"
+import { getFloatingPointAmount } from "utils/balance"
 import { BN_0, BN_BILL, DEFAULT_DECIMALS } from "utils/constants"
 import { AprFarm } from "utils/farms/apr"
 import { FormValues } from "utils/helpers"
-import { getFloatingPointAmount } from "utils/balance"
-import { LiquidityPositionInput } from "components/AssetSelect/LiquidityPositionInput"
-import BN from "bignumber.js"
 
-type PoolJoinFarmDepositProps = {
-  pool: PoolBase
-  farm?: AprFarm
-  isDrawer?: boolean
-}
+type Props = { pool: PoolBase; farm?: AprFarm; isDrawer?: boolean }
 
-export const PoolFarmDeposit = (props: PoolJoinFarmDepositProps) => {
-  const activeYieldFarms = useActiveYieldFarms(props.pool.address)
+export const PoolFarmDeposit = (props: Props) => {
+  const { t } = useTranslation()
+
+  const activeYieldFarmsQuery = useActiveYieldFarms([props.pool.address])
+  const activeYieldFarms = activeYieldFarmsQuery.reduce(
+    (acc, curr) => (curr.data ? [...curr.data, ...acc] : acc),
+    [] as FarmIds[],
+  )
   const globalFarms = useGlobalFarms(
-    activeYieldFarms.data?.map((f) => f.globalFarmId) ?? [],
+    activeYieldFarms.map((f) => f.globalFarmId),
   )
 
   const minDeposit =
-    globalFarms.data?.reduce<BN>((memo, i) => {
+    globalFarms.data?.reduce((memo, i) => {
       const value = i.minDeposit.toBigNumber()
       if (value.isGreaterThan(memo)) return value
       return memo
     }, BN_0) ?? BN_0
 
-  const { t } = useTranslation()
   const { createTransaction } = useStore()
   const api = useApiPromise()
 
@@ -109,10 +110,10 @@ export const PoolFarmDeposit = (props: PoolJoinFarmDepositProps) => {
       )
     }
 
-    if (!activeYieldFarms.data)
+    if (activeYieldFarmsQuery.some((q) => !q.data))
       throw new Error("Missing active yield farms data")
 
-    const [firstActive, ...restActive] = activeYieldFarms.data
+    const [firstActive, ...restActive] = activeYieldFarms
 
     const firstDeposit = await createTransaction(
       {

@@ -1,12 +1,13 @@
 import { Page } from "components/Layout/Page/Page"
+import { Spacer } from "components/Spacer/Spacer"
 import { Spinner } from "components/Spinner/Spinner.styled"
 import { useState } from "react"
-import { PoolsHeader } from "sections/pools/header/PoolsHeader"
-import { Pool } from "sections/pools/pool/Pool"
 import {
   PoolsPageFilter,
   useFilteredPools,
 } from "sections/pools/PoolsPage.utils"
+import { PoolsHeader } from "sections/pools/header/PoolsHeader"
+import { Pool } from "sections/pools/pool/Pool"
 import { EmptyPoolsState } from "./pool/empty/EmptyPoolsState"
 
 export const PoolsPage = () => {
@@ -28,6 +29,9 @@ export const PoolsPage = () => {
         }
         disableMyPositions={!hasPositions}
       />
+
+      <Spacer size={40} />
+
       <div sx={{ display: "flex", flexDirection: "column", gap: 20 }}>
         {isLoading ? (
           <div sx={{ width: "100%", flex: "row", justify: "center" }}>

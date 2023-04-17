@@ -1,48 +1,12 @@
-import BN from "bignumber.js"
-import { useActiveYieldFarms, useGlobalFarms, useYieldFarms } from "api/farms"
-import { AccountId32 } from "@polkadot/types/interfaces/runtime"
-import { BLOCK_TIME, BN_1, BN_QUINTILL } from "utils/constants"
-import { secondsInYear } from "date-fns"
-import { useBestNumber } from "api/chain"
-import { useQueryReduce } from "utils/helpers"
-import {
-  PalletLiquidityMiningGlobalFarmData,
-  PalletLiquidityMiningLoyaltyCurve,
-  PalletLiquidityMiningYieldFarmData,
-} from "@polkadot/types/lookup"
 import * as liquidityMining from "@galacticcouncil/math-liquidity-mining"
-
-export type PoolFarm = NonNullable<
-  Exclude<ReturnType<typeof usePoolFarms>["data"], undefined>[number]
->
-export const usePoolFarms = (poolId: AccountId32 | string) => {
-  const activeYieldFarms = useActiveYieldFarms(poolId)
-  const globalFarms = useGlobalFarms(
-    activeYieldFarms.data?.map((f) => f.globalFarmId) ?? [],
-  )
-  const yieldFarms = useYieldFarms(activeYieldFarms.data ?? [])
-
-  return useQueryReduce(
-    [activeYieldFarms, globalFarms, yieldFarms] as const,
-    (activeYieldFarms, globalFarms, yieldFarms) => {
-      const farms = activeYieldFarms.map((af) => {
-        const globalFarm = globalFarms.find((gf) => af.globalFarmId.eq(gf.id))
-        const yieldFarm = yieldFarms.find((yf) => af.yieldFarmId.eq(yf.id))
-        if (!globalFarm || !yieldFarm) return undefined
-        return { globalFarm, yieldFarm }
-      })
-
-      return farms.filter(
-        (
-          x,
-        ): x is {
-          globalFarm: PalletLiquidityMiningGlobalFarmData
-          yieldFarm: PalletLiquidityMiningYieldFarmData
-        } => x != null,
-      )
-    },
-  )
-}
+import { AccountId32 } from "@polkadot/types/interfaces/runtime"
+import { PalletLiquidityMiningLoyaltyCurve } from "@polkadot/types/lookup"
+import { useBestNumber } from "api/chain"
+import { useFarms } from "api/farms"
+import BigNumber from "bignumber.js"
+import { secondsInYear } from "date-fns"
+import { BLOCK_TIME, BN_1, BN_QUINTILL } from "utils/constants"
+import { useQueryReduce } from "utils/helpers"
 
 export type AprFarm = NonNullable<
   Exclude<ReturnType<typeof useAPR>["data"], undefined>[number]
@@ -50,7 +14,7 @@ export type AprFarm = NonNullable<
 
 export const useAPR = (poolId: AccountId32 | string) => {
   const bestNumber = useBestNumber()
-  const poolFarms = usePoolFarms(poolId)
+  const poolFarms = useFarms([poolId])
 
   return useQueryReduce(
     [bestNumber, poolFarms] as const,
@@ -79,7 +43,7 @@ export const useAPR = (poolId: AccountId32 | string) => {
           .dividedToIntegerBy(blocksPerPeriod)
         const blockTime = BLOCK_TIME
         const multiplier = yieldFarm.multiplier.toBigNumber().div(BN_QUINTILL)
-        const secondsPerYear = new BN(secondsInYear)
+        const secondsPerYear = new BigNumber(secondsInYear)
         const periodsPerYear = secondsPerYear.div(
           blockTime.times(blocksPerPeriod),
         )
@@ -157,9 +121,9 @@ export const useAPR = (poolId: AccountId32 | string) => {
 }
 
 export const getGlobalRewardPerPeriod = (
-  totalSharesZ: BN,
-  yieldPerPeriod: BN,
-  maxRewardPerPeriod: BN,
+  totalSharesZ: BigNumber,
+  yieldPerPeriod: BigNumber,
+  maxRewardPerPeriod: BigNumber,
 ) => {
   const globalRewardPerPeriod = totalSharesZ.times(yieldPerPeriod)
   const isFarmFull = globalRewardPerPeriod.gte(maxRewardPerPeriod)
@@ -168,9 +132,9 @@ export const getGlobalRewardPerPeriod = (
 }
 
 export const getPoolYieldPerPeriod = (
-  globalRewardPerPeriod: BN,
-  multiplier: BN,
-  totalSharesZ: BN,
+  globalRewardPerPeriod: BigNumber,
+  multiplier: BigNumber,
+  totalSharesZ: BigNumber,
 ) => {
   return globalRewardPerPeriod.times(multiplier).div(totalSharesZ)
 }
@@ -179,8 +143,8 @@ export const getMinAndMaxAPR = (aprFarms: AprFarm[]) => {
   const aprs = aprFarms.map(({ apr }) => apr)
   const minAprs = aprFarms.map(({ minApr }) => minApr)
 
-  const minApr = BN.minimum(...minAprs)
-  const maxApr = BN.maximum(...aprs)
+  const minApr = BigNumber.minimum(...minAprs)
+  const maxApr = BigNumber.maximum(...aprs)
   return {
     minApr,
     maxApr,
@@ -189,10 +153,10 @@ export const getMinAndMaxAPR = (aprFarms: AprFarm[]) => {
 
 export const getCurrentLoyaltyFactor = (
   loyaltyCurve: PalletLiquidityMiningLoyaltyCurve | null,
-  currentPeriod: BN,
+  currentPeriod: BigNumber,
 ) => {
   if (!loyaltyCurve) return 1
-  return BN(
+  return BigNumber(
     liquidityMining.calculate_loyalty_multiplier(
       currentPeriod.toFixed(),
       loyaltyCurve.initialRewardPercentage.toBigNumber().toFixed(),
