@@ -13,7 +13,6 @@ type Props = {
   theme: string
   address: string
   onClick?: () => void
-  isActive: boolean
 }
 
 export const WalletConnectAccountSelectAddress: FC<Props> = ({
@@ -21,7 +20,6 @@ export const WalletConnectAccountSelectAddress: FC<Props> = ({
   theme,
   address,
   onClick,
-  isActive,
 }) => {
   const { t } = useTranslation()
   const [, copy] = useCopyToClipboard()
@@ -59,17 +57,19 @@ export const WalletConnectAccountSelectAddress: FC<Props> = ({
           </Text>
         </div>
       </div>
-      {isActive && (
-        <InfoTooltip
-          text={t("wallet.header.copyAddress.hover")}
-          textOnClick={t("wallet.header.copyAddress.click")}
-        >
-          <CopyIcon
-            css={{ cursor: "pointer", color: "var(--secondary-color)" }}
-            onClick={() => copy(address.toString())}
-          />
-        </InfoTooltip>
-      )}
+
+      <InfoTooltip
+        text={t("wallet.header.copyAddress.hover")}
+        textOnClick={t("wallet.header.copyAddress.click")}
+      >
+        <CopyIcon
+          css={{ cursor: "pointer", color: "var(--secondary-color)" }}
+          onClick={(e) => {
+            e.stopPropagation()
+            copy(address.toString())
+          }}
+        />
+      </InfoTooltip>
     </div>
   )
 }
