@@ -1,15 +1,15 @@
 import { PoolBase } from "@galacticcouncil/sdk"
 import { useTokenBalance } from "api/balances"
+import { useFarms } from "api/farms"
 import { usePoolShareToken } from "api/pools"
 import { useAccountStore } from "state/store"
-import { usePoolFarms } from "utils/farms/apr"
 import { useUserDeposits } from "utils/farms/deposits"
 import { useCurrentSharesValue } from "../shares/value/PoolSharesValue.utils"
 
 export const usePoolActionsConditions = (pool: PoolBase) => {
   const { account } = useAccountStore()
 
-  const farms = usePoolFarms(pool.address)
+  const farms = useFarms([pool.address])
   const deposits = useUserDeposits(pool.address)
 
   const shareToken = usePoolShareToken(pool.address)

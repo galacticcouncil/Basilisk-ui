@@ -6,7 +6,7 @@ export const SValue = styled.div`
   justify-content: space-between;
   flex-direction: row;
   flex: 1;
-  gap: 14px;
+  gap: 8px;
 
   @media ${theme.viewport.gte.sm} {
     flex-direction: column;

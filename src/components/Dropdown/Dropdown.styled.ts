@@ -3,7 +3,7 @@ import styled from "@emotion/styled"
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import { theme } from "theme"
 
-const fadeInKeyframes = keyframes`
+export const fadeInKeyframes = keyframes`
   0% {
     opacity: 0;
     transform: scale(0.96);
@@ -14,6 +14,7 @@ const fadeInKeyframes = keyframes`
     transform: scale(1);
   }
 `
+
 export const SItem = styled(DropdownMenu.Item)`
   color: ${theme.colors.primary200};
   font-size: 14px;
@@ -55,6 +56,7 @@ export const SItem = styled(DropdownMenu.Item)`
     border-bottom-right-radius: 12px;
   }
 `
+
 export const SContent = styled(DropdownMenu.Content)`
   background: rgba(${theme.rgbColors.primary450}, 0.12);
   backdrop-filter: blur(20px);
@@ -66,6 +68,7 @@ export const SContent = styled(DropdownMenu.Content)`
 
   z-index: ${theme.zIndices.toast};
 `
+
 export const STrigger = styled(DropdownMenu.Trigger)`
   all: unset;
 
