@@ -1,16 +1,17 @@
-import { Modal } from "components/Modal/Modal"
-import { ReactComponent as TransferIcon } from "assets/icons/TransferIcon.svg"
-import { Separator } from "components/Separator/Separator"
-import { theme } from "theme"
-import { useTranslation } from "react-i18next"
-import { Text } from "components/Typography/Text/Text"
 import { Link } from "@tanstack/react-location"
-import { LiquidityPositionsTableData } from "sections/wallet/assets/table/WalletLiquidityPositionsTable.utils"
-import { WalletLiquidityPositionsTableName } from "sections/wallet/assets/table/data/WalletLiquidityPositionsData"
-import { LINKS } from "utils/navigation"
-import { TableAction } from "components/Table/Table"
 import { ReactComponent as DocumentIcon } from "assets/icons/DocumentIcon.svg"
+import { ReactComponent as TransferIcon } from "assets/icons/TransferIcon.svg"
+import { Modal } from "components/Modal/Modal"
+import { Separator } from "components/Separator/Separator"
+import { TableAction } from "components/Table/Table"
+import { Text } from "components/Typography/Text/Text"
+import { useTranslation } from "react-i18next"
+import { WalletPositionsTableAssetNames } from "sections/wallet/assets/table/data/WalletPositionsTableAssetNames"
 import { WalletLiquidityPositionsTableDetailsBalance } from "sections/wallet/assets/table/details/WalletLiquidityPositionsTableDetailsBalance"
+import { LiquidityPositionsTableData } from "sections/wallet/assets/table/WalletLiquidityPositionsTable.utils"
+import { useAccountStore } from "state/store"
+import { theme } from "theme"
+import { LINKS } from "utils/navigation"
 
 type Props = {
   row?: LiquidityPositionsTableData
@@ -24,6 +25,7 @@ export const WalletLiquidityPositionsTableActionsMob = ({
   onTransferClick,
 }: Props) => {
   const { t } = useTranslation()
+  const { account } = useAccountStore()
 
   if (!row) return null
 
@@ -31,7 +33,7 @@ export const WalletLiquidityPositionsTableActionsMob = ({
     <Modal open={!!row} isDrawer onClose={onClose}>
       <>
         <div sx={{ pb: 30, mx: 16 }}>
-          <WalletLiquidityPositionsTableName
+          <WalletPositionsTableAssetNames
             assetA={row.assetA}
             assetB={row.assetB}
             large
@@ -106,6 +108,7 @@ export const WalletLiquidityPositionsTableActionsMob = ({
               icon={<TransferIcon />}
               css={{ width: "100%" }}
               large
+              disabled={account?.isExternalWalletConnected}
             >
               {t("wallet.assets.liquidityPositions.table.actions.transfer")}
             </TableAction>

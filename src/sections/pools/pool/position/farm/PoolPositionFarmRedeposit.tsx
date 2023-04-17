@@ -13,6 +13,7 @@ import { SContainer, SInnerContainer } from "./PoolPositionFarmRedeposit.styled"
 import { Icon } from "components/Icon/Icon"
 import { useMedia } from "react-use"
 import { MultiplePoolIncentivesRow } from "../../incentives/row/MultiplePoolIncentivesRow/MultiplePoolIncentivesRow"
+import { useAccountStore } from "state/store"
 
 const PoolPositionFarmRedepositAsset = (props: {
   pool: PoolBase
@@ -40,6 +41,7 @@ export const PoolPositionFarmRedeposit = (props: {
   className?: string
 }) => {
   const { t } = useTranslation()
+  const { account } = useAccountStore()
   const isDesktop = useMedia(theme.viewport.gte.sm)
   const apr = useAPR(props.pool.address)
 
@@ -108,7 +110,7 @@ export const PoolPositionFarmRedeposit = (props: {
         <Button
           size="small"
           variant="primary"
-          disabled={redeposit.isLoading}
+          disabled={redeposit.isLoading || account?.isExternalWalletConnected}
           sx={{ width: 120 }}
           onClick={() => redeposit.mutate()}
         >

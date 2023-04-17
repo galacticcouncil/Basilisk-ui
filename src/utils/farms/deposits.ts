@@ -1,7 +1,3 @@
-import {
-  PalletLiquidityMiningYieldFarmData,
-  PalletLiquidityMiningYieldFarmEntry,
-} from "@polkadot/types/lookup"
 import { useUsdPeggedAsset } from "api/asset"
 import {
   DepositNftType,
@@ -9,16 +5,15 @@ import {
   useAllDeposits,
   useDeposits,
 } from "api/deposits"
-import { useYieldFarms } from "api/farms"
 import { usePools, usePoolShareToken, usePoolShareTokens } from "api/pools"
 import { useSpotPrices } from "api/spotPrice"
 import { useTotalIssuance, useTotalIssuances } from "api/totalIssuance"
-import BN from "bignumber.js"
+import BigNumber from "bignumber.js"
 import { useMemo } from "react"
 import { getPoolTotal } from "sections/pools/header/PoolsHeader.utils"
 import { useAccountStore } from "state/store"
 import { useQueryReduce } from "utils/helpers"
-import { BN_0 } from "../constants"
+import { BN_0, BN_10 } from "../constants"
 
 export const useUserDeposits = (poolId: string) => {
   const { account } = useAccountStore()
@@ -83,19 +78,83 @@ export const useAllUserDeposits = () => {
   }
 }
 
-export const useTotalInDeposit = (depositNft: DepositNftType) => {
+export const useDepositValues = (depositNft: DepositNftType) => {
   const pools = usePools()
   const pool = pools.data?.find(
     (p) => p.address === depositNft.deposit.ammPoolId.toString(),
   )
 
-  const entries = depositNft.deposit.yieldFarmEntries
-  const farmIds = entries.map((entry) => ({
-    yieldFarmId: entry.yieldFarmId,
-    globalFarmId: entry.globalFarmId,
-    poolId: depositNft.deposit.ammPoolId,
-  }))
-  const yieldFarms = useYieldFarms(farmIds)
+  const shareToken = usePoolShareToken(pool?.address ?? "")
+  const totalIssuances = useTotalIssuances([
+    shareToken.data?.token.toString(),
+    ...(pool?.tokens.map((t) => t.id) ?? []),
+  ])
+
+  const usd = useUsdPeggedAsset()
+  const spotPrices = useSpotPrices(
+    pool?.tokens.map((token) => token.id) ?? [],
+    usd.data?.id,
+  )
+
+  const queries = [pools, shareToken, usd, ...totalIssuances, ...spotPrices]
+  const isLoading = queries.some((q) => q.isInitialLoading)
+
+  const data = useMemo(() => {
+    const defaultValue = {
+      assetA: undefined,
+      assetB: undefined,
+      amountUSD: undefined,
+    }
+
+    if (
+      !pool ||
+      !shareToken.data ||
+      spotPrices.some((q) => !q.data) ||
+      totalIssuances.some((q) => !q.data)
+    )
+      return defaultValue
+
+    const shareTokenIssuance = totalIssuances.find(
+      (ti) => ti.data?.token.toString() === shareToken.data.token.toString(),
+    )?.data?.total
+
+    if (!shareTokenIssuance) {
+      console.error("Could not calculate deposit balances")
+      return defaultValue
+    }
+
+    const shares = depositNft.deposit.shares.toBigNumber()
+    const ratio = shares.div(shareTokenIssuance)
+
+    const poolTotal = getPoolTotal(
+      pool.tokens,
+      spotPrices.map((sp) => sp.data),
+    )
+
+    const amountUSD = poolTotal.times(ratio)
+    const [assetA, assetB] = pool?.tokens.map((token) => {
+      const balance = new BigNumber(token.balance)
+      const amount = balance.times(ratio).div(BN_10.pow(token.decimals))
+      return { id: token.id, symbol: token.symbol, amount }
+    })
+
+    return { assetA, assetB, amountUSD }
+  }, [
+    pool,
+    shareToken.data,
+    spotPrices,
+    totalIssuances,
+    depositNft.deposit.shares,
+  ])
+
+  return { ...data, isLoading }
+}
+
+export const useTotalInDeposit = (depositNft: DepositNftType) => {
+  const pools = usePools()
+  const pool = pools.data?.find(
+    (p) => p.address === depositNft.deposit.ammPoolId.toString(),
+  )
 
   const shareToken = usePoolShareToken(pool?.address ?? "")
   const totalIssuance = useTotalIssuance(shareToken.data?.token)
@@ -106,20 +165,12 @@ export const useTotalInDeposit = (depositNft: DepositNftType) => {
     usd.data?.id,
   )
 
-  const queries = [
-    pools,
-    yieldFarms,
-    shareToken,
-    totalIssuance,
-    usd,
-    ...spotPrices,
-  ]
+  const queries = [pools, shareToken, totalIssuance, usd, ...spotPrices]
   const isLoading = queries.some((q) => q.isInitialLoading)
 
   const data = useMemo(() => {
     if (
       !pool ||
-      !yieldFarms.data ||
       !totalIssuance.data ||
       spotPrices.some((q) => !q.data) ||
       isLoading
@@ -130,21 +181,18 @@ export const useTotalInDeposit = (depositNft: DepositNftType) => {
       pool.tokens,
       spotPrices.map((sp) => sp.data),
     )
-    const total = getDepositTotal({
-      entries,
-      yieldFarms: yieldFarms.data,
-      totalIssuance: totalIssuance.data.total,
-      poolTotal,
-    })
+
+    const shares = depositNft.deposit.shares.toBigNumber()
+    const ratio = shares.div(totalIssuance.data.total)
+    const total = poolTotal.times(ratio)
 
     return total
   }, [
     pool,
-    entries,
-    yieldFarms.data,
     totalIssuance.data,
     spotPrices,
     isLoading,
+    depositNft.deposit.shares,
   ])
 
   return { data, isLoading }
@@ -155,17 +203,6 @@ export const useTotalInDeposits = (depositNfts: DepositNftType[]) => {
   const pools = poolsData.data?.filter((p) =>
     depositNfts.some((d) => d.deposit.ammPoolId.toString() === p.address),
   )
-
-  const farmIds = depositNfts
-    .map((depositNft) =>
-      depositNft.deposit.yieldFarmEntries.map((entry) => ({
-        yieldFarmId: entry.yieldFarmId,
-        globalFarmId: entry.globalFarmId,
-        poolId: depositNft.deposit.ammPoolId,
-      })),
-    )
-    .flat()
-  const yieldFarms = useYieldFarms(farmIds)
 
   const shareTokens = usePoolShareTokens(pools?.map((p) => p.address) ?? [])
   const totalIssuances = useTotalIssuances(
@@ -180,7 +217,6 @@ export const useTotalInDeposits = (depositNfts: DepositNftType[]) => {
 
   const queries = [
     poolsData,
-    yieldFarms,
     ...shareTokens,
     ...totalIssuances,
     usd,
@@ -194,7 +230,6 @@ export const useTotalInDeposits = (depositNfts: DepositNftType[]) => {
       shareTokens.some((q) => !q.data) ||
       totalIssuances.some((q) => !q.data) ||
       spotPrices.some((q) => !q.data) ||
-      !yieldFarms.data ||
       isLoading
     )
       return undefined
@@ -219,26 +254,15 @@ export const useTotalInDeposits = (depositNfts: DepositNftType[]) => {
         pool.tokens,
         spotPrices.map((sp) => sp.data),
       )
-      const total = getDepositTotal({
-        entries: depositNft.deposit.yieldFarmEntries,
-        yieldFarms: yieldFarms.data,
-        totalIssuance: totalIssuance.data.total,
-        poolTotal,
-      })
+      const shares = depositNft.deposit.shares.toBigNumber()
+      const ratio = shares.div(totalIssuance.data.total)
+      const total = poolTotal.times(ratio)
 
       return total
     })
 
     return totals.reduce((acc, curr) => acc.plus(curr), BN_0)
-  }, [
-    depositNfts,
-    pools,
-    shareTokens,
-    totalIssuances,
-    spotPrices,
-    yieldFarms.data,
-    isLoading,
-  ])
+  }, [depositNfts, pools, shareTokens, totalIssuances, spotPrices, isLoading])
 
   return { data, isLoading }
 }
@@ -259,46 +283,8 @@ export const useTotalInAllDeposits = () => {
   )
   const total = useTotalInDeposits(deposits)
 
-  const isLoading =
-    allDeposits.some((q) => q.isLoading) || total.isLoading || pools.isLoading
+  const queries = [pools, total, ...allDeposits]
+  const isLoading = queries.some((q) => q.isLoading)
 
   return { data: total.data, isLoading }
-}
-
-const getDepositTotal = ({
-  entries,
-  yieldFarms,
-  totalIssuance,
-  poolTotal,
-}: {
-  entries: PalletLiquidityMiningYieldFarmEntry[]
-  yieldFarms: PalletLiquidityMiningYieldFarmData[]
-  totalIssuance: BN
-  poolTotal: BN
-}) => {
-  let depositTotal = BN_0
-
-  for (const entry of entries) {
-    const yieldFarm = yieldFarms.find(
-      (yf) => yf.id.toString() === entry.yieldFarmId.toString(),
-    )
-    if (!yieldFarm) {
-      console.error("Missing yield farm for deposit")
-      continue
-    }
-
-    const farmTotal = yieldFarm.totalShares.toBigNumber()
-    const farmTotalValued = yieldFarm.totalValuedShares.toBigNumber()
-    const entryTotalValued = entry.valuedShares.toBigNumber()
-
-    const farmRatio = farmTotal.div(totalIssuance)
-    const entryRatio = entryTotalValued.div(farmTotalValued)
-
-    const farmValue = poolTotal.times(farmRatio)
-    const entryValue = farmValue.times(entryRatio)
-
-    depositTotal = depositTotal.plus(entryValue)
-  }
-
-  return depositTotal
 }

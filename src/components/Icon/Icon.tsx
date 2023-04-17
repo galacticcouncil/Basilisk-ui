@@ -6,6 +6,7 @@ export type IconProps = {
   children?: ReactNode
   size?: number
   icon?: ReactNode
+  className?: string
 }
 
 export const Icon: FC<IconProps> = ({ children, icon, ...rest }) => {

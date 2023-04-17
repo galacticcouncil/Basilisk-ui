@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
-import { theme } from "theme"
 import { ReactComponent as InfoIcon } from "assets/icons/InfoIcon.svg"
+import { theme } from "theme"
 
 export const SInfoIcon = styled(InfoIcon)`
   padding: 0;

@@ -1,16 +1,16 @@
-import { Text } from "components/Typography/Text/Text"
-import { useTranslation } from "react-i18next"
-import { Separator } from "components/Separator/Separator"
 import { decodeAddress, encodeAddress } from "@polkadot/util-crypto"
-import { BASILISK_ADDRESS_PREFIX, NATIVE_ASSET_ID } from "utils/api"
+import { useAssetMeta } from "api/assetMeta"
 import { useTokenBalance } from "api/balances"
+import { Separator } from "components/Separator/Separator"
+import { Text } from "components/Typography/Text/Text"
+import { FC } from "react"
+import { useTranslation } from "react-i18next"
+import { WalletConnectAccountSelectAddress } from "sections/wallet/connect/accountSelect/item/address/WalletConnectAccountSelectAddress"
+import { BASILISK_ADDRESS_PREFIX, NATIVE_ASSET_ID } from "utils/api"
 import {
   SContainer,
   SSelectItem,
 } from "./WalletConnectAccountSelectItem.styled"
-import { WalletConnectAccountSelectAddress } from "sections/wallet/connect/accountSelect/item/address/WalletConnectAccountSelectAddress"
-import { FC } from "react"
-import { useAssetMeta } from "api/assetMeta"
 
 type Props = {
   isActive: boolean
@@ -27,11 +27,13 @@ export const WalletConnectAccountSelectItem: FC<Props> = ({
   provider,
   setAccount,
 }) => {
-  const basiliskAddress = encodeAddress(
-    decodeAddress(address),
-    BASILISK_ADDRESS_PREFIX,
-  )
-  const kusamaAddress = address
+  const isBasiliskAddress = address[0] === "b"
+  const basiliskAddress = isBasiliskAddress
+    ? address
+    : encodeAddress(decodeAddress(address), BASILISK_ADDRESS_PREFIX)
+  const kusamaAddress = isBasiliskAddress
+    ? encodeAddress(decodeAddress(address))
+    : address
   const { data } = useTokenBalance(NATIVE_ASSET_ID, kusamaAddress)
   const { data: meta } = useAssetMeta(NATIVE_ASSET_ID)
 
@@ -56,7 +58,6 @@ export const WalletConnectAccountSelectItem: FC<Props> = ({
             name={t("walletConnect.accountSelect.asset.network")}
             address={basiliskAddress}
             theme="substrate"
-            isActive={isActive}
           />
           <Separator
             color={isActive ? "primary200" : "backgroundGray700"}
@@ -66,7 +67,6 @@ export const WalletConnectAccountSelectItem: FC<Props> = ({
             name={t("walletConnect.accountSelect.asset.parachain")}
             address={kusamaAddress}
             theme={provider}
-            isActive={isActive}
           />
         </div>
       </SSelectItem>

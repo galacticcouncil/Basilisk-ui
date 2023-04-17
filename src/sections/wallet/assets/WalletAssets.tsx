@@ -1,12 +1,13 @@
-import { WalletAssetsTable } from "sections/wallet/assets/table/WalletAssetsTable"
 import { useAssetsTableData } from "sections/wallet/assets/table/data/WalletAssetsTableData.utils"
-import { useAccountStore } from "state/store"
 import { WalletAssetsTablePlaceholder } from "sections/wallet/assets/table/placeholder/WalletAssetsTablePlaceholder"
 import { WalletAssetsTableSkeleton } from "sections/wallet/assets/table/skeleton/WalletAssetsTableSkeleton"
-import { WalletAssetsHeader } from "./WalletAssetsHeader"
+import { WalletAssetsTable } from "sections/wallet/assets/table/WalletAssetsTable"
+import { useAccountStore } from "state/store"
+import { WalletFarmingPositionsWrapper } from "./farmingPositions/WalletFarmingPositions"
+import { useLiquidityPositionsTableData } from "./table/data/WalletLiquidityPositionsData.utils"
 import { WalletLiquidityPositionsSkeleton } from "./table/skeleton/WalletLiquidityPositionsSkeleton"
 import { WalletLiquidityPositionsTable } from "./table/WalletLiquidityPositionsTable"
-import { useLiquidityPositionsTableData } from "./table/data/WalletLiquidityPositionsData.utils"
+import { WalletAssetsHeader } from "./WalletAssetsHeader"
 
 export const WalletAssets = () => {
   const { account } = useAccountStore()
@@ -24,13 +25,7 @@ export const WalletAssets = () => {
       ) : isLoading ? (
         <>
           <WalletAssetsHeader isLoading={isLoading} />
-          <div
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 20,
-            }}
-          >
+          <div sx={{ display: "flex", flexDirection: "column", gap: 20 }}>
             <WalletAssetsTableSkeleton />
             <WalletLiquidityPositionsSkeleton />
           </div>
@@ -38,22 +33,14 @@ export const WalletAssets = () => {
       ) : (
         hasData && (
           <>
-            <WalletAssetsHeader
-              assetsData={assetTableQuery.data}
-              lpData={liquidityPositionsQuery.data}
-            />
-            <div
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 20,
-              }}
-            >
-              <WalletAssetsTable data={assetTableQuery.data} />
+            <WalletAssetsHeader assetsData={assetTableQuery.data} />
 
+            <div sx={{ display: "flex", flexDirection: "column", gap: 20 }}>
+              <WalletAssetsTable data={assetTableQuery.data} />
               <WalletLiquidityPositionsTable
                 data={liquidityPositionsQuery.data}
               />
+              <WalletFarmingPositionsWrapper />
             </div>
           </>
         )

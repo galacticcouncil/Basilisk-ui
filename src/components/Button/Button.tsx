@@ -1,6 +1,7 @@
 import { Link } from "components/Link/Link"
 import {
   ComponentProps,
+  ElementType,
   FC,
   forwardRef,
   ReactNode,
@@ -28,12 +29,14 @@ export type ButtonProps = {
   children?: ReactNode
   className?: string
   active?: boolean
+  as?: ElementType<any>
 }
 
 export const Button: FC<ButtonProps> = ({
   type = "button",
   variant = "secondary",
   size = "medium",
+  as = "button",
   ...props
 }) => {
   const disabled = props.isLoading || props.disabled
@@ -44,6 +47,7 @@ export const Button: FC<ButtonProps> = ({
       variant={variant}
       size={size}
       disabled={disabled}
+      as={as}
     >
       <SContent>
         {props.isLoading && <SSpinner width={16} height={16} />}

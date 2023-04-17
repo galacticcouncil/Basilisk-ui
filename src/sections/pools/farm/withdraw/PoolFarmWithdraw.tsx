@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next"
 import { PoolBase } from "@galacticcouncil/sdk"
-import { useStore } from "state/store"
+import { useAccountStore, useStore } from "state/store"
 import { Button } from "components/Button/Button"
 import { useMutation } from "@tanstack/react-query"
 import { useApiPromise } from "utils/api"
@@ -11,6 +11,7 @@ export function PoolFarmWithdraw(props: {
   pool: PoolBase
   depositNft?: DepositNftType
 }) {
+  const { account } = useAccountStore()
   const api = useApiPromise()
   const userDeposits = useUserDeposits(props.pool.address)
   const deposits = props.depositNft ? [props.depositNft] : userDeposits.data
@@ -47,7 +48,7 @@ export function PoolFarmWithdraw(props: {
   return (
     <Button
       variant="secondary"
-      disabled={!deposits?.length}
+      disabled={!deposits?.length || account?.isExternalWalletConnected}
       isLoading={mutate.isLoading}
       onClick={() => mutate.mutate()}
       sx={{ width: ["inherit", "auto"] }}

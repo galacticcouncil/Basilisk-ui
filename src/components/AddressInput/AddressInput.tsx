@@ -1,11 +1,16 @@
 import { useAsset } from "api/asset"
-import { Text } from "components/Typography/Text/Text"
-import { InputHTMLAttributes, forwardRef } from "react"
+import { forwardRef, InputHTMLAttributes } from "react"
 import { useTranslation } from "react-i18next"
 import { BASILISK_ADDRESS_PREFIX, NATIVE_ASSET_ID } from "utils/api"
 import { safeConvertAddressSS58 } from "utils/formatting"
 import { Maybe } from "utils/helpers"
-import { SErrorMessage, SInput, SInputWrapper } from "./AddressInput.styled"
+import {
+  SErrorMessage,
+  SInput,
+  SInputWrapper,
+  SLabel,
+  SNativeAddress,
+} from "./AddressInput.styled"
 
 type InputProps = {
   onChange?: (value: string) => void
@@ -13,9 +18,8 @@ type InputProps = {
   value: Maybe<string>
   disabled?: boolean
   type?: InputHTMLAttributes<HTMLInputElement>["type"]
-
   name: string
-  label: string
+  label?: string
   error?: string
   placeholder?: string
   withLabel?: boolean
@@ -33,7 +37,7 @@ export const AddressInput = forwardRef<HTMLInputElement, InputProps>(
     )
 
     return (
-      <label id={props.name} className={props.className}>
+      <SLabel id={props.name} className={props.className}>
         <SInputWrapper disabled={props.disabled} error={props.error}>
           <SInput
             ref={ref}
@@ -47,17 +51,17 @@ export const AddressInput = forwardRef<HTMLInputElement, InputProps>(
             placeholder={props.placeholder}
           />
           {nativeAddress && nativeAddress !== props.value && (
-            <Text color="primary300" fs={12} lh={16}>
+            <SNativeAddress color="primary300" fs={12} lh={16}>
               {t("address.input.native", {
                 symbol: asset.data?.symbol,
                 address: nativeAddress,
               })}
-            </Text>
+            </SNativeAddress>
           )}
         </SInputWrapper>
 
         {props.error && <SErrorMessage>{props.error}</SErrorMessage>}
-      </label>
+      </SLabel>
     )
   },
 )

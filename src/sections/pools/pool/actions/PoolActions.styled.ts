@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import { Button, ButtonTransparent } from "components/Button/Button"
+import { ButtonTransparent } from "components/Button/Button"
 import { theme } from "theme"
 
 export const SButtonOpen = styled(ButtonTransparent)<{ isActive: boolean }>`
@@ -42,10 +42,4 @@ export const SActionsContainer = styled.div`
   margin: 24px 0px;
 
   width: 280px;
-`
-
-export const SMobActionButton = styled(Button)`
-  width: 100%;
-  padding-left: 9px;
-  padding-right: 9px;
 `

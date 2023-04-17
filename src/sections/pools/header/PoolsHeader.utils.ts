@@ -1,10 +1,10 @@
 import { PoolToken } from "@galacticcouncil/sdk"
 import { useTokensBalances } from "api/balances"
 import { DepositNftType, useAllDeposits } from "api/deposits"
-import { usePools, usePoolShareTokens } from "api/pools"
+import { usePoolShareTokens, usePools } from "api/pools"
 import { SpotPrice } from "api/spotPrice"
 import { useTotalIssuances } from "api/totalIssuance"
-import BN from "bignumber.js"
+import BigNumber from "bignumber.js"
 import { useMemo } from "react"
 import { useAccountStore } from "state/store"
 import { getFloatingPointAmount } from "utils/balance"
@@ -21,7 +21,10 @@ export const getPoolTotal = (
   spotPrices: (SpotPrice | undefined)[],
 ) => {
   const total = tokens.reduce((acc, token) => {
-    const amount = getFloatingPointAmount(new BN(token.balance), token.decimals)
+    const amount = getFloatingPointAmount(
+      new BigNumber(token.balance),
+      token.decimals,
+    )
     const spotPrice = spotPrices.find((sp) => sp?.tokenIn === token.id)
     const total = amount.times(spotPrice?.spotPrice ?? BN_0)
 

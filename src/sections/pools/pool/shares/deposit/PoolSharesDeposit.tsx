@@ -13,8 +13,8 @@ import {
 } from "sections/pools/pool/shares/deposit/PoolSharesDeposit.styled"
 import { useEnteredDate } from "utils/block"
 import { BN_0 } from "utils/constants"
+import { useDepositValues } from "utils/farms/deposits"
 import { PoolPositionFarmRedeposit } from "../../position/farm/PoolPositionFarmRedeposit"
-import { usePoolSharesDeposit } from "./PoolSharesDeposit.utils"
 import { PoolSharesDepositFarm } from "./PoolSharesDepositFarm"
 import { PoolSharesDetailsButton } from "./PoolSharesDetailsButton"
 
@@ -27,10 +27,7 @@ type Props = {
 export const PoolSharesDeposit: FC<Props> = ({ depositNft, index, pool }) => {
   const { t } = useTranslation()
 
-  const { usdValue, assetA, assetB } = usePoolSharesDeposit({
-    depositNft,
-    pool,
-  })
+  const { assetA, assetB, amountUSD } = useDepositValues(depositNft)
 
   // use latest entry date
   const enteredDate = useEnteredDate(
@@ -89,7 +86,7 @@ export const PoolSharesDeposit: FC<Props> = ({ depositNft, index, pool }) => {
             </Text>
             <div sx={{ flex: "column", gap: 2 }}>
               <Text fs={14} lh={18} color="white">
-                {t("value.usd", { amount: usdValue })}
+                {t("value.usd", { amount: amountUSD })}
               </Text>
               <Text fs={12} lh={16} color="neutralGray500">
                 {t("pools.pool.positions.position.amounts", {
@@ -107,7 +104,6 @@ export const PoolSharesDeposit: FC<Props> = ({ depositNft, index, pool }) => {
         <Separator />
         <div sx={{ flex: "row", justify: "space-between" }}>
           <PoolSharesDepositFarm pool={pool} depositNft={depositNft} />
-
           <PoolPositionFarmRedeposit pool={pool} depositNft={depositNft} />
         </div>
       </div>

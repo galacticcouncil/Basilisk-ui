@@ -9,11 +9,13 @@ import { separateBalance } from "utils/balance"
 import { useClaimableAmount, useClaimAllMutation } from "utils/farms/claiming"
 import { SContainer } from "./PoolFooter.styled"
 import { usePoolFooterValues } from "./PoolFooter.utils"
+import { useAccountStore } from "state/store"
 
 type Props = { pool: PoolBase }
 
 export const PoolFooter = ({ pool }: Props) => {
   const { t } = useTranslation()
+  const { account } = useAccountStore()
 
   const claimable = useClaimableAmount(pool)
   const assetsMeta = useAssetMetaList(Object.keys(claimable.data?.assets || {}))
@@ -108,6 +110,7 @@ export const PoolFooter = ({ pool }: Props) => {
             sx={{ p: "12px 21px" }}
             isLoading={claimAll.mutation.isLoading}
             onClick={async () => claimAll.mutation.mutateAsync()}
+            disabled={account?.isExternalWalletConnected}
           >
             <FlagIcon />
             {t("pools.pool.claim.button")}

@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next"
 import { Icon } from "components/Icon/Icon"
-import { Link } from "@tanstack/react-location"
+import { Link, useSearch } from "@tanstack/react-location"
 import { ReactComponent as PoolsAndFarmsIcon } from "assets/icons/PoolsAndFarms.svg"
 import { ReactComponent as TradeIcon } from "assets/icons/Trade.svg"
 import { ReactComponent as WalletIcon } from "assets/icons/Wallet.svg"
@@ -16,6 +16,7 @@ import { MENU_ITEMS, TabKeys, TabObject } from "utils/navigation"
 
 export const MobileNavBar = () => {
   const { t } = useTranslation()
+  const { account } = useSearch()
 
   const getIcon = (name: TabKeys) => {
     if (name === "trade") return <TradeIcon />
@@ -37,9 +38,13 @@ export const MobileNavBar = () => {
   )
 
   const hiddenTabItems = hiddenTabs.map((hiddenTab, index) => (
-    <Link to={hiddenTab.href} key={index}>
+    <Link
+      key={index}
+      to={hiddenTab.href}
+      search={account ? { account } : undefined}
+    >
       {({ isActive }) => (
-        <SNavBarItemHidden active={isActive} key={index}>
+        <SNavBarItemHidden key={index} active={isActive}>
           <Icon size={20} icon={getIcon(hiddenTab.key)} />
           {t(hiddenTab.translationKey)}
         </SNavBarItemHidden>
@@ -62,7 +67,11 @@ export const MobileNavBar = () => {
         }
 
         return (
-          <Link to={item.href} key={index}>
+          <Link
+            key={index}
+            to={item.href}
+            search={account ? { account } : undefined}
+          >
             {({ isActive }) => (
               <SNavBarItem key={index} active={isActive}>
                 <Icon size={20} icon={getIcon(item.key)} />

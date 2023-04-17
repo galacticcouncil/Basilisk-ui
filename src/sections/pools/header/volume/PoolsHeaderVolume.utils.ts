@@ -1,5 +1,5 @@
-import { usePoolsDetailsTradeVolumes } from "../pool/details/PoolDetails.utils"
-import { useFilteredPools } from "../PoolsPage.utils"
+import { useFilteredPools } from "sections/pools/PoolsPage.utils"
+import { usePoolsDetailsTradeVolumes } from "sections/pools/pool/details/PoolDetails.utils"
 
 export function useTotalVolumesInPools() {
   const pools = useFilteredPools({

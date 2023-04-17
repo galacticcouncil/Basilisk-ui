@@ -1,72 +1,71 @@
 import { Separator } from "components/Separator/Separator"
+import { Spacer } from "components/Spacer/Spacer"
 import { Switch } from "components/Switch/Switch"
 import { GradientText } from "components/Typography/GradientText/GradientText"
 import { Text } from "components/Typography/Text/Text"
-import { FC } from "react"
 import { useTranslation } from "react-i18next"
-import { PoolsHeaderTotal } from "sections/pools/header/PoolsHeaderTotal"
+import { PoolsHeaderTotal } from "sections/pools/header/total/PoolsHeaderTotal"
 import { useAccountStore } from "state/store"
-import { PoolsHeaderVolume } from "./PoolsHeaderVolume"
+import { PoolsHeaderVolume } from "./volume/PoolsHeaderVolume"
+import { SValue } from "./PoolsHeader.styled"
+import { PoolsHeaderClaim } from "./claim/PoolsHeaderClaim"
 
 type Props = {
-  showMyPositions: boolean
-  onShowMyPositionsChange: (value: boolean) => void
+  myPositions: boolean
+  onMyPositionsChange: (value: boolean) => void
+  disableMyPositions: boolean
 }
 
-export const PoolsHeader: FC<Props> = ({
-  showMyPositions,
-  onShowMyPositionsChange,
-}) => {
+export const PoolsHeader = ({
+  myPositions,
+  onMyPositionsChange,
+  disableMyPositions,
+}: Props) => {
   const { t } = useTranslation()
   const { account } = useAccountStore()
 
   return (
-    <>
-      <div sx={{ flex: "row", justify: "space-between", mb: 43 }}>
-        <GradientText fs={30} fw={700}>
+    <div>
+      <div sx={{ flex: "row", justify: "space-between" }}>
+        <GradientText fs={[20, 30]} fw={700}>
           {t("pools.header.title")}
         </GradientText>
         {!!account && (
           <Switch
-            value={showMyPositions}
-            onCheckedChange={onShowMyPositionsChange}
+            value={myPositions}
+            onCheckedChange={onMyPositionsChange}
+            disabled={disableMyPositions}
             size="small"
             name="my-positions"
             label={t("pools.header.switch")}
           />
         )}
       </div>
-      <div
-        sx={{ flex: ["column", "row"], mb: 40 }}
-        css={{ "> *:not([role='separator'])": { flex: 1 } }}
-      >
-        <div sx={{ flex: ["row", "column"], justify: "space-between" }}>
-          <Text color="neutralGray300" sx={{ mb: 14 }}>
-            {t("pools.header.totalLocked")}
-          </Text>
-          <div sx={{ flex: "row", align: "baseline" }}>
-            <PoolsHeaderTotal variant="pools" myPositions={showMyPositions} />
-          </div>
-        </div>
-        <Separator sx={{ mb: 12, display: ["inherit", "none"] }} />
-        <div sx={{ flex: ["row", "column"], justify: "space-between" }}>
-          <Text color="neutralGray300" sx={{ mb: 14 }}>
-            {t("pools.header.totalFarms")}
-          </Text>
-          <div sx={{ flex: "row", align: "baseline" }}>
-            <PoolsHeaderTotal variant="farms" myPositions={showMyPositions} />
-          </div>
-        </div>
-        <Separator sx={{ mb: 12, display: ["inherit", "none"] }} />
-        <div sx={{ flex: ["row", "column"], justify: "space-between" }}>
-          <Text color="neutralGray300" sx={{ mb: 14 }}>
-            {t("pools.header.total24volumes")}
-          </Text>
-          <div sx={{ flex: "row", align: "baseline" }}>
-            <PoolsHeaderVolume myPositions={showMyPositions} variant="pools" />
-          </div>
-        </div>
+
+      <Spacer size={[32, 40]} />
+
+      <div sx={{ flex: ["column", "row"] }}>
+        <SValue>
+          <Text color="neutralGray300">{t("pools.header.totalLocked")}</Text>
+          <PoolsHeaderTotal variant="pools" myPositions={myPositions} />
+        </SValue>
+
+        <Separator sx={{ my: 12, display: ["inherit", "none"] }} />
+
+        <SValue>
+          <Text color="neutralGray300">{t("pools.header.totalFarms")}</Text>
+          <PoolsHeaderTotal variant="farms" myPositions={myPositions} />
+        </SValue>
+
+        <Separator sx={{ my: 12, display: ["inherit", "none"] }} />
+
+        <SValue>
+          <Text color="neutralGray300">{t("pools.header.total24volumes")}</Text>
+          <PoolsHeaderVolume myPositions={myPositions} variant="pools" />
+        </SValue>
+
+        <PoolsHeaderClaim />
       </div>
-    </>
+    </div>
   )
 }

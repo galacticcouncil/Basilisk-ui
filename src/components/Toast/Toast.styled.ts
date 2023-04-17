@@ -99,8 +99,6 @@ export const SProgressContainer = styled.div`
 
   height: 2px;
   background: ${theme.colors.backgroundGray700};
-
-  transform: rotate(180deg);
 `
 
 export const SProgressBar = styled(motion.div)<{
