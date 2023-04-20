@@ -63,7 +63,7 @@ export const useFarmingPositionsTable = (data: FarmingPositionsTableData[]) => {
       header: t("wallet.assets.farmingPositions.header.date"),
       sortingFn: (a, b) => (isAfter(a.original.date, b.original.date) ? 1 : -1),
       cell: ({ row }) => (
-        <Text fs={16} fw={500} color="white">
+        <Text fs={14} fw={500} color="white">
           {t("wallet.assets.farmingPositions.data.date", {
             date: row.original.date,
           })}
@@ -75,7 +75,7 @@ export const useFarmingPositionsTable = (data: FarmingPositionsTableData[]) => {
       header: t("wallet.assets.farmingPositions.header.shares"),
       sortingFn: (a, b) => (a.original.shares.gt(b.original.shares) ? 1 : -1),
       cell: ({ row }) => (
-        <Text fs={16} fw={500} color="white">
+        <Text fs={14} fw={500} color="white">
           {t("value", { value: row.original.shares, type: "token" })}
         </Text>
       ),
