@@ -17,6 +17,7 @@ export default defineConfig(({ mode }) => {
       // sourcemap: sentryEnabled,
     },
     optimizeDeps: {
+      exclude: ["ip-regex"],
       esbuildOptions: {
         target: "esnext",
       },
