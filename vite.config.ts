@@ -35,7 +35,7 @@ export default defineConfig(({ mode }) => {
       }),
       wasm(),
       svgr(),
-      vitePluginSentry({
+    /*   vitePluginSentry({
         authToken: process.env.SENTRY_AUTH_TOKEN,
         url: process.env.SENTRY_URL,
         project: process.env.SENTRY_PROJECT,
@@ -47,7 +47,7 @@ export default defineConfig(({ mode }) => {
           ignore: ["node_modules"],
           urlPrefix: "~/assets",
         },
-      }),
+      }), */
     ],
   }
 })
