@@ -7,8 +7,8 @@ import vitePluginSentry from "vite-plugin-sentry"
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-
-  return {  
+  const sentryDisabled = process.env.SENTRY_DISABLED
+  return {
     build: {
       target: "esnext",
       outDir: "build",
@@ -32,19 +32,20 @@ export default defineConfig(({ mode }) => {
       }),
       wasm(),
       svgr(),
-      vitePluginSentry({
-        authToken: process.env.SENTRY_AUTH_TOKEN,
-        url: process.env.SENTRY_URL,
-        project: process.env.SENTRY_PROJECT,
-        org: process.env.SENTRY_ORG,
-        deploy: { env: mode },
-        setCommits: { auto: true },
-        sourceMaps: {
-          include: ["./build/assets"],
-          ignore: ["node_modules"],
-          urlPrefix: "~/assets",
-        },
-      }),
+      !sentryDisabled &&
+        vitePluginSentry({
+          authToken: process.env.SENTRY_AUTH_TOKEN,
+          url: process.env.SENTRY_URL,
+          project: process.env.SENTRY_PROJECT,
+          org: process.env.SENTRY_ORG,
+          deploy: { env: mode },
+          setCommits: { auto: true },
+          sourceMaps: {
+            include: ["./build/assets"],
+            ignore: ["node_modules"],
+            urlPrefix: "~/assets",
+          },
+        }),
     ],
   }
 })
