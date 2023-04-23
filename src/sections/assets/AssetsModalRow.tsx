@@ -76,7 +76,6 @@ export const AssetsModalRow: FC<AssetsModalRowProps> = ({
             >
               <Text color="white" fs={14} lh={18} tAlign="right" />
             </Trans>
-
             <DollarAssetValue
               value={totalUSD}
               wrapper={(children) => (
@@ -87,7 +86,7 @@ export const AssetsModalRow: FC<AssetsModalRowProps> = ({
             >
               {t("value.usd", {
                 amount: totalUSD,
-                fixedPointScale: asset.data.decimals,
+                fixedPointScale: asset.data.decimals.toString(),
               })}
             </DollarAssetValue>
           </>
