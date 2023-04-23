@@ -7,11 +7,8 @@ import vitePluginSentry from "vite-plugin-sentry"
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  console.log(mode)
-  // const env = loadEnv(mode, process.cwd())
-  // const sentryEnabled = !!process.env.SENTRY_AUTH_TOKEN && !!env.VITE_SENTRY_DSN
 
-  return {
+  return {  
     build: {
       target: "esnext",
       outDir: "build",
