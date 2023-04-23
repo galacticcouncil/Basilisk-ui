@@ -10,7 +10,7 @@ import { GlobalStyle } from "components/GlobalStyle"
 import { Global } from "@emotion/react"
 import "react-loading-skeleton/dist/skeleton.css"
 
-//import "virtual:vite-plugin-sentry/sentry-config"
+import "virtual:vite-plugin-sentry/sentry-config"
 import * as Sentry from "@sentry/react"
 
 // At the moment, tree-shaking does not work as expected
