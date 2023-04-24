@@ -102,7 +102,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && cp ./build/index.html ./build/404.html",
     "preview": "vite preview",
     "postinstall": "patch-package",
     "storybook": "storybook dev -p 6006 ./src",
