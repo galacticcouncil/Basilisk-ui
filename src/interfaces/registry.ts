@@ -85,6 +85,7 @@ import type {
   PalletAssetRegistryCall,
   PalletAssetRegistryError,
   PalletAssetRegistryEvent,
+  PalletAssetRegistryMetadata,
   PalletAuthorshipCall,
   PalletAuthorshipError,
   PalletAuthorshipUncleEntryItem,
@@ -384,6 +385,7 @@ declare module "@polkadot/types/types/registry" {
     PalletAssetRegistryCall: PalletAssetRegistryCall
     PalletAssetRegistryError: PalletAssetRegistryError
     PalletAssetRegistryEvent: PalletAssetRegistryEvent
+    PalletAssetRegistryMetadata: PalletAssetRegistryMetadata
     PalletAuthorshipCall: PalletAuthorshipCall
     PalletAuthorshipError: PalletAuthorshipError
     PalletAuthorshipUncleEntryItem: PalletAuthorshipUncleEntryItem

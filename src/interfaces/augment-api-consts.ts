@@ -21,7 +21,7 @@ import type {
   AccountId32,
   Percent,
   Permill,
-  Weight,
+  WeightV1,
 } from "@polkadot/types/interfaces/runtime"
 import type {
   FrameSupportPalletId,
@@ -42,6 +42,7 @@ declare module "@polkadot/api-base/types/consts" {
        * Native Asset Id
        **/
       nativeAssetId: u32 & AugmentedConst<ApiType>
+      sequentialIdStartAt: u32 & AugmentedConst<ApiType>
       /**
        * Generic const
        **/
@@ -392,7 +393,7 @@ declare module "@polkadot/api-base/types/consts" {
        * The maximum weight that may be scheduled per block for any dispatchables of less
        * priority than `schedule::HARD_DEADLINE`.
        **/
-      maximumWeight: Weight & AugmentedConst<ApiType>
+      maximumWeight: WeightV1 & AugmentedConst<ApiType>
       /**
        * The maximum number of scheduled calls in the queue for a single block.
        * Not strictly enforced, but used for weight estimation.
