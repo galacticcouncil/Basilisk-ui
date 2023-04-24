@@ -37,6 +37,10 @@ declare module "@polkadot/api-base/types/errors" {
        **/
       NoIdAvailable: AugmentedError<ApiType>
       /**
+       * Selected asset id is out of reserved range.
+       **/
+      NotInReservedRange: AugmentedError<ApiType>
+      /**
        * Invalid asset name or symbol.
        **/
       TooLong: AugmentedError<ApiType>
@@ -1661,6 +1665,10 @@ declare module "@polkadot/api-base/types/errors" {
        * Account balance of XYK pool shares is not sufficient.
        **/
       InsufficientXykSharesBalance: AugmentedError<ApiType>
+      /**
+       * Provided `AssetPair` is not used by the deposit.
+       **/
+      InvalidAssetPair: AugmentedError<ApiType>
       /**
        * Account is not deposit owner.
        **/

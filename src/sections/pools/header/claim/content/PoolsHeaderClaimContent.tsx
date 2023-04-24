@@ -70,7 +70,7 @@ export const PoolsHeaderClaimContent = ({ onClaim }: Props) => {
             <Text fs={18} lh={26}>
               {t("value", {
                 value: claimableAsset.value,
-                fixedPointScale: claimableAsset.decimals,
+                fixedPointScale: claimableAsset.decimals?.toString(),
                 numberSuffix: ` ${claimableAsset.symbol}`,
                 type: "token",
               })}

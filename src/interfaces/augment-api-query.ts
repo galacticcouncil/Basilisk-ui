@@ -30,7 +30,7 @@ import type {
   AccountId32,
   Call,
   H256,
-  Weight,
+  WeightV1,
 } from "@polkadot/types/interfaces/runtime"
 import type {
   BasiliskRuntimeOpaqueSessionKeys,
@@ -128,7 +128,7 @@ declare module "@polkadot/api-base/types/storage" {
         ApiType,
         (
           arg: u32 | AnyNumber | Uint8Array,
-        ) => Observable<Option<XcmV1MultiLocation>>,
+        ) => Observable<Option<CommonRuntimeAssetLocation>>,
         [u32]
       > &
         QueryableStorageEntry<ApiType, [u32]>
@@ -1076,7 +1076,7 @@ declare module "@polkadot/api-base/types/storage" {
        **/
       reservedDmpWeightOverride: AugmentedQuery<
         ApiType,
-        () => Observable<Option<Weight>>,
+        () => Observable<Option<WeightV1>>,
         []
       > &
         QueryableStorageEntry<ApiType, []>
@@ -1086,7 +1086,7 @@ declare module "@polkadot/api-base/types/storage" {
        **/
       reservedXcmpWeightOverride: AugmentedQuery<
         ApiType,
-        () => Observable<Option<Weight>>,
+        () => Observable<Option<WeightV1>>,
         []
       > &
         QueryableStorageEntry<ApiType, []>
