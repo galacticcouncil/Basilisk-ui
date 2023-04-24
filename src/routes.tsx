@@ -1,5 +1,5 @@
-import { TradePage } from "sections/gcapps/trade/TradePage"
-import { XcmPage } from "sections/gcapps/xcm/XcmPage"
+import { TradePage } from "sections/trade/TradePage"
+import { XcmPage } from "sections/xcm/XcmPage"
 import { PoolsPage } from "./sections/pools/PoolsPage"
 import { WalletPage } from "./sections/wallet/WalletPage"
 

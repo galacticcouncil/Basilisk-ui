@@ -47,7 +47,7 @@ export function PoolFarmPosition(props: {
         left={t("pools.allFarms.modal.position.mined.label")}
         right={t("pools.allFarms.modal.position.mined.value", {
           value: mined,
-          fixedPointScale: rewardAsset?.decimals,
+          fixedPointScale: rewardAsset?.decimals.toString(),
           numberSuffix: ` ${rewardAsset?.symbol}`,
         })}
       />

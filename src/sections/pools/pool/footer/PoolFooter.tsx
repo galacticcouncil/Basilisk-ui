@@ -32,7 +32,7 @@ export const PoolFooter = ({ pool }: Props) => {
         assetsMeta.data?.find((meta) => meta.id === key) || {}
 
       const balance = separateBalance(claimable.data?.assets[key], {
-        fixedPointScale: decimals || 12,
+        fixedPointScale: decimals?.toString() || 12,
         type: "token",
       })
 

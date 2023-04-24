@@ -407,7 +407,7 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
                     .toBigNumber()
                     .multipliedBy(feeSpotPrice.data?.spotPrice ?? BN_1),
                   symbol: feeMeta.data?.symbol,
-                  fixedPointScale: feeMeta.data?.decimals ?? 12,
+                  fixedPointScale: feeMeta.data?.decimals.toString() ?? 12,
                   type: "token",
                 })}
               </Text>

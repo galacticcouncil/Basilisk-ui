@@ -8,7 +8,6 @@ import { Transactions } from "sections/transaction/Transactions"
 import { Provider as TooltipProvider } from "@radix-ui/react-tooltip"
 import { SkeletonTheme } from "react-loading-skeleton"
 import { theme } from "theme"
-import { GcTransactionCenter } from "sections/gcapps/TransactionCenter"
 
 export const AppProviders: FC<PropsWithChildren> = ({ children }) => {
   const preference = useProviderRpcUrlStore()
@@ -26,7 +25,7 @@ export const AppProviders: FC<PropsWithChildren> = ({ children }) => {
               highlightColor={`rgba(${theme.rgbColors.white}, 0.24)`}
               borderRadius={9999}
             >
-              <GcTransactionCenter>{children}</GcTransactionCenter>
+              {children}
               <Transactions />
             </SkeletonTheme>
           </ToastProvider>
