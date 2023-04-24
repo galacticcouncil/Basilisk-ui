@@ -2025,10 +2025,10 @@
     bignumber.js "^9.1.0"
     lodash.clonedeep "^4.5.0"
 
-"@galacticcouncil/ui@^1.1.12":
-  version "1.1.12"
-  resolved "https://registry.yarnpkg.com/@galacticcouncil/ui/-/ui-1.1.12.tgz#94dc201003a84601400c200fe5ab17ca04ad65d0"
-  integrity sha512-DW8bCYDZZN029aAODTjFO0+VBa/Zglh4bTD/15/LQ7Sid8IYn+TX21wNw5atJ3bAVZbmZz/MrtHIjoQCVs3J6Q==
+"@galacticcouncil/ui@^1.1.13":
+  version "1.1.13"
+  resolved "https://registry.yarnpkg.com/@galacticcouncil/ui/-/ui-1.1.13.tgz#562b2cccb8f0530c293b6c42a3f50b2a07a0ab68"
+  integrity sha512-rDt2XnBZ/B/ko2WUhUQQFw6LzMzek1tjyKkEUkirPJZy1JIP9m1JpYnFY6f50P0K5DBofXJLydWQ2k8G5Mq3pQ==
   dependencies:
     "@lit/reactive-element" "^1.0.0"
     imask "^6.4.3"
