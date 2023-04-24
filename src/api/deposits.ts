@@ -1,10 +1,10 @@
 import { ApiPromise } from "@polkadot/api"
-import { useQueries, useQuery } from "@tanstack/react-query"
-import { DEPOSIT_CLASS_ID, useApiPromise } from "utils/api"
-import { QUERY_KEYS } from "utils/queryKeys"
 import { u128 } from "@polkadot/types-codec"
 import { AccountId32 } from "@polkadot/types/interfaces"
+import { useQueries, useQuery } from "@tanstack/react-query"
+import { DEPOSIT_CLASS_ID, useApiPromise } from "utils/api"
 import { Maybe, undefinedNoop } from "utils/helpers"
+import { QUERY_KEYS } from "utils/queryKeys"
 
 export type DepositNftType = Awaited<
   ReturnType<ReturnType<typeof getDeposits>>
@@ -56,7 +56,8 @@ export const getDeposits = (api: ApiPromise, poolId?: string) => async () => {
     return { id, deposit }
   })
 
-  if (poolId) return data.filter(({ deposit }) => deposit.ammPoolId.eq(poolId))
+  if (poolId)
+    return data.filter(({ deposit }) => deposit.ammPoolId.toString() === poolId)
 
   return data
 }

@@ -4,9 +4,9 @@ import { DepositNftType } from "api/deposits"
 import { Row } from "components/Row/Row"
 import { Separator } from "components/Separator/Separator"
 import { useTranslation } from "react-i18next"
-import { usePoolSharesDeposit } from "sections/pools/pool/shares/deposit/PoolSharesDeposit.utils"
 import { useEnteredDate } from "utils/block"
 import { AprFarm } from "utils/farms/apr"
+import { useDepositValues } from "utils/farms/deposits"
 import { usePositionMinedValue } from "utils/farms/positions"
 
 export function PoolFarmPosition(props: {
@@ -21,10 +21,7 @@ export function PoolFarmPosition(props: {
     position: props.position,
     pool: props.pool,
   })
-  const { assetA, assetB } = usePoolSharesDeposit({
-    depositNft: props.depositNft,
-    pool: props.pool,
-  })
+  const { assetA, assetB } = useDepositValues(props.depositNft)
   const enteredDate = useEnteredDate(props.position.enteredAt.toBigNumber())
 
   return (
@@ -50,7 +47,7 @@ export function PoolFarmPosition(props: {
         left={t("pools.allFarms.modal.position.mined.label")}
         right={t("pools.allFarms.modal.position.mined.value", {
           value: mined,
-          fixedPointScale: rewardAsset?.decimals,
+          fixedPointScale: rewardAsset?.decimals.toString(),
           numberSuffix: ` ${rewardAsset?.symbol}`,
         })}
       />

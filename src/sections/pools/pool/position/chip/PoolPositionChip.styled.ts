@@ -5,12 +5,12 @@ export const SChip = styled.div`
   display: inline-block;
 
   padding: 3px 6px;
-  margin: 16px 16px 0px 16px;
+  margin: 16px 0 0 16px;
 
   font-weight: 800;
   font-size: 9px;
-  text-transform: uppercase;
   line-height: 14px;
+  text-transform: uppercase;
 
   border-radius: 4px;
   background: ${theme.gradients.primaryGradient};

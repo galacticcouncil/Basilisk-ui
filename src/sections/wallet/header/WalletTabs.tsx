@@ -1,14 +1,15 @@
-import { LINKS } from "utils/navigation"
-import { TabLink } from "components/Tabs/TabLink"
-import { useTranslation } from "react-i18next"
-
+import { useSearch } from "@tanstack/react-location"
 import { ReactComponent as AssetsIcon } from "assets/icons/AssetsIcon.svg"
 import { ReactComponent as PositionsIcon } from "assets/icons/PositionsIcon.svg"
+import { TabLink } from "components/Tabs/TabLink"
+import { useTranslation } from "react-i18next"
 import { useMedia } from "react-use"
 import { theme } from "theme"
+import { LINKS } from "utils/navigation"
 
 export const WalletTabs = () => {
   const { t } = useTranslation()
+  const search = useSearch()
   const isDesktop = useMedia(theme.viewport.gte.sm)
 
   return (
@@ -24,6 +25,7 @@ export const WalletTabs = () => {
         fullWidth={!isDesktop}
         to={LINKS.walletAssets}
         icon={<AssetsIcon />}
+        search={search}
       >
         {t("wallet.header.assets")}
       </TabLink>
@@ -31,6 +33,7 @@ export const WalletTabs = () => {
         fullWidth={!isDesktop}
         to={LINKS.walletVesting}
         icon={<PositionsIcon />}
+        search={search}
       >
         {t("wallet.header.vesting")}
       </TabLink>

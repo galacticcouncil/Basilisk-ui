@@ -5,7 +5,9 @@ import { useEffectOnce, useLocalStorage } from "react-use"
 import { useAccountStore } from "./store"
 import { renderToString } from "react-dom/server"
 
+export const TOAST_MESSAGES = ["onLoading", "onSuccess", "onError"] as const
 export type ToastVariant = "info" | "success" | "error" | "progress" | "unknown"
+export type ToastMessageType = (typeof TOAST_MESSAGES)[number]
 
 type ToastData = ToastParams & {
   id: string

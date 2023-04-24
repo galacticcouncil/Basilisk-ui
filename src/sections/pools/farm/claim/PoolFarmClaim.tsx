@@ -12,17 +12,17 @@ import { useMedia } from "react-use"
 import { useAssetMetaList } from "api/assetMeta"
 import { Fragment, useMemo } from "react"
 import { Separator } from "components/Separator/Separator"
+import { useAccountStore } from "state/store"
 
 export function PoolFarmClaim(props: {
   pool: PoolBase
   depositNft?: DepositNftType
 }) {
   const { t } = useTranslation()
-
+  const { account } = useAccountStore()
   const isDesktop = useMedia(theme.viewport.gte.sm)
 
   const claimable = useClaimableAmount(props.pool, props.depositNft)
-
   const assetsMeta = useAssetMetaList(Object.keys(claimable.data?.assets || {}))
 
   const { claimableAssets, toastValue } = useMemo(() => {
@@ -35,7 +35,7 @@ export function PoolFarmClaim(props: {
         assetsMeta.data?.find((meta) => meta.id === key) || {}
 
       const balance = separateBalance(claimable.data?.assets[key], {
-        fixedPointScale: decimals || 12,
+        fixedPointScale: decimals?.toString() || 12,
         type: "token",
       })
 
@@ -145,7 +145,11 @@ export function PoolFarmClaim(props: {
           p: ["10px 16px", "16px 36px"],
           width: ["100%", "max-content"],
         }}
-        disabled={!claimableAssets.length || !!claimable.data?.usd.isZero()}
+        disabled={
+          !claimableAssets.length ||
+          !!claimable.data?.usd.isZero() ||
+          account?.isExternalWalletConnected
+        }
         isLoading={claimAll.mutation.isLoading}
         onClick={() => claimAll.mutation.mutate()}
       >

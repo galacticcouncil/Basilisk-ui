@@ -1,11 +1,11 @@
-import { AssetIcon, AssetIconProps } from "components/AssetIcon/AssetIcon"
 import { FC } from "react"
 import { IconsWrapper } from "./MultipleIcons.styled"
 import { ResponsiveValue } from "utils/responsive"
+import { Icon, IconProps } from "components/Icon/Icon"
 
 type DualAssetIconsProps = {
   size?: ResponsiveValue<number>
-  icons: Array<AssetIconProps>
+  icons: Array<IconProps>
 }
 
 export const MultipleIcons: FC<DualAssetIconsProps> = ({
@@ -14,7 +14,7 @@ export const MultipleIcons: FC<DualAssetIconsProps> = ({
 }) => (
   <IconsWrapper size={size}>
     {icons.map((icon, index) => (
-      <AssetIcon {...icon} key={index} />
+      <Icon {...icon} key={index} />
     ))}
   </IconsWrapper>
 )

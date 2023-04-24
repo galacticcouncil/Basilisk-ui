@@ -1,19 +1,18 @@
 import { css } from "@emotion/react"
+import { ReactComponent as CopyIcon } from "assets/icons/CopyIcon.svg"
+import { AccountAvatar } from "components/AccountAvatar/AccountAvatar"
+import { InfoTooltip } from "components/InfoTooltip/InfoTooltip"
 import { Text } from "components/Typography/Text/Text"
 import { FC } from "react"
-import { AccountAvatar } from "components/AccountAvatar/AccountAvatar"
-import { shortenAccountAddress } from "utils/formatting"
-import { InfoTooltip } from "components/InfoTooltip/InfoTooltip"
 import { useTranslation } from "react-i18next"
-import { ReactComponent as CopyIcon } from "assets/icons/CopyIcon.svg"
-import { useCopyToClipboard } from "react-use"
+import { useCopyToClipboard, useMedia } from "react-use"
+import { shortenAccountAddress } from "utils/formatting"
 
 type Props = {
   name: string
   theme: string
   address: string
   onClick?: () => void
-  isActive: boolean
 }
 
 export const WalletConnectAccountSelectAddress: FC<Props> = ({
@@ -21,10 +20,10 @@ export const WalletConnectAccountSelectAddress: FC<Props> = ({
   theme,
   address,
   onClick,
-  isActive,
 }) => {
   const { t } = useTranslation()
   const [, copy] = useCopyToClipboard()
+  const isSmall = useMedia("(max-width: 360px)")
 
   return (
     <div
@@ -54,21 +53,23 @@ export const WalletConnectAccountSelectAddress: FC<Props> = ({
               color: var(--secondary-color);
             `}
           >
-            {shortenAccountAddress(address, 12)}
+            {shortenAccountAddress(address, isSmall ? 6 : 12)}
           </Text>
         </div>
       </div>
-      {isActive && (
-        <InfoTooltip
-          text={t("wallet.header.copyAddress.hover")}
-          textOnClick={t("wallet.header.copyAddress.click")}
-        >
-          <CopyIcon
-            css={{ cursor: "pointer", color: "var(--secondary-color)" }}
-            onClick={() => copy(address.toString())}
-          />
-        </InfoTooltip>
-      )}
+
+      <InfoTooltip
+        text={t("wallet.header.copyAddress.hover")}
+        textOnClick={t("wallet.header.copyAddress.click")}
+      >
+        <CopyIcon
+          css={{ cursor: "pointer", color: "var(--secondary-color)" }}
+          onClick={(e) => {
+            e.stopPropagation()
+            copy(address.toString())
+          }}
+        />
+      </InfoTooltip>
     </div>
   )
 }

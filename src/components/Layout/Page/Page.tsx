@@ -1,14 +1,14 @@
-import { FC, PropsWithChildren } from "react"
 import { Header } from "components/Layout/Header/Header"
 import {
+  SPage,
   SPageContent,
   SPageInner,
-  SPage,
 } from "components/Layout/Page/Page.styled"
-import { MobileNavBar } from "../Header/MobileNavBar/MobileNavBar"
+import { ReactNode } from "react"
 import { ProviderSelectButton } from "sections/provider/ProviderSelectModal"
+import { MobileNavBar } from "../Header/MobileNavBar/MobileNavBar"
 
-export const Page: FC<PropsWithChildren> = ({ children }) => (
+export const Page = ({ children }: { children: ReactNode }) => (
   <SPage>
     <Header />
     <SPageContent>

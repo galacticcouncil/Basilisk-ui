@@ -16,7 +16,6 @@ export const EXTERNAL_LINKS = {
   bridge: `https://docs.bsx.fi/howto_bridge/`,
 } as const
 
-const isWalletPageEnabled = import.meta.env.VITE_FF_WALLET_ENABLED === "true"
 const isXcmPageEnabled = import.meta.env.VITE_FF_XCM_ENABLED === "true"
 
 export const MENU_ITEMS = [
@@ -39,9 +38,9 @@ export const MENU_ITEMS = [
   {
     key: "wallet",
     translationKey: "header.wallet",
-    href: isWalletPageEnabled ? LINKS.wallet : EXTERNAL_LINKS.wallet,
+    href: LINKS.wallet,
     enabled: true,
-    external: !isWalletPageEnabled,
+    external: false,
     mobVisible: true,
   },
   {

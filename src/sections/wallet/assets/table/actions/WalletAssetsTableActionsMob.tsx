@@ -12,6 +12,7 @@ import { Text } from "components/Typography/Text/Text"
 import { AssetsTableData } from "../WalletAssetsTable.utils"
 import { useSetAsFeePayment } from "api/payments"
 import { useNavigate } from "@tanstack/react-location"
+import { useAccountStore } from "state/store"
 
 type Props = {
   row?: AssetsTableData
@@ -25,6 +26,7 @@ export const WalletAssetsTableActionsMob = ({
   onTransferClick,
 }: Props) => {
   const { t } = useTranslation()
+  const { account } = useAccountStore()
   const navigate = useNavigate()
 
   const setFeeAsPayment = useSetAsFeePayment()
@@ -123,7 +125,9 @@ export const WalletAssetsTableActionsMob = ({
                 <Button
                   sx={{ width: "100%" }}
                   size="small"
-                  disabled={!row.inTradeRouter}
+                  disabled={
+                    !row.inTradeRouter || account?.isExternalWalletConnected
+                  }
                   onClick={
                     row.inTradeRouter
                       ? () =>
@@ -140,7 +144,9 @@ export const WalletAssetsTableActionsMob = ({
                 <Button
                   sx={{ width: "100%" }}
                   size="small"
-                  disabled={!row.inTradeRouter}
+                  disabled={
+                    !row.inTradeRouter || account?.isExternalWalletConnected
+                  }
                   onClick={
                     row.inTradeRouter
                       ? () =>
@@ -160,7 +166,9 @@ export const WalletAssetsTableActionsMob = ({
               <Button
                 sx={{ width: "100%" }}
                 size="small"
-                disabled={row.total.isZero()}
+                disabled={
+                  row.total.isZero() || account?.isExternalWalletConnected
+                }
                 onClick={() => onTransferClick(row.id)}
               >
                 <TransferIcon />
@@ -170,7 +178,10 @@ export const WalletAssetsTableActionsMob = ({
             <Button
               sx={{ width: "100%" }}
               size="small"
-              disabled={!row.couldBeSetAsPaymentFee}
+              disabled={
+                !row.couldBeSetAsPaymentFee ||
+                account?.isExternalWalletConnected
+              }
               onClick={() => setFeeAsPayment(row.id)}
             >
               <DollarIcon />

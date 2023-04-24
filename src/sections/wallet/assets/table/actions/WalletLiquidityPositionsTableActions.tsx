@@ -7,7 +7,8 @@ import { ReactComponent as ChevronDownIcon } from "assets/icons/ChevronDown.svg"
 import { ReactComponent as ChevronRightIcon } from "assets/icons/ChevronRight.svg"
 import { useTranslation } from "react-i18next"
 import { TableAction } from "components/Table/Table"
-import { LINKS } from "../../../../../utils/navigation"
+import { LINKS } from "utils/navigation"
+import { useAccountStore } from "state/store"
 
 type Props = {
   address: string
@@ -17,6 +18,7 @@ type Props = {
 
 export const WalletLiquidityPositionsTableActions = (props: Props) => {
   const { t } = useTranslation()
+  const { account } = useAccountStore()
 
   return (
     <>
@@ -29,6 +31,7 @@ export const WalletLiquidityPositionsTableActions = (props: Props) => {
         <TableAction
           icon={<TransferIcon />}
           onClick={() => props.onTransferClick?.()}
+          disabled={account?.isExternalWalletConnected}
         >
           {t("wallet.assets.liquidityPositions.table.actions.transfer")}
         </TableAction>

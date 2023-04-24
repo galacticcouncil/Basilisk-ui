@@ -77,7 +77,7 @@ export const WalletVestingSchedule = () => {
               i18nKey="wallet.vesting.claimable_now_value"
               tOptions={{
                 ...separateBalance(claimableBalance, {
-                  fixedPointScale: meta.data?.decimals ?? 12,
+                  fixedPointScale: meta.data?.decimals.toString() ?? 12,
                   type: "token",
                 }),
               }}
@@ -93,7 +93,7 @@ export const WalletVestingSchedule = () => {
           <Text color="neutralGray300" fs={16} lh={18}>
             {t("value.usd", {
               amount: claimableUSD,
-              fixedPointScale: meta.data?.decimals ?? 12,
+              fixedPointScale: meta.data?.decimals.toString() ?? 12,
             })}
           </Text>
         </div>
@@ -107,7 +107,7 @@ export const WalletVestingSchedule = () => {
               variant="gradient"
               transform="uppercase"
               onClick={handleClaim}
-              disabled={!isClaimAllowed}
+              disabled={!isClaimAllowed || account?.isExternalWalletConnected}
               sx={{
                 fontWeight: 800,
               }}
