@@ -1994,15 +1994,15 @@
   resolved "https://registry.yarnpkg.com/@galacticcouncil/math-lbp/-/math-lbp-0.0.7.tgz#3982a11b57590f1b87f89ec7ab0b4ca87e49a596"
   integrity sha512-lK/X1JCVu1q5slr8kWmDDrktGR+TD0gEM+wpeMRoXZdGZh00NzUCF47JaXSjnn1dAtjhOXRYbwhbaZPGfyP4nQ==
 
-"@galacticcouncil/math-lbp@^0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@galacticcouncil/math-lbp/-/math-lbp-0.0.8.tgz#698f229d6a6f75e331f07186528a5d9b0ec2d63d"
-  integrity sha512-TmW+qNOrFSuH1v6oKwhgiCeVixczfgvigUN59EELcn58fTud/R2ovI8VFHni5PtfHm2R17lxh51YIsy/gfGYeQ==
+"@galacticcouncil/math-lbp@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@galacticcouncil/math-lbp/-/math-lbp-0.1.2.tgz#b3612b845badcdb7a7ab47b6143dc7e5f5ac4ac9"
+  integrity sha512-I+EJ57pMRJBMlRtGPZvvUIWcXkSWYtmmJ3gU3LQ+l+vHym3+R/Jd2CBm34kJs/VAQxjGFgTpXSY0U2G6YZeAHg==
 
-"@galacticcouncil/math-liquidity-mining@^0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@galacticcouncil/math-liquidity-mining/-/math-liquidity-mining-0.0.8.tgz#81fb21a95bf2cfaf1f5a860fb5cc0c9eff0c3430"
-  integrity sha512-gQwblRpmXU0om1AnqlDzkICllZ30NE6y9+ATY6ViXI24xa9CD6XE0BCyceW4vA7KrvDnCEL2Js3K8L1oV85udQ==
+"@galacticcouncil/math-liquidity-mining@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@galacticcouncil/math-liquidity-mining/-/math-liquidity-mining-0.1.2.tgz#63729b6b31fffa10705a0bc54e0f9357953416d2"
+  integrity sha512-tzORJi0ey+6mR2+1KwqzHPUkkEXccMIoMXXMdbBhI3Sl/I6jExUw3rPEc0QlQluhRkOy3I6XwByEJ1jwmge5HA==
 
 "@galacticcouncil/math-omnipool@^0.0.7":
   version "0.0.7"
@@ -2013,6 +2013,11 @@
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/@galacticcouncil/math-xyk/-/math-xyk-0.0.7.tgz#627d797c0e50737d7525dcb4dc99531835743652"
   integrity sha512-bnW+EQmMUJp8/kRRuHIBuemV4Ehu/L81s8+Ujjh0H94mweqeDorfisATNvP4wI9PWm7FMGkp2BZdsoeGnEIYFQ==
+
+"@galacticcouncil/math-xyk@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@galacticcouncil/math-xyk/-/math-xyk-0.1.2.tgz#ad19a6bf5649781694a0d9b0def42bf0d5caabe1"
+  integrity sha512-zIwC8OZ8ETgsBV/o7XJFJKDJ3mxZ55ZLVifcWmR5ZdkWURWYWscOfM0vxWpj7n/VuD8Y5W7Bl/kze3ZR8S8otQ==
 
 "@galacticcouncil/sdk@^0.1.0":
   version "0.1.0"

@@ -6,7 +6,7 @@ export const SIcon = styled.div<{ large?: boolean }>`
   height: ${({ large }) => (large ? "34px" : "24px")};
   flex-shrink: 0;
   @media ${theme.viewport.gte.sm} {
-    width: 32px;
-    height: 32px;
+    width: 27px;
+    height: 27px;
   }
 `
