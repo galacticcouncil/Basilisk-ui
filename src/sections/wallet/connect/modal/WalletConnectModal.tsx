@@ -62,6 +62,7 @@ export const WalletConnectModal: FC<Props> = ({ isOpen, onClose }) => {
                 setAccount(account)
                 onClose()
               }}
+              onClose={onClose}
             />
             <WalletConnectActiveFooter
               account={account}

@@ -3,7 +3,11 @@ import { Text } from "components/Typography/Text/Text"
 import { SDetailRow } from "./ReviewTransaction.styled"
 import { Button } from "components/Button/Button"
 import { TransactionCode } from "components/TransactionCode/TransactionCode"
-import { Transaction, useAccountStore } from "state/store"
+import {
+  PROXY_WALLET_PROVIDER,
+  Transaction,
+  useAccountStore,
+} from "state/store"
 import { getTransactionJSON } from "./ReviewTransaction.utils"
 import { useNextNonce, usePaymentInfo } from "api/transaction"
 import { useMutation } from "@tanstack/react-query"
@@ -16,7 +20,7 @@ import { useAssetMeta } from "../../api/assetMeta"
 import BigNumber from "bignumber.js"
 import { BN_1 } from "utils/constants"
 import { useSpotPrice } from "api/spotPrice"
-import { NATIVE_ASSET_ID } from "utils/api"
+import { NATIVE_ASSET_ID, POLKADOT_APP_NAME } from "utils/api"
 
 export const ReviewTransactionForm = (
   props: {
@@ -39,10 +43,20 @@ export const ReviewTransactionForm = (
   const spotPrice = useSpotPrice(NATIVE_ASSET_ID, feeMeta.data?.id)
 
   const signTx = useMutation(async () => {
-    const address = account?.address?.toString()
-    const wallet = getWalletBySource(account?.provider)
+    const address = props.isProxy ? account?.delegate : account?.address
+    const provider =
+      account?.provider === "external" && props.isProxy
+        ? PROXY_WALLET_PROVIDER
+        : account?.provider
+
+    const wallet = getWalletBySource(provider)
+
     if (address == null || wallet == null)
       throw new Error("Missing active account or wallet")
+
+    if (props.isProxy) {
+      await wallet.enable(POLKADOT_APP_NAME)
+    }
 
     const signature = await props.tx.signAsync(address, {
       signer: wallet.signer,

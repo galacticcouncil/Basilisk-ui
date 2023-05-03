@@ -160,4 +160,9 @@ export const QUERY_KEYS = {
     "accountCurrency",
     address,
   ],
+  externalWalletKey: (walletAddress: string) => [
+    "externalWallet",
+    walletAddress,
+  ],
+  polkadotAccounts: ["polkadotAccounts"],
 } as const

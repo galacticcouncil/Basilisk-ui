@@ -44,27 +44,23 @@ export const SContainer = styled.div<{ isActive: boolean }>`
   }};
 `
 
-export const SSelectItem = styled.div<{ isActive: boolean }>`
+export const SSelectItem = styled.div<{ isActive: boolean; isProxy: boolean }>`
   display: flex;
   flex-direction: column;
   background: ${theme.colors.backgroundGray800};
   padding: 16px 20px;
   border-radius: 12px;
-  cursor: pointer;
-
-  transition: background ${theme.transitions.default};
-
-  &:hover {
-    background: rgba(${theme.rgbColors.primary100}, 0.06);
-  }
-
-  &:active {
-    background: rgba(${theme.rgbColors.primary100}, 0.07);
-  }
 
   position: relative;
 
   ${(p) => {
+    if (p.isProxy) {
+      return css`
+        border: 1px solid rgba(${theme.rgbColors.white}, 0.35);
+        padding: 14px 18px;
+      `
+    }
+
     if (p.isActive) {
       return css`
         &,
@@ -92,6 +88,18 @@ export const SSelectItem = styled.div<{ isActive: boolean }>`
       `
     }
 
-    return ``
+    return css`
+      cursor: pointer;
+
+      transition: background ${theme.transitions.default};
+
+      &:hover {
+        background: rgba(${theme.rgbColors.primary100}, 0.06);
+      }
+
+      &:active {
+        background: rgba(${theme.rgbColors.primary100}, 0.07);
+      }
+    `
   }}
 `

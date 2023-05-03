@@ -21,7 +21,7 @@ export const PoolsHeaderClaim = () => {
       {isDesktop ? (
         <Root delayDuration={0} open={open} onOpenChange={setOpen}>
           <STrigger
-            isOpen={open}
+            open={open}
             onClick={(e) => {
               e.preventDefault()
               e.stopPropagation()
