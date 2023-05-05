@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import { UseFormReturn } from "react-hook-form"
 
 import { u32 } from "@polkadot/types-codec"
+import { ApiPromise } from "@polkadot/api"
 
 export const noop = () => {}
 export const undefinedNoop = () => undefined
@@ -163,3 +164,5 @@ export function useQueryReduce<Tuple extends readonly unknown[], Combined>(
 
   return trackedItem
 }
+
+export const isApiLoaded = (api: ApiPromise) => Object.keys(api).length

@@ -1,4 +1,3 @@
-import { LoadingPage } from "sections/loading/LoadingPage"
 import { InvalidateOnBlock } from "components/InvalidateOnBlock"
 import { ApiPromiseContext } from "utils/api"
 import { FC, PropsWithChildren } from "react"
@@ -8,16 +7,19 @@ import { Transactions } from "sections/transaction/Transactions"
 import { Provider as TooltipProvider } from "@radix-ui/react-tooltip"
 import { SkeletonTheme } from "react-loading-skeleton"
 import { theme } from "theme"
+import { ApiPromise } from "@polkadot/api"
 
 export const AppProviders: FC<PropsWithChildren> = ({ children }) => {
   const preference = useProviderRpcUrlStore()
   const api = useProvider(preference.rpcUrl)
 
-  if (!preference._hasHydrated || !api.data) return <LoadingPage />
-
   return (
     <TooltipProvider>
-      <ApiPromiseContext.Provider value={api.data}>
+      <ApiPromiseContext.Provider
+        value={
+          api.data && preference._hasHydrated ? api.data : ({} as ApiPromise)
+        }
+      >
         <InvalidateOnBlock>
           <ToastProvider>
             <SkeletonTheme
