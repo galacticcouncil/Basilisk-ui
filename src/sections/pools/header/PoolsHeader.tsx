@@ -6,7 +6,6 @@ import { Text } from "components/Typography/Text/Text"
 import { useTranslation } from "react-i18next"
 import { PoolsHeaderTotal } from "sections/pools/header/total/PoolsHeaderTotal"
 import { useAccountStore } from "state/store"
-import { PoolsHeaderVolume } from "./volume/PoolsHeaderVolume"
 import { SValue } from "./PoolsHeader.styled"
 import { PoolsHeaderClaim } from "./claim/PoolsHeaderClaim"
 
@@ -61,7 +60,7 @@ export const PoolsHeader = ({
 
         <SValue>
           <Text color="neutralGray300">{t("pools.header.total24volumes")}</Text>
-          <PoolsHeaderVolume myPositions={myPositions} variant="pools" />
+          <PoolsHeaderTotal myPositions={myPositions} variant="volume" />
         </SValue>
 
         <PoolsHeaderClaim />
