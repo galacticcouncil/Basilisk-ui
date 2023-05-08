@@ -67,7 +67,7 @@ export function PoolFarmJoinSectionList(props: {
             variant="primary"
             sx={{ width: "100%" }}
             onClick={() => setOpenJoinFarm(true)}
-            disabled={account?.isExternalWalletConnected}
+            disabled={!account || account?.isExternalWalletConnected}
           >
             {t("farms.deposit.submit")}
           </Button>
