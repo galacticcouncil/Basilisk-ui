@@ -25,7 +25,7 @@ const openStyles = css`
   }
 `
 
-export const STrigger = styled(Trigger)<{ isOpen: boolean }>`
+export const STrigger = styled(Trigger)<{ open: boolean }>`
   all: unset;
 
   display: flex;
@@ -72,7 +72,7 @@ export const STrigger = styled(Trigger)<{ isOpen: boolean }>`
     transition: all 0.15s ease-in-out;
   }
 
-  ${({ isOpen }) => isOpen && openStyles}
+  ${({ open }) => open && openStyles}
 
   @media ${theme.viewport.gte.sm} {
     width: auto;

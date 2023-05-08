@@ -6,17 +6,20 @@ import { useTranslation } from "react-i18next"
 import { WalletConnectAccountSelectItem } from "sections/wallet/connect/accountSelect/item/WalletConnectAccountSelectItem"
 import { Account, externalWallet } from "state/store"
 import { SContainer } from "./WalletConnectAccountSelect.styled"
+import { ExternalWalletConnectAccount } from "./external/ExternalWalletConnectAccount"
 
 type Props = {
   provider: string
   onSelect: (account: Account) => void
   currentAddress: string | undefined
+  onClose: () => void
 }
 
 export const WalletConnectAccountSelect: FC<Props> = ({
   provider,
   onSelect,
   currentAddress,
+  onClose,
 }) => {
   const { t } = useTranslation("translation")
   const isExternalWallet = provider === externalWallet.provider
@@ -38,19 +41,9 @@ export const WalletConnectAccountSelect: FC<Props> = ({
 
       <SContainer>
         {currentAddress && isExternalWallet ? (
-          <WalletConnectAccountSelectItem
-            isActive
-            provider={provider}
-            name={externalWallet.name}
+          <ExternalWalletConnectAccount
             address={currentAddress}
-            setAccount={() => {
-              onSelect({
-                name: externalWallet.name,
-                address: currentAddress,
-                provider,
-                isExternalWalletConnected: true,
-              })
-            }}
+            onClose={onClose}
           />
         ) : (
           accounts.data

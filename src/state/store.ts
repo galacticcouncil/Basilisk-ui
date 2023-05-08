@@ -14,6 +14,7 @@ export interface Account {
   address: string
   provider: string
   isExternalWalletConnected: boolean
+  delegate?: string
 }
 
 export interface TransactionInput {
@@ -37,6 +38,7 @@ export interface Transaction extends TransactionInput {
   onSuccess?: (result: ISubmittableResult) => void
   onError?: () => void
   toastMessage?: ToastMessage
+  isProxy: boolean
 }
 
 interface Store {
@@ -46,12 +48,19 @@ interface Store {
     options?: {
       onSuccess?: () => void
       toast?: ToastMessage
+      isProxy?: boolean
     },
   ) => Promise<ISubmittableResult>
   cancelTransaction: (hash: string) => void
 }
 
-export const externalWallet = { provider: "external", name: "ExternalAccount" }
+export const externalWallet = {
+  provider: "external",
+  name: "External Account",
+  proxyName: "Proxy Account",
+}
+
+export const PROXY_WALLET_PROVIDER = "polkadot-js"
 
 export const useAccountStore = create(
   persist<{
@@ -72,7 +81,7 @@ export const useAccountStore = create(
           let externalWalletAddress: string | null = null
 
           // check if there is an external account address within URL
-          const search = window.location.hash.split("?").pop()
+          const search = window.location.href.split("?").pop()
           externalWalletAddress = new URLSearchParams(search).get("account")
 
           try {
@@ -84,12 +93,14 @@ export const useAccountStore = create(
               safeConvertAddressSS58(externalWalletAddress, 0)
             ) {
               const parsedAccount = JSON.parse(value)
+              const delegate = parsedAccount.state.account?.delegate
 
               const externalAccount = {
-                name: externalWallet.name,
+                name: delegate ? externalWallet.proxyName : externalWallet.name,
                 address: externalWalletAddress,
                 provider: externalWallet.provider,
                 isExternalWalletConnected: true,
+                delegate,
               }
 
               return JSON.stringify({
@@ -144,6 +155,7 @@ export const useStore = create<Store>((set) => ({
               },
               onSuccess: resolve,
               onError: () => reject(new Error("Transaction rejected")),
+              isProxy: !!options?.isProxy,
             },
             ...(store.transactions ?? []),
           ],

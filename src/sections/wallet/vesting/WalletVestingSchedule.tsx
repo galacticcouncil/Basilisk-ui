@@ -54,10 +54,21 @@ export const WalletVestingSchedule = () => {
   }, [paymentInfoData, existentialDeposit, claimableBalance])
 
   const handleClaim = useCallback(async () => {
-    return await createTransaction({
-      tx: api.tx.vesting.claim(),
-    })
-  }, [api, createTransaction])
+    return !!account?.delegate
+      ? await createTransaction(
+          {
+            tx: api.tx.proxy.proxy(
+              account?.address,
+              null,
+              api.tx.vesting.claimFor(account?.address),
+            ),
+          },
+          { isProxy: true },
+        )
+      : await createTransaction({
+          tx: api.tx.vesting.claim(),
+        })
+  }, [api, account, createTransaction])
 
   return (
     <SSchedule>
@@ -107,7 +118,10 @@ export const WalletVestingSchedule = () => {
               variant="gradient"
               transform="uppercase"
               onClick={handleClaim}
-              disabled={!isClaimAllowed || account?.isExternalWalletConnected}
+              disabled={
+                !isClaimAllowed ||
+                (account?.isExternalWalletConnected && !account?.delegate)
+              }
               sx={{
                 fontWeight: 800,
               }}
