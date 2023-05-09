@@ -14,6 +14,7 @@ import { DepositNftType } from "api/deposits"
 import { Tag } from "components/Tag/Tag"
 import { PoolBase } from "@galacticcouncil/sdk"
 import { useMemo } from "react"
+import { Icon } from "components/Icon/Icon"
 
 export const PoolFarmDetail = (props: {
   pool: PoolBase
@@ -68,7 +69,8 @@ export const PoolFarmDetail = (props: {
         }}
       >
         <div sx={{ flex: "row", align: "center", gap: 8 }}>
-          {asset.data?.icon}
+          <Icon icon={asset.data?.icon} size={22} />
+
           <Text fw={700}>{asset.data?.symbol}</Text>
         </div>
         <Text fs={16} lh={28} fw={600} color="primary200">

@@ -1,5 +1,7 @@
 import { PoolBase } from "@galacticcouncil/sdk"
+import { useTokenBalance } from "api/balances"
 import { FarmIds, useActiveYieldFarms, useGlobalFarms } from "api/farms"
+import { usePoolShareToken } from "api/pools"
 import BN from "bignumber.js"
 import { LiquidityPositionInput } from "components/AssetSelect/LiquidityPositionInput"
 import { Button } from "components/Button/Button"
@@ -9,7 +11,7 @@ import { WalletConnectButton } from "sections/wallet/connect/modal/WalletConnect
 import { useAccountStore, useStore } from "state/store"
 import { useApiPromise } from "utils/api"
 import { getFloatingPointAmount } from "utils/balance"
-import { BN_0, BN_BILL, DEFAULT_DECIMALS } from "utils/constants"
+import { BN_0, BN_10, BN_BILL, DEFAULT_DECIMALS } from "utils/constants"
 import { AprFarm } from "utils/farms/apr"
 import { FormValues } from "utils/helpers"
 
@@ -39,6 +41,9 @@ export const PoolFarmDeposit = (props: Props) => {
 
   const [assetIn, assetOut] = props.pool.tokens
   const { account } = useAccountStore()
+
+  const shareToken = usePoolShareToken(props.pool.address)
+  const balance = useTokenBalance(shareToken.data?.token, account?.address)
 
   const form = useForm<{ value: string }>({})
 
@@ -154,6 +159,8 @@ export const PoolFarmDeposit = (props: Props) => {
     }
   }
 
+  if (!balance.data) return null
+
   return (
     <form onSubmit={form.handleSubmit(handleSubmit)}>
       <Controller
@@ -161,6 +168,17 @@ export const PoolFarmDeposit = (props: Props) => {
         control={form.control}
         rules={{
           validate: {
+            maxBalance: (value) => {
+              try {
+                if (
+                  balance?.data?.balance.gte(
+                    BN(value).multipliedBy(BN_10.pow(12)),
+                  )
+                )
+                  return true
+              } catch {}
+              return t("liquidity.add.modal.validation.notEnoughBalance")
+            },
             minDeposit: (value) => {
               return !getFloatingPointAmount(minDeposit, 12).lte(value)
                 ? t("farms.deposit.error.minDeposit", { minDeposit })

@@ -22,7 +22,7 @@ export const usePoolActionsConditions = (pool: PoolBase) => {
   })
 
   const disabledRemove = balance.data?.balance.isZero()
-  const disabledJoin = !farms.data?.length || balance.data?.balance.isZero()
+  const disabledJoin = !farms.data?.length
   const disabledMyPositions =
     !account ||
     (!deposits.data?.length && (!dollarValue || dollarValue.isZero()))

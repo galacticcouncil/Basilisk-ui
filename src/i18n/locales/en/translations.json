@@ -83,6 +83,7 @@
   "pools.pool.actions.addLiquidity": "Add liquidity",
   "pools.pool.actions.removeLiquidity": "Remove liquidity",
   "pools.pool.actions.joinFarm": "Join farm",
+  "pools.pool.actions.farmDetails": "Farms Details",
   "pools.pool.actions.more": "More",
   "pools.pool.actions.actions": "Actions",
   "pools.pool.actions.myPositions": "My Positions",
