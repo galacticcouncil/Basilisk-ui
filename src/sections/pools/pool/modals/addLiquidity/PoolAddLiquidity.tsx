@@ -37,6 +37,7 @@ export const PoolAddLiquidity: FC<Props> = ({
         setPoolAddress(props.poolAddress)
         onClose()
       }}
+      withoutCloseOutside
     >
       {assetA && (
         <PoolAddLiquidityModal
@@ -45,6 +46,10 @@ export const PoolAddLiquidity: FC<Props> = ({
           assetA={assetA}
           assetB={assetB}
           setPoolAddress={setPoolAddress}
+          onClose={() => {
+            setPoolAddress(props.poolAddress)
+            onClose()
+          }}
         />
       )}
     </Modal>

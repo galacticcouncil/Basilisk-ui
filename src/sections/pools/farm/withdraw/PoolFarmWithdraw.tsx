@@ -10,6 +10,7 @@ import { DepositNftType } from "api/deposits"
 export function PoolFarmWithdraw(props: {
   pool: PoolBase
   depositNft?: DepositNftType
+  onClose: () => void
 }) {
   const { account } = useAccountStore()
   const api = useApiPromise()
@@ -35,13 +36,15 @@ export function PoolFarmWithdraw(props: {
         .flat(2) ?? []
 
     if (txs.length > 1) {
-      return await createTransaction({
-        tx: api.tx.utility.batchAll(txs),
-      })
+      return await createTransaction(
+        { tx: api.tx.utility.batchAll(txs) },
+        { onClose: props.onClose, onBack: () => {} },
+      )
     } else if (txs.length > 0) {
-      return await createTransaction({
-        tx: txs[0],
-      })
+      return await createTransaction(
+        { tx: txs[0] },
+        { onClose: props.onClose, onBack: () => {} },
+      )
     }
   })
 

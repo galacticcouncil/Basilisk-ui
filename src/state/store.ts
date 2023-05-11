@@ -39,6 +39,8 @@ export interface Transaction extends TransactionInput {
   onError?: () => void
   toastMessage?: ToastMessage
   isProxy: boolean
+  onBack?: () => void
+  onClose?: () => void
 }
 
 interface Store {
@@ -49,6 +51,8 @@ interface Store {
       onSuccess?: () => void
       toast?: ToastMessage
       isProxy?: boolean
+      onBack?: () => void
+      onClose?: () => void
     },
   ) => Promise<ISubmittableResult>
   cancelTransaction: (hash: string) => void
@@ -156,6 +160,8 @@ export const useStore = create<Store>((set) => ({
               onSuccess: resolve,
               onError: () => reject(new Error("Transaction rejected")),
               isProxy: !!options?.isProxy,
+              onBack: options?.onBack,
+              onClose: options?.onClose,
             },
             ...(store.transactions ?? []),
           ],

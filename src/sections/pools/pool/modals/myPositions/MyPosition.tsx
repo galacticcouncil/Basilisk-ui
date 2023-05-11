@@ -16,13 +16,14 @@ import { useDepositValues } from "utils/farms/deposits"
 import { PoolPositionFarmRedeposit } from "../../position/farm/PoolPositionFarmRedeposit"
 import { SMobContainer } from "./MyPositions.styled"
 
-type MyPositionProps = {
+type Props = {
   depositNft: DepositNftType
   index: number
   pool: PoolBase
+  onClose: () => void
 }
 
-export const MyPosition = ({ pool, depositNft, index }: MyPositionProps) => {
+export const MyPosition = ({ pool, depositNft, index, onClose }: Props) => {
   const { t } = useTranslation()
   const [openFarm, setOpenFarm] = useState(false)
 
@@ -93,7 +94,11 @@ export const MyPosition = ({ pool, depositNft, index }: MyPositionProps) => {
               </Text>
             </div>
           </div>
-          <PoolPositionFarmRedeposit pool={pool} depositNft={depositNft} />
+          <PoolPositionFarmRedeposit
+            pool={pool}
+            depositNft={depositNft}
+            onClose={onClose}
+          />
         </div>
         <Icon
           icon={<ChevronRight />}
