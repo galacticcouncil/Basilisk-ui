@@ -7,10 +7,12 @@ import {
 } from "sections/pools/PoolsPage.utils"
 import { PoolsHeader } from "sections/pools/header/PoolsHeader"
 import { Pool } from "sections/pools/pool/Pool"
-import { EmptyPoolsState } from "./pool/empty/EmptyPoolsState"
-import { isApiLoaded } from "utils/helpers"
 import { useApiPromise } from "utils/api"
+import { isApiLoaded } from "utils/helpers"
 import { PoolSkeleton } from "./pool/PoolSkeleton"
+import { EmptyPoolsState } from "./pool/empty/EmptyPoolsState"
+import { Modal } from "components/Modal/Modal"
+import { AddressBook } from "components/AddressBook/AddressBook"
 
 export const PoolsPage = () => {
   const api = useApiPromise()
@@ -55,6 +57,10 @@ export const PoolsPageData = () => {
         }
         disableMyPositions={!hasPositions}
       />
+
+      <Modal open onClose={() => {}}>
+        <AddressBook onSelect={(a) => console.log(a)} />
+      </Modal>
 
       <Spacer size={40} />
 

@@ -21,6 +21,8 @@
   "and": "and",
   "shares": "shares",
   "or": "or",
+  "save": "Save",
+  "add": "Add",
   "error.positive": "Must be positive",
   "error.validNumber": "Must be a number",
   "error.required": "This field is required",
@@ -323,5 +325,16 @@
   "rpc.change.modal.save": "Save",
   "rpc.status.online": "The most recent block on this network. Prices update on every block.",
   "rpc.status.slow": "Network error. No new blocks produced at the moment.",
-  "rpc.status.offline": "Network has stopped working. We are working on fixing this issue."
+  "rpc.status.offline": "Network has stopped working. We are working on fixing this issue.",
+  "addressbook.title": "Select account to use",
+  "addressbook.list.account": "Account",
+  "addressbook.list.address": "Address",
+  "addressbook.list.empty.notFound": "This address is not on your list.",
+  "addressbook.list.empty.canAdd": "Click Save to add it to your address book.",
+  "addressbook.add.name": "My Account",
+  "addressbook.input.placeholder": "Search or paste address to add",
+  "addressbook.remove.title": "Remove address",
+  "addressbook.remove.subtitle": "Are you sure you want to remove this account address?",
+  "addressbook.remove.cancel": "Back",
+  "addressbook.remove.submit": "Yes, remove"
 }

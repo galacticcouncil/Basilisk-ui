@@ -7,7 +7,7 @@ import { decodeAddress, encodeAddress } from "@polkadot/util-crypto"
 export function AccountAvatar(props: {
   address: string
   size: number
-  theme: string
+  theme?: string
   className?: string
   prefix?: number
 }) {
