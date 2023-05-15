@@ -7,6 +7,7 @@ export type IconProps = {
   size?: number
   icon?: ReactNode
   className?: string
+  onClick?: (event: React.MouseEvent<HTMLElement>) => void
 }
 
 export const Icon: FC<IconProps> = ({ children, icon, ...rest }) => {

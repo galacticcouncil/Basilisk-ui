@@ -18,6 +18,9 @@
   "confirm": "Confirm",
   "custom": "Custom",
   "edit": "Edit",
+  "save": "Save",
+  "back": "Back",
+  "add": "Add",
   "and": "and",
   "shares": "shares",
   "or": "or",
@@ -323,5 +326,12 @@
   "rpc.change.modal.save": "Save",
   "rpc.status.online": "The most recent block on this network. Prices update on every block.",
   "rpc.status.slow": "Network error. No new blocks produced at the moment.",
-  "rpc.status.offline": "Network has stopped working. We are working on fixing this issue."
+  "rpc.status.offline": "Network has stopped working. We are working on fixing this issue.",
+  "rpc.change.modal.errors.notExist": "Provided rpc provider doesn't exist",
+  "rpc.change.modal.errors.duplicate": "The provided RPC already exists",
+  "rpc.change.modal.input.placeholder": "Add custom RPC",
+  "rpc.change.modal.name.label": "Custom RPC #{{index}}",
+  "rpc.change.modal.removeRpc.title": "Remove Rpc Adress",
+  "rpc.change.modal.removeRpc.desc": "Are you sure you want to remove this RPC address?",
+  "rpc.change.modal.removeRpc.confirm": "Yes, remove"
 }
