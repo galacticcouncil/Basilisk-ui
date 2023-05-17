@@ -17,7 +17,7 @@ export const SItem = styled.div`
   }
 
   &:not(:last-child) {
-    // border-bottom: 1px solid theme.colors.darkBlue401;
+    border-bottom: 1px solid ${theme.colors.backgroundGray800};
   }
 `
 
@@ -31,6 +31,7 @@ export const SNameContainer = styled.div`
 export const SName = styled(Text)`
   font-weight: 700;
   font-size: 14px;
+  color: ${theme.colors.neutralGray100};
 
   overflow: hidden;
   text-overflow: ellipsis;
@@ -45,7 +46,7 @@ export const SAddressContainer = styled.div`
 `
 
 export const SAddress = styled(Text)`
-  // color: theme.colors.basic300;
+  color: ${theme.colors.neutralGray300};
   font-weight: 400;
   font-size: 12px;
 
@@ -56,10 +57,10 @@ export const SAddress = styled(Text)`
 
 export const SButton = styled(ButtonTransparent)`
   padding: 6px;
-  // color: theme.colors.basic700;
+  color: ${theme.colors.neutralGray400};
   transition: all 0.15s ease-in-out;
 
   &:hover {
-    // color: theme.colors.basic500;
+    color: ${theme.colors.neutralGray200};
   }
 `

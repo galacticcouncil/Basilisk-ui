@@ -1,4 +1,4 @@
-// import { ReactComponent as IconEnter } from "assets/icons/IconEnter.svg"
+import { ReactComponent as IconEnter } from "assets/icons/IconEnter.svg"
 import { AccountAvatar } from "components/AccountAvatar/AccountAvatar"
 import { useAddressStore } from "components/AddressBook/AddressBook.utils"
 import { FormEvent, useState } from "react"
@@ -42,8 +42,7 @@ export const AddressBookItemEdit = ({
       {!!input && (
         <SButton type="submit">
           {t("save")}
-          {/* <IconEnter /> */}
-          <div>icon</div>
+          <IconEnter />
         </SButton>
       )}
     </SContainer>

@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next"
 import { safeConvertAddressSS58 } from "utils/formatting"
 import { useAddressStore } from "../AddressBook.utils"
 import { SButton, SContainer, SIcon, SInput } from "./AddressBookInput.styled"
+import { Input } from "components/Input/Input"
 
 type Props = {
   search: string
@@ -30,6 +31,16 @@ export const AddressBookInput = ({
     onAdd()
   }
 
+  // return (
+  //   <Input
+  //     name="search"
+  //     label="search"
+  //     value={search}
+  //     onChange={onChange}
+  //     placeholder={t("addressbook.input.placeholder")}
+  //   />
+  // )
+
   return (
     <SContainer>
       <SIcon />
@@ -38,7 +49,9 @@ export const AddressBookInput = ({
         onChange={(e) => onChange(e.target.value)}
         placeholder={t("addressbook.input.placeholder")}
       />
-      {canAdd && <SButton onClick={onSubmit}>{t("add")}</SButton>}
+      <SButton disabled={!canAdd} onClick={onSubmit}>
+        {t("add")}
+      </SButton>
     </SContainer>
   )
 }

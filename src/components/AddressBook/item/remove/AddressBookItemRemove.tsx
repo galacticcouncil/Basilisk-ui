@@ -1,7 +1,7 @@
-// import { ReactComponent as IconRemove } from "assets/icons/IconRemove.svg"
 import { useAddressStore } from "components/AddressBook/AddressBook.utils"
 import { Button } from "components/Button/Button"
 import { Spacer } from "components/Spacer/Spacer"
+import { GradientText } from "components/Typography/GradientText/GradientText"
 import { Text } from "components/Typography/Text/Text"
 import { useTranslation } from "react-i18next"
 import { SButtons, SContainer } from "./AddressBookItemRemove.styled"
@@ -19,15 +19,12 @@ export const AddressBookItemRemove = ({ address, onDone }: Props) => {
 
   return (
     <SContainer>
-      {/* <IconRemove width={24} height={24} /> */}
-      <div>icon</div>
-      <Spacer size={12} />
-      <Text fs={24} lh={32}>
+      <GradientText fs={24} lh={32} fw={500}>
         {t("addressbook.remove.title")}
-      </Text>
+      </GradientText>
       <Spacer size={4} />
       <Text
-        // color="basic400"
+        color="neutralGray400"
         fs={16}
         lh={22}
         tAlign="center"

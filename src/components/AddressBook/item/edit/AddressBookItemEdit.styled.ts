@@ -11,18 +11,17 @@ export const SContainer = styled.form`
   padding: 16px 20px;
 
   &:not(:last-child) {
-    // border-bottom: 1px solid theme.colors.darkBlue401;
+    border-bottom: 1px solid ${theme.colors.backgroundGray800};
   }
 `
 
 export const SInput = styled.input`
   all: unset;
 
-  // color: theme.colors.basic300 !important;
-  font-family: "ChakraPetch", sans-serif;
-  font-weight: 700;
+  color: ${theme.colors.white} !important;
+  font-weight: 500;
   font-size: 14px;
-  line-height: 14px;
+  line-height: 18px;
 `
 
 export const SButton = styled(ButtonTransparent)`
@@ -30,13 +29,13 @@ export const SButton = styled(ButtonTransparent)`
   align-items: center;
   gap: 8px;
 
-  // color: theme.colors.brightBlue300;
+  color: ${theme.colors.primary300};
   font-weight: 400;
-  font-size: 12px;
+  font-size: 14px;
 
   transition: all 0.15s ease-in-out;
 
   &:hover {
-    // color: theme.colors.brightBlue100;
+    color: ${theme.colors.primary100};
   }
 `

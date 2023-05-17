@@ -42,12 +42,10 @@ export const AddressBook = ({ onSelect }: Props) => {
       ) : (
         <SItems>
           <SHeader>
-            <Text fs={11} lh={16}>
-              {/* TODO: color*/}
+            <Text fs={11} lh={16} color="neutralGray300" tTransform="uppercase">
               {t("addressbook.list.account")}
             </Text>
-            <Text fs={11} lh={16}>
-              {/* TODO: color*/}
+            <Text fs={11} lh={16} color="neutralGray300" tTransform="uppercase">
               {t("addressbook.list.address")}
             </Text>
           </SHeader>

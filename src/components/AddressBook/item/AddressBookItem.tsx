@@ -1,6 +1,6 @@
 import { decodeAddress, encodeAddress } from "@polkadot/util-crypto"
-// import { ReactComponent as IconEdit } from "assets/icons/IconEdit.svg"
-// import { ReactComponent as IconRemove } from "assets/icons/IconRemove.svg"
+import { ReactComponent as IconEdit } from "assets/icons/IconEdit.svg"
+import { ReactComponent as IconRemove } from "assets/icons/IconRemove.svg"
 import { AccountAvatar } from "components/AccountAvatar/AccountAvatar"
 import { useState } from "react"
 import { BASILISK_ADDRESS_PREFIX } from "utils/api"
@@ -39,7 +39,7 @@ export const AddressBookItem = ({
   if (editting)
     return (
       <AddressBookItemEdit
-        address={bsxAddress}
+        address={address}
         name={name}
         provider={provider}
         onEdit={() => setEditting(false)}
@@ -60,20 +60,18 @@ export const AddressBookItem = ({
               <SButton
                 onClick={(e) => {
                   e.stopPropagation()
-                  setRemoving(true)
+                  setEditting(true)
                 }}
               >
-                {/* <IconRemove /> */}
-                remove
+                <IconEdit />
               </SButton>
               <SButton
                 onClick={(e) => {
                   e.stopPropagation()
-                  setEditting(true)
+                  setRemoving(true)
                 }}
               >
-                {/* <IconEdit /> */}
-                edit
+                <IconRemove />
               </SButton>
             </div>
           )}
@@ -81,7 +79,7 @@ export const AddressBookItem = ({
       </SItem>
       {removing && (
         <AddressBookItemRemove
-          address={bsxAddress}
+          address={address}
           onDone={() => setRemoving(false)}
         />
       )}

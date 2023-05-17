@@ -6,8 +6,7 @@ export const SContainer = styled.div`
 `
 
 export const SItems = styled.div`
-  margin: 0 calc(-1 * var(--modal-content-padding))
-    calc(-1 * var(--modal-content-padding));
+  margin: 0 -30px -30px;
 `
 
 export const SHeader = styled.div`
@@ -17,6 +16,6 @@ export const SHeader = styled.div`
   align-items: center;
 
   padding: 6px 20px;
-
-  // background-color: rgba(theme.rgbColors.primaryA0, 0.06);
+  border-top: 1px solid ${theme.colors.backgroundGray800};
+  border-bottom: 1px solid ${theme.colors.backgroundGray800};
 `
