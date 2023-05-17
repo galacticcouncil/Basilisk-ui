@@ -1,5 +1,5 @@
-import { theme } from "theme"
 import styled from "@emotion/styled"
+import { theme } from "theme"
 
 export const SIconContainer = styled.div`
   background: ${theme.colors.black};
