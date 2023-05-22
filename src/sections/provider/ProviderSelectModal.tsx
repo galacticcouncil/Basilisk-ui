@@ -1,173 +1,60 @@
 import { PROVIDERS, useProviderRpcUrlStore } from "api/provider"
 import { Button } from "components/Button/Button"
 import { Modal } from "components/Modal/Modal"
-import { Text } from "components/Typography/Text/Text"
-import { Fragment, useEffect, useState } from "react"
-import { theme } from "theme"
-
-import { ApiPromise, WsProvider } from "@polkadot/api"
-import { u32, u64 } from "@polkadot/types"
-import { useBestNumber } from "api/chain"
-import { ReactComponent as ChevronRightIcon } from "assets/icons/ChevronRight.svg"
-import { Separator } from "components/Separator/Separator"
+import { Fragment, useState } from "react"
 import { useTranslation } from "react-i18next"
-import {
-  SButton,
-  SCircle,
-  SCircleDot,
-  SContainer,
-  SHeader,
-  SItem,
-  SName,
-} from "./ProviderSelectModal.styled"
-import { ProviderStatus } from "./ProviderStatus"
+import { SContainer, SHeader } from "./ProviderSelectModal.styled"
 
-function ProviderSelectItemExternal(props: {
-  url: string
-  className?: string
-}) {
-  const [bestNumberState, setBestNumberState] = useState<
-    { relaychainBlockNumber: u32; timestamp: u64 } | undefined
-  >(undefined)
-
-  useEffect(() => {
-    const rpc = props.url
-    const provider = new WsProvider(rpc)
-
-    let cancel: () => void
-
-    async function load() {
-      const api = await ApiPromise.create({ provider })
-
-      async function onNewBlock() {
-        const [relay, timestamp] = await Promise.all([
-          api.query.parachainSystem.validationData(),
-          api.query.timestamp.now(),
-        ])
-
-        setBestNumberState({
-          relaychainBlockNumber: relay.unwrap().relayParentNumber,
-          timestamp: timestamp,
-        })
-      }
-
-      api.on("connected", onNewBlock)
-      api.rpc.chain
-        .subscribeNewHeads(onNewBlock)
-        .then((newCancel) => (cancel = newCancel))
-    }
-
-    load()
-
-    return () => {
-      cancel?.()
-      provider.disconnect()
-    }
-  }, [props.url])
-
-  return (
-    <>
-      {bestNumberState != null ? (
-        <ProviderStatus
-          timestamp={bestNumberState.timestamp}
-          relaychainBlockNumber={bestNumberState.relaychainBlockNumber}
-          className={props.className}
-          side="left"
-        />
-      ) : (
-        <span className={props.className} />
-      )}
-    </>
-  )
-}
-
-function ProviderSelectItemLive(props: { className?: string }) {
-  const number = useBestNumber()
-
-  return (
-    <>
-      {number.data?.relaychainBlockNumber != null ? (
-        <ProviderStatus
-          timestamp={number.data.timestamp}
-          relaychainBlockNumber={number.data?.relaychainBlockNumber}
-          className={props.className}
-          side="left"
-        />
-      ) : (
-        <span className={props.className} />
-      )}
-    </>
-  )
-}
-
-function ProviderSelectItem(props: {
-  name: string
-  url: string
-  isActive?: boolean
-  onClick: () => void
-}) {
-  const store = useProviderRpcUrlStore()
-  const rpcUrl = store.rpcUrl ?? import.meta.env.VITE_PROVIDER_URL
-
-  const isLive = props.url === rpcUrl
-
-  return (
-    <SItem onClick={props.onClick}>
-      <Text
-        fs={14}
-        color={props.isActive ? "primary400" : "white"}
-        css={{
-          gridArea: "name",
-          transition: `all ${theme.transitions.default}`,
-        }}
-      >
-        {props.name}
-      </Text>
-      {isLive ? (
-        <ProviderSelectItemLive css={{ gridArea: "status" }} />
-      ) : (
-        <ProviderSelectItemExternal
-          url={props.url}
-          css={{ gridArea: "status" }}
-        />
-      )}
-      <div
-        css={{ gridArea: "url" }}
-        sx={{
-          textAlign: "right",
-          flex: "row",
-          align: "center",
-          justify: "flex-end",
-          gap: 16,
-        }}
-      >
-        <Text
-          fs={14}
-          fw={500}
-          tAlign="right"
-          color={props.isActive ? "primary300" : "white"}
-          sx={{ width: ["min-content", "auto"] }}
-          css={{
-            transition: `all ${theme.transitions.default}`,
-          }}
-        >
-          {new URL(props.url).hostname}
-        </Text>
-
-        <SCircle>{props.isActive && <SCircleDot />}</SCircle>
-      </div>
-    </SItem>
-  )
-}
+import { ProviderItem } from "./components/ProviderItem/ProviderItem"
+import { useRpcStore } from "state/store"
+import { Controller, useForm } from "react-hook-form"
+import { useMutation } from "@tanstack/react-query"
+import { FormValues } from "utils/helpers"
+import { connectWsProvider } from "./ProviderSelectModal.utils"
+import { ApiPromise } from "@polkadot/api"
+import { ProviderInput } from "./components/ProviderInput/ProviderInput"
+import { Separator } from "components/Separator/Separator"
+import { DeleteModal } from "./components/DeleteModal/DeleteModal"
 
 export function ProviderSelectModal(props: {
   open: boolean
   onClose: () => void
 }) {
+  const [removeRpcUrl, setRemoveRpcUrl] = useState<string | undefined>()
   const preference = useProviderRpcUrlStore()
   const activeRpcUrl = preference.rpcUrl ?? import.meta.env.VITE_PROVIDER_URL
   const [userRpcUrl, setUserRpcUrl] = useState(activeRpcUrl)
   const { t } = useTranslation()
+  const { rpcList, addRpc, removeRpc } = useRpcStore()
+
+  const form = useForm<{ address: string }>({
+    defaultValues: { address: "" },
+    mode: "onChange",
+  })
+
+  const mutation = useMutation(async (value: FormValues<typeof form>) => {
+    try {
+      const provider = await connectWsProvider(value.address)
+
+      const api = await ApiPromise.create({
+        provider,
+      })
+
+      const relay = await api.query.parachainSystem.validationData()
+      const relayParentNumber = relay.unwrap().relayParentNumber
+
+      if (relayParentNumber.toNumber()) {
+        addRpc(`wss://${value.address}`)
+        form.reset()
+      }
+    } catch (e) {
+      if (e === "disconnected")
+        form.setError("address", {
+          message: t("rpc.change.modal.errors.notExist"),
+        })
+      throw new Error(t("rpc.change.modal.errors.notExist"))
+    }
+  })
 
   return (
     <Modal
@@ -177,92 +64,126 @@ export function ProviderSelectModal(props: {
       width={620}
       gradientBg
     >
-      <SContainer>
-        <SHeader>
-          <div css={{ gridArea: "name" }}>
-            {t("rpc.change.modal.column.name")}
-          </div>
-          <div css={{ gridArea: "status" }}>
-            {t("rpc.change.modal.column.status")}
-          </div>
-          <div css={{ gridArea: "url" }} sx={{ textAlign: "right" }}>
-            {t("rpc.change.modal.column.rpc")}
-          </div>
-        </SHeader>
+      <>
+        {import.meta.env.VITE_ENV !== "production" && (
+          <form onSubmit={form.handleSubmit((a) => mutation.mutate(a))}>
+            <Controller
+              name="address"
+              control={form.control}
+              rules={{
+                required: t("wallet.assets.transfer.error.required"),
+                validate: {
+                  duplicate: (value) => {
+                    const isDuplicate = rpcList.find(
+                      (rpc) => rpc.url === `wss://${value}`,
+                    )
+                    return (
+                      !isDuplicate || t("rpc.change.modal.errors.duplicate")
+                    )
+                  },
+                },
+              }}
+              render={({
+                field: { name, value, onChange },
+                fieldState: { error },
+              }) => (
+                <ProviderInput
+                  name={name}
+                  value={value}
+                  onChange={onChange}
+                  error={error?.message}
+                  button={
+                    <Button
+                      size="small"
+                      type="submit"
+                      isLoading={mutation.isLoading}
+                      sx={{ py: 9 }}
+                    >
+                      {t("add")}
+                    </Button>
+                  }
+                />
+              )}
+            />
+          </form>
+        )}
+        <SContainer>
+          <SHeader>
+            <div css={{ gridArea: "name" }}>
+              {t("rpc.change.modal.column.name")}
+            </div>
+            <div css={{ gridArea: "status" }}>
+              {t("rpc.change.modal.column.status")}
+            </div>
+            <div css={{ gridArea: "url" }} sx={{ textAlign: "right" }}>
+              {t("rpc.change.modal.column.rpc")}
+            </div>
+          </SHeader>
 
-        {PROVIDERS.filter(
-          (provider) => provider.env === import.meta.env.VITE_ENV,
-        ).map((provider) => {
-          return (
-            <Fragment key={provider.url}>
-              <ProviderSelectItem
-                name={provider.name}
-                url={provider.url}
-                isActive={provider.url === userRpcUrl}
-                onClick={() => setUserRpcUrl(provider.url)}
-              />
-            </Fragment>
-          )
-        })}
-      </SContainer>
+          {PROVIDERS.filter(
+            (provider) => provider.env === import.meta.env.VITE_ENV,
+          ).map((provider) => {
+            return (
+              <Fragment key={provider.url}>
+                <ProviderItem
+                  name={provider.name}
+                  url={provider.url}
+                  isActive={provider.url === userRpcUrl}
+                  onClick={() => setUserRpcUrl(provider.url)}
+                />
+              </Fragment>
+            )
+          })}
 
-      <Button
-        variant="primary"
-        fullWidth
-        sx={{ mt: 64 }}
-        onClick={() => {
-          preference.setRpcUrl(userRpcUrl)
+          {import.meta.env.VITE_ENV !== "production" &&
+            rpcList?.map((rpc, index) => (
+              <Fragment key={rpc.url}>
+                <ProviderItem
+                  name={
+                    rpc.name ??
+                    t("rpc.change.modal.name.label", { index: index + 1 })
+                  }
+                  url={rpc.url}
+                  isActive={rpc.url === userRpcUrl}
+                  onClick={() => setUserRpcUrl(rpc.url)}
+                  custom
+                  onRemove={(rpc) => {
+                    setRemoveRpcUrl(rpc)
+                  }}
+                />
+                {index + 1 < PROVIDERS.length && (
+                  <Separator color="backgroundGray1000" opacity={0.06} />
+                )}
+              </Fragment>
+            ))}
+        </SContainer>
 
-          if (activeRpcUrl !== userRpcUrl) {
-            window.location.reload()
-          } else {
-            props.onClose()
-          }
-        }}
-      >
-        {t("rpc.change.modal.save")}
-      </Button>
-    </Modal>
-  )
-}
+        <Button
+          variant="primary"
+          fullWidth
+          sx={{ mt: 64 }}
+          onClick={() => {
+            preference.setRpcUrl(userRpcUrl)
 
-export function ProviderSelectButton() {
-  const [open, setOpen] = useState(false)
-  const store = useProviderRpcUrlStore()
-
-  const rpcUrl = store.rpcUrl ?? import.meta.env.VITE_PROVIDER_URL
-  const selectedProvider = PROVIDERS.find((provider) => provider.url === rpcUrl)
-  const number = useBestNumber()
-
-  return (
-    <>
-      <SButton tabIndex={0} onClick={() => setOpen(true)} whileHover="animate">
-        <SName
-          variants={{
-            initial: { width: 0 },
-            animate: { width: "auto" },
-            exit: { width: 0 },
+            if (activeRpcUrl !== userRpcUrl) {
+              window.location.reload()
+            } else {
+              props.onClose()
+            }
           }}
-          transition={{ duration: 0.15, ease: "easeInOut" }}
         >
-          <Text fs={11} fw={500} css={{ whiteSpace: "nowrap" }}>
-            {selectedProvider?.name}
-          </Text>
-          <ChevronRightIcon />
-          <Separator
-            orientation="vertical"
-            sx={{ height: 14, mr: 10, opacity: 0.2 }}
-            color="primary200"
-          />
-        </SName>
-        <ProviderStatus
-          relaychainBlockNumber={number.data?.relaychainBlockNumber}
-          timestamp={number.data?.timestamp}
+          {t("rpc.change.modal.save")}
+        </Button>
+      </>
+      {!!removeRpcUrl && (
+        <DeleteModal
+          onBack={() => setRemoveRpcUrl(undefined)}
+          onConfirm={() => {
+            removeRpc(removeRpcUrl)
+            setRemoveRpcUrl(undefined)
+          }}
         />
-      </SButton>
-      {open && (
-        <ProviderSelectModal open={open} onClose={() => setOpen(false)} />
       )}
-    </>
+    </Modal>
   )
 }
