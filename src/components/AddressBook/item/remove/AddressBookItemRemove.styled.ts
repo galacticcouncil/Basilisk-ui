@@ -5,6 +5,7 @@ import { theme } from "theme"
 export const SContainer = styled.div`
   position: absolute;
   inset: 0;
+  z-index: ${theme.zIndices.modal};
 
   display: flex;
   flex-direction: column;
