@@ -171,3 +171,37 @@ export const useStore = create<Store>((set) => ({
     }))
   },
 }))
+
+type RpcStore = {
+  rpcList: Array<{
+    name?: string
+    url: string
+  }>
+  addRpc: (account: string) => void
+  removeRpc: (url: string) => void
+  renameRpc: (url: string, newName: string) => void
+}
+
+export const useRpcStore = create<RpcStore>()(
+  persist(
+    (set) => ({
+      rpcList: [],
+
+      addRpc: (url) =>
+        set((store) => ({ rpcList: [...store.rpcList, { url }] })),
+      removeRpc: (urlToRemove) =>
+        set((store) => ({
+          rpcList: store.rpcList.filter((rpc) => rpc.url !== urlToRemove),
+        })),
+      renameRpc: (urlToRename, name) =>
+        set((store) => ({
+          rpcList: store.rpcList.map((rpc) =>
+            rpc.url === urlToRename ? { ...rpc, name } : rpc,
+          ),
+        })),
+    }),
+    {
+      name: "bsx-rpc-list",
+    },
+  ),
+)
