@@ -75,7 +75,7 @@ export const ReviewTransaction: React.FC<Transaction> = (props) => {
         open={!minimizeModal}
         onClose={onClose}
         secondaryIcon={
-          onBack
+          onBack && !sendTx.isLoading && !sendTx.isSuccess && !sendTx.isError
             ? {
                 icon: <IconBack css={{ transform: "rotate(180deg)" }} />,
                 onClick: onBack,
