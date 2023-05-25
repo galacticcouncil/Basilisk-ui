@@ -7,10 +7,10 @@ import {
 } from "sections/pools/PoolsPage.utils"
 import { PoolsHeader } from "sections/pools/header/PoolsHeader"
 import { Pool } from "sections/pools/pool/Pool"
-import { EmptyPoolsState } from "./pool/empty/EmptyPoolsState"
-import { isApiLoaded } from "utils/helpers"
 import { useApiPromise } from "utils/api"
+import { isApiLoaded } from "utils/helpers"
 import { PoolSkeleton } from "./pool/PoolSkeleton"
+import { EmptyPoolsState } from "./pool/empty/EmptyPoolsState"
 
 export const PoolsPage = () => {
   const api = useApiPromise()

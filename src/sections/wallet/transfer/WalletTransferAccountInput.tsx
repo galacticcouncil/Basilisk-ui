@@ -1,8 +1,8 @@
+import { decodeAddress, encodeAddress } from "@polkadot/util-crypto"
+import { ReactComponent as GuestIcon } from "assets/icons/GuestIcon.svg"
 import { AccountAvatar } from "components/AccountAvatar/AccountAvatar"
 import { AddressInput } from "components/AddressInput/AddressInput"
 import { Maybe } from "utils/helpers"
-import { decodeAddress, encodeAddress } from "@polkadot/util-crypto"
-import { ReactComponent as GuestIcon } from "assets/icons/GuestIcon.svg"
 import { SIconContainer } from "./WalletTransferAccountInput.styled"
 
 interface Props {
