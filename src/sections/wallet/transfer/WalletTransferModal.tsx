@@ -5,21 +5,28 @@ import { useState } from "react"
 
 import { useTranslation } from "react-i18next"
 
-import { WalletTransferSectionOnchain } from "sections/wallet/transfer/onchain/WalletTransferSectionOnchain"
+import { AccountId32 } from "@polkadot/types/interfaces"
+import { AddressBook } from "components/AddressBook/AddressBook"
+import { useForm } from "react-hook-form"
 import { WalletTransferSectionCrosschain } from "sections/wallet/transfer/crosschain/WalletTransferSectionCrosschain"
+import { WalletTransferSectionOnchain } from "sections/wallet/transfer/onchain/WalletTransferSectionOnchain"
 import { SPillContainer } from "./WalletTransferModal.styled"
 import { WalletTransferSectionLiquidityPositions } from "./liquidityPositions/WalletTransferSectionLiquidityPositions"
-import { AccountId32 } from "@polkadot/types/interfaces"
 
-export function WalletTransferModal(props: {
+type Props = {
   open: boolean
   onClose: () => void
   value:
     | { type: "liquidityPositions"; poolAddress: string | AccountId32 }
     | { type: "asset"; asset: string | u32 }
-}) {
+}
+
+export const WalletTransferModal = (props: Props) => {
   const { t } = useTranslation()
   const [chain, setChain] = useState<"onchain" | "crosschain">("onchain")
+  const [addressBook, setAddressBook] = useState(false)
+
+  const form = useForm<{ dest: string; amount: string }>({})
 
   return (
     <Modal
@@ -44,26 +51,39 @@ export function WalletTransferModal(props: {
         </SPillContainer>
       }
     >
-      {chain === "onchain" && (
+      {addressBook ? (
+        <AddressBook
+          onSelect={(address) => {
+            form.setValue("dest", address)
+            setAddressBook(false)
+          }}
+        />
+      ) : (
         <>
-          {props.value.type === "asset" && (
-            <WalletTransferSectionOnchain
-              initialAsset={props.value.asset}
-              onClose={props.onClose}
-            />
+          {chain === "onchain" && (
+            <>
+              {props.value.type === "asset" && (
+                <WalletTransferSectionOnchain
+                  initialAsset={props.value.asset}
+                  onClose={props.onClose}
+                  form={form}
+                  openAddressBook={() => setAddressBook(true)}
+                />
+              )}
+
+              {props.value.type === "liquidityPositions" && (
+                <WalletTransferSectionLiquidityPositions
+                  poolAddress={props.value.poolAddress}
+                  onClose={props.onClose}
+                />
+              )}
+            </>
           )}
 
-          {props.value.type === "liquidityPositions" && (
-            <WalletTransferSectionLiquidityPositions
-              poolAddress={props.value.poolAddress}
-              onClose={props.onClose}
-            />
+          {chain === "crosschain" && (
+            <WalletTransferSectionCrosschain onClose={props.onClose} />
           )}
         </>
-      )}
-
-      {chain === "crosschain" && (
-        <WalletTransferSectionCrosschain onClose={props.onClose} />
       )}
     </Modal>
   )
