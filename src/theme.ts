@@ -54,6 +54,7 @@ const colors = {
   graphGradient0: "#4FFFB0",
   graphGradient50: "#B3FF8F",
   graphGradient100: "#FF984E",
+  whiteish500: "#DDE5FF",
 } as const
 
 const gradients = {
