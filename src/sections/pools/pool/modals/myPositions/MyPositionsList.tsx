@@ -4,7 +4,9 @@ import { useAccountStore } from "state/store"
 import { MyPosition } from "./MyPosition"
 import { PoolBase } from "@galacticcouncil/sdk"
 
-export const MyPositionsList = ({ pool }: { pool: PoolBase }) => {
+type Props = { pool: PoolBase; onClose: () => void }
+
+export const MyPositionsList = ({ pool, onClose }: Props) => {
   const { account } = useAccountStore()
 
   const deposits = useDeposits(pool.address)
@@ -22,6 +24,7 @@ export const MyPositionsList = ({ pool }: { pool: PoolBase }) => {
         pool={pool}
         depositNft={depositNft}
         index={index + 1}
+        onClose={onClose}
       />
     ))
   }, [depositNftList, pool])

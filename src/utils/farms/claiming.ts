@@ -158,6 +158,7 @@ export const useClaimAllMutation = (
   poolId?: string,
   depositNft?: DepositNftType,
   toast?: ToastMessage,
+  onClose?: () => void,
 ) => {
   const api = useApiPromise()
   const { createTransaction } = useStore()
@@ -186,17 +187,13 @@ export const useClaimAllMutation = (
 
     if (txs.length > 1) {
       return await createTransaction(
-        {
-          tx: api.tx.utility.batch(txs),
-        },
-        { toast },
+        { tx: api.tx.utility.batch(txs) },
+        { toast, onClose, onBack: onClose ? () => {} : undefined },
       )
     } else if (txs.length > 0) {
       return await createTransaction(
-        {
-          tx: txs[0],
-        },
-        { toast },
+        { tx: txs[0] },
+        { toast, onClose, onBack: onClose ? () => {} : undefined },
       )
     }
   })

@@ -50,6 +50,7 @@ interface PoolAddLiquidityModalProps {
   assetA: PoolToken | AssetMetaType
   assetB: PoolToken | undefined
   poolAddress: string
+  onClose: () => void
 }
 
 export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
@@ -58,6 +59,7 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
   assetA,
   assetB,
   setPoolAddress,
+  onClose,
 }) => {
   const { t } = useTranslation()
   const pools = usePools()
@@ -100,7 +102,7 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
     assets.assetB.id,
   )
 
-  const handleAddLiquidity = useAddLiquidityMutation()
+  const handleAddLiquidity = useAddLiquidityMutation(onClose)
 
   const shareIssuance = useTotalIssuance(shareToken?.token)
   const spotPrice = useSpotPrice(assets.assetA.id, assets.assetB.id)

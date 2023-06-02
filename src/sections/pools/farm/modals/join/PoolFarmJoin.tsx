@@ -38,7 +38,7 @@ export const PoolFarmJoin = (props: {
     : null
 
   return (
-    <Modal open={props.isOpen} onClose={props.onClose}>
+    <Modal open={props.isOpen} onClose={props.onClose} withoutCloseOutside>
       <div sx={{ flex: "column", gap: 8, mt: 24 }}>
         {selectedFarm != null ? (
           <PoolFarmJoinSectionItem
@@ -50,6 +50,7 @@ export const PoolFarmJoin = (props: {
           <PoolFarmJoinSectionList
             pool={props.pool}
             onSelect={setSelectedYieldFarmId}
+            onClose={props.onClose}
           />
         )}
       </div>

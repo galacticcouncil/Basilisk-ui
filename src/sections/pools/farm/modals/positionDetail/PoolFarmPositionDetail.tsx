@@ -48,6 +48,7 @@ export const PoolFarmPositionDetail = (props: {
             pool={props.pool}
             depositNft={props.depositNft}
             onSelect={setSelectedYieldFarmId}
+            onClose={props.onClose}
           />
         )}
       </div>
