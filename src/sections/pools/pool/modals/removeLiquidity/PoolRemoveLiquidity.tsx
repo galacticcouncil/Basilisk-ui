@@ -1,33 +1,33 @@
-import { FC, useState } from "react"
+import { PoolBase } from "@galacticcouncil/sdk"
+import { useTokenBalance } from "api/balances"
+import { usePoolShareToken } from "api/pools"
+import { useSpotPrice } from "api/spotPrice"
+import { useTotalLiquidity } from "api/totalLiquidity"
+import { usePaymentInfo } from "api/transaction"
+import BN from "bignumber.js"
+import { BoxSwitch } from "components/BoxSwitch/BoxSwitch"
+import { Button } from "components/Button/Button"
+import { Input } from "components/Input/Input"
 import { Modal } from "components/Modal/Modal"
+import { Separator } from "components/Separator/Separator"
+import { Slider } from "components/Slider/Slider"
+import { Heading } from "components/Typography/Heading/Heading"
+import { Text } from "components/Typography/Text/Text"
+import { FC, useState } from "react"
+import { Controller, useForm } from "react-hook-form"
 import { Trans, useTranslation } from "react-i18next"
 import {
   SSlippage,
   STradingPairContainer,
 } from "sections/pools/pool/modals/removeLiquidity/PoolRemoveLiquidity.styled"
-import { Button } from "components/Button/Button"
-import { Heading } from "components/Typography/Heading/Heading"
-import { Slider } from "components/Slider/Slider"
-import { BoxSwitch } from "components/BoxSwitch/BoxSwitch"
-import { Input } from "components/Input/Input"
-import { Text } from "components/Typography/Text/Text"
 import { PoolRemoveLiquidityReward } from "sections/pools/pool/modals/removeLiquidity/reward/PoolRemoveLiquidityReward"
-import { Separator } from "components/Separator/Separator"
-import { Controller, useForm } from "react-hook-form"
-import { useAccountStore, useStore } from "state/store"
 import { WalletConnectButton } from "sections/wallet/connect/modal/WalletConnectButton"
-import { PoolBase } from "@galacticcouncil/sdk"
-import { usePoolShareToken } from "api/pools"
-import { useTokenBalance } from "api/balances"
-import { useTotalLiquidity } from "api/totalLiquidity"
-import { BN_0, BN_1, DEFAULT_DECIMALS } from "utils/constants"
+import { useAccountStore, useStore } from "state/store"
 import { useApiPromise } from "utils/api"
-import { usePaymentInfo } from "api/transaction"
-import { useSpotPrice } from "api/spotPrice"
+import { BN_0, BN_1, DEFAULT_DECIMALS } from "utils/constants"
 import { FormValues } from "utils/helpers"
-import { useAccountCurrency } from "../../../../../api/payments"
 import { useAssetMeta } from "../../../../../api/assetMeta"
-import BN from "bignumber.js"
+import { useAccountCurrency } from "../../../../../api/payments"
 import { NATIVE_ASSET_ID } from "../../../../../utils/api"
 
 const options = [
@@ -146,6 +146,8 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
         ),
       },
       {
+        onBack: () => {},
+        onClose,
         toast: {
           onLoading: (
             <Trans
@@ -199,6 +201,7 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
       title={t("pools.removeLiquidity.modal.title")}
       open={isOpen}
       onClose={onClose}
+      withoutCloseOutside
     >
       <form
         onSubmit={form.handleSubmit(handleSubmit)}

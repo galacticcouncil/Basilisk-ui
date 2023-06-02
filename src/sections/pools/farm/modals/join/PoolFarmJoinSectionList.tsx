@@ -25,6 +25,7 @@ export function PoolFarmJoinSectionList(props: {
       deposit?: { id: u128; deposit: PalletLiquidityMiningDepositData }
     } | null,
   ) => void
+  onClose: () => void
 }) {
   const { t } = useTranslation()
   const { account } = useAccountStore()
@@ -61,7 +62,11 @@ export function PoolFarmJoinSectionList(props: {
         </div>
 
         {isDesktop ? (
-          <PoolFarmDeposit pool={props.pool} isDrawer={!isDesktop} />
+          <PoolFarmDeposit
+            pool={props.pool}
+            isDrawer={!isDesktop}
+            onClose={props.onClose}
+          />
         ) : (
           <Button
             variant="primary"
@@ -80,7 +85,11 @@ export function PoolFarmJoinSectionList(props: {
         onClose={() => setOpenJoinFarm(false)}
         titleDrawer={t("farms.deposit.mobile.title")}
       >
-        <PoolFarmDeposit pool={props.pool} isDrawer={!isDesktop} />
+        <PoolFarmDeposit
+          pool={props.pool}
+          isDrawer={!isDesktop}
+          onClose={() => setOpenJoinFarm(false)}
+        />
       </Modal>
     </Fragment>
   )

@@ -28,6 +28,7 @@ export function PoolFarmPositionDetailSectionList(props: {
       depositNft?: { id: u128; deposit: PalletLiquidityMiningDepositData }
     } | null,
   ) => void
+  onClose: () => void
 }) {
   const { t } = useTranslation()
 
@@ -66,7 +67,11 @@ export function PoolFarmPositionDetailSectionList(props: {
             </GradientText>
           </div>
 
-          <PoolFarmClaim pool={props.pool} depositNft={props.depositNft} />
+          <PoolFarmClaim
+            pool={props.pool}
+            depositNft={props.depositNft}
+            onClose={props.onClose}
+          />
 
           {depositNfts?.map((deposit) => {
             return (
@@ -105,6 +110,7 @@ export function PoolFarmPositionDetailSectionList(props: {
               <PoolFarmWithdraw
                 pool={props.pool}
                 depositNft={props.depositNft}
+                onClose={props.onClose}
               />
             </div>
           )}
@@ -142,6 +148,7 @@ export function PoolFarmPositionDetailSectionList(props: {
                 pool={props.pool}
                 availableYieldFarms={availableYieldFarms}
                 depositNfts={depositNfts}
+                onClose={props.onClose}
               />
             </div>
           </>

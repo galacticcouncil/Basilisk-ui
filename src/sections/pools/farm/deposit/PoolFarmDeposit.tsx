@@ -15,7 +15,12 @@ import { BN_0, BN_10, BN_BILL, DEFAULT_DECIMALS } from "utils/constants"
 import { AprFarm } from "utils/farms/apr"
 import { FormValues } from "utils/helpers"
 
-type Props = { pool: PoolBase; farm?: AprFarm; isDrawer?: boolean }
+type Props = {
+  pool: PoolBase
+  farm?: AprFarm
+  isDrawer?: boolean
+  onClose: () => void
+}
 
 export const PoolFarmDeposit = (props: Props) => {
   const { t } = useTranslation()
@@ -102,16 +107,11 @@ export const PoolFarmDeposit = (props: Props) => {
           tx: api.tx.xykLiquidityMining.depositShares(
             props.farm.globalFarm.id,
             props.farm.yieldFarm.id,
-            {
-              assetIn: assetIn.id,
-              assetOut: assetOut.id,
-            },
+            { assetIn: assetIn.id, assetOut: assetOut.id },
             value.toString(),
           ),
         },
-        {
-          toast,
-        },
+        { toast, onClose: props.onClose, onBack: () => {} },
       )
     }
 
@@ -125,16 +125,11 @@ export const PoolFarmDeposit = (props: Props) => {
         tx: api.tx.xykLiquidityMining.depositShares(
           firstActive.globalFarmId,
           firstActive.yieldFarmId,
-          {
-            assetIn: assetIn.id,
-            assetOut: assetOut.id,
-          },
+          { assetIn: assetIn.id, assetOut: assetOut.id },
           value.toString(),
         ),
       },
-      {
-        toast,
-      },
+      { toast, onClose: props.onClose, onBack: () => {} },
     )
 
     for (const record of firstDeposit.events) {
@@ -151,9 +146,15 @@ export const PoolFarmDeposit = (props: Props) => {
         )
 
         if (txs.length > 1) {
-          await createTransaction({ tx: api.tx.utility.batchAll(txs) })
+          await createTransaction(
+            { tx: api.tx.utility.batchAll(txs) },
+            { onClose: props.onClose, onBack: () => {} },
+          )
         } else if (txs.length === 1) {
-          await createTransaction({ tx: txs[0] })
+          await createTransaction(
+            { tx: txs[0] },
+            { onClose: props.onClose, onBack: () => {} },
+          )
         }
       }
     }
