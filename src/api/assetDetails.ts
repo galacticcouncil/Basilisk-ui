@@ -89,7 +89,6 @@ const getAssetDetails = (api: ApiPromise) => async () => {
       return {
         id: key.args[0].toString(),
         name: data.unwrap().name.toUtf8(),
-        locked: data.unwrap().locked.toPrimitive(),
         assetType: data.unwrap().assetType.type,
         existentialDeposit: data.unwrap().existentialDeposit.toBigNumber(),
         symbol,
@@ -105,7 +104,6 @@ const getAssetDetails = (api: ApiPromise) => async () => {
 
     assets.push({
       id: NATIVE_ASSET_ID,
-      locked: false,
       name: system.tokenSymbol.unwrap()[0].toString(),
       assetType: "Token",
       existentialDeposit: BN_0,
