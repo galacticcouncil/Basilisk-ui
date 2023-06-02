@@ -1,16 +1,15 @@
-import React, { useState } from "react"
+import { ReactComponent as IconBack } from "assets/icons/ChevronRight.svg"
 import { Modal } from "components/Modal/Modal"
+import React, { ComponentProps, useState } from "react"
 import { useTranslation } from "react-i18next"
+import { WalletUpgradeModal } from "sections/wallet/upgrade/WalletUpgradeModal"
 import { Transaction } from "state/store"
-import { ComponentProps } from "react"
-
-import { ReviewTransactionPending } from "./ReviewTransactionPending"
-import { ReviewTransactionSuccess } from "./ReviewTransactionSuccess"
+import { useSendTransactionMutation } from "./ReviewTransaction.utils"
 import { ReviewTransactionError } from "./ReviewTransactionError"
 import { ReviewTransactionForm } from "./ReviewTransactionForm"
+import { ReviewTransactionPending } from "./ReviewTransactionPending"
+import { ReviewTransactionSuccess } from "./ReviewTransactionSuccess"
 import { ReviewTransactionToast } from "./ReviewTransactionToast"
-import { useSendTransactionMutation } from "./ReviewTransaction.utils"
-import { WalletUpgradeModal } from "sections/wallet/upgrade/WalletUpgradeModal"
 
 export const ReviewTransaction: React.FC<Transaction> = (props) => {
   const { t } = useTranslation()
@@ -30,7 +29,7 @@ export const ReviewTransaction: React.FC<Transaction> = (props) => {
           title: t("pools.reviewTransaction.modal.title"),
         }
 
-  function handleClose() {
+  const handleTxOnClose = () => {
     if (sendTx.isLoading) {
       setMinimizeModal(true)
       return
@@ -42,6 +41,18 @@ export const ReviewTransaction: React.FC<Transaction> = (props) => {
       props.onError?.()
     }
   }
+
+  const onClose = () => {
+    handleTxOnClose()
+    props.onClose?.()
+  }
+
+  const onBack = props.onBack
+    ? () => {
+        handleTxOnClose()
+        props.onBack?.()
+      }
+    : undefined
 
   const onReview = () => {
     sendTx.reset()
@@ -56,29 +67,43 @@ export const ReviewTransaction: React.FC<Transaction> = (props) => {
           mutation={sendTx}
           link={sendTx.data?.transactionLink}
           onReview={onReview}
-          onClose={handleClose}
+          onClose={onClose}
           toastMessage={props.toastMessage}
         />
       )}
-      <Modal open={!minimizeModal} onClose={handleClose} {...modalProps}>
+      <Modal
+        open={!minimizeModal}
+        onClose={onClose}
+        secondaryIcon={
+          onBack && !sendTx.isLoading && !sendTx.isSuccess && !sendTx.isError
+            ? {
+                icon: <IconBack css={{ transform: "rotate(180deg)" }} />,
+                onClick: onBack,
+                name: "Back",
+              }
+            : undefined
+        }
+        {...modalProps}
+      >
         <WalletUpgradeModal />
         {sendTx.isLoading ? (
           <ReviewTransactionPending
             txState={sendTx.txState}
-            onClose={handleClose}
+            onClose={onClose}
           />
         ) : sendTx.isSuccess ? (
-          <ReviewTransactionSuccess onClose={handleClose} />
+          <ReviewTransactionSuccess onClose={onClose} />
         ) : sendTx.isError ? (
-          <ReviewTransactionError onClose={handleClose} onReview={onReview} />
+          <ReviewTransactionError onClose={onClose} onReview={onReview} />
         ) : (
           <ReviewTransactionForm
             tx={props.tx}
             hash={props.hash}
             title={props.title}
-            onCancel={handleClose}
+            onCancel={onClose}
             onSigned={(signed) => sendTx.mutateAsync(signed)}
             overrides={props.overrides}
+            isProxy={props.isProxy}
           />
         )}
       </Modal>

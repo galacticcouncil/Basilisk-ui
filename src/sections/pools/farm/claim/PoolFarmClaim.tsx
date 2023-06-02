@@ -17,6 +17,7 @@ import { useAccountStore } from "state/store"
 export function PoolFarmClaim(props: {
   pool: PoolBase
   depositNft?: DepositNftType
+  onClose: () => void
 }) {
   const { t } = useTranslation()
   const { account } = useAccountStore()
@@ -92,6 +93,7 @@ export function PoolFarmClaim(props: {
     props.pool.address,
     props.depositNft,
     toast,
+    props.onClose,
   )
 
   return (

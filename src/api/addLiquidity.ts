@@ -14,7 +14,7 @@ export function useAddLiquidityPaymentInfo(assetA: string, assetB: string) {
   return usePaymentInfo(api.tx.xyk.addLiquidity(assetA, assetB, "0", "0"))
 }
 
-export function useAddLiquidityMutation() {
+export function useAddLiquidityMutation(onClose: () => void) {
   const api = useApiPromise()
   const { createTransaction } = useStore()
   const { account } = useAccountStore()
@@ -39,7 +39,7 @@ export function useAddLiquidityMutation() {
             assetB.amount.toFixed(),
           ),
         },
-        { toast },
+        { toast, onClose, onBack: () => {} },
       )
     },
   )

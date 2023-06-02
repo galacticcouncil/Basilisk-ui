@@ -1,5 +1,7 @@
 import { PoolBase } from "@galacticcouncil/sdk"
+import { useTokenBalance } from "api/balances"
 import { FarmIds, useActiveYieldFarms, useGlobalFarms } from "api/farms"
+import { usePoolShareToken } from "api/pools"
 import BN from "bignumber.js"
 import { LiquidityPositionInput } from "components/AssetSelect/LiquidityPositionInput"
 import { Button } from "components/Button/Button"
@@ -9,11 +11,16 @@ import { WalletConnectButton } from "sections/wallet/connect/modal/WalletConnect
 import { useAccountStore, useStore } from "state/store"
 import { useApiPromise } from "utils/api"
 import { getFloatingPointAmount } from "utils/balance"
-import { BN_0, BN_BILL, DEFAULT_DECIMALS } from "utils/constants"
+import { BN_0, BN_10, BN_BILL, DEFAULT_DECIMALS } from "utils/constants"
 import { AprFarm } from "utils/farms/apr"
 import { FormValues } from "utils/helpers"
 
-type Props = { pool: PoolBase; farm?: AprFarm; isDrawer?: boolean }
+type Props = {
+  pool: PoolBase
+  farm?: AprFarm
+  isDrawer?: boolean
+  onClose: () => void
+}
 
 export const PoolFarmDeposit = (props: Props) => {
   const { t } = useTranslation()
@@ -39,6 +46,9 @@ export const PoolFarmDeposit = (props: Props) => {
 
   const [assetIn, assetOut] = props.pool.tokens
   const { account } = useAccountStore()
+
+  const shareToken = usePoolShareToken(props.pool.address)
+  const balance = useTokenBalance(shareToken.data?.token, account?.address)
 
   const form = useForm<{ value: string }>({})
 
@@ -97,16 +107,11 @@ export const PoolFarmDeposit = (props: Props) => {
           tx: api.tx.xykLiquidityMining.depositShares(
             props.farm.globalFarm.id,
             props.farm.yieldFarm.id,
-            {
-              assetIn: assetIn.id,
-              assetOut: assetOut.id,
-            },
+            { assetIn: assetIn.id, assetOut: assetOut.id },
             value.toString(),
           ),
         },
-        {
-          toast,
-        },
+        { toast, onClose: props.onClose, onBack: () => {} },
       )
     }
 
@@ -120,16 +125,11 @@ export const PoolFarmDeposit = (props: Props) => {
         tx: api.tx.xykLiquidityMining.depositShares(
           firstActive.globalFarmId,
           firstActive.yieldFarmId,
-          {
-            assetIn: assetIn.id,
-            assetOut: assetOut.id,
-          },
+          { assetIn: assetIn.id, assetOut: assetOut.id },
           value.toString(),
         ),
       },
-      {
-        toast,
-      },
+      { toast, onClose: props.onClose, onBack: () => {} },
     )
 
     for (const record of firstDeposit.events) {
@@ -146,13 +146,21 @@ export const PoolFarmDeposit = (props: Props) => {
         )
 
         if (txs.length > 1) {
-          await createTransaction({ tx: api.tx.utility.batchAll(txs) })
+          await createTransaction(
+            { tx: api.tx.utility.batchAll(txs) },
+            { onClose: props.onClose, onBack: () => {} },
+          )
         } else if (txs.length === 1) {
-          await createTransaction({ tx: txs[0] })
+          await createTransaction(
+            { tx: txs[0] },
+            { onClose: props.onClose, onBack: () => {} },
+          )
         }
       }
     }
   }
+
+  if (!balance.data) return null
 
   return (
     <form onSubmit={form.handleSubmit(handleSubmit)}>
@@ -161,6 +169,17 @@ export const PoolFarmDeposit = (props: Props) => {
         control={form.control}
         rules={{
           validate: {
+            maxBalance: (value) => {
+              try {
+                if (
+                  balance?.data?.balance.gte(
+                    BN(value).multipliedBy(BN_10.pow(12)),
+                  )
+                )
+                  return true
+              } catch {}
+              return t("liquidity.add.modal.validation.notEnoughBalance")
+            },
             minDeposit: (value) => {
               return !getFloatingPointAmount(minDeposit, 12).lte(value)
                 ? t("farms.deposit.error.minDeposit", { minDeposit })

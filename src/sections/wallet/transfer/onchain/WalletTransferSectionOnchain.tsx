@@ -1,12 +1,17 @@
 import { u32 } from "@polkadot/types"
+import { useAssetMeta } from "api/assetMeta"
+import { ReactComponent as IconWallet } from "assets/icons/Wallet.svg"
+import BigNumber from "bignumber.js"
+import { Alert } from "components/Alert/Alert"
 import { Button } from "components/Button/Button"
 import { ModalMeta } from "components/Modal/Modal"
 import { Separator } from "components/Separator/Separator"
 import { Spacer } from "components/Spacer/Spacer"
 import { Text } from "components/Typography/Text/Text"
 import { useState } from "react"
-import { Controller, useForm } from "react-hook-form"
-import { FormValues } from "utils/helpers"
+import { Controller, UseFormReturn } from "react-hook-form"
+import { Trans, useTranslation } from "react-i18next"
+import { WalletTransferAccountInput } from "sections/wallet/transfer/WalletTransferAccountInput"
 import { WalletTransferAssetSelect } from "sections/wallet/transfer/WalletTransferAssetSelect"
 import { useAccountStore, useStore } from "state/store"
 import {
@@ -14,18 +19,19 @@ import {
   NATIVE_ASSET_ID,
   useApiPromise,
 } from "utils/api"
-import BigNumber from "bignumber.js"
 import { BN_10 } from "utils/constants"
-import { useAssetMeta } from "api/assetMeta"
-import { Trans, useTranslation } from "react-i18next"
-import { WalletTransferAccountInput } from "sections/wallet/transfer/WalletTransferAccountInput"
 import { safeConvertAddressSS58, shortenAccountAddress } from "utils/formatting"
-import { Alert } from "components/Alert/Alert"
+import { FormValues } from "utils/helpers"
+import { SAddressBookButton } from "./WalletTransferSectionOnchain.styled"
 
-export function WalletTransferSectionOnchain(props: {
+type Props = {
   initialAsset: u32 | string
   onClose: () => void
-}) {
+  form: UseFormReturn<{ dest: string; amount: string }>
+  openAddressBook: () => void
+}
+
+export const WalletTransferSectionOnchain = (props: Props) => {
   const { t } = useTranslation()
   const [asset, setAsset] = useState(props.initialAsset)
 
@@ -33,14 +39,9 @@ export function WalletTransferSectionOnchain(props: {
   const { createTransaction } = useStore()
   const { account } = useAccountStore()
 
-  const form = useForm<{
-    dest: string
-    amount: string
-  }>({})
-
   const assetMeta = useAssetMeta(asset)
 
-  const onSubmit = async (values: FormValues<typeof form>) => {
+  const onSubmit = async (values: FormValues<typeof props.form>) => {
     if (assetMeta.data?.decimals == null) throw new Error("Missing asset meta")
 
     const amount = new BigNumber(values.amount).multipliedBy(
@@ -113,7 +114,10 @@ export function WalletTransferSectionOnchain(props: {
 
       <Spacer size={[13, 26]} />
 
-      <form onSubmit={form.handleSubmit(onSubmit)} sx={{ flex: "column" }}>
+      <form
+        onSubmit={props.form.handleSubmit(onSubmit)}
+        sx={{ flex: "column" }}
+      >
         <div sx={{ bg: "backgroundGray1000" }} css={{ borderRadius: 12 }}>
           <div sx={{ flex: "column", gap: 8, p: 20 }}>
             <Text fw={500}>{t("wallet.assets.transfer.from.label")}</Text>
@@ -129,12 +133,24 @@ export function WalletTransferSectionOnchain(props: {
 
           <Separator color="backgroundGray900" />
 
-          <div sx={{ flex: "column", gap: 8, p: 20 }}>
+          <div
+            sx={{ flex: "column", gap: 8, p: 20 }}
+            css={{ position: "relative" }}
+          >
             <Text fw={500}>{t("wallet.assets.transfer.dest.label")}</Text>
+
+            {props.openAddressBook && (
+              <SAddressBookButton type="button" onClick={props.openAddressBook}>
+                <Text fs={12} lh={16} color="neutralGray400">
+                  {t("wallet.assets.transfer.dest.addressBook")}
+                </Text>
+                <IconWallet width={12} height={12} />
+              </SAddressBookButton>
+            )}
 
             <Controller
               name="dest"
-              control={form.control}
+              control={props.form.control}
               render={({
                 field: { name, onChange, value, onBlur },
                 fieldState: { error },
@@ -176,7 +192,7 @@ export function WalletTransferSectionOnchain(props: {
         <div sx={{ flex: "column", gap: 10 }}>
           <Controller
             name="amount"
-            control={form.control}
+            control={props.form.control}
             render={({
               field: { name, value, onChange },
               fieldState: { error },

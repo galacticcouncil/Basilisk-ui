@@ -78,7 +78,7 @@ export const WalletAssetsHeader = ({ assetsData, isLoading }: Props) => {
   )
 }
 
-const WalletAssetsHeaderValue = (props: {
+export const WalletAssetsHeaderValue = (props: {
   isLoading?: boolean
   value?: BigNumber | null
   label: string

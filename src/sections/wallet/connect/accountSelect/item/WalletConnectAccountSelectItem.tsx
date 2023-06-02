@@ -17,7 +17,8 @@ type Props = {
   address: string
   name: string
   provider: string
-  setAccount: () => void
+  setAccount?: () => void
+  isProxy?: boolean
 }
 
 export const WalletConnectAccountSelectItem: FC<Props> = ({
@@ -26,6 +27,7 @@ export const WalletConnectAccountSelectItem: FC<Props> = ({
   name,
   provider,
   setAccount,
+  isProxy,
 }) => {
   const isBasiliskAddress = address[0] === "b"
   const basiliskAddress = isBasiliskAddress
@@ -41,7 +43,7 @@ export const WalletConnectAccountSelectItem: FC<Props> = ({
 
   return (
     <SContainer isActive={isActive}>
-      <SSelectItem isActive={isActive} onClick={setAccount}>
+      <SSelectItem isActive={isActive} isProxy={!!isProxy} onClick={setAccount}>
         <div sx={{ flex: "row", align: "center", justify: "space-between" }}>
           <Text>{name}</Text>
           <Text>
