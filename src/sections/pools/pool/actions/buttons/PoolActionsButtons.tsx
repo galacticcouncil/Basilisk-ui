@@ -26,7 +26,6 @@ export const PoolActionsButtons = ({
 
   const actionsDisabled = !account || account.isExternalWalletConnected
   const removeDisabled = disabledRemove || actionsDisabled
-  const joinDisabled = disabledJoin || actionsDisabled
 
   return (
     <div sx={{ width: ["auto", 214], flex: "column", gap: 10, mt: [19, 0] }}>
@@ -49,10 +48,14 @@ export const PoolActionsButtons = ({
         </div>
       </Button>
 
-      <Button fullWidth size="small" disabled={joinDisabled} onClick={onJoin}>
+      <Button fullWidth size="small" disabled={disabledJoin} onClick={onJoin}>
         <div sx={{ flex: "row", align: "center", justify: "center" }}>
           <Icon icon={<WindMillIcon />} sx={{ mr: 8 }} />
-          {t("pools.pool.actions.joinFarm")}
+          {t(
+            !actionsDisabled
+              ? "pools.pool.actions.joinFarm"
+              : "pools.pool.actions.farmDetails",
+          )}
         </div>
       </Button>
     </div>

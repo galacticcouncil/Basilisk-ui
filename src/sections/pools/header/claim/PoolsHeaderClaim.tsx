@@ -7,21 +7,24 @@ import { useAccountStore } from "state/store"
 import { theme } from "theme"
 import { SButton, SContent, STrigger } from "./PoolsHeaderClaim.styled"
 import { PoolsHeaderClaimContent } from "./content/PoolsHeaderClaimContent"
+import { useApiPromise } from "utils/api"
+import { isApiLoaded } from "utils/helpers"
 
 export const PoolsHeaderClaim = () => {
   const { t } = useTranslation()
   const { account } = useAccountStore()
+  const api = useApiPromise()
   const [open, setOpen] = useState(false)
   const isDesktop = useMedia(theme.viewport.gte.sm)
 
-  if (!account) return null
+  if (!account || !isApiLoaded(api)) return null
 
   return (
     <div sx={{ m: ["16px 0", "auto 0"] }}>
       {isDesktop ? (
         <Root delayDuration={0} open={open} onOpenChange={setOpen}>
           <STrigger
-            isOpen={open}
+            open={open}
             onClick={(e) => {
               e.preventDefault()
               e.stopPropagation()

@@ -39,6 +39,7 @@ export const PoolPositionFarmRedeposit = (props: {
   pool: PoolBase
   depositNft: DepositNftType
   className?: string
+  onClose?: () => void
 }) => {
   const { t } = useTranslation()
   const { account } = useAccountStore()
@@ -55,9 +56,12 @@ export const PoolPositionFarmRedeposit = (props: {
         ),
     ) ?? []
 
-  const redeposit = useRedepositMutation(props.pool, availableYieldFarms, [
-    props.depositNft,
-  ])
+  const redeposit = useRedepositMutation(
+    props.pool,
+    availableYieldFarms,
+    [props.depositNft],
+    props.onClose,
+  )
 
   const isMultiple = availableYieldFarms.length > 1
 

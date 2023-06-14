@@ -6,7 +6,7 @@ import { ReactComponent as ChevronDown } from "assets/icons/ChevronDown.svg"
 import { AprFarm, getCurrentLoyaltyFactor } from "utils/farms/apr"
 import { useAsset } from "api/asset"
 import { addSeconds } from "date-fns"
-import { BLOCK_TIME, BN_0 } from "utils/constants"
+import { BLOCK_TIME, BN_0, BN_QUINTILL } from "utils/constants"
 import { useBestNumber } from "api/chain"
 import { getFloatingPointAmount } from "utils/balance"
 import { GradientText } from "components/Typography/GradientText/GradientText"
@@ -14,6 +14,7 @@ import { DepositNftType } from "api/deposits"
 import { Tag } from "components/Tag/Tag"
 import { PoolBase } from "@galacticcouncil/sdk"
 import { useMemo } from "react"
+import { Icon } from "components/Icon/Icon"
 
 export const PoolFarmDetail = (props: {
   pool: PoolBase
@@ -23,6 +24,9 @@ export const PoolFarmDetail = (props: {
 }) => {
   const asset = useAsset(props.farm.assetId)
   const { t } = useTranslation()
+  const priceAdjustment = props.farm.globalFarm.priceAdjustment
+    .toBigNumber()
+    .div(BN_QUINTILL)
 
   const bestNumber = useBestNumber()
   const currentApr = useMemo(() => {
@@ -52,6 +56,8 @@ export const PoolFarmDetail = (props: {
 
   const [assetIn, assetOut] = props.pool.tokens
 
+  const fullness = props.farm.fullness.times(100).multipliedBy(priceAdjustment)
+
   return (
     <SFarm
       as={props.onSelect ? "button" : "div"}
@@ -68,7 +74,8 @@ export const PoolFarmDetail = (props: {
         }}
       >
         <div sx={{ flex: "row", align: "center", gap: 8 }}>
-          {asset.data?.icon}
+          <Icon icon={asset.data?.icon} size={22} />
+
           <Text fw={700}>{asset.data?.symbol}</Text>
         </div>
         <Text fs={16} lh={28} fw={600} color="primary200">
@@ -104,10 +111,10 @@ export const PoolFarmDetail = (props: {
           </Text>
         </SFarmRow>
         <SFarmRow>
-          <FillBar percentage={props.farm.fullness.times(100).toNumber()} />
+          <FillBar percentage={fullness.toNumber()} />
           <Text fs={14} color="neutralGray100" tAlign="right">
             {t("pools.allFarms.modal.capacity", {
-              capacity: props.farm.fullness.times(100),
+              capacity: fullness,
             })}
           </Text>
         </SFarmRow>

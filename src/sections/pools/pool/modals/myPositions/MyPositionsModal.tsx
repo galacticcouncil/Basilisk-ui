@@ -35,7 +35,7 @@ export const MyPositionsModal = ({
       {isOpen && (
         <>
           <MyPositionsHeader pool={pool} arePositions={arePositions} />
-          <MyPositionsList pool={pool} />
+          <MyPositionsList pool={pool} onClose={onClose} />
         </>
       )}
     </Modal>

@@ -9,6 +9,7 @@ export const useRedepositMutation = (
   pool: PoolBase,
   availableYieldFarms: AprFarm[],
   depositNfts: DepositNftType[],
+  onClose?: () => void,
 ) => {
   const api = useApiPromise()
 
@@ -38,9 +39,15 @@ export const useRedepositMutation = (
       .flat(2)
 
     if (txs.length > 1) {
-      return await createTransaction({ tx: api.tx.utility.batchAll(txs) })
+      return await createTransaction(
+        { tx: api.tx.utility.batchAll(txs) },
+        { onClose: onClose, onBack: onClose ? () => {} : undefined },
+      )
     } else {
-      return await createTransaction({ tx: txs[0] })
+      return await createTransaction(
+        { tx: txs[0] },
+        { onClose: onClose, onBack: onClose ? () => {} : undefined },
+      )
     }
   })
 }

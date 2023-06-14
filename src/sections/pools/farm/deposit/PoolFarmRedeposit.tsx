@@ -10,6 +10,7 @@ type Props = {
   pool: PoolBase
   availableYieldFarms: AprFarm[]
   depositNfts: DepositNftType[]
+  onClose: () => void
 }
 
 export const PoolFarmRedeposit = (props: Props) => {
@@ -20,6 +21,7 @@ export const PoolFarmRedeposit = (props: Props) => {
     props.pool,
     props.availableYieldFarms,
     props.depositNfts,
+    props.onClose,
   )
 
   if (!account) return null
