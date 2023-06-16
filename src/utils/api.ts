@@ -1,10 +1,6 @@
 import { ApiPromise } from "@polkadot/api"
 import { createContext, useContext, useMemo } from "react"
-import {
-  PolkadotApiPoolService,
-  PoolType,
-  TradeRouter,
-} from "@galacticcouncil/sdk"
+import { PoolService, PoolType, TradeRouter } from "@galacticcouncil/sdk"
 
 export const BASILISK_ADDRESS_PREFIX = 10041
 export const NATIVE_ASSET_ID = "0"
@@ -18,7 +14,7 @@ export const useTradeRouter = () => {
   const api = useApiPromise()
 
   const router = useMemo(() => {
-    const poolService = new PolkadotApiPoolService(api)
+    const poolService = new PoolService(api)
     const tradeRouter = new TradeRouter(poolService, {
       includeOnly: [PoolType.XYK],
     })

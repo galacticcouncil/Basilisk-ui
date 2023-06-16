@@ -2,7 +2,7 @@ import styled from "@emotion/styled"
 import { theme } from "theme"
 
 export const SContainer = styled.div`
-  margin: -16px -12px;
+  margin: -16px -12px 0;
 
   @media (${theme.viewport.gte.sm}) {
     margin: unset;
