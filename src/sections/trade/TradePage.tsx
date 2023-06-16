@@ -6,7 +6,6 @@ import type { TxInfo } from "@galacticcouncil/apps"
 import * as React from "react"
 import * as Apps from "@galacticcouncil/apps"
 import { createComponent, EventName } from "@lit-labs/react"
-import { useUsdPeggedAsset } from "api/asset"
 import { useAccountStore, useStore } from "state/store"
 import { z } from "zod"
 import { MakeGenerics, useSearch } from "@tanstack/react-location"
@@ -47,7 +46,7 @@ export function TradePage() {
 
   const ref = React.useRef<Apps.TradeApp>(null)
   const rawSearch = useSearch<SearchGenerics>()
-  const usd = useUsdPeggedAsset()
+  const usdAssetId = import.meta.env.VITE_USD_PEGGED_ASSET_ID
   const search = TradeAppSearch.safeParse(rawSearch)
 
   const handleSubmit = async (e: CustomEvent<TxInfo>) => {
@@ -95,7 +94,7 @@ export function TradePage() {
           accountProvider={account?.provider}
           accountAddress={account?.address}
           apiAddress={rpcUrl}
-          stableCoinAssetId={usd.data?.id}
+          stableCoinAssetId={usdAssetId}
           assetIn={search.success ? search.data.assetIn : undefined}
           assetOut={search.success ? search.data.assetOut : undefined}
           pools={PoolType.XYK}
