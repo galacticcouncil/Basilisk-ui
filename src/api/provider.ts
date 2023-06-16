@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query"
 import { QUERY_KEYS } from "utils/queryKeys"
 import { ApiPromise, WsProvider } from "@polkadot/api"
+//import * as definitions from "@galacticcouncil/api-augment/basilisk/interfaces/voting/definitions"
 import * as definitions from "interfaces/voting/definitions"
+
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 

@@ -1,4 +1,4 @@
-import "interfaces/augment-api"
+//import "@galacticcouncil/api-augment/basilisk"
 import { InjectedWindowProvider } from "@polkadot/extension-inject/types"
 import BN from "bignumber.js"
 
