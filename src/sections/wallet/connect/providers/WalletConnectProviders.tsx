@@ -4,15 +4,18 @@ import { getWallets, Wallet } from "@talismn/connect-wallets"
 import { useMedia } from "react-use"
 import { theme } from "theme"
 import { getWalletMeta } from "../modal/WalletConnectModal.utils"
+import { WalletConnectWCButton } from "./button/WalletConnectButton"
 
 type Props = {
   onConnect: (provider: Wallet) => void
   onDownload: (provider: { installUrl: string }) => void
+  onWalletConnect: () => void
 }
 
 export const WalletConnectProviders: FC<Props> = ({
   onConnect,
   onDownload,
+  onWalletConnect,
 }) => {
   const wallets = getWallets()
   const isDesktop = useMedia(theme.viewport.gte.sm)
@@ -38,6 +41,7 @@ export const WalletConnectProviders: FC<Props> = ({
           />
         )
       })}
+      <WalletConnectWCButton key="WalletConnect" onClick={onWalletConnect} />
     </div>
   )
 }

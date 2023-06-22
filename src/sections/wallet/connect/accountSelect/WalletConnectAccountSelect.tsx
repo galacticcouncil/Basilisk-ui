@@ -1,5 +1,3 @@
-import { getWalletBySource } from "@talismn/connect-wallets"
-import { useQuery } from "@tanstack/react-query"
 import { Text } from "components/Typography/Text/Text"
 import { FC, ReactNode } from "react"
 import { useTranslation } from "react-i18next"
@@ -7,6 +5,8 @@ import { WalletConnectAccountSelectItem } from "sections/wallet/connect/accountS
 import { Account, externalWallet } from "state/store"
 import { SContainer } from "./WalletConnectAccountSelect.styled"
 import { ExternalWalletConnectAccount } from "./external/ExternalWalletConnectAccount"
+import { useProviderAccounts } from "components/AddressBook/AddressBook.utils"
+import { WalletConnectAccount } from "./wc/WalletConnectAccount"
 
 type Props = {
   provider: string
@@ -21,16 +21,13 @@ export const WalletConnectAccountSelect: FC<Props> = ({
   currentAddress,
   onClose,
 }) => {
-  const { t } = useTranslation("translation")
+  const { t } = useTranslation()
   const isExternalWallet = provider === externalWallet.provider
+  const isWalletConnect = provider === "WalletConnect"
 
-  const accounts = useQuery(
-    ["web3Accounts", provider],
-    async () => {
-      const wallet = getWalletBySource(provider)
-      return await wallet?.getAccounts()
-    },
-    { enabled: !isExternalWallet },
+  const accounts = useProviderAccounts(
+    provider,
+    !isExternalWallet && !isWalletConnect,
   )
 
   const accountComponents = accounts.data?.reduce((memo, account) => {
@@ -47,7 +44,7 @@ export const WalletConnectAccountSelect: FC<Props> = ({
           key={account.address}
           name={accountName}
           address={account.address}
-          setAccount={() => {
+          onClick={() => {
             onSelect({
               name: accountName,
               address: account.address,
@@ -78,6 +75,11 @@ export const WalletConnectAccountSelect: FC<Props> = ({
           <ExternalWalletConnectAccount
             address={currentAddress}
             onClose={onClose}
+          />
+        ) : isWalletConnect ? (
+          <WalletConnectAccount
+            currentAddress={currentAddress}
+            onSelect={onSelect}
           />
         ) : (
           accountComponents

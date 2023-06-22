@@ -2,15 +2,14 @@ import { Modal } from "components/Modal/Modal"
 import { useTranslation } from "react-i18next"
 import { FC, useState } from "react"
 
-import { useMutation } from "@tanstack/react-query"
-import { POLKADOT_APP_NAME } from "utils/api"
 import { WalletConnectConfirmPending } from "sections/wallet/connect/confirmPending/WalletConnectConfirmPending"
 import { WalletConnectProviderSelect } from "sections/wallet/connect/providerSelect/WalletConnectProviderSelect"
 import { WalletConnectAccountSelect } from "sections/wallet/connect/accountSelect/WalletConnectAccountSelect"
 import { externalWallet, useAccountStore } from "state/store"
 import { WalletConnectActiveFooter } from "./WalletConnectActiveFooter"
-import { Wallet } from "@talismn/connect-wallets"
 import { useNavigate } from "@tanstack/react-location"
+import { useEnableWallet } from "./WalletConnectModal.utils"
+import { useWalletConnect } from "components/WalletConnectProvider/WalletConnectProvider"
 
 type Props = {
   isOpen: boolean
@@ -18,23 +17,40 @@ type Props = {
 }
 
 export const WalletConnectModal: FC<Props> = ({ isOpen, onClose }) => {
-  const { t } = useTranslation("translation")
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [userSelectedProvider, setUserSelectedProvider] = useState<
     string | null
   >(null)
 
-  const mutate = useMutation(
-    ["web3Enable", userSelectedProvider],
-    async (wallet: Wallet) => wallet.enable(POLKADOT_APP_NAME),
-    { onError: () => setUserSelectedProvider(null) },
-  )
+  const enableWallet = useEnableWallet({
+    provider: userSelectedProvider,
+    onError: () => setUserSelectedProvider(null),
+  })
 
   const { account, setAccount } = useAccountStore()
   const activeProvider = userSelectedProvider ?? account?.provider
 
+  const { wallet } = useWalletConnect()
+
+  const [isWCConnecting, setIsWCConnecting] = useState(false)
+
+  const onWalletConnect = async () => {
+    setIsWCConnecting(true)
+
+    try {
+      await wallet?.connect()
+
+      setUserSelectedProvider("WalletConnect")
+    } catch (e) {}
+
+    setIsWCConnecting(false)
+  }
+
+  const isConnecting = enableWallet.isLoading || isWCConnecting
+
   const modalProps = userSelectedProvider
-    ? mutate.isLoading
+    ? isConnecting
       ? { title: "" }
       : { title: t("walletConnect.accountSelect.title") }
     : { title: t("walletConnect.provider.title") }
@@ -43,6 +59,7 @@ export const WalletConnectModal: FC<Props> = ({ isOpen, onClose }) => {
     <Modal
       width={460}
       open={isOpen}
+      withoutCloseOutside
       onClose={() => {
         setUserSelectedProvider(null)
         onClose()
@@ -50,7 +67,7 @@ export const WalletConnectModal: FC<Props> = ({ isOpen, onClose }) => {
       {...modalProps}
     >
       {activeProvider ? (
-        activeProvider !== externalWallet.provider && mutate.isLoading ? (
+        activeProvider !== externalWallet.provider && isConnecting ? (
           <WalletConnectConfirmPending provider={activeProvider} />
         ) : (
           <>
@@ -70,6 +87,7 @@ export const WalletConnectModal: FC<Props> = ({ isOpen, onClose }) => {
               onLogout={() => {
                 setUserSelectedProvider(null)
                 setAccount(undefined)
+                wallet?.disconnect()
                 onClose()
                 navigate({
                   search: undefined,
@@ -77,6 +95,7 @@ export const WalletConnectModal: FC<Props> = ({ isOpen, onClose }) => {
                 })
               }}
               onSwitch={() => {
+                wallet?.disconnect()
                 setUserSelectedProvider(null)
                 setAccount(undefined)
                 navigate({
@@ -91,9 +110,10 @@ export const WalletConnectModal: FC<Props> = ({ isOpen, onClose }) => {
         <WalletConnectProviderSelect
           onWalletSelect={(wallet) => {
             setUserSelectedProvider(wallet.extensionName)
-            mutate.mutate(wallet)
+            enableWallet.mutate(wallet)
           }}
           onClose={onClose}
+          onWalletConnect={onWalletConnect}
         />
       )}
     </Modal>
