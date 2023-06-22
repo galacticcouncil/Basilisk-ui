@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 import {
   BaseWallet,
   WalletAggregator,
@@ -17,7 +17,7 @@ const walletConnectParams = {
 }
 
 const walletAggregator = new WalletAggregator(
-  new WalletConnect(walletConnectParams, "HydraDX"),
+  new WalletConnect(walletConnectParams, "Basilisk"),
 )
 
 type OnboardProviderProps = { children: JSX.Element }
@@ -57,15 +57,8 @@ const PolkadotWalletsContextProvider = ({
     return () => clearTimeout(timeoutId)
   }, [walletAggregator, initialWaitMs])
 
-  const contextData = useMemo(
-    () => ({
-      wallet,
-    }),
-    [wallet],
-  )
-
   return (
-    <PolkadotWalletsContext.Provider value={contextData}>
+    <PolkadotWalletsContext.Provider value={{ wallet }}>
       {children}
     </PolkadotWalletsContext.Provider>
   )

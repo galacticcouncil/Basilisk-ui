@@ -107,7 +107,7 @@ export class WalletConnectSigner implements Signer {
   }
 }
 
-export const POLKADOT_CHAIN_ID = import.meta.env.VITE_HDX_CAIP_ID
+export const POLKADOT_CHAIN_ID = import.meta.env.VITE_BSX_CAIP_ID
 export const WC_VERSION = "2.0"
 
 const toWalletAccount = (wcAccount: WcAccount) => {
