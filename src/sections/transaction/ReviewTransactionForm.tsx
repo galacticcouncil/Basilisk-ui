@@ -21,6 +21,7 @@ import BigNumber from "bignumber.js"
 import { BN_1 } from "utils/constants"
 import { useSpotPrice } from "api/spotPrice"
 import { NATIVE_ASSET_ID, POLKADOT_APP_NAME } from "utils/api"
+import { useWalletConnect } from "components/WalletConnectProvider/WalletConnectProvider"
 
 export const ReviewTransactionForm = (
   props: {
@@ -33,6 +34,8 @@ export const ReviewTransactionForm = (
   const { account } = useAccountStore()
   const bestNumber = useBestNumber()
   const accountCurrency = useAccountCurrency(account?.address)
+
+  const { wallet } = useWalletConnect()
 
   const feeMeta = useAssetMeta(
     props.overrides?.currencyId ?? accountCurrency.data,
@@ -49,22 +52,30 @@ export const ReviewTransactionForm = (
         ? PROXY_WALLET_PROVIDER
         : account?.provider
 
-    const wallet = getWalletBySource(provider)
+    if (!address) throw new Error("Missing active account")
 
-    if (address == null || wallet == null)
-      throw new Error("Missing active account or wallet")
+    if (provider === "WalletConnect") {
+      if (wallet == null) throw new Error("Missing wallet for Wallet Connect")
+      const signer = wallet.signer
+      if (!signer) throw new Error("Missing signer for Wallet Connect")
 
-    if (props.isProxy) {
-      await wallet.enable(POLKADOT_APP_NAME)
+      const signature = await props.tx.signAsync(address, { signer, nonce: -1 })
+      return await props.onSigned(signature)
+    } else {
+      const wallet = getWalletBySource(provider)
+
+      if (wallet == null) throw new Error("Missing wallet")
+
+      if (props.isProxy) {
+        await wallet.enable(POLKADOT_APP_NAME)
+      }
+      const signature = await props.tx.signAsync(address, {
+        signer: wallet.signer,
+        // defer to polkadot/api to handle nonce w/ regard to mempool
+        nonce: -1,
+      })
+      return await props.onSigned(signature)
     }
-
-    const signature = await props.tx.signAsync(address, {
-      signer: wallet.signer,
-      // defer to polkadot/api to handle nonce w/ regard to mempool
-      nonce: -1,
-    })
-
-    return await props.onSigned(signature)
   })
 
   const json = getTransactionJSON(props.tx)

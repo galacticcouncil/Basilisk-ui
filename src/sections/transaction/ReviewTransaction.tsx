@@ -10,12 +10,14 @@ import { ReviewTransactionForm } from "./ReviewTransactionForm"
 import { ReviewTransactionPending } from "./ReviewTransactionPending"
 import { ReviewTransactionSuccess } from "./ReviewTransactionSuccess"
 import { ReviewTransactionToast } from "./ReviewTransactionToast"
+import { useWalletConnect } from "components/WalletConnectProvider/WalletConnectProvider"
 
 export const ReviewTransaction: React.FC<Transaction> = (props) => {
   const { t } = useTranslation()
   const [minimizeModal, setMinimizeModal] = useState(false)
 
   const sendTx = useSendTransactionMutation()
+  const { wallet } = useWalletConnect()
 
   const modalProps: Partial<ComponentProps<typeof Modal>> =
     sendTx.isLoading || sendTx.isSuccess || sendTx.isError
@@ -85,7 +87,7 @@ export const ReviewTransaction: React.FC<Transaction> = (props) => {
         }
         {...modalProps}
       >
-        <WalletUpgradeModal />
+        {!wallet?.isConnected && <WalletUpgradeModal />}
         {sendTx.isLoading ? (
           <ReviewTransactionPending
             txState={sendTx.txState}
