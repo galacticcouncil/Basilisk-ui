@@ -9,11 +9,13 @@ import { ExternalWalletConnectModal } from "../modal/ExternalWalletConnectModal"
 type Props = {
   onWalletSelect: (wallet: Wallet) => void
   onClose: () => void
+  onWalletConnect: () => void
 }
 
 export const WalletConnectProviderSelect = ({
   onWalletSelect,
   onClose,
+  onWalletConnect,
 }: Props) => {
   const { t } = useTranslation("translation")
   const [isAddExternalWallet, setAddExternalWallet] = useState(false)
@@ -29,6 +31,7 @@ export const WalletConnectProviderSelect = ({
           <WalletConnectProviders
             onConnect={onWalletSelect}
             onDownload={(wallet) => window.open(wallet.installUrl, "_blank")}
+            onWalletConnect={onWalletConnect}
           />
 
           <Text sx={{ py: 8 }} fs={14} color="neutralGray400" tAlign="center">

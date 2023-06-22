@@ -94,6 +94,7 @@ export const WalletInactiveButton = (props: {
 export const WalletConnectButton = (props: { className?: string }) => {
   const [open, setOpen] = useState(false)
   const { account } = useAccountStore()
+
   return (
     <>
       {account ? (

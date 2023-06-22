@@ -90,13 +90,12 @@ export const useAccountStore = create(
 
           try {
             const { state } = JSON.parse(value)
-
+            const parsedAccount = JSON.parse(value)
             // if there is an external account set it as a user wallet account
             if (
               !!externalWalletAddress &&
               safeConvertAddressSS58(externalWalletAddress, 0)
             ) {
-              const parsedAccount = JSON.parse(value)
               const delegate = parsedAccount.state.account?.delegate
 
               const externalAccount = {
@@ -112,6 +111,9 @@ export const useAccountStore = create(
                 state: { account: externalAccount },
               })
             }
+
+            if (parsedAccount.state.account?.provider === "WalletConnect")
+              return value
 
             if (state.account?.provider == null) return null
 
