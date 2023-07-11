@@ -4,8 +4,8 @@ import { ReactComponent as MoreTabIcon } from "assets/icons/MoreTabIcon.svg"
 import { STabButton, SFundButtonWrapper } from "./MobileNavBar.styled"
 import { TabMenuModal } from "./TabMenuModal/TabMenuModal"
 import { useTranslation } from "react-i18next"
-import { FundWalletMobileButton } from 'components/FundWallet/FundWalletMobileButton'
-import { FundWalletModal } from '../../../FundWallet/FundWalletModal'
+import { FundWalletMobileButton } from "components/FundWallet/FundWalletMobileButton"
+import { FundWalletModal } from "../../../FundWallet/FundWalletModal"
 
 type MoreButtonProps = {
   tabs: React.ReactNode[]
@@ -24,8 +24,11 @@ export const MoreButton = ({ tabs }: MoreButtonProps) => {
       </STabButton>
       <TabMenuModal open={openModal} onClose={() => setOpenModal(false)}>
         <SFundButtonWrapper>
-          <FundWalletMobileButton onClick={() => setIsFundModalOpen(true) }/>
-          <FundWalletModal open={isFundModalOpen} onClose={() => setIsFundModalOpen(false)} />
+          <FundWalletMobileButton onClick={() => setIsFundModalOpen(true)} />
+          <FundWalletModal
+            open={isFundModalOpen}
+            onClose={() => setIsFundModalOpen(false)}
+          />
         </SFundButtonWrapper>
         <div sx={{ flex: "column" }}>{tabs}</div>
       </TabMenuModal>

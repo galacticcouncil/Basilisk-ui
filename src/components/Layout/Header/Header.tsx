@@ -13,14 +13,14 @@ import { useToast } from "state/toasts"
 import { useTranslation } from "react-i18next"
 import { Spinner } from "components/Spinner/Spinner.styled"
 import * as Tooltip from "@radix-ui/react-tooltip"
-import { useMedia } from 'react-use'
-import { theme } from '../../../theme'
-import { useState } from 'react'
-import { FundWalletButton } from '../../FundWallet/FundWalletButton'
-import { FundWalletModal } from '../../FundWallet/FundWalletModal'
+import { useMedia } from "react-use"
+import { theme } from "../../../theme"
+import { useState } from "react"
+import { FundWalletButton } from "../../FundWallet/FundWalletButton"
+import { FundWalletModal } from "../../FundWallet/FundWalletModal"
 
 export const Header = () => {
-  const [isFundModalOpen, setIsFundModalOpen] = useState(false);
+  const [isFundModalOpen, setIsFundModalOpen] = useState(false)
   const isDesktop = useMedia(theme.viewport.gte.sm)
   const { setSidebar, toasts } = useToast()
   const { t } = useTranslation()
@@ -73,7 +73,10 @@ export const Header = () => {
           {isDesktop && (
             <>
               <FundWalletButton onClick={() => setIsFundModalOpen(true)} />
-              <FundWalletModal open={isFundModalOpen} onClose={() => setIsFundModalOpen(false)} />
+              <FundWalletModal
+                open={isFundModalOpen}
+                onClose={() => setIsFundModalOpen(false)}
+              />
             </>
           )}
 

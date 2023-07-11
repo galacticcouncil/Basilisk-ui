@@ -1,5 +1,5 @@
-import { Button, ButtonProps } from '../Button/Button'
-import styled from '@emotion/styled'
+import { Button, ButtonProps } from "../Button/Button"
+import styled from "@emotion/styled"
 
 const SButton = styled(Button)`
   font-size: 12px;
@@ -7,6 +7,10 @@ const SButton = styled(Button)`
   padding: 11px 15px 11px 15px;
 `
 
-type Props = Pick<ButtonProps, 'onClick'>
+type Props = Pick<ButtonProps, "onClick">
 
-export const FundWalletButton = (props: Props) => <SButton {...props} variant="primary">Fund wallet</SButton>
+export const FundWalletButton = (props: Props) => (
+  <SButton {...props} variant="primary">
+    Fund wallet
+  </SButton>
+)

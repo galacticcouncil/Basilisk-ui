@@ -10,10 +10,10 @@ import { WalletConnectActiveFooter } from "./WalletConnectActiveFooter"
 import { useNavigate } from "@tanstack/react-location"
 import { useEnableWallet } from "./WalletConnectModal.utils"
 import { useWalletConnect } from "components/WalletConnectProvider/WalletConnectProvider"
-import { FundWalletModal } from 'components/FundWallet/FundWalletModal'
-import { useMedia } from 'react-use'
-import { theme } from 'theme'
-import { FundWalletMobileButton } from 'components/FundWallet/FundWalletMobileButton'
+import { FundWalletModal } from "components/FundWallet/FundWalletModal"
+import { useMedia } from "react-use"
+import { theme } from "theme"
+import { FundWalletMobileButton } from "components/FundWallet/FundWalletMobileButton"
 
 type Props = {
   isOpen: boolean
@@ -23,7 +23,7 @@ type Props = {
 export const WalletConnectModal: FC<Props> = ({ isOpen, onClose }) => {
   const { t } = useTranslation()
 
-  const [isFundModalOpen, setIsFundModalOpen] = useState(false);
+  const [isFundModalOpen, setIsFundModalOpen] = useState(false)
   const isMobile = useMedia(theme.viewport.lt.sm)
 
   const navigate = useNavigate()
@@ -92,8 +92,13 @@ export const WalletConnectModal: FC<Props> = ({ isOpen, onClose }) => {
 
             {isMobile && (
               <>
-                <FundWalletMobileButton onClick={() => setIsFundModalOpen(true)} />
-                <FundWalletModal open={isFundModalOpen} onClose={() => setIsFundModalOpen(false)} />
+                <FundWalletMobileButton
+                  onClick={() => setIsFundModalOpen(true)}
+                />
+                <FundWalletModal
+                  open={isFundModalOpen}
+                  onClose={() => setIsFundModalOpen(false)}
+                />
               </>
             )}
 
