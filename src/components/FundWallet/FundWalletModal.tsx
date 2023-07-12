@@ -2,12 +2,27 @@ import { Modal } from "../Modal/Modal"
 import { ComponentProps } from "react"
 import { GradientText } from "components/Typography/GradientText/GradientText"
 import { Text } from "components/Typography/Text/Text"
-import { Heading } from "components/Typography/Heading/Heading"
-import { SBanxaBlock, SCryptoBlock, SKrakenBlock, SBlocks, SLinkText } from './FundWalletModal.styled'
+import {
+  SBanxaBlock,
+  SCryptoBlock,
+  SKrakenBlock,
+  SBlocks,
+} from "./FundWalletModal.styled"
+import { ReactComponent as KrakenLogo } from "assets/icons/KrakenLogo.svg"
+import BanxaLogo from "assets/icons/BanxaLogo.png"
+import { CryptoBlockTitle } from "./components/CryptoBlockTitle"
+import { BlockContent } from "./components/BlockContent"
+import { useTranslation } from "react-i18next"
+import { LINKS } from "utils/navigation"
+import { useMedia } from "react-use"
+import { theme } from "../../theme"
 
 type Props = Pick<ComponentProps<typeof Modal>, "open" | "onClose">
 
 export const FundWalletModal = ({ open, onClose }: Props) => {
+  const { t } = useTranslation()
+  const isDesktop = useMedia(theme.viewport.gte.sm)
+
   return (
     <>
       <Modal
@@ -17,41 +32,46 @@ export const FundWalletModal = ({ open, onClose }: Props) => {
         withoutCloseOutside={true}
       >
         <GradientText fs={20} fw={600}>
-          Fund your wallet
+          {t("fund.modal.title")}
         </GradientText>
-        <Text fw={400} lh={24} color="neutralGray400"  css={{ marginBottom: '28px', marginTop: '8px' }}>
-          Purchase BSX through very convenient solutions allowing to buy it
-          through FIAT or from your exchange account, Find currently available
-          solutions below.
+        <Text
+          fw={400}
+          lh={24}
+          color="neutralGray400"
+          css={{ marginBottom: "28px", marginTop: "8px" }}
+        >
+          {t("fund.modal.description")}
         </Text>
         <SBlocks>
           <SBanxaBlock>
-            <div>
-              Banxa
-              <Text fw={400} color="neutralGray400" lh={20}>
-                Banxa is the leading global Web3 on-and-off ramp solution.
-              </Text>
-            </div>
-            <SLinkText fw={400} color="primary100">Buy on Banxa</SLinkText>
+            <BlockContent
+              title={<img alt="Banxa" width={100} src={BanxaLogo} />}
+              description={t("fund.modal.banxa.description")}
+              linkText={t("fund.modal.banxa.buy")}
+              link="https://banxa.com/"
+              onLinkClick={onClose}
+            />
           </SBanxaBlock>
           <SKrakenBlock>
-            <div>
-              Kraken
-              <Text fw={400} color="neutralGray400" lh={20}>
-                One of most popular US based cryptocurrency exchange.
-              </Text>
-            </div>
-            <SLinkText fw={400} color="primary100">Buy on Kraken</SLinkText>
+            <BlockContent
+              title={<KrakenLogo />}
+              description={t("fund.modal.kraken.description")}
+              linkText={t("fund.modal.kraken.buy")}
+              link="https://kraken.com/"
+              onLinkClick={onClose}
+            />
           </SKrakenBlock>
-          <Text fw={400} tAlign="center" color="neutralGray400">or</Text>
+          <Text fw={400} tAlign="center" color="neutralGray400">
+            or
+          </Text>
           <SCryptoBlock>
-            <div>
-              <Heading as="h2" fs={20}>Fund with crypto</Heading>
-              <Text fw={400} color="neutralGray400" lh={20}>
-                Looking to fund your wallet with crypto? Head to our cross-chain UI.
-              </Text>
-            </div>
-            <SLinkText fw={400} color="primary100">Use cross-chain</SLinkText>
+            <BlockContent
+              title={<CryptoBlockTitle />}
+              description={t("fund.modal.crypto.description")}
+              linkText={t(isDesktop ? "fund.modal.crypto.buy" : "go")}
+              link={LINKS.cross_chain}
+              onLinkClick={onClose}
+            />
           </SCryptoBlock>
         </SBlocks>
       </Modal>

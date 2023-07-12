@@ -24,6 +24,7 @@
   "and": "and",
   "shares": "shares",
   "or": "or",
+  "go": "Go",
   "error.positive": "Must be positive",
   "error.validNumber": "Must be a number",
   "error.required": "This field is required",
@@ -346,5 +347,14 @@
   "addressbook.remove.title": "Remove address",
   "addressbook.remove.subtitle": "Are you sure you want to remove this account address?",
   "addressbook.remove.cancel": "Back",
-  "addressbook.remove.submit": "Yes, remove"
+  "addressbook.remove.submit": "Yes, remove",
+  "fund.modal.title": "Fund your wallet",
+  "fund.modal.description": "Purchase BSX through very convenient solutions allowing to buy it through FIAT or from your exchange account, Find currently available solutions below.",
+  "fund.modal.banxa.description": "Banxa is the leading global Web3 on-and-off ramp solution.",
+  "fund.modal.banxa.buy": "Buy on Banxa",
+  "fund.modal.kraken.description": "One of most popular US based cryptocurrency exchange.",
+  "fund.modal.kraken.buy": "Buy on Kraken",
+  "fund.modal.crypto.title": "Fund with crypto",
+  "fund.modal.crypto.description": "Looking to fund your wallet with crypto? Head to our cross-chain UI.",
+  "fund.modal.crypto.buy": "Use cross-chain"
 }
