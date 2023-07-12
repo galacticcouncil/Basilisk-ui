@@ -14,10 +14,16 @@ type Props = {
   description: string
   link: string
   linkText: string
-  onLinkClick: () => void;
+  onLinkClick: () => void
 }
 
-export const BlockContent = ({ title, description, linkText, link, onLinkClick }: Props) => {
+export const BlockContent = ({
+  title,
+  description,
+  linkText,
+  link,
+  onLinkClick,
+}: Props) => {
   const linkContentElement = (
     <SLinkContent>
       <SLinkText fw={400} fs={14} color="primary100">
@@ -32,11 +38,18 @@ export const BlockContent = ({ title, description, linkText, link, onLinkClick }
       <div>{title}</div>
       <SBlockLink>
         {link.includes("http") ? (
-          <a href={link} target="_blank" rel="noreferrer noopener" onClick={onLinkClick}>
+          <a
+            href={link}
+            target="_blank"
+            rel="noreferrer noopener"
+            onClick={onLinkClick}
+          >
             {linkContentElement}
           </a>
         ) : (
-          <Link to={link} onClick={onLinkClick}>{linkContentElement}</Link>
+          <Link to={link} onClick={onLinkClick}>
+            {linkContentElement}
+          </Link>
         )}
       </SBlockLink>
       <SBlockDescription fw={400} color="neutralGray400" lh={20}>
