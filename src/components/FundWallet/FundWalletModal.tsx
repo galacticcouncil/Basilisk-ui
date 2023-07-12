@@ -15,7 +15,7 @@ import { BlockContent } from "./components/BlockContent"
 import { useTranslation } from "react-i18next"
 import { LINKS } from "utils/navigation"
 import { useMedia } from "react-use"
-import { theme } from "../../theme"
+import { theme } from "theme"
 
 type Props = Pick<ComponentProps<typeof Modal>, "open" | "onClose">
 

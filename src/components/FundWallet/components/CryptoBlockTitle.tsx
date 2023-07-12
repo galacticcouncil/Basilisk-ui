@@ -1,4 +1,4 @@
-import { Heading } from "../../Typography/Heading/Heading"
+import { Heading } from "components/Typography/Heading/Heading"
 import { ReactComponent as FundCryptoIcon } from "assets/icons/FundCryptoIcon.svg"
 import styled from "@emotion/styled"
 import { useTranslation } from "react-i18next"
