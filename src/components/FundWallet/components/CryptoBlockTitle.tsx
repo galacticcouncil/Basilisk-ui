@@ -1,5 +1,5 @@
 import { Heading } from "../../Typography/Heading/Heading"
-import { ReactComponent as FundIcon } from "assets/icons/FundIcon.svg"
+import { ReactComponent as FundCryptoIcon } from "assets/icons/FundCryptoIcon.svg"
 import styled from "@emotion/styled"
 import { useTranslation } from "react-i18next"
 
@@ -14,7 +14,7 @@ export const CryptoBlockTitle = () => {
 
   return (
     <SWrapper>
-      <FundIcon />
+      <FundCryptoIcon />
       <Heading as="h2" fw={600} fs={20}>
         {t("fund.modal.crypto.title")}
       </Heading>
