@@ -6,7 +6,7 @@ export const CryptoBlockTitle = () => {
   const { t } = useTranslation()
 
   return (
-    <div sx={{ display: 'flex', align: 'center', gap: 9  }}>
+    <div sx={{ display: "flex", align: "center", gap: 9 }}>
       <FundCryptoIcon />
       <Heading as="h2" fw={600} fs={20}>
         {t("fund.modal.crypto.title")}
