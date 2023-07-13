@@ -31,9 +31,11 @@ export const FundWalletModal = ({ open, onClose }: Props) => {
         onClose={onClose}
         withoutCloseOutside={true}
       >
-        <GradientText fs={20} fw={600}>
-          {t("fund.modal.title")}
-        </GradientText>
+        <div>
+          <GradientText fs={20} fw={600}>
+            {t("fund.modal.title")}
+          </GradientText>
+        </div>
         <Text
           fw={400}
           lh={24}
