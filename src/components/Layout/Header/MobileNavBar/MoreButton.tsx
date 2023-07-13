@@ -1,7 +1,7 @@
 import { Icon } from "components/Icon/Icon"
 import { useState } from "react"
 import { ReactComponent as MoreTabIcon } from "assets/icons/MoreTabIcon.svg"
-import { STabButton, SFundButtonWrapper } from "./MobileNavBar.styled"
+import { STabButton } from "./MobileNavBar.styled"
 import { TabMenuModal } from "./TabMenuModal/TabMenuModal"
 import { useTranslation } from "react-i18next"
 import { FundWalletMobileButton } from "components/FundWallet/FundWalletMobileButton"
@@ -23,13 +23,13 @@ export const MoreButton = ({ tabs }: MoreButtonProps) => {
         {t("header.more")}
       </STabButton>
       <TabMenuModal open={openModal} onClose={() => setOpenModal(false)}>
-        <SFundButtonWrapper>
+        <div sx={{ p: "14px 23px", bg: "backgroundGray1000" }}>
           <FundWalletMobileButton onClick={() => setIsFundModalOpen(true)} />
           <FundWalletModal
             open={isFundModalOpen}
             onClose={() => setIsFundModalOpen(false)}
           />
-        </SFundButtonWrapper>
+        </div>
         <div sx={{ flex: "column" }}>{tabs}</div>
       </TabMenuModal>
     </>

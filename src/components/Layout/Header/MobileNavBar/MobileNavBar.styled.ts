@@ -1,11 +1,6 @@
 import styled from "@emotion/styled"
 import { theme } from "theme"
 
-export const SFundButtonWrapper = styled.div`
-  background: ${theme.colors.backgroundGray1000};
-  padding: 14px 23px;
-`
-
 export const SMobileNavBar = styled.div`
   position: fixed;
   left: 0;
