@@ -1,6 +1,5 @@
 import { Link as RouterLink, LinkProps } from "@tanstack/react-location"
-import { FC } from "react"
 
-export const Link: FC<LinkProps> = ({ to, children }) => (
-  <RouterLink to={to}>{children}</RouterLink>
-)
+type Props = Pick<LinkProps, "to" | "children" | "onClick">
+
+export const Link = (props: Props) => <RouterLink {...props} />
