@@ -8,17 +8,22 @@ import { ProviderSelectModal } from "sections/provider/ProviderSelectModal"
 import { ProviderStatus } from "sections/provider/ProviderStatus"
 import { SButton, SName } from "./ProviderSelectButton.styled"
 import { useRpcStore } from "state/store"
+import { useApiPromise } from "utils/api"
+import { isApiLoaded } from "utils/helpers"
 
 export const ProviderSelectButton = () => {
   const [open, setOpen] = useState(false)
   const store = useProviderRpcUrlStore()
   const { rpcList } = useRpcStore()
 
+  const api = useApiPromise()
+  const isApi = isApiLoaded(api)
+
   const rpcUrl = store.rpcUrl ?? import.meta.env.VITE_PROVIDER_URL
   const selectedProviderName =
     rpcList.find((provider) => provider.url === rpcUrl)?.name ??
     PROVIDERS.find((provider) => provider.url === rpcUrl)?.name
-  const number = useBestNumber()
+  const number = useBestNumber(!isApi)
 
   return (
     <>
