@@ -10,21 +10,11 @@ import {
 import { Text } from "components/Typography/Text/Text"
 import { Fragment } from "react"
 import { useTranslation } from "react-i18next"
-import { WalletFarmingPositionsSkeleton } from "../table/skeleton/WalletFarmingPositionsSkeleton"
 import { STableContainer, STableData } from "./WalletFarmingPositions.styled"
 import {
   FarmingPositionsTableData,
-  useFarmingPositionsData,
   useFarmingPositionsTable,
 } from "./WalletFarmingPositions.utils"
-
-export const WalletFarmingPositionsWrapper = () => {
-  const { data, isLoading } = useFarmingPositionsData()
-
-  if (isLoading) return <WalletFarmingPositionsSkeleton />
-
-  return <WalletFarmingPositions data={data} />
-}
 
 type Props = { data: FarmingPositionsTableData[] }
 
