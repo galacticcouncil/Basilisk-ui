@@ -52,7 +52,7 @@ export const ProviderSelectButton = () => {
           />
         </SName>
         <ProviderStatus
-          relaychainBlockNumber={number.data?.relaychainBlockNumber}
+          parachainBlockNumber={number.data?.parachainBlockNumber}
           timestamp={number.data?.timestamp}
         />
       </SButton>
