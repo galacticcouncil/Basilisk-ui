@@ -69,7 +69,7 @@ export const PROVIDERS = [
   },
   {
     name: "Rococo via Galactic Council",
-    url: "wss://rococo-basilisk-rpc.hydration.dev",
+    url: "wss://basilisk-rococo-rpc.play.hydration.cloud",
     indexerUrl: "https://basilisk-rococo-explorer.play.hydration.cloud/graphql",
     env: "rococo",
   },
