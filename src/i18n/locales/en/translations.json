@@ -341,6 +341,7 @@
   "rpc.change.modal.removeRpc.title": "Remove Rpc Adress",
   "rpc.change.modal.removeRpc.desc": "Are you sure you want to remove this RPC address?",
   "rpc.change.modal.removeRpc.confirm": "Yes, remove",
+  "rpc.error": "Unable to connect, switch RPC Provider",
   "addressbook.title": "Select account to use",
   "addressbook.list.account": "Account",
   "addressbook.list.address": "Address",

@@ -10,8 +10,10 @@ import { SButton, SName } from "./ProviderSelectButton.styled"
 import { useRpcStore } from "state/store"
 import { useApiPromise } from "utils/api"
 import { isApiLoaded } from "utils/helpers"
+import { useTranslation } from "react-i18next"
 
 export const ProviderSelectButton = () => {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const store = useProviderRpcUrlStore()
   const { rpcList } = useRpcStore()
@@ -34,6 +36,9 @@ export const ProviderSelectButton = () => {
         whileHover="animate"
       >
         <SName
+          css={{
+            width: api.isError ? "auto" : undefined,
+          }}
           variants={{
             initial: { width: 0 },
             animate: { width: "auto" },
@@ -42,7 +47,7 @@ export const ProviderSelectButton = () => {
           transition={{ duration: 0.15, ease: "easeInOut" }}
         >
           <Text fs={11} fw={500} css={{ whiteSpace: "nowrap" }}>
-            {selectedProviderName}
+            {api.isError ? t("rpc.error") : selectedProviderName}
           </Text>
           <ChevronRightIcon />
           <Separator

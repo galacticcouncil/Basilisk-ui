@@ -7,7 +7,11 @@ export const NATIVE_ASSET_ID = "0"
 export const DEPOSIT_CLASS_ID = "1" // TODO: replace with constant from api
 export const POLKADOT_APP_NAME = "Basilisk Web App"
 
-export const ApiPromiseContext = createContext<ApiPromise>({} as ApiPromise)
+export type TApiPromiseCustom = ApiPromise & { isError?: boolean }
+
+export const ApiPromiseContext = createContext<TApiPromiseCustom>(
+  {} as TApiPromiseCustom,
+)
 export const useApiPromise = () => useContext(ApiPromiseContext)
 
 export const useTradeRouter = () => {
