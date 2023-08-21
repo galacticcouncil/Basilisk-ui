@@ -2,7 +2,7 @@ import BigNumber from "bignumber.js"
 import { Separator } from "components/Separator/Separator"
 import { Heading } from "components/Typography/Heading/Heading"
 import { Text } from "components/Typography/Text/Text"
-import { useMemo } from "react"
+import { ReactNode, useMemo } from "react"
 import { Trans, useTranslation } from "react-i18next"
 import Skeleton from "react-loading-skeleton"
 import { useUsersTotalLocked } from "sections/pools/header/PoolsHeader.utils"
@@ -10,16 +10,28 @@ import { theme } from "theme"
 import { separateBalance } from "utils/balance"
 import { BN_0 } from "utils/constants"
 import { AssetsTableData } from "./table/WalletAssetsTable.utils"
+import { useLiquidityPositionsTableData } from "./table/data/WalletLiquidityPositionsData.utils"
+import { useTotalInUsersDeposits } from "utils/farms/deposits"
+import { InfoTooltip } from "components/InfoTooltip/InfoTooltip"
+import { SInfoIcon } from "components/InfoTooltip/InfoTooltip.styled"
 
 type Props = {
   assetsData?: AssetsTableData[]
+  lpData?: ReturnType<typeof useLiquidityPositionsTableData>["data"]
   isLoading?: boolean
 }
 
-export const WalletAssetsHeader = ({ assetsData, isLoading }: Props) => {
+export const WalletAssetsHeader = ({
+  assetsData,
+  lpData,
+  isLoading,
+}: Props) => {
   const { t } = useTranslation()
+
+  const farms = useTotalInUsersDeposits()
+
   const totalUsd = useMemo(() => {
-    if (!assetsData) return null
+    if (!assetsData) return BN_0
 
     return assetsData.reduce((acc, cur) => {
       if (!cur.totalUSD.isNaN()) {
@@ -29,18 +41,61 @@ export const WalletAssetsHeader = ({ assetsData, isLoading }: Props) => {
     }, BN_0)
   }, [assetsData])
 
-  const transferableUsd = useMemo(() => {
-    if (!assetsData) return null
+  const lpAmount = useMemo(() => {
+    if (!lpData) return BN_0
+    return lpData.reduce((acc, { totalUsd }) => acc.plus(totalUsd), BN_0)
+  }, [lpData])
 
-    return assetsData.reduce((acc, cur) => {
-      if (!cur.transferableUSD.isNaN()) {
-        return acc.plus(cur.transferableUSD)
-      }
-      return acc
-    }, BN_0)
-  }, [assetsData])
+  const totalBalance = farms.data?.plus(lpAmount).plus(totalUsd)
 
   const totalLocked = useUsersTotalLocked()
+
+  const tooltipBalance = (
+    <div sx={{ flex: "column", gap: 14, width: 220 }}>
+      <Text fs={11}>{t("wallet.assets.header.total.tooltip.title")}</Text>
+
+      <div sx={{ flex: "column", gap: 2 }}>
+        <Text fs={8} tTransform="uppercase" color="neutralGray500">
+          {t("wallet.assets.header.total.tooltip.assets")}
+        </Text>
+        <Text fs={12}>{t("value.usd", { amount: totalUsd })}</Text>
+      </div>
+
+      <div sx={{ flex: "column", gap: 2 }}>
+        <Text fs={8} tTransform="uppercase" color="neutralGray500">
+          {t("wallet.assets.header.total.tooltip.positions")}
+        </Text>
+        <Text fs={12}>{t("value.usd", { amount: lpAmount })}</Text>
+      </div>
+
+      <div sx={{ flex: "column", gap: 2 }}>
+        <Text fs={8} tTransform="uppercase" color="neutralGray500">
+          {t("wallet.assets.header.total.tooltip.farms")}
+        </Text>
+        <Text fs={12}>{t("value.usd", { amount: farms.data ?? BN_0 })}</Text>
+      </div>
+    </div>
+  )
+
+  const tooltipPools = (
+    <div sx={{ flex: "column", gap: 14, width: 210 }}>
+      <Text fs={11}>{t("wallet.assets.header.positions.tooltip.title")}</Text>
+
+      <div sx={{ flex: "column", gap: 2 }}>
+        <Text fs={8} tTransform="uppercase" color="neutralGray500">
+          {t("wallet.assets.header.total.tooltip.positions")}
+        </Text>
+        <Text fs={12}>{t("value.usd", { amount: lpAmount })}</Text>
+      </div>
+
+      <div sx={{ flex: "column", gap: 2 }}>
+        <Text fs={8} tTransform="uppercase" color="neutralGray500">
+          {t("wallet.assets.header.total.tooltip.farms")}
+        </Text>
+        <Text fs={12}>{t("value.usd", { amount: farms.data ?? BN_0 })}</Text>
+      </div>
+    </div>
+  )
 
   return (
     <div
@@ -49,19 +104,9 @@ export const WalletAssetsHeader = ({ assetsData, isLoading }: Props) => {
     >
       <WalletAssetsHeaderValue
         isLoading={isLoading}
-        value={totalUsd}
+        value={totalBalance}
         label={t("wallet.assets.header.total")}
-      />
-
-      <Separator
-        sx={{ mb: 15, display: ["inherit", "none"] }}
-        css={{ background: `rgba(${theme.rgbColors.white}, 0.06)` }}
-      />
-
-      <WalletAssetsHeaderValue
-        isLoading={isLoading}
-        value={transferableUsd}
-        label={t("wallet.assets.header.transferable")}
+        tooltip={tooltipBalance}
       />
 
       <Separator
@@ -73,6 +118,7 @@ export const WalletAssetsHeader = ({ assetsData, isLoading }: Props) => {
         isLoading={totalLocked.isLoading}
         value={totalLocked.data}
         label={t("wallet.assets.header.totalInPools")}
+        tooltip={tooltipPools}
       />
     </div>
   )
@@ -82,6 +128,7 @@ export const WalletAssetsHeaderValue = (props: {
   isLoading?: boolean
   value?: BigNumber | null
   label: string
+  tooltip?: ReactNode
 }) => {
   const { t } = useTranslation()
 
@@ -95,9 +142,16 @@ export const WalletAssetsHeaderValue = (props: {
         mb: [15, 0],
       }}
     >
-      <Text color="neutralGray300" sx={{ fontSize: [14, 16], mb: [0, 14] }}>
-        {props.label}
-      </Text>
+      <div sx={{ flex: "row", align: "center", gap: 10, mb: [0, 14] }}>
+        <Text color="neutralGray300" sx={{ fontSize: [14, 16] }}>
+          {props.label}
+        </Text>
+        {props.tooltip && (
+          <InfoTooltip side="bottom" text={props.tooltip}>
+            <SInfoIcon />
+          </InfoTooltip>
+        )}
+      </div>
 
       {props.isLoading ? (
         <Skeleton sx={{ width: [97, 208], height: [27, 42] }} />

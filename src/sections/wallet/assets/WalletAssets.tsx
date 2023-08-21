@@ -3,7 +3,7 @@ import { WalletAssetsTablePlaceholder } from "sections/wallet/assets/table/place
 import { WalletAssetsTableSkeleton } from "sections/wallet/assets/table/skeleton/WalletAssetsTableSkeleton"
 import { WalletAssetsTable } from "sections/wallet/assets/table/WalletAssetsTable"
 import { useAccountStore } from "state/store"
-import { WalletFarmingPositionsWrapper } from "./farmingPositions/WalletFarmingPositions"
+import { WalletFarmingPositions } from "./farmingPositions/WalletFarmingPositions"
 import { useLiquidityPositionsTableData } from "./table/data/WalletLiquidityPositionsData.utils"
 import { WalletLiquidityPositionsSkeleton } from "./table/skeleton/WalletLiquidityPositionsSkeleton"
 import { WalletLiquidityPositionsTable } from "./table/WalletLiquidityPositionsTable"
@@ -17,6 +17,7 @@ import { WalletFarmingPositionsSkeleton } from "./table/skeleton/WalletFarmingPo
 import { Separator } from "components/Separator/Separator"
 import { theme } from "theme"
 import { useTranslation } from "react-i18next"
+import { useFarmingPositionsData } from "./farmingPositions/WalletFarmingPositions.utils"
 
 export const WalletAssets = () => {
   const api = useApiPromise()
@@ -32,16 +33,6 @@ export const WalletAssets = () => {
           <WalletAssetsHeaderValue
             isLoading
             label={t("wallet.assets.header.total")}
-          />
-
-          <Separator
-            sx={{ mb: 15, display: ["inherit", "none"] }}
-            css={{ background: `rgba(${theme.rgbColors.white}, 0.06)` }}
-          />
-
-          <WalletAssetsHeaderValue
-            isLoading
-            label={t("wallet.assets.header.transferable")}
           />
 
           <Separator
@@ -69,8 +60,9 @@ export const WalletAssetsData = () => {
   const { account } = useAccountStore()
   const assetTableQuery = useAssetsTableData()
   const liquidityPositionsQuery = useLiquidityPositionsTableData()
+  const farmPositionsQuery = useFarmingPositionsData()
 
-  const queries = [assetTableQuery, liquidityPositionsQuery]
+  const queries = [assetTableQuery, liquidityPositionsQuery, farmPositionsQuery]
   const isLoading = queries.some((query) => query.isLoading)
   const hasData = queries.every((query) => query.data)
 
@@ -84,19 +76,23 @@ export const WalletAssetsData = () => {
           <div sx={{ display: "flex", flexDirection: "column", gap: 20 }}>
             <WalletAssetsTableSkeleton />
             <WalletLiquidityPositionsSkeleton />
+            <WalletFarmingPositionsSkeleton />
           </div>
         </>
       ) : (
         hasData && (
           <>
-            <WalletAssetsHeader assetsData={assetTableQuery.data} />
+            <WalletAssetsHeader
+              assetsData={assetTableQuery.data}
+              lpData={liquidityPositionsQuery.data}
+            />
 
             <div sx={{ display: "flex", flexDirection: "column", gap: 20 }}>
               <WalletAssetsTable data={assetTableQuery.data} />
               <WalletLiquidityPositionsTable
                 data={liquidityPositionsQuery.data}
               />
-              <WalletFarmingPositionsWrapper />
+              <WalletFarmingPositions data={farmPositionsQuery.data} />
             </div>
           </>
         )

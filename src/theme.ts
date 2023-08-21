@@ -43,7 +43,7 @@ const colors = {
   backgroundGray500: "#686876",
   iconButtonGrey: "#3D3D3D",
   neutralGray500: "#787E82",
-  neutralGray400: "#A2B0B8",
+  neutralGray400: "#ACB2B5",
   neutralGray300: "#9EA9B1",
   neutralGray200: "#D1DEE8",
   neutralGray100: "#E5ECF1",
