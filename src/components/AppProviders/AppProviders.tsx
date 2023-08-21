@@ -1,5 +1,5 @@
 import { InvalidateOnBlock } from "components/InvalidateOnBlock"
-import { ApiPromiseContext } from "utils/api"
+import { ApiPromiseContext, TApiPromiseCustom } from "utils/api"
 import { FC, PropsWithChildren } from "react"
 import { useProvider, useProviderRpcUrlStore } from "api/provider"
 import { ToastProvider } from "components/Toast/ToastProvider"
@@ -7,18 +7,19 @@ import { Transactions } from "sections/transaction/Transactions"
 import { Provider as TooltipProvider } from "@radix-ui/react-tooltip"
 import { SkeletonTheme } from "react-loading-skeleton"
 import { theme } from "theme"
-import { ApiPromise } from "@polkadot/api"
 import { WalletConnectProvider } from "components/WalletConnectProvider/WalletConnectProvider"
 
 export const AppProviders: FC<PropsWithChildren> = ({ children }) => {
   const preference = useProviderRpcUrlStore()
-  const api = useProvider(preference.rpcUrl)
+  const { data, isError } = useProvider(preference.rpcUrl)
 
   return (
     <TooltipProvider>
       <ApiPromiseContext.Provider
         value={
-          api.data && preference._hasHydrated ? api.data : ({} as ApiPromise)
+          data && preference._hasHydrated
+            ? data
+            : ({ isError } as TApiPromiseCustom)
         }
       >
         <WalletConnectProvider>
