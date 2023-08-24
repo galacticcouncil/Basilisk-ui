@@ -16,7 +16,7 @@ import { ProviderItemEdit } from "../ProviderItemEdit/ProviderItemEdit"
 
 const ProviderItemExternal = (props: { url: string; className?: string }) => {
   const [bestNumberState, setBestNumberState] = useState<
-    { relaychainBlockNumber: u32; timestamp: u64 } | undefined
+    { parachainBlockNumber: u32; timestamp: u64 } | undefined
   >(undefined)
 
   useEffect(() => {
@@ -29,13 +29,13 @@ const ProviderItemExternal = (props: { url: string; className?: string }) => {
       const api = await ApiPromise.create({ provider })
 
       async function onNewBlock() {
-        const [relay, timestamp] = await Promise.all([
-          api.query.parachainSystem.validationData(),
+        const [parachain, timestamp] = await Promise.all([
+          api.derive.chain.bestNumber(),
           api.query.timestamp.now(),
         ])
 
         setBestNumberState({
-          relaychainBlockNumber: relay.unwrap().relayParentNumber,
+          parachainBlockNumber: parachain,
           timestamp: timestamp,
         })
       }
@@ -59,7 +59,7 @@ const ProviderItemExternal = (props: { url: string; className?: string }) => {
       {bestNumberState != null ? (
         <ProviderStatus
           timestamp={bestNumberState.timestamp}
-          relaychainBlockNumber={bestNumberState.relaychainBlockNumber}
+          parachainBlockNumber={bestNumberState.parachainBlockNumber}
           className={props.className}
           side="left"
         />
@@ -75,10 +75,10 @@ const ProviderItemLive = (props: { className?: string }) => {
 
   return (
     <>
-      {number.data?.relaychainBlockNumber != null ? (
+      {number.data?.parachainBlockNumber != null ? (
         <ProviderStatus
           timestamp={number.data.timestamp}
-          relaychainBlockNumber={number.data?.relaychainBlockNumber}
+          parachainBlockNumber={number.data?.parachainBlockNumber}
           className={props.className}
           side="left"
         />

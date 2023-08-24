@@ -8,17 +8,24 @@ import { ProviderSelectModal } from "sections/provider/ProviderSelectModal"
 import { ProviderStatus } from "sections/provider/ProviderStatus"
 import { SButton, SName } from "./ProviderSelectButton.styled"
 import { useRpcStore } from "state/store"
+import { useApiPromise } from "utils/api"
+import { isApiLoaded } from "utils/helpers"
+import { useTranslation } from "react-i18next"
 
 export const ProviderSelectButton = () => {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const store = useProviderRpcUrlStore()
   const { rpcList } = useRpcStore()
+
+  const api = useApiPromise()
+  const isApi = isApiLoaded(api)
 
   const rpcUrl = store.rpcUrl ?? import.meta.env.VITE_PROVIDER_URL
   const selectedProviderName =
     rpcList.find((provider) => provider.url === rpcUrl)?.name ??
     PROVIDERS.find((provider) => provider.url === rpcUrl)?.name
-  const number = useBestNumber()
+  const number = useBestNumber(!isApi)
 
   return (
     <>
@@ -29,6 +36,9 @@ export const ProviderSelectButton = () => {
         whileHover="animate"
       >
         <SName
+          css={{
+            width: api.isError ? "auto" : undefined,
+          }}
           variants={{
             initial: { width: 0 },
             animate: { width: "auto" },
@@ -37,7 +47,7 @@ export const ProviderSelectButton = () => {
           transition={{ duration: 0.15, ease: "easeInOut" }}
         >
           <Text fs={11} fw={500} css={{ whiteSpace: "nowrap" }}>
-            {selectedProviderName}
+            {api.isError ? t("rpc.error") : selectedProviderName}
           </Text>
           <ChevronRightIcon />
           <Separator
@@ -47,7 +57,7 @@ export const ProviderSelectButton = () => {
           />
         </SName>
         <ProviderStatus
-          relaychainBlockNumber={number.data?.relaychainBlockNumber}
+          parachainBlockNumber={number.data?.parachainBlockNumber}
           timestamp={number.data?.timestamp}
         />
       </SButton>

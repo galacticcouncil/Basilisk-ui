@@ -7,17 +7,31 @@ import * as definitions from "interfaces/voting/definitions"
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 
+const fetchApi = async (api: string) => {
+  const provider = await new Promise<WsProvider>((resolve, reject) => {
+    const provider = new WsProvider(api)
+
+    provider.on("connected", () => {
+      resolve(provider)
+    })
+
+    provider.on("error", () => {
+      provider.disconnect()
+      reject("disconnected")
+    })
+  })
+
+  const types = Object.values(definitions).reduce(
+    (res, { types }): object => ({ ...res, ...types }),
+    {},
+  )
+  return ApiPromise.create({ provider, types })
+}
+
 export const useProvider = (rpcUrl?: string) => {
   return useQuery(
     QUERY_KEYS.provider(rpcUrl ?? import.meta.env.VITE_PROVIDER_URL),
-    async ({ queryKey: [_, api] }) => {
-      const provider = new WsProvider(api)
-      const types = Object.values(definitions).reduce(
-        (res, { types }): object => ({ ...res, ...types }),
-        {},
-      )
-      return await ApiPromise.create({ provider, types })
-    },
+    ({ queryKey: [_, api] }) => fetchApi(api),
     { staleTime: Infinity },
   )
 }
@@ -69,7 +83,7 @@ export const PROVIDERS = [
   },
   {
     name: "Rococo via Galactic Council",
-    url: "wss://rococo-basilisk-rpc.hydration.dev",
+    url: "wss://basilisk-rococo-rpc.play.hydration.cloud",
     indexerUrl: "https://basilisk-rococo-explorer.play.hydration.cloud/graphql",
     env: "rococo",
   },
