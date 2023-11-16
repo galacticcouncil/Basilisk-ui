@@ -56,7 +56,7 @@ export const QUERY_KEYS = {
     poolId.toString(),
   ],
   inactiveYieldFarms: (poolId: AccountId32 | string) => [
-    "activeYieldFarms",
+    "inactiveYieldFarms",
     poolId.toString(),
   ],
   globalFarm: (id: u32) => [QUERY_KEY_PREFIX, "globalFarm", id.toString()],
