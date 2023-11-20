@@ -9,7 +9,7 @@ import { useUsdPeggedAsset } from "api/asset"
 import { useAssetDetailsList } from "api/assetDetails"
 import { useBestNumber } from "api/chain"
 import { DepositNftType } from "api/deposits"
-import { useFarms } from "api/farms"
+import { useFarms, useInactiveFarms } from "api/farms"
 import { usePools } from "api/pools"
 import { useSpotPrices } from "api/spotPrice"
 import BigNumber from "bignumber.js"
@@ -46,13 +46,20 @@ export const useClaimableAmount = (
   const farms = useFarms(
     pool?.address ? [pool.address] : pools.data?.map((p) => p.address) ?? [],
   )
+
+  const inactiveFarms = useInactiveFarms(
+    pool?.address ? [pool.address] : pools.data?.map((p) => p.address) ?? [],
+  )
+
+  const allFarms = [...(farms.data ?? []), ...(inactiveFarms.data ?? [])]
+
   const usd = useUsdPeggedAsset()
 
   const api = useApiPromise()
   const accountResolver = getAccountResolver(api.registry)
 
   const assetIds = [
-    ...new Set(farms.data?.map((i) => i.globalFarm.rewardCurrency.toString())),
+    ...new Set(allFarms?.map((i) => i.globalFarm.rewardCurrency.toString())),
   ]
 
   const assetList = useAssetDetailsList(assetIds)
@@ -60,7 +67,7 @@ export const useClaimableAmount = (
   const usdSpotPrices = useSpotPrices(assetIds, usd.data?.id)
 
   const accountAddresses =
-    farms.data
+    allFarms
       ?.map(
         ({ globalFarm }) =>
           [
@@ -99,12 +106,12 @@ export const useClaimableAmount = (
     assetList.data ?? [],
   )
 
-  const { globalFarms, yieldFarms } = createMutableFarmEntries(farms.data ?? [])
+  const { globalFarms, yieldFarms } = createMutableFarmEntries(allFarms ?? [])
 
   const rewardSum = deposits
     ?.map((record) =>
       record.deposit.yieldFarmEntries.map((farmEntry) => {
-        const aprEntry = farms.data?.find(
+        const aprEntry = allFarms?.find(
           (i) =>
             i.globalFarm.id.eq(farmEntry.globalFarmId) &&
             i.yieldFarm.id.eq(farmEntry.yieldFarmId),

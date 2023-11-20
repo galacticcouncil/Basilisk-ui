@@ -44,6 +44,16 @@ export const useGlobalFarm = (id: u32) => {
   return useQuery(QUERY_KEYS.globalFarm(id), getGlobalFarm(api, id))
 }
 
+export const useInactiveYieldFarms = (poolIds: (AccountId32 | string)[]) => {
+  const api = useApiPromise()
+  return useQueries({
+    queries: poolIds.map((poolId) => ({
+      queryKey: QUERY_KEYS.inactiveYieldFarms(poolId),
+      queryFn: getInctiveYieldFarms(api, poolId),
+    })),
+  })
+}
+
 export const useFarms = (poolIds: Array<AccountId32 | string>) => {
   const activeYieldFarms = useActiveYieldFarms(poolIds)
 
@@ -67,6 +77,35 @@ export const useFarms = (poolIds: Array<AccountId32 | string>) => {
           if (!globalFarm || !yieldFarm) return undefined
           return { globalFarm, yieldFarm }
         }) ?? []
+      return farms.filter(isNotNil)
+    },
+  )
+}
+
+export const useInactiveFarms = (poolIds: Array<AccountId32 | string>) => {
+  const activeYieldFarms = useInactiveYieldFarms(poolIds)
+
+  const data = activeYieldFarms.reduce(
+    (acc, farm) => (farm.data ? [...acc, ...farm.data] : acc),
+    [] as FarmIds[],
+  )
+
+  const globalFarms = useGlobalFarms(data.map((id) => id.globalFarmId))
+  const yieldFarms = useYieldFarms(data)
+
+  return useQueryReduce(
+    [globalFarms, yieldFarms, ...activeYieldFarms] as const,
+    (globalFarms, yieldFarms, ...activeYieldFarms) => {
+      const farms =
+        activeYieldFarms.flat(2).map((af) => {
+          const globalFarm = globalFarms?.find((gf) =>
+            af.globalFarmId.eq(gf.id),
+          )
+          const yieldFarm = yieldFarms?.find((yf) => af.yieldFarmId.eq(yf.id))
+          if (!globalFarm || !yieldFarm) return undefined
+          return { globalFarm, yieldFarm }
+        }) ?? []
+
       return farms.filter(isNotNil)
     },
   )
@@ -122,6 +161,48 @@ export const getActiveYieldFarms =
     })
 
     return data
+  }
+
+export const getInctiveYieldFarms =
+  (api: ApiPromise, poolId: AccountId32 | string) => async () => {
+    const allGlobalFarms = await api.query.xykWarehouseLM.globalFarm.entries()
+    allGlobalFarms.map((globalFarm) => globalFarm[0].keys)
+
+    const globalFarmsIds = allGlobalFarms.map(([key]) => {
+      const [id] = key.args
+      return id.toString()
+    })
+
+    const globalFarms = await Promise.all(
+      globalFarmsIds.map((globalFarmId) =>
+        api.query.xykWarehouseLM.yieldFarm.entries(poolId, globalFarmId),
+      ),
+    )
+
+    const stoppedFarms = globalFarms.reduce<
+      {
+        poolId: AccountId32
+        globalFarmId: u32
+        yieldFarmId: u32
+      }[]
+    >((acc, [globalFarm]) => {
+      if (globalFarm) {
+        const yieldFarm = globalFarm[1].unwrap()
+
+        const isStopped = yieldFarm.state.isStopped
+
+        if (isStopped)
+          acc.push({
+            poolId: globalFarm[0].args[0],
+            globalFarmId: globalFarm[0].args[1],
+            yieldFarmId: yieldFarm.id,
+          })
+      }
+
+      return acc
+    }, [])
+
+    return stoppedFarms
   }
 
 export const getGlobalFarms = (api: ApiPromise, ids: u32[]) => async () => {
