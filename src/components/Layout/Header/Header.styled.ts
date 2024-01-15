@@ -3,11 +3,6 @@ import { theme } from "theme"
 import { IconButton } from "components/IconButton/IconButton"
 
 export const SHeader = styled.header`
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: ${theme.zIndices.header};
-
   width: 100%;
 
   padding: 6px 12px;

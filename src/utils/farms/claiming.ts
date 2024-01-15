@@ -194,7 +194,7 @@ export const useClaimAllMutation = (
 
     if (txs.length > 1) {
       return await createTransaction(
-        { tx: api.tx.utility.batch(txs) },
+        { tx: api.tx.utility.forceBatch(txs) },
         { toast, onClose, onBack: onClose ? () => {} : undefined },
       )
     } else if (txs.length > 0) {
