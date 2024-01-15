@@ -15,29 +15,23 @@ export const SPage = styled.div`
 
   background: ${theme.gradients.verticalGradient};
 
+  overflow-y: auto;
+  overflow-x: hidden;
+
   @media ${theme.viewport.gte.sm} {
     padding-bottom: 0;
   }
 `
 
 export const SPageContent = styled.main`
-  overflow-y: auto;
   padding: 0 12px;
-  overflow-x: hidden;
-
-  padding-top: var(--nav-height);
-  padding-bottom: var(--mobile-nav-height);
 
   ::-webkit-scrollbar {
     width: 0px;
   }
-  ::-webkit-scrollbar-track {
-    margin-top: var(--nav-height);
-  }
 
   @media ${theme.viewport.gte.sm} {
     padding: 0 20px;
-    padding-top: var(--nav-height);
 
     ::-webkit-scrollbar {
       width: 6px;
