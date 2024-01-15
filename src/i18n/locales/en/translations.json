@@ -362,5 +362,8 @@
   "fund.modal.crypto.title": "Fund with crypto",
   "fund.modal.crypto.description": "Looking to fund your wallet with crypto? Head to our cross-chain UI.",
   "fund.modal.crypto.buy": "Use cross-chain",
-  "fund.button": "Fund wallet"
+  "fund.button": "Fund wallet",
+  "depeg.modal.title": "Important Notice",
+  "depeg.modal.desx": "Tether have dropped support for native USDT on Kusama - herefore USDT pools are currently not priced at $1",
+  "depeg.modal.icon": "More info"
 }
