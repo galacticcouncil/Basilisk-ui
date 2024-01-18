@@ -278,8 +278,8 @@ const getNativeBalances = (
   const dp = BN_10.pow(decimals)
   const free = balance.free.toBigNumber()
   const reservedBN = balance.reserved.toBigNumber()
-  const feeFrozen = balance.feeFrozen.toBigNumber()
-  const miscFrozen = balance.miscFrozen.toBigNumber()
+  const feeFrozen = balance.feeFrozen ? balance.feeFrozen.toBigNumber() : balance.frozen.toBigNumber()
+  const miscFrozen = balance.miscFrozen ? balance.miscFrozen.toBigNumber() : balance.frozen.toBigNumber()
 
   const total = free.plus(reservedBN).div(dp)
   const totalUSD = total.times(spotPrice)
