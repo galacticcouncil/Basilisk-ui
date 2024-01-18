@@ -65,12 +65,14 @@ const getTokenAccountBalancesList =
         const [, assetId] = pairs[idx]
 
         if (assetId.toString() === NATIVE_ASSET_ID) {
+          let {data} = natives[nativeIdx]
+          const frozen = data.feeFrozen ? data.feeFrozen.add(
+            data.miscFrozen,
+            ) : data.frozen
           values.push({
-            free: natives[nativeIdx].data.free,
-            reserved: natives[nativeIdx].data.reserved,
-            frozen: natives[nativeIdx].data.feeFrozen.add(
-              natives[nativeIdx].data.miscFrozen,
-            ),
+            free: data.free,
+            reserved: data.reserved,
+            frozen,
           })
 
           nativeIdx += 1
