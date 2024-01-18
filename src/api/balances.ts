@@ -16,8 +16,8 @@ export const getTokenBalance =
     if (id.toString() === NATIVE_ASSET_ID) {
       const res = await api.query.system.account(account)
       const freeBalance = new BigNumber(res.data.free.toHex())
-      const miscFrozenBalance = new BigNumber(res.data.miscFrozen.toHex())
-      const feeFrozenBalance = new BigNumber(res.data.feeFrozen.toHex())
+      const miscFrozenBalance = new BigNumber(res.data.miscFrozen ? res.data.miscFrozen.toHex() : res.data.frozen.toHex())
+      const feeFrozenBalance = new BigNumber(res.data.feeFrozen ? res.data.feeFrozen.toHex() : res.data.frozen.toHex())
       const reservedBalance = new BigNumber(res.data.reserved.toHex())
 
       const balance = new BigNumber(
