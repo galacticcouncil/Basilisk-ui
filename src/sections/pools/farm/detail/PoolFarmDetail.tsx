@@ -79,10 +79,12 @@ export const PoolFarmDetail = (props: {
           <Text fw={700}>{asset.data?.symbol}</Text>
         </div>
         <Text fs={16} lh={28} fw={600} color="primary200">
-          {t("value.APR.range", {
-            from: props.farm.minApr,
-            to: props.farm.apr,
-          })}
+          {props.farm.minApr.isEqualTo(props.farm.apr)
+            ? t("value.APR", { apr: props.farm.apr })
+            : t("value.APR.range", {
+                from: props.farm.minApr,
+                to: props.farm.apr,
+              })}
         </Text>
       </div>
       <div sx={{ flex: "column" }}>
