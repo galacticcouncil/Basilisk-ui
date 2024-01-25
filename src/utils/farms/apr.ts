@@ -5,7 +5,7 @@ import { useBestNumber } from "api/chain"
 import { useFarms } from "api/farms"
 import BigNumber from "bignumber.js"
 import { secondsInYear } from "date-fns"
-import { BLOCK_TIME, BN_1, BN_QUINTILL } from "utils/constants"
+import { BLOCK_TIME, BN_0, BN_1, BN_QUINTILL } from "utils/constants"
 import { useQueryReduce } from "utils/helpers"
 
 export type AprFarm = NonNullable<
@@ -71,7 +71,7 @@ export const useAPR = (poolId: AccountId32 | string) => {
         // all of the APR calculations are using only half of the position -
         // this is correct in terms of inputs but for the user,
         // they are not depositing only half of the position, they are depositing 2 assets
-        apr = apr.div(2)
+        apr = globalFarm.id.toString() ===  '5'? BN_0: apr.div(2)
         const minApr = apr.times(loyaltyFactor)
 
         // max distribution of rewards

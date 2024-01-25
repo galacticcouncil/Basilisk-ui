@@ -19,7 +19,9 @@ export const PoolIncentivesRow = ({ assetId, apr, minApr }: Props) => {
         {asset.data?.symbol}
       </Text>
       <Text fw={500} color="primary200" sx={{ ml: "auto" }}>
-        {t("value.APR.range", { from: minApr, to: apr })}
+        {minApr.isEqualTo(apr)
+          ? t("value.APR", { apr })
+          : t("value.APR.range", { from: minApr, to: apr })}
       </Text>
     </SContainer>
   )
