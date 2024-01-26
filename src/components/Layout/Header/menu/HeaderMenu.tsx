@@ -23,12 +23,15 @@ export const HeaderMenu = () => {
 
         return (
           <Link
+            disabled={item.key === "cross-chain"}
             key={i}
             to={item.href}
             search={account ? { account } : undefined}
           >
             {({ isActive }) => (
-              <SItem isActive={isActive}>{t(item.translationKey)}</SItem>
+              <SItem isActive={isActive} disabled={item.key === "cross-chain"}>
+                {t(item.translationKey)}
+              </SItem>
             )}
           </Link>
         )
