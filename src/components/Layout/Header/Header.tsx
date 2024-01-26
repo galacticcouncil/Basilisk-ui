@@ -50,7 +50,12 @@ export const Header = () => {
       {isWarningVisible && (
         <WarningMessage
           type="depeg"
-          text={t("depeg.modal.desx")}
+          text={
+            <div>
+              <p>{t("depeg.modal.desx")}</p>
+              <p>{t("depeg.modal.desx.crossChain")}</p>
+            </div>
+          }
           modalContent={
             <div sx={{ flex: "column" }}>
               <Text sx={{ mt: 24 }}>{t("depeg.modal.desx")}</Text>
@@ -76,10 +81,6 @@ export const Header = () => {
           }
         />
       )}
-      <WarningMessage
-        type="depeg"
-        text="Cross chain transfers in Kusama are temporarily suspended, please do not try to send tokens"
-      />
       <SHeader>
         <div sx={{ flex: "row", justify: "space-between", align: "center" }}>
           <div sx={{ flex: "row", align: "center" }}>
