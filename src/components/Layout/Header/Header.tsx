@@ -76,6 +76,10 @@ export const Header = () => {
           }
         />
       )}
+      <WarningMessage
+        type="depeg"
+        text="Cross chain transfers in Kusama are temporarily suspended, please do not try to send tokens"
+      />
       <SHeader>
         <div sx={{ flex: "row", justify: "space-between", align: "center" }}>
           <div sx={{ flex: "row", align: "center" }}>
