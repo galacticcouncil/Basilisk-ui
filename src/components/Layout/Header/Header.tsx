@@ -50,7 +50,12 @@ export const Header = () => {
       {isWarningVisible && (
         <WarningMessage
           type="depeg"
-          text={t("depeg.modal.desx")}
+          text={
+            <div>
+              <p>{t("depeg.modal.desx")}</p>
+              <p>{t("depeg.modal.desx.crossChain")}</p>
+            </div>
+          }
           modalContent={
             <div sx={{ flex: "column" }}>
               <Text sx={{ mt: 24 }}>{t("depeg.modal.desx")}</Text>
