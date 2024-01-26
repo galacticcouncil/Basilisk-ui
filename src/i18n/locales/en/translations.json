@@ -365,5 +365,6 @@
   "fund.button": "Fund wallet",
   "depeg.modal.title": "Important Notice",
   "depeg.modal.desx": "Tether have dropped support for native USDT on Kusama - herefore USDT pools are currently not priced at $1",
+  "depeg.modal.desx.crossChain": "Cross chain transfers in Kusama are temporarily suspended, please do not try to send tokens",
   "depeg.modal.icon": "More info"
 }

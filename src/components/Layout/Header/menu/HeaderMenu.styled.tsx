@@ -8,17 +8,22 @@ export const SList = styled.nav`
     display: flex;
   }
 `
-export const SItem = styled.span<{ isActive?: boolean }>`
+export const SItem = styled.span<{ isActive?: boolean; disabled?: boolean }>`
   font-size: 16px;
   font-weight: 600;
   line-height: 18px;
   margin-right: 32px;
 
-  color: ${({ isActive }) =>
-    isActive ? theme.colors.white : theme.colors.neutralGray300};
+  color: ${({ isActive, disabled }) =>
+    isActive
+      ? theme.colors.white
+      : disabled
+      ? theme.colors.neutralGray500
+      : theme.colors.neutralGray300};
 
   &:hover {
-    color: ${theme.colors.primary100};
-    cursor: pointer;
+    color: ${({ disabled }) =>
+      disabled ? theme.colors.neutralGray500 : theme.colors.primary100};
+    cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
   }
 `
