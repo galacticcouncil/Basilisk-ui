@@ -1958,10 +1958,10 @@
     patch-package "^7.0.0"
     short-uuid "^4.2.0"
 
-"@galacticcouncil/bridge@0.0.3-1":
-  version "0.0.3-1"
-  resolved "https://registry.yarnpkg.com/@galacticcouncil/bridge/-/bridge-0.0.3-1.tgz#2df1bcae61c5150fd6e1c5ca3618572aefe0b66d"
-  integrity sha512-bdpPsFc21NSkw6/MZkTjgANvFxLfDlVtGx0/H2xdmUXEVlSs/YQQrJzpKSHj11XtDKF3eeCKNzCbu4nX+JiGfQ==
+"@galacticcouncil/bridge@0.0.16":
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/@galacticcouncil/bridge/-/bridge-0.0.16.tgz#83cd0e57d1be4c8f05d361244c6fae35ba32e2e4"
+  integrity sha512-+qoby2hx5WuGtWhkPQugmZeqOhy5czWDUQdGHtpjVTfYkIB6PGUuKNv7gnNgl38lJcVo1XB/tn91eLTZwq+9og==
   dependencies:
     "@acala-network/api" "^5"
     "@acala-network/sdk" "^4.1.9-2"
