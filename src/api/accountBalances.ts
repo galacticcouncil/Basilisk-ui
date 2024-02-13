@@ -6,7 +6,6 @@ import { ApiPromise } from "@polkadot/api"
 import { Maybe, undefinedNoop } from "utils/helpers"
 import { u32, u128 } from "@polkadot/types"
 import { PalletBalancesAccountData } from "@polkadot/types/lookup"
-//import BN from "bignumber.js"
 import { BN } from "@polkadot/util"
 interface PalletBalancesAccountDataCustom extends PalletBalancesAccountData {
   frozen: u128
