@@ -22,12 +22,12 @@ export const useTotalInPositions = () => {
       ({ position: { yieldFarmId, globalFarmId }, poolId }) => ({
         yieldFarmId: yieldFarmId,
         globalFarmId: globalFarmId,
-        poolId,
+        poolId: poolId.toString(),
       }),
     ) ?? [],
   )
   const shareTokens = usePoolShareTokens(
-    deposits.data?.deposits?.map(({ deposit }) => deposit.ammPoolId) ?? [],
+    deposits.data?.deposits?.map(({ deposit }) => deposit.ammPoolId.toString()) ?? [],
   )
   const totalIssuances = useTotalIssuances(
     shareTokens.map((st) => st.data?.token),
