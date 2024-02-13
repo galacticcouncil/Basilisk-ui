@@ -27,7 +27,9 @@ export const useTotalInPositions = () => {
     ) ?? [],
   )
   const shareTokens = usePoolShareTokens(
-    deposits.data?.deposits?.map(({ deposit }) => deposit.ammPoolId.toString()) ?? [],
+    deposits.data?.deposits?.map(({ deposit }) =>
+      deposit.ammPoolId.toString(),
+    ) ?? [],
   )
   const totalIssuances = useTotalIssuances(
     shareTokens.map((st) => st.data?.token),
