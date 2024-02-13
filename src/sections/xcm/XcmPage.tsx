@@ -6,21 +6,17 @@ import * as Apps from "@galacticcouncil/apps"
 import { createComponent } from "@lit-labs/react"
 import { useAccountStore } from "state/store"
 import { GcTransactionCenter } from "./TransactionCenter"
-import { Navigate } from "@tanstack/react-location"
 
 export const XcmApp = createComponent({
   tagName: "gc-xcm-app",
   elementClass: Apps.XcmApp,
   react: React,
 })
-const disabled = true
 
 export function XcmPage() {
   const { account } = useAccountStore()
 
   const ref = React.useRef<Apps.XcmApp>(null)
-
-  if (disabled) return <Navigate to="/trade" search />
 
   return (
     <GcTransactionCenter>

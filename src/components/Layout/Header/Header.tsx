@@ -53,7 +53,6 @@ export const Header = () => {
           text={
             <div>
               <p>{t("depeg.modal.desx")}</p>
-              <p>{t("depeg.modal.desx.crossChain")}</p>
             </div>
           }
           modalContent={

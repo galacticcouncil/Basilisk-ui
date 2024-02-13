@@ -39,7 +39,6 @@ export const MobileNavBar = () => {
 
   const hiddenTabItems = hiddenTabs.map((hiddenTab, index) => (
     <Link
-      disabled={hiddenTab.key === "cross-chain"}
       key={index}
       to={hiddenTab.href}
       search={account ? { account } : undefined}
@@ -69,7 +68,6 @@ export const MobileNavBar = () => {
 
         return (
           <Link
-            disabled={item.key === "cross-chain"}
             key={index}
             to={item.href}
             search={account ? { account } : undefined}
