@@ -27,6 +27,6 @@ export const MyPositionsList = ({ pool, onClose }: Props) => {
         onClose={onClose}
       />
     ))
-  }, [depositNftList, pool])
+  }, [depositNftList, onClose, pool])
   return <div sx={{ flex: "column", gap: 8 }}>{positionsList}</div>
 }
