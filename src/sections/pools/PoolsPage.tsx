@@ -66,7 +66,7 @@ export const PoolsPageData = () => {
             ))}
           </div>
         ) : !!data?.length ? (
-          data?.map((pool) => <Pool key={pool.address} pool={pool} />)
+          [data[0]]?.map((pool) => <Pool key={pool.address} pool={pool} />)
         ) : (
           <EmptyPoolsState />
         )}

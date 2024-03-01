@@ -8,7 +8,7 @@ type Props = { pool: PoolBase }
 export const PoolValueTotal = ({ pool }: Props) => {
   const { t } = useTranslation()
   const { data } = useTotalInPool(pool)
-
+  console.log(data?.toString(), "data")
   return (
     <div>
       <Text fs={14} color="neutralGray400" lh={26}>

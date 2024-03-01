@@ -6,6 +6,7 @@ import { BN_1, BN_10, BN_NAN } from "utils/constants"
 import BN from "bignumber.js"
 import { useTradeRouter } from "utils/api"
 import { Maybe } from "utils/helpers"
+import { useUsdPeggedAsset } from "./asset"
 
 export const useSpotPrice = (
   assetA: Maybe<u32 | string>,
@@ -63,4 +64,78 @@ export type SpotPrice = {
   tokenIn: string
   tokenOut: string
   spotPrice: BN
+}
+
+const STABLECOIN_SYMBOL = "kusama"
+
+export const useCoingeckoKsmPrice = () => {
+  return useQuery(QUERY_KEYS.coingeckoUsd, getCoingeckoSpotPrice, {
+    enabled: true,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: false,
+    staleTime: 1000 * 60 * 60 * 24, // 24h
+  })
+}
+
+export const getCoingeckoSpotPrice = async () => {
+  const res = await fetch(
+    `https://api.coingecko.com/api/v3/simple/price?ids=${STABLECOIN_SYMBOL.toLowerCase()}&vs_currencies=usd`,
+  )
+  const json = await res.json()
+  return json[STABLECOIN_SYMBOL.toLowerCase()].usd as number
+}
+
+export const useUsdSpotPrices = (ids: Maybe<u32 | string>[]) => {
+  const tradeRouter = useTradeRouter()
+  const usd = useUsdPeggedAsset()
+  const coingecko = useCoingeckoKsmPrice()
+
+  const usdId = usd.data?.id ?? ""
+  const ksmSpotPrice = coingecko.data
+
+  const assets = ids
+    .filter((a): a is u32 | string => !!a)
+    .map((a) => a.toString())
+
+  return useQueries({
+    queries: assets.map((tokenIn) => ({
+      queryKey: QUERY_KEYS.spotPriceUsd(tokenIn, usdId),
+      queryFn: async () => {
+        const data = await getSpotPrice(tradeRouter, tokenIn, usdId)()
+        const usdSpotPrice = data.spotPrice.times(ksmSpotPrice ?? 1)
+        console.log(tokenIn, ksmSpotPrice, usdSpotPrice.toString(), usdId)
+        return {
+          ...data,
+          spotPrice: usdSpotPrice,
+        }
+      },
+      enabled: !!tokenIn && !!usdId && !!ksmSpotPrice,
+    })),
+  })
+}
+
+export const useUsdSpotPrice = (id: Maybe<u32 | string>) => {
+  const tradeRouter = useTradeRouter()
+  const usd = useUsdPeggedAsset()
+  const coingecko = useCoingeckoKsmPrice()
+
+  const tokenIn = id?.toString() ?? ""
+  const usdId = usd.data?.id ?? ""
+  const ksmSpotPrice = coingecko.data
+
+  return useQuery(
+    QUERY_KEYS.spotPriceUsd(tokenIn, usdId),
+    async () => {
+      const data = await getSpotPrice(tradeRouter, tokenIn, usdId)()
+      const usdSpotPrice = data.spotPrice.times(ksmSpotPrice ?? 1)
+
+      return {
+        ...data,
+        spotPrice: usdSpotPrice,
+      }
+    },
+    { enabled: !!tokenIn && !!usdId && !!ksmSpotPrice },
+  )
 }

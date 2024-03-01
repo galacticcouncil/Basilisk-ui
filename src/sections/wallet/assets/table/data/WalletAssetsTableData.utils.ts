@@ -1,10 +1,10 @@
-import { useTradeAssets, useUsdPeggedAsset } from "api/asset"
+import { useTradeAssets } from "api/asset"
 import { useMemo } from "react"
 import BN from "bignumber.js"
 import { useAssetMetaList } from "api/assetMeta"
 import { useAccountStore } from "state/store"
 import { useAccountBalances } from "api/accountBalances"
-import { useSpotPrices } from "api/spotPrice"
+import { useUsdSpotPrices } from "api/spotPrice"
 import { NATIVE_ASSET_ID } from "utils/api"
 import { BN_0, BN_10 } from "utils/constants"
 import { AssetsTableData } from "sections/wallet/assets/table/WalletAssetsTable.utils"
@@ -129,12 +129,11 @@ export const useAssetsBalances = () => {
     ? [NATIVE_ASSET_ID, ...accountBalances.data.balances.map((b) => b.id)]
     : []
   const assetMetas = useAssetMetaList(tokenIds)
-  const usd = useUsdPeggedAsset()
 
-  const spotPrices = useSpotPrices(tokenIds, usd.data?.id)
+  const spotPrices = useUsdSpotPrices(tokenIds)
   const locksQueries = useTokensLocks(tokenIds)
 
-  const queries = [accountBalances, assetMetas, usd, ...spotPrices]
+  const queries = [accountBalances, assetMetas, ...spotPrices]
   const isLoading = queries.some((q) => q.isLoading)
 
   const data = useMemo(() => {
@@ -278,8 +277,12 @@ const getNativeBalances = (
   const dp = BN_10.pow(decimals)
   const free = balance.free.toBigNumber()
   const reservedBN = balance.reserved.toBigNumber()
-  const feeFrozen = balance.feeFrozen ? balance.feeFrozen.toBigNumber() : balance.frozen.toBigNumber()
-  const miscFrozen = balance.miscFrozen ? balance.miscFrozen.toBigNumber() : balance.frozen.toBigNumber()
+  const feeFrozen = balance.feeFrozen
+    ? balance.feeFrozen.toBigNumber()
+    : balance.frozen.toBigNumber()
+  const miscFrozen = balance.miscFrozen
+    ? balance.miscFrozen.toBigNumber()
+    : balance.frozen.toBigNumber()
 
   const total = free.plus(reservedBN).div(dp)
   const totalUSD = total.times(spotPrice)
