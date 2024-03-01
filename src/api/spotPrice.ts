@@ -105,7 +105,7 @@ export const useUsdSpotPrices = (ids: Maybe<u32 | string>[]) => {
       queryFn: async () => {
         const data = await getSpotPrice(tradeRouter, tokenIn, usdId)()
         const usdSpotPrice = data.spotPrice.times(ksmSpotPrice ?? 1)
-        console.log(tokenIn, ksmSpotPrice, usdSpotPrice.toString(), usdId)
+
         return {
           ...data,
           spotPrice: usdSpotPrice,
