@@ -4,8 +4,12 @@ import { useQuery } from "@tanstack/react-query"
 import { QUERY_KEYS } from "utils/queryKeys"
 import { ApiPromise } from "@polkadot/api"
 import { Maybe, undefinedNoop } from "utils/helpers"
-import { u32 } from "@polkadot/types"
+import { u32, u128 } from "@polkadot/types"
+import { PalletBalancesAccountData } from "@polkadot/types/lookup"
 import { BN } from "@polkadot/util"
+interface PalletBalancesAccountDataCustom extends PalletBalancesAccountData {
+  frozen: u128
+}
 
 export const useAccountBalances = (id: Maybe<AccountId32 | string>) => {
   const api = useApiPromise()
@@ -65,10 +69,14 @@ const getTokenAccountBalancesList =
         const [, assetId] = pairs[idx]
 
         if (assetId.toString() === NATIVE_ASSET_ID) {
-          let {data} = natives[nativeIdx]
-          const frozen = data.feeFrozen ? data.feeFrozen.add(
-            data.miscFrozen,
-            ) : data.frozen
+          //@ts-ignore
+          let { data }: { data: PalletBalancesAccountDataCustom } =
+            natives[nativeIdx]
+
+          const frozen = data.feeFrozen
+            ? data.feeFrozen.add(data.miscFrozen)
+            : data.frozen
+
           values.push({
             free: data.free,
             reserved: data.reserved,

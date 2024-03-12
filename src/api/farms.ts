@@ -221,7 +221,7 @@ export const getGlobalFarm = (api: ApiPromise, id: u32) => async () => {
 }
 
 export interface FarmIds {
-  poolId: AccountId32
+  poolId: AccountId32 | string
   globalFarmId: u32
   yieldFarmId: u32
 }
