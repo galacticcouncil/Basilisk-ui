@@ -1,4 +1,4 @@
-import { PoolBase, PoolFee } from "@galacticcouncil/sdk"
+import { PoolBase } from "@galacticcouncil/sdk"
 import { useUsdPeggedAsset } from "api/asset"
 import { useSpotPrice, useSpotPrices } from "api/spotPrice"
 import BN from "bignumber.js"
@@ -80,14 +80,4 @@ export const useTotalInPools = (pools: PoolBase[]) => {
   }, [pools, spotPrices])
 
   return { data, isLoading }
-}
-
-export const getTradeFee = (fee?: PoolFee) => {
-  if (fee?.length !== 2) return "-"
-
-  const numerator = new BN(fee[0])
-  const denominator = new BN(fee[1])
-  const tradeFee = numerator.div(denominator)
-
-  return tradeFee.times(100)
 }

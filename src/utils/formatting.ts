@@ -171,7 +171,7 @@ export function formatBigNumber(
   }
 
   if (options?.fixedPointScale != null) {
-    num = num.div(BN_10.pow(options.fixedPointScale?.toString()))
+    num = num.div(BN_10.pow(Number(options.fixedPointScale)))
   }
 
   /*

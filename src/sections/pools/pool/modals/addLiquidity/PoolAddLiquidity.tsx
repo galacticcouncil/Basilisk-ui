@@ -41,7 +41,6 @@ export const PoolAddLiquidity: FC<Props> = ({
     >
       {assetA && (
         <PoolAddLiquidityModal
-          tradeFee={pool?.tradeFee}
           poolAddress={poolAddress}
           assetA={assetA}
           assetB={assetB}
