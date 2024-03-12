@@ -3,6 +3,7 @@ import { SContainer } from "./XcmPage.styled"
 
 import * as React from "react"
 import * as Apps from "@galacticcouncil/apps"
+import { Ecosystem } from "@galacticcouncil/apps"
 import { createComponent } from "@lit-labs/react"
 import { useAccountStore } from "state/store"
 import { useProviderRpcUrlStore } from "api/provider"
@@ -28,6 +29,7 @@ export function XcmPage() {
         <SContainer>
           <XcmApp
             ref={ref}
+            ecosystem={Ecosystem.Kusama}
             srcChain="kusama"
             destChain="basilisk"
             asset={"KSM"}
