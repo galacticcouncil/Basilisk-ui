@@ -8,7 +8,7 @@ import { useAccountStore } from "state/store"
 import { GcTransactionCenter } from "./TransactionCenter"
 
 export const XcmApp = createComponent({
-  tagName: "gc-xcm-app",
+  tagName: "gc-xcm",
   elementClass: Apps.XcmApp,
   react: React,
 })
