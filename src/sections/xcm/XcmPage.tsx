@@ -33,7 +33,6 @@ export function XcmPage() {
             srcChain="kusama"
             destChain="basilisk"
             asset={"KSM"}
-            blacklist={"integritee"}
             accountName={account?.name}
             accountProvider={account?.provider}
             accountAddress={account?.address}
