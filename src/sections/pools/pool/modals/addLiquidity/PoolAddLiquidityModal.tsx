@@ -18,16 +18,15 @@ import { useTokensBalances } from "api/balances"
 import { useSpotPrice } from "api/spotPrice"
 import { getFixedPointAmount, getFloatingPointAmount } from "utils/balance"
 import BigNumber from "bignumber.js"
-import { PoolFee, PoolToken } from "@galacticcouncil/sdk"
+import { PoolToken } from "@galacticcouncil/sdk"
 import { useAccountStore } from "state/store"
 import { Trans, useTranslation } from "react-i18next"
 import { u32 } from "@polkadot/types"
-import { getTradeFee } from "sections/pools/pool/Pool.utils"
 import { useAssetMeta } from "api/assetMeta"
 import { useAccountCurrency } from "api/payments"
 import * as xyk from "@galacticcouncil/math-xyk"
 import { Controller, useForm } from "react-hook-form"
-import { BN_0 } from "../../../../../utils/constants"
+import { BN_0 } from "utils/constants"
 import { useLocalStorage } from "react-use"
 import {
   DEFAULT_SETTINGS,
@@ -42,10 +41,10 @@ import {
 } from "./PoolAddLiquidity.utils"
 import { NATIVE_ASSET_ID } from "utils/api"
 import { PoolAddLiquidityInformationCard } from "./information/PoolAddLiquidityInformationCard"
+import { useExchangeFee } from "api/exchangeFee"
 
 type AssetMetaType = NonNullable<ReturnType<typeof useAssetMeta>["data"]>
 interface PoolAddLiquidityModalProps {
-  tradeFee?: PoolFee
   setPoolAddress: (address: string) => void
   assetA: PoolToken | AssetMetaType
   assetB: PoolToken | undefined
@@ -54,7 +53,6 @@ interface PoolAddLiquidityModalProps {
 }
 
 export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
-  tradeFee,
   poolAddress,
   assetA,
   assetB,
@@ -67,7 +65,7 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
   const { account } = useAccountStore()
   const { data: shareToken } = usePoolShareToken(poolAddress)
   const { data: shareTokenMeta } = useAssetMeta(shareToken?.token)
-
+  const fee = useExchangeFee()
   const accountCurrency = useAccountCurrency(account?.address)
   const feeMeta = useAssetMeta(accountCurrency.data)
   const feeSpotPrice = useSpotPrice(NATIVE_ASSET_ID, feeMeta.data?.id)
@@ -396,7 +394,7 @@ export const PoolAddLiquidityModal: FC<PoolAddLiquidityModalProps> = ({
         <Separator />
         <Row
           left={t("pools.addLiquidity.modal.row.tradeFee")}
-          right={t("value.percentage", { value: getTradeFee(tradeFee) })}
+          right={t("value.percentage", { value: fee.data?.times(100) })}
         />
         <Separator />
         <Row
