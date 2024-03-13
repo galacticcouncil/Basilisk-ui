@@ -2,6 +2,7 @@ import { Page } from "components/Layout/Page/Page"
 import { SContainer } from "./TradePage.styled"
 
 import type { TxInfo } from "@galacticcouncil/apps"
+import { Ecosystem } from "@galacticcouncil/apps"
 
 import * as React from "react"
 import * as Apps from "@galacticcouncil/apps"
@@ -9,12 +10,11 @@ import { createComponent, EventName } from "@lit-labs/react"
 import { useAccountStore, useStore } from "state/store"
 import { z } from "zod"
 import { MakeGenerics, useSearch } from "@tanstack/react-location"
-import { PoolType } from "@galacticcouncil/sdk"
 import { useProviderRpcUrlStore } from "api/provider"
 import { useApiPromise } from "utils/api"
 
 export const TradeApp = createComponent({
-  tagName: "gc-trade-app",
+  tagName: "gc-trade",
   elementClass: Apps.TradeApp,
   react: React,
   events: {
@@ -90,6 +90,7 @@ export function TradePage() {
         <TradeApp
           ref={ref}
           onTxNew={(e) => handleSubmit(e)}
+          ecosystem={Ecosystem.Kusama}
           accountName={account?.name}
           accountProvider={account?.provider}
           accountAddress={account?.address}
@@ -97,7 +98,6 @@ export function TradePage() {
           stableCoinAssetId={usdAssetId}
           assetIn={search.success ? search.data.assetIn : undefined}
           assetOut={search.success ? search.data.assetOut : undefined}
-          pools={PoolType.XYK}
         />
       </SContainer>
     </Page>
