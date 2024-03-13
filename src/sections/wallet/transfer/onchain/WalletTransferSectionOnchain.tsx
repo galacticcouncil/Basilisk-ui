@@ -35,7 +35,7 @@ export const WalletTransferSectionOnchain = (props: Props) => {
   const { t } = useTranslation()
   const [asset, setAsset] = useState(props.initialAsset)
 
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   const { createTransaction } = useStore()
   const { account } = useAccountStore()
 
