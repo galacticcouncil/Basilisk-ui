@@ -10,7 +10,7 @@ import { PalletAssetRegistryAssetType } from "@polkadot/types/lookup"
 import { BN_0 } from "utils/constants"
 
 export const useAssetDetails = (id: Maybe<u32 | string>) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   return useQuery(QUERY_KEYS.assets, getAssetDetails(api), {
     select: (data) => data.find((i) => i.id === id?.toString()),
   })
@@ -26,7 +26,7 @@ export const useAssetDetailsList = (
     assetType: ["Token"],
   },
 ) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
 
   const normalizedIds = ids?.filter(isNotNil).map(normalizeId)
 

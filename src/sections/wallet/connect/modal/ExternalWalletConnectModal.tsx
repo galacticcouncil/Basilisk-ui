@@ -31,7 +31,7 @@ export const ExternalWalletConnectModal = ({
   onBack,
   onClose,
 }: ExternalWalletConnectModalProps) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   const { t } = useTranslation()
   const { setAccount } = useAccountStore()
   const navigate = useNavigate()

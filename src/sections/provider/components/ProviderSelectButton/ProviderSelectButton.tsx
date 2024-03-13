@@ -9,7 +9,6 @@ import { ProviderStatus } from "sections/provider/ProviderStatus"
 import { SButton, SName } from "./ProviderSelectButton.styled"
 import { useRpcStore } from "state/store"
 import { useApiPromise } from "utils/api"
-import { isApiLoaded } from "utils/helpers"
 import { useTranslation } from "react-i18next"
 
 export const ProviderSelectButton = () => {
@@ -18,14 +17,13 @@ export const ProviderSelectButton = () => {
   const store = useProviderRpcUrlStore()
   const { rpcList } = useRpcStore()
 
-  const api = useApiPromise()
-  const isApi = isApiLoaded(api)
+  const { isLoaded, isError } = useApiPromise()
 
   const rpcUrl = store.rpcUrl ?? import.meta.env.VITE_PROVIDER_URL
   const selectedProviderName =
     rpcList.find((provider) => provider.url === rpcUrl)?.name ??
     PROVIDERS.find((provider) => provider.url === rpcUrl)?.name
-  const number = useBestNumber(!isApi)
+  const number = useBestNumber(!isLoaded)
 
   return (
     <>
@@ -37,7 +35,7 @@ export const ProviderSelectButton = () => {
       >
         <SName
           css={{
-            width: api.isError ? "auto" : undefined,
+            width: isError ? "auto" : undefined,
           }}
           variants={{
             initial: { width: 0 },
@@ -47,7 +45,7 @@ export const ProviderSelectButton = () => {
           transition={{ duration: 0.15, ease: "easeInOut" }}
         >
           <Text fs={11} fw={500} css={{ whiteSpace: "nowrap" }}>
-            {api.isError ? t("rpc.error") : selectedProviderName}
+            {isError ? t("rpc.error") : selectedProviderName}
           </Text>
           <ChevronRightIcon />
           <Separator

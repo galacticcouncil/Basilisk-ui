@@ -12,7 +12,7 @@ interface PalletBalancesAccountDataCustom extends PalletBalancesAccountData {
 }
 
 export const useAccountBalances = (id: Maybe<AccountId32 | string>) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   return useQuery(
     QUERY_KEYS.accountBalances(id),
     !!id ? getAccountBalances(api, id) : undefinedNoop,
@@ -104,7 +104,7 @@ const getTokenAccountBalancesList =
 export const useTokenAccountBalancesList = (
   pairs: Array<[address: AccountId32 | string, assetId: u32 | string]>,
 ) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
 
   return useQuery(
     QUERY_KEYS.tokenAccountBalancesList(pairs),

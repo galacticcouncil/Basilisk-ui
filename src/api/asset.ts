@@ -4,7 +4,7 @@ import { getAssetLogo } from "components/AssetIcon/AssetIcon"
 import { u32 } from "@polkadot/types"
 import { Maybe, useQueryReduce, useQuerySelect } from "utils/helpers"
 import { TradeRouter } from "@galacticcouncil/sdk"
-import { useTradeRouter } from "utils/api"
+import { useApiPromise } from "utils/api"
 import { useQuery } from "@tanstack/react-query"
 import { QUERY_KEYS } from "utils/queryKeys"
 
@@ -34,7 +34,7 @@ export const useUsdPeggedAsset = () => {
 }
 
 export const useTradeAssets = () => {
-  const tradeRouter = useTradeRouter()
+  const { tradeRouter } = useApiPromise()
   return useQuery(QUERY_KEYS.tradeAssets, getTradeAssets(tradeRouter))
 }
 

@@ -7,7 +7,6 @@ import {
   useTotalInUsersDeposits,
 } from "utils/farms/deposits"
 import { PoolsHeaderTotalValue } from "../value/PoolsHeaderValue"
-import { isApiLoaded } from "utils/helpers"
 import {
   useTotalVolumesInPools,
   useTotalVolumesInPoolsUser,
@@ -18,8 +17,8 @@ import Skeleton from "react-loading-skeleton"
 type Props = { myPositions: boolean; variant: "pools" | "farms" | "volume" }
 
 export const PoolsHeaderTotal = ({ myPositions, variant }: Props) => {
-  const api = useApiPromise()
-  if (!isApiLoaded(api))
+  const { isLoaded } = useApiPromise()
+  if (!isLoaded)
     return <Skeleton sx={{ height: [24, 42], width: [180, 200] }} />
 
   if (myPositions && variant === "pools") return <PoolsHeaderTotalPoolsUser />

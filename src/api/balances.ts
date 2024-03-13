@@ -65,7 +65,7 @@ export const useTokenBalance = (
   id: Maybe<string | u32>,
   address: Maybe<AccountId32 | string>,
 ) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
 
   return useQuery(
     QUERY_KEYS.tokenBalance(id, address),
@@ -80,7 +80,7 @@ export function useTokensBalances(
   tokenIds: (string | u32)[],
   address: Maybe<AccountId32 | string>,
 ) {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
 
   return useQueries({
     queries: tokenIds.map((id) => ({
@@ -97,7 +97,7 @@ const getExistentialDeposit = (api: ApiPromise) => {
 }
 
 export function useExistentialDeposit() {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   return useQuery(QUERY_KEYS.existentialDeposit, async () => {
     const existentialDeposit = await getExistentialDeposit(api)
     return existentialDeposit.toBigNumber()
@@ -105,7 +105,7 @@ export function useExistentialDeposit() {
 }
 
 export const useTokensLocks = (ids: Maybe<u32 | string>[]) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   const { account } = useAccountStore()
 
   const normalizedIds = ids?.reduce<string[]>((memo, item) => {

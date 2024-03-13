@@ -41,7 +41,7 @@ const grafanaUrl = import.meta.env.VITE_GRAFANA_URL
 const grafanaDsn = import.meta.env.VITE_GRAFANA_DSN
 
 export function TradePage() {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   const { account } = useAccountStore()
   const { createTransaction } = useStore()
   const preference = useProviderRpcUrlStore()

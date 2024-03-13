@@ -47,7 +47,7 @@
     "@radix-ui/react-slider": "^1.0.0",
     "@radix-ui/react-switch": "^1.0.0",
     "@radix-ui/react-toast": "^1.0.0",
-    "@radix-ui/react-tooltip": "^1.0.2",
+    "@radix-ui/react-tooltip": "^1.0.7",
     "@sentry/react": "^7.16.0",
     "@sentry/tracing": "^7.16.0",
     "@talismn/connect-wallets": "^1.2.1",

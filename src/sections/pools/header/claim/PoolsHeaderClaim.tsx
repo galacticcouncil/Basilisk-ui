@@ -8,16 +8,15 @@ import { theme } from "theme"
 import { SButton, SContent, STrigger } from "./PoolsHeaderClaim.styled"
 import { PoolsHeaderClaimContent } from "./content/PoolsHeaderClaimContent"
 import { useApiPromise } from "utils/api"
-import { isApiLoaded } from "utils/helpers"
 
 export const PoolsHeaderClaim = () => {
   const { t } = useTranslation()
   const { account } = useAccountStore()
-  const api = useApiPromise()
+  const { isLoaded } = useApiPromise()
   const [open, setOpen] = useState(false)
   const isDesktop = useMedia(theme.viewport.gte.sm)
 
-  if (!account || !isApiLoaded(api)) return null
+  if (!account || !isLoaded) return null
 
   return (
     <div sx={{ m: ["16px 0", "auto 0"] }}>

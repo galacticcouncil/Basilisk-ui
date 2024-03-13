@@ -6,14 +6,14 @@ import { u32, u8 } from "@polkadot/types"
 import { Maybe } from "utils/helpers"
 
 export const useAssetMeta = (id: Maybe<u32 | string>) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   return useQuery(QUERY_KEYS.assetsMeta, getAllAssetMeta(api), {
     select: (data) => data.find((i) => i.id === id?.toString()),
   })
 }
 
 export const useAssetMetaList = (ids: Array<Maybe<u32 | string>>) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
 
   const normalizedIds = ids
     .filter((x): x is u32 | string => !!x)
