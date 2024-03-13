@@ -44,7 +44,6 @@ export function TradePage() {
   const preference = useProviderRpcUrlStore()
   const rpcUrl = preference.rpcUrl ?? import.meta.env.VITE_PROVIDER_URL
 
-  const ref = React.useRef<Apps.TradeApp>(null)
   const rawSearch = useSearch<SearchGenerics>()
   const usdAssetId = import.meta.env.VITE_USD_PEGGED_ASSET_ID
   const search = TradeAppSearch.safeParse(rawSearch)
@@ -88,7 +87,11 @@ export function TradePage() {
     <Page>
       <SContainer>
         <TradeApp
-          ref={ref}
+          ref={(r) => {
+            if (r) {
+              r.setAttribute("chart", "")
+            }
+          }}
           onTxNew={(e) => handleSubmit(e)}
           ecosystem={Ecosystem.Kusama}
           accountName={account?.name}
