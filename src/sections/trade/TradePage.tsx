@@ -86,6 +86,12 @@ export function TradePage() {
     )
   }
 
+  // TODO: Revert when Kusama stable coin asset
+  const assetIn =
+    search.success && search.data.assetIn ? search.data.assetIn : "1" //kusama
+  const assetOut =
+    search.success && search.data.assetOut ? search.data.assetOut : "0" // basilsik
+
   return (
     <Page>
       <SContainer>
@@ -104,8 +110,8 @@ export function TradePage() {
           grafanaUrl={grafanaUrl}
           grafanaDsn={grafanaDsn}
           stableCoinAssetId={usdAssetId}
-          assetIn={search.success ? search.data.assetIn : undefined}
-          assetOut={search.success ? search.data.assetOut : undefined}
+          assetIn={assetIn}
+          assetOut={assetOut}
         />
       </SContainer>
     </Page>

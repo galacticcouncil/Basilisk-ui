@@ -92,6 +92,8 @@
   },
   "scripts": {
     "dev": "vite",
+    "dev:rococo": "vite -m rococo",
+    "dev:production": "vite -m production",
     "build": "vite build && cp ./build/index.html ./build/404.html",
     "preview": "vite preview",
     "postinstall": "patch-package",
