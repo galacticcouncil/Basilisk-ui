@@ -37,6 +37,9 @@ type SearchGenerics = MakeGenerics<{
   Search: z.infer<typeof TradeAppSearch>
 }>
 
+const grafanaUrl = import.meta.env.VITE_GRAFANA_URL
+const grafanaDsn = import.meta.env.VITE_GRAFANA_DSN
+
 export function TradePage() {
   const api = useApiPromise()
   const { account } = useAccountStore()
@@ -98,6 +101,8 @@ export function TradePage() {
           accountProvider={account?.provider}
           accountAddress={account?.address}
           apiAddress={rpcUrl}
+          grafanaUrl={grafanaUrl}
+          grafanaDsn={grafanaDsn}
           stableCoinAssetId={usdAssetId}
           assetIn={search.success ? search.data.assetIn : undefined}
           assetOut={search.success ? search.data.assetOut : undefined}
