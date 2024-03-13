@@ -10,12 +10,12 @@ interface AddLiquidityAsset {
 }
 
 export function useAddLiquidityPaymentInfo(assetA: string, assetB: string) {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   return usePaymentInfo(api.tx.xyk.addLiquidity(assetA, assetB, "0", "0"))
 }
 
 export function useAddLiquidityMutation(onClose: () => void) {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   const { createTransaction } = useStore()
   const { account } = useAccountStore()
 

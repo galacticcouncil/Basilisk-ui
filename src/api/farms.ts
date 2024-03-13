@@ -7,7 +7,7 @@ import { isNotNil, useQueryReduce } from "utils/helpers"
 import { QUERY_KEYS } from "utils/queryKeys"
 
 export const useYieldFarms = (ids: FarmIds[]) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   return useQuery(QUERY_KEYS.yieldFarms(ids), getYieldFarms(api, ids))
 }
 
@@ -16,14 +16,14 @@ export const useYieldFarm = (ids: {
   globalFarmId: u32 | string
   yieldFarmId: u32 | string
 }) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   return useQuery(QUERY_KEYS.yieldFarm(ids), getYieldFarm(api, ids), {
     enabled: !!ids,
   })
 }
 
 export const useActiveYieldFarms = (poolIds: (AccountId32 | string)[]) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   return useQueries({
     queries: poolIds.map((poolId) => ({
       queryKey: QUERY_KEYS.activeYieldFarms(poolId),
@@ -33,19 +33,19 @@ export const useActiveYieldFarms = (poolIds: (AccountId32 | string)[]) => {
 }
 
 export const useGlobalFarms = (ids: u32[]) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   return useQuery(QUERY_KEYS.globalFarms(ids), getGlobalFarms(api, ids), {
     enabled: !!ids.length,
   })
 }
 
 export const useGlobalFarm = (id: u32) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   return useQuery(QUERY_KEYS.globalFarm(id), getGlobalFarm(api, id))
 }
 
 export const useInactiveYieldFarms = (poolIds: (AccountId32 | string)[]) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   return useQueries({
     queries: poolIds.map((poolId) => ({
       queryKey: QUERY_KEYS.inactiveYieldFarms(poolId),
@@ -221,7 +221,7 @@ export const getGlobalFarm = (api: ApiPromise, id: u32) => async () => {
 }
 
 export interface FarmIds {
-  poolId: AccountId32
+  poolId: AccountId32 | string
   globalFarmId: u32
   yieldFarmId: u32
 }

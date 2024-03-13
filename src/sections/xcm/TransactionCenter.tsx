@@ -21,16 +21,11 @@ const isTemplateResult = (e: unknown): e is TemplateResult =>
   e != null && typeof e === "object" && "_$litType$" in e
 
 const getRenderString = (data: TemplateResult): string => {
-  const { strings, values } = data
-
+  const { values } = data
   const v = [...values, ""].map((e) =>
     isTemplateResult(e) ? getRenderString(e) : e,
   )
-
-  return strings.reduce((acc, s, i) => {
-    if (v[i] != null) return acc + s + v[i]
-    return acc
-  }, "")
+  return v.join("")
 }
 
 const ToastTitle = ({ message }: { message: Notification["message"] }) => {

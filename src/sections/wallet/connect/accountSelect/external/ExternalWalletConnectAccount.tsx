@@ -27,7 +27,7 @@ export const ExternalWalletConnectAccount = ({
   address: string
   onClose: () => void
 }) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   const { account, setAccount } = useAccountStore()
   const isBasiliskAddress = address[0] === "b"
   const basiliskAddress = isBasiliskAddress

@@ -55,7 +55,7 @@ export const useClaimableAmount = (
 
   const usd = useUsdPeggedAsset()
 
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   const accountResolver = getAccountResolver(api.registry)
 
   const assetIds = [
@@ -167,7 +167,7 @@ export const useClaimAllMutation = (
   toast?: ToastMessage,
   onClose?: () => void,
 ) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   const { createTransaction } = useStore()
   const userDeposits = useAllUserDeposits()
 

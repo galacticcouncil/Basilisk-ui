@@ -25,7 +25,7 @@ export function usePaymentInfo(tx: SubmittableExtrinsic) {
 }
 
 export function useNextNonce(account: Maybe<AccountId32 | string>) {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   return useQuery(
     QUERY_KEYS.nextNonce(account),
     account != null
@@ -64,7 +64,7 @@ export async function getTransactionLinkFromHash(
 }
 
 export function useTransactionLink() {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   return useMutation(
     async ({
       blockHash,

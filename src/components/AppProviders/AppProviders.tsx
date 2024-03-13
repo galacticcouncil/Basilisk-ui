@@ -18,7 +18,7 @@ export const AppProviders: FC<PropsWithChildren> = ({ children }) => {
       <ApiPromiseContext.Provider
         value={
           data && preference._hasHydrated
-            ? data
+            ? { ...data, isLoaded: true }
             : ({ isError } as TApiPromiseCustom)
         }
       >

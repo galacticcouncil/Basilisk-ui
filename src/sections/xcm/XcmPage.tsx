@@ -3,24 +3,25 @@ import { SContainer } from "./XcmPage.styled"
 
 import * as React from "react"
 import * as Apps from "@galacticcouncil/apps"
+import { Ecosystem } from "@galacticcouncil/apps"
 import { createComponent } from "@lit-labs/react"
 import { useAccountStore } from "state/store"
+import { useProviderRpcUrlStore } from "api/provider"
 import { GcTransactionCenter } from "./TransactionCenter"
-import { Navigate } from "@tanstack/react-location"
 
 export const XcmApp = createComponent({
-  tagName: "gc-xcm-app",
+  tagName: "gc-xcm",
   elementClass: Apps.XcmApp,
   react: React,
 })
-const disabled = true
 
 export function XcmPage() {
   const { account } = useAccountStore()
 
   const ref = React.useRef<Apps.XcmApp>(null)
-
-  if (disabled) return <Navigate to="/trade" search />
+  const preference = useProviderRpcUrlStore()
+  const rpcUrl = preference.rpcUrl ?? import.meta.env.VITE_PROVIDER_URL
+  const usdAssetId = import.meta.env.VITE_USD_PEGGED_ASSET_ID
 
   return (
     <GcTransactionCenter>
@@ -28,12 +29,15 @@ export function XcmPage() {
         <SContainer>
           <XcmApp
             ref={ref}
+            ecosystem={Ecosystem.Kusama}
             srcChain="kusama"
-            dstChain="basilisk"
-            chains="basilisk,karura,kusama,tinkernet,statemine,robonomics"
+            destChain="basilisk"
+            asset={"KSM"}
             accountName={account?.name}
             accountProvider={account?.provider}
             accountAddress={account?.address}
+            apiAddress={rpcUrl}
+            stableCoinAssetId={usdAssetId}
           />
         </SContainer>
       </Page>

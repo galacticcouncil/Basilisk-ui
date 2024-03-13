@@ -11,7 +11,7 @@ export const useRedepositMutation = (
   depositNfts: DepositNftType[],
   onClose?: () => void,
 ) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
 
   const [assetIn, assetOut] = pool.tokens
   const { createTransaction } = useStore()

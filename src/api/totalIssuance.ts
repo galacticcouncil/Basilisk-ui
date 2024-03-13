@@ -7,7 +7,7 @@ import { u32 } from "@polkadot/types"
 import { Maybe, undefinedNoop } from "utils/helpers"
 
 export const useTotalIssuance = (token: Maybe<u32>) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
 
   return useQuery(
     QUERY_KEYS.totalIssuance(token),
@@ -17,7 +17,7 @@ export const useTotalIssuance = (token: Maybe<u32>) => {
 }
 
 export const useTotalIssuances = (tokens: Maybe<u32 | string>[]) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
 
   const tokenIds = tokens.filter((token): token is u32 => !!token)
 

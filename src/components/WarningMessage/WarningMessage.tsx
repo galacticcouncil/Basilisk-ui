@@ -65,7 +65,7 @@ export const WarningMessage = (props: {
             </defs>
           </svg>
 
-          <p>{props.text}</p>
+          {props.text}
         </SWarningMessageContent>
 
         <SSecondaryItem

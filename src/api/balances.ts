@@ -14,10 +14,18 @@ export const getTokenBalance =
   (api: ApiPromise, account: AccountId32 | string, id: string | u32) =>
   async () => {
     if (id.toString() === NATIVE_ASSET_ID) {
-      const res = await api.query.system.account(account)
+      const res = (await api.query.system.account(account)) as any
       const freeBalance = new BigNumber(res.data.free.toHex())
-      const miscFrozenBalance = new BigNumber(res.data.miscFrozen ? res.data.miscFrozen.toHex() : res.data.frozen.toHex())
-      const feeFrozenBalance = new BigNumber(res.data.feeFrozen ? res.data.feeFrozen.toHex() : res.data.frozen.toHex())
+      const miscFrozenBalance = new BigNumber(
+        res.data.miscFrozen
+          ? res.data.miscFrozen.toHex()
+          : res.data.frozen.toHex(),
+      )
+      const feeFrozenBalance = new BigNumber(
+        res.data.feeFrozen
+          ? res.data.feeFrozen.toHex()
+          : res.data.frozen.toHex(),
+      )
       const reservedBalance = new BigNumber(res.data.reserved.toHex())
 
       const balance = new BigNumber(
@@ -57,7 +65,7 @@ export const useTokenBalance = (
   id: Maybe<string | u32>,
   address: Maybe<AccountId32 | string>,
 ) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
 
   return useQuery(
     QUERY_KEYS.tokenBalance(id, address),
@@ -72,7 +80,7 @@ export function useTokensBalances(
   tokenIds: (string | u32)[],
   address: Maybe<AccountId32 | string>,
 ) {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
 
   return useQueries({
     queries: tokenIds.map((id) => ({
@@ -89,7 +97,7 @@ const getExistentialDeposit = (api: ApiPromise) => {
 }
 
 export function useExistentialDeposit() {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   return useQuery(QUERY_KEYS.existentialDeposit, async () => {
     const existentialDeposit = await getExistentialDeposit(api)
     return existentialDeposit.toBigNumber()
@@ -97,7 +105,7 @@ export function useExistentialDeposit() {
 }
 
 export const useTokensLocks = (ids: Maybe<u32 | string>[]) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   const { account } = useAccountStore()
 
   const normalizedIds = ids?.reduce<string[]>((memo, item) => {

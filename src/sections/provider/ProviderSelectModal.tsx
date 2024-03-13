@@ -4,17 +4,16 @@ import { Modal } from "components/Modal/Modal"
 import { Fragment, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { SContainer, SHeader } from "./ProviderSelectModal.styled"
-
 import { ProviderItem } from "./components/ProviderItem/ProviderItem"
 import { useRpcStore } from "state/store"
 import { Controller, useForm } from "react-hook-form"
 import { useMutation } from "@tanstack/react-query"
 import { FormValues } from "utils/helpers"
 import { connectWsProvider } from "./ProviderSelectModal.utils"
-import { ApiPromise } from "@polkadot/api"
 import { ProviderInput } from "./components/ProviderInput/ProviderInput"
 import { Separator } from "components/Separator/Separator"
 import { DeleteModal } from "./components/DeleteModal/DeleteModal"
+import { SubstrateApis } from "@galacticcouncil/xcm-sdk"
 
 export function ProviderSelectModal(props: {
   open: boolean
@@ -36,9 +35,8 @@ export function ProviderSelectModal(props: {
     try {
       const provider = await connectWsProvider(value.address)
 
-      const api = await ApiPromise.create({
-        provider,
-      })
+      const apiPool = SubstrateApis.getInstance()
+      const api = await apiPool.api(provider.endpoint)
 
       const relay = await api.query.parachainSystem.validationData()
       const relayParentNumber = relay.unwrap().relayParentNumber

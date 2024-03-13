@@ -3,7 +3,7 @@ import { useApiPromise } from "utils/api"
 import { QUERY_KEYS } from "utils/queryKeys"
 
 export const useBestNumber = (disable?: boolean) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   return useQuery(
     QUERY_KEYS.bestNumber,
     async () => {

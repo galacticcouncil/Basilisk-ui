@@ -12,7 +12,7 @@ export const SContainer = styled.div`
     display: flex;
     flex: 1;
 
-    gc-trade-app {
+    gc-trade {
       flex: 1;
     }
   }
