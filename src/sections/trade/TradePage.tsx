@@ -37,6 +37,9 @@ type SearchGenerics = MakeGenerics<{
   Search: z.infer<typeof TradeAppSearch>
 }>
 
+const grafanaUrl = import.meta.env.VITE_GRAFANA_URL
+const grafanaDsn = import.meta.env.VITE_GRAFANA_DSN
+
 export function TradePage() {
   const { api } = useApiPromise()
   const { account } = useAccountStore()
@@ -44,7 +47,6 @@ export function TradePage() {
   const preference = useProviderRpcUrlStore()
   const rpcUrl = preference.rpcUrl ?? import.meta.env.VITE_PROVIDER_URL
 
-  const ref = React.useRef<Apps.TradeApp>(null)
   const rawSearch = useSearch<SearchGenerics>()
   const usdAssetId = import.meta.env.VITE_USD_PEGGED_ASSET_ID
   const search = TradeAppSearch.safeParse(rawSearch)
@@ -84,20 +86,32 @@ export function TradePage() {
     )
   }
 
+  // TODO: Revert when Kusama stable coin asset
+  const assetIn =
+    search.success && search.data.assetIn ? search.data.assetIn : "1" //kusama
+  const assetOut =
+    search.success && search.data.assetOut ? search.data.assetOut : "0" // basilsik
+
   return (
     <Page>
       <SContainer>
         <TradeApp
-          ref={ref}
+          ref={(r) => {
+            if (r) {
+              r.setAttribute("chart", "")
+            }
+          }}
           onTxNew={(e) => handleSubmit(e)}
           ecosystem={Ecosystem.Kusama}
           accountName={account?.name}
           accountProvider={account?.provider}
           accountAddress={account?.address}
           apiAddress={rpcUrl}
+          grafanaUrl={grafanaUrl}
+          grafanaDsn={grafanaDsn}
           stableCoinAssetId={usdAssetId}
-          assetIn={search.success ? search.data.assetIn : undefined}
-          assetOut={search.success ? search.data.assetOut : undefined}
+          assetIn={assetIn}
+          assetOut={assetOut}
         />
       </SContainer>
     </Page>

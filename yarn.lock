@@ -1547,10 +1547,10 @@
   resolved "https://registry.yarnpkg.com/@galacticcouncil/api-augment/-/api-augment-0.0.3.tgz#b787c779ccd1455efb219d67bae43822a89396e4"
   integrity sha512-evxZy6ipHr3Y7B/V+aCSh4sJmG773qy1fDnIHIhk0uIhSB1pe7Fp0+Bpgu9T3xOPbMIuOdOV6aHEwQeZ5Xt5mg==
 
-"@galacticcouncil/apps@3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@galacticcouncil/apps/-/apps-3.3.0.tgz#07af0b46aee94a09cf03e448fa39ddc919483465"
-  integrity sha512-vVY1Qvf/3fFq55dfIaepoSgioRQZQMECvf4JSgt1DPeT685dPnLWT2dFxQ15iBD3zF+0MKm/SiueFqX0AcpfzA==
+"@galacticcouncil/apps@3.3.3":
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/@galacticcouncil/apps/-/apps-3.3.3.tgz#68b77b7f78f6868e645b476281d728eaa2cb1597"
+  integrity sha512-GW92c/OjfZnqSn57zJdJXwDhCphVeGJ4XidlDTHu8wAlirXWwZlh7Uqz5YdDxvYEtFhsSLuiu6kLr9PznkTvcg==
   dependencies:
     "@cfx-kit/wallet-avatar" "0.0.5"
     "@talismn/connect-wallets" "^1.2.1"
@@ -1613,10 +1613,10 @@
     bignumber.js "^9.1.0"
     lodash.clonedeep "^4.5.0"
 
-"@galacticcouncil/ui@^3.0.4":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@galacticcouncil/ui/-/ui-3.1.0.tgz#e91975a898427904c0ad7fa5a13a36ab3bf5afe6"
-  integrity sha512-H+AuuJHuSR+fnbN0jLd59DXD5mvsadSGseKj5tZDuTaXOSVDGlZ1rj37Ejk+T9SZXvFli9dzsSj7gZVkg9V45Q==
+"@galacticcouncil/ui@^3.1.2":
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/@galacticcouncil/ui/-/ui-3.1.2.tgz#9d67c92155d80177af4bfa8a24a5009ae2b7471c"
+  integrity sha512-qa5bd+eO84qp7EzBpI4Vi+9KU1Vzkj8mLP+lptStWDrTMUzn8RJi8va0Vj9YV4C1e9Em2hJRIAwaaGEtLMd5TA==
   dependencies:
     "@floating-ui/dom" "^1.5.1"
     "@lit/reactive-element" "^1.0.0"
