@@ -101,7 +101,7 @@ export const PoolRemoveLiquidity: FC<Props> = ({ isOpen, onClose, pool }) => {
   const feeMeta = useAssetMeta(accountCurrency.data)
   const feeSpotPrice = useSpotPrice(NATIVE_ASSET_ID, feeMeta.data?.id)
 
-  const api = useApiPromise()
+  const { api } = useApiPromise()
 
   const shareToken = usePoolShareToken(pool.address)
   const shareTokenBalance = useTokenBalance(

@@ -13,7 +13,7 @@ export function PoolFarmWithdraw(props: {
   onClose: () => void
 }) {
   const { account } = useAccountStore()
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   const userDeposits = useUserDeposits(props.pool.address)
   const deposits = props.depositNft ? [props.depositNft] : userDeposits.data
 

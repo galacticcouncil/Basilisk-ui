@@ -20,7 +20,7 @@ import { useAssetMeta } from "api/assetMeta"
 
 export const WalletVestingSchedule = () => {
   const { t } = useTranslation()
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   const { createTransaction } = useStore()
   const { account } = useAccountStore()
   const meta = useAssetMeta(NATIVE_ASSET_ID)

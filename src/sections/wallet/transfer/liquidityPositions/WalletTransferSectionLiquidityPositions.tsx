@@ -27,7 +27,7 @@ export function WalletTransferSectionLiquidityPositions(props: {
     (i) => i.address.toString() === props.poolAddress.toString(),
   )
 
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   const { createTransaction } = useStore()
   const { account } = useAccountStore()
 

@@ -4,7 +4,7 @@ import { u32 } from "@polkadot/types"
 import { TradeRouter } from "@galacticcouncil/sdk"
 import { BN_1, BN_10, BN_NAN } from "utils/constants"
 import BN from "bignumber.js"
-import { useTradeRouter } from "utils/api"
+import { useApiPromise } from "utils/api"
 import { Maybe } from "utils/helpers"
 import { useUsdPeggedAsset } from "./asset"
 
@@ -12,7 +12,7 @@ export const useSpotPrice = (
   assetA: Maybe<u32 | string>,
   assetB: Maybe<u32 | string>,
 ) => {
-  const tradeRouter = useTradeRouter()
+  const { tradeRouter } = useApiPromise()
   const tokenIn = assetA?.toString() ?? ""
   const tokenOut = assetB?.toString() ?? ""
 
@@ -27,7 +27,7 @@ export const useSpotPrices = (
   assetsIn: Maybe<u32 | string>[],
   assetOut: Maybe<u32 | string>,
 ) => {
-  const tradeRouter = useTradeRouter()
+  const { tradeRouter } = useApiPromise()
 
   const assets = assetsIn
     .filter((a): a is u32 | string => !!a)

@@ -12,7 +12,7 @@ export const SContainer = styled.div`
     display: flex;
     flex: 1;
 
-    gc-xcm-app {
+    gc-xcm {
       flex: 1;
     }
   }
