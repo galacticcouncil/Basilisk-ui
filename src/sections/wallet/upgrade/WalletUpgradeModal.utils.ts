@@ -32,7 +32,7 @@ function getChainMetadata(api: ApiPromise) {
 
 export const useUpdateMetadataMutation = () => {
   const { account } = useAccountStore()
-  const api = useApiPromise()
+  const { api } = useApiPromise()
 
   const cache = useCacheApiMetadataStore()
 

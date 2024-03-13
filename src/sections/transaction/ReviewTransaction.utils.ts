@@ -62,7 +62,7 @@ export function getTransactionJSON(tx: SubmittableExtrinsic<"promise">) {
 export class UnknownTransactionState extends Error {}
 
 export const useSendTransactionMutation = () => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   const isMounted = useMountedState()
   const link = useTransactionLink()
   const [txState, setTxState] = useState<ExtrinsicStatus["type"] | null>(null)

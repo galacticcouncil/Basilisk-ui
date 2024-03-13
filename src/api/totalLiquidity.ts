@@ -7,7 +7,7 @@ import { AccountId32 } from "@polkadot/types/interfaces/runtime"
 import { Maybe, undefinedNoop } from "utils/helpers"
 
 export const useTotalLiquidity = (id: Maybe<AccountId32 | string>) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
 
   return useQuery(
     QUERY_KEYS.totalLiquidity(id),
@@ -17,7 +17,7 @@ export const useTotalLiquidity = (id: Maybe<AccountId32 | string>) => {
 }
 
 export const useTotalLiquidities = (ids: AccountId32[]) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
 
   return useQuery(
     QUERY_KEYS.totalLiquidities(ids.map((id) => id.toHuman())),

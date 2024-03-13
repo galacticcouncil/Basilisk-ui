@@ -12,7 +12,6 @@ import {
   WalletAssetsHeaderValue,
 } from "./WalletAssetsHeader"
 import { useApiPromise } from "utils/api"
-import { isApiLoaded } from "utils/helpers"
 import { WalletFarmingPositionsSkeleton } from "./table/skeleton/WalletFarmingPositionsSkeleton"
 import { Separator } from "components/Separator/Separator"
 import { theme } from "theme"
@@ -20,10 +19,10 @@ import { useTranslation } from "react-i18next"
 import { useFarmingPositionsData } from "./farmingPositions/WalletFarmingPositions.utils"
 
 export const WalletAssets = () => {
-  const api = useApiPromise()
+  const { isLoaded } = useApiPromise()
   const { t } = useTranslation()
 
-  if (!isApiLoaded(api))
+  if (!isLoaded)
     return (
       <div sx={{ mt: [34, 56] }}>
         <div
