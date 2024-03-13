@@ -38,7 +38,7 @@ type SearchGenerics = MakeGenerics<{
 }>
 
 export function TradePage() {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   const { account } = useAccountStore()
   const { createTransaction } = useStore()
   const preference = useProviderRpcUrlStore()

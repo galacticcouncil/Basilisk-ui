@@ -11,12 +11,12 @@ export type DepositNftType = Awaited<
 >[number]
 
 export const useDeposits = (poolId?: string) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   return useQuery(QUERY_KEYS.deposits(poolId), getDeposits(api, poolId))
 }
 
 export const useAllDeposits = (poolIds?: string[]) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   const ids = poolIds?.filter((id): id is string => !!id) ?? []
 
   return useQueries({
@@ -29,7 +29,7 @@ export const useAllDeposits = (poolIds?: string[]) => {
 }
 
 export const useDeposit = (id: Maybe<u128>) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   return useQuery(
     QUERY_KEYS.deposit(id),
     id != null ? getDeposit(api, id) : undefinedNoop,
@@ -40,7 +40,7 @@ export const useDeposit = (id: Maybe<u128>) => {
 export const useAccountDepositIds = (
   accountId: Maybe<AccountId32 | string>,
 ) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   return useQuery(
     QUERY_KEYS.accountDepositIds(accountId),
     accountId != null ? getAccountDepositIds(api, accountId) : undefinedNoop,

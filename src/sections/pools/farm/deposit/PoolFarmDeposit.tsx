@@ -42,7 +42,7 @@ export const PoolFarmDeposit = (props: Props) => {
     }, BN_0) ?? BN_0
 
   const { createTransaction } = useStore()
-  const api = useApiPromise()
+  const { api } = useApiPromise()
 
   const [assetIn, assetOut] = props.pool.tokens
   const { account } = useAccountStore()

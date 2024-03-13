@@ -1,31 +1,23 @@
 import { useQuery } from "@tanstack/react-query"
 import { QUERY_KEYS } from "utils/queryKeys"
-import { ApiPromise, WsProvider } from "@polkadot/api"
-//import * as definitions from "@galacticcouncil/api-augment/basilisk/interfaces/voting/definitions"
-import * as definitions from "interfaces/voting/definitions"
-
+import { WsProvider } from "@polkadot/api"
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
+import { SubstrateApis } from "@galacticcouncil/xcm-sdk"
+import { PoolService, PoolType, TradeRouter } from "@galacticcouncil/sdk"
 
-const fetchApi = async (api: string) => {
-  const provider = await new Promise<WsProvider>((resolve, reject) => {
-    const provider = new WsProvider(api)
+const fetchApi = async (url: string) => {
+  const provider = new WsProvider(url)
 
-    provider.on("connected", () => {
-      resolve(provider)
-    })
+  const apiPool = SubstrateApis.getInstance()
+  const api = await apiPool.api(provider.endpoint)
 
-    provider.on("error", () => {
-      provider.disconnect()
-      reject("disconnected")
-    })
+  const poolService = new PoolService(api)
+  const tradeRouter = new TradeRouter(poolService, {
+    includeOnly: [PoolType.XYK],
   })
 
-  const types = Object.values(definitions).reduce(
-    (res, { types }): object => ({ ...res, ...types }),
-    {},
-  )
-  return ApiPromise.create({ provider, types })
+  return { api, tradeRouter }
 }
 
 export const useProvider = (rpcUrl?: string) => {

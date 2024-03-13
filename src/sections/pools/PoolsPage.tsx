@@ -8,13 +8,12 @@ import {
 import { PoolsHeader } from "sections/pools/header/PoolsHeader"
 import { Pool } from "sections/pools/pool/Pool"
 import { useApiPromise } from "utils/api"
-import { isApiLoaded } from "utils/helpers"
 import { PoolSkeleton } from "./pool/PoolSkeleton"
 import { EmptyPoolsState } from "./pool/empty/EmptyPoolsState"
 
 export const PoolsPage = () => {
-  const api = useApiPromise()
-  if (!isApiLoaded(api))
+  const { isLoaded } = useApiPromise()
+  if (!isLoaded)
     return (
       <Page>
         <PoolsHeader

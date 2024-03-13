@@ -6,7 +6,7 @@ import BN from "bignumber.js"
 import { TRADING_FEE } from "utils/constants"
 
 export const useExchangeFee = () => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
 
   return useQuery(QUERY_KEYS.exchangeFee, getExchangeFee(api))
 }

@@ -1,7 +1,6 @@
 import { WalletVestingHeader } from "./WalletVestingHeader"
 import { WalletVestingBox } from "./WalletVestingBox"
 import { useApiPromise } from "utils/api"
-import { isApiLoaded } from "utils/helpers"
 import { Text } from "components/Typography/Text/Text"
 import { useTranslation } from "react-i18next"
 import Skeleton from "react-loading-skeleton"
@@ -11,9 +10,9 @@ import { WalletVestingEmpty } from "./WalletVestingEmpty"
 
 export const WalletVesting = () => {
   const { t } = useTranslation()
-  const api = useApiPromise()
+  const { isLoaded } = useApiPromise()
 
-  if (!isApiLoaded(api))
+  if (!isLoaded)
     return (
       <div
         sx={{

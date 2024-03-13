@@ -22,7 +22,7 @@ const getAcceptedCurrency = (api: ApiPromise, id: u32 | string) => async () => {
 }
 
 export const useAcceptedCurrencies = (ids: Maybe<string | u32>[]) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
 
   return useQueries({
     queries: ids.map((id) => ({
@@ -34,7 +34,7 @@ export const useAcceptedCurrencies = (ids: Maybe<string | u32>[]) => {
 }
 
 export const useSetAsFeePayment = () => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   const { account } = useAccountStore()
   const { createTransaction } = useStore()
   const queryClient = useQueryClient()
@@ -75,7 +75,7 @@ const getAccountCurrency =
   }
 
 export const useAccountCurrency = (address: Maybe<string | AccountId32>) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   return useQuery(
     QUERY_KEYS.accountCurrency(address),
     !!address ? getAccountCurrency(api, address) : undefinedNoop,
