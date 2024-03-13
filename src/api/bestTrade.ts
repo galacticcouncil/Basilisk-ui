@@ -2,16 +2,16 @@ import { TradeRouter } from "@galacticcouncil/sdk"
 import BigNumber from "bignumber.js"
 import { useQuery } from "@tanstack/react-query"
 import { QUERY_KEYS } from "utils/queryKeys"
-import { useTradeRouter } from "utils/api"
+import { useApiPromise } from "utils/api"
 
 export const useBestBuy = (props: BestTradeProps) => {
-  const tradeRouter = useTradeRouter()
+  const { tradeRouter } = useApiPromise()
 
   return useQuery(QUERY_KEYS.bestBuy(props), getBestBuy(tradeRouter, props))
 }
 
 export const useBestSell = (props: BestTradeProps) => {
-  const tradeRouter = useTradeRouter()
+  const { tradeRouter } = useApiPromise()
 
   return useQuery(QUERY_KEYS.bestSell(props), getBestSell(tradeRouter, props))
 }

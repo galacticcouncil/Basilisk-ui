@@ -10,7 +10,7 @@ export function useTimestamp(
   blockNumber?: Maybe<u32 | BigNumber>,
   enabled = true,
 ) {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
   return useQuery(
     QUERY_KEYS.timestamp(blockNumber),
     () =>

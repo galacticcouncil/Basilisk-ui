@@ -1,6 +1,6 @@
 import { useQueries, useQuery } from "@tanstack/react-query"
 import { QUERY_KEYS } from "utils/queryKeys"
-import { useApiPromise, useTradeRouter } from "utils/api"
+import { useApiPromise } from "utils/api"
 import { ApiPromise } from "@polkadot/api"
 import { PoolBase, TradeRouter } from "@galacticcouncil/sdk"
 import { AccountId32 } from "@polkadot/types/interfaces"
@@ -12,12 +12,12 @@ import { useAccountStore } from "../state/store"
 import { useQueryReduce } from "utils/helpers"
 
 export const usePools = () => {
-  const tradeRouter = useTradeRouter()
+  const { tradeRouter } = useApiPromise()
   return useQuery(QUERY_KEYS.pools, getPools(tradeRouter))
 }
 
 export const usePoolShareToken = (poolId: string) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
 
   return useQuery(
     QUERY_KEYS.poolShareToken(poolId),
@@ -59,7 +59,7 @@ export const usePoolsWithShareTokens = () => {
 }
 
 export const usePoolShareTokens = (poolIds: (string | AccountId32)[]) => {
-  const api = useApiPromise()
+  const { api } = useApiPromise()
 
   return useQueries({
     queries: poolIds.map((id) => ({
