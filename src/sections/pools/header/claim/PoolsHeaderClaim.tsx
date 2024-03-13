@@ -34,7 +34,7 @@ export const PoolsHeaderClaim = () => {
             <ChevronDown />
           </STrigger>
           <Portal>
-            <Content asChild side="bottom" align="end" sideOffset={8}>
+            <Content side="bottom" align="end" sideOffset={8}>
               <SContent>
                 <PoolsHeaderClaimContent onClaim={() => setOpen(false)} />
               </SContent>
