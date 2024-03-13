@@ -88,7 +88,7 @@ export const getCoingeckoSpotPrice = async () => {
 }
 
 export const useUsdSpotPrices = (ids: Maybe<u32 | string>[]) => {
-  const tradeRouter = useTradeRouter()
+  const { tradeRouter } = useApiPromise()
   const usd = useUsdPeggedAsset()
   const coingecko = useCoingeckoKsmPrice()
 
@@ -117,7 +117,7 @@ export const useUsdSpotPrices = (ids: Maybe<u32 | string>[]) => {
 }
 
 export const useUsdSpotPrice = (id: Maybe<u32 | string>) => {
-  const tradeRouter = useTradeRouter()
+  const { tradeRouter } = useApiPromise()
   const usd = useUsdPeggedAsset()
   const coingecko = useCoingeckoKsmPrice()
 
