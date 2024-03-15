@@ -2,7 +2,7 @@ import { useQueries, useQuery } from "@tanstack/react-query"
 import { QUERY_KEYS } from "utils/queryKeys"
 import { u32 } from "@polkadot/types"
 import { TradeRouter } from "@galacticcouncil/sdk"
-import { BN_1, BN_10, BN_NAN } from "utils/constants"
+import { BN_1, BN_NAN } from "utils/constants"
 import BN from "bignumber.js"
 import { useApiPromise } from "utils/api"
 import { Maybe } from "utils/helpers"
@@ -12,14 +12,14 @@ export const useSpotPrice = (
   assetA: Maybe<u32 | string>,
   assetB: Maybe<u32 | string>,
 ) => {
-  const { tradeRouter } = useApiPromise()
+  const { tradeRouter, isLoaded } = useApiPromise()
   const tokenIn = assetA?.toString() ?? ""
   const tokenOut = assetB?.toString() ?? ""
 
   return useQuery(
     QUERY_KEYS.spotPrice(tokenIn, tokenOut),
     getSpotPrice(tradeRouter, tokenIn, tokenOut),
-    { enabled: !!tokenIn && !!tokenOut },
+    { enabled: !!tokenIn && !!tokenOut && isLoaded },
   )
 }
 
@@ -51,9 +51,9 @@ export const getSpotPrice =
     // error replies are valid in case token has no spot price
     let spotPrice = BN_NAN
     try {
-      const res = await tradeRouter.getBestSpotPrice(tokenIn, tokenOut)
+      const res = await tradeRouter.getBestSpotPrice(tokenOut, tokenIn)
       if (res) {
-        spotPrice = res.amount.div(BN_10.pow(res.decimals))
+        spotPrice = BN_1.shiftedBy(res.decimals).div(res.amount)
       }
     } catch (e) {}
 
@@ -89,10 +89,9 @@ export const getCoingeckoSpotPrice = async () => {
 
 export const useUsdSpotPrices = (ids: Maybe<u32 | string>[]) => {
   const { tradeRouter } = useApiPromise()
-  const usd = useUsdPeggedAsset()
+  const usdId = useUsdPeggedAsset()
   const coingecko = useCoingeckoKsmPrice()
 
-  const usdId = usd.data?.id ?? ""
   const ksmSpotPrice = coingecko.data
 
   const assets = ids
@@ -117,12 +116,11 @@ export const useUsdSpotPrices = (ids: Maybe<u32 | string>[]) => {
 }
 
 export const useUsdSpotPrice = (id: Maybe<u32 | string>) => {
-  const { tradeRouter } = useApiPromise()
-  const usd = useUsdPeggedAsset()
+  const { isLoaded, tradeRouter } = useApiPromise()
+  const usdId = useUsdPeggedAsset()
   const coingecko = useCoingeckoKsmPrice()
 
   const tokenIn = id?.toString() ?? ""
-  const usdId = usd.data?.id ?? ""
   const ksmSpotPrice = coingecko.data
 
   return useQuery(
@@ -136,6 +134,6 @@ export const useUsdSpotPrice = (id: Maybe<u32 | string>) => {
         spotPrice: usdSpotPrice,
       }
     },
-    { enabled: !!tokenIn && !!usdId && !!ksmSpotPrice },
+    { enabled: !!tokenIn && !!usdId && !!ksmSpotPrice && isLoaded },
   )
 }
