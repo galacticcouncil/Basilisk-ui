@@ -63,7 +63,7 @@ export function ProviderSelectModal(props: {
       gradientBg
     >
       <>
-        {import.meta.env.VITE_ENV !== "production" && (
+    
           <form onSubmit={form.handleSubmit((a) => mutation.mutate(a))}>
             <Controller
               name="address"
@@ -104,7 +104,7 @@ export function ProviderSelectModal(props: {
               )}
             />
           </form>
-        )}
+       
         <SContainer>
           <SHeader>
             <div css={{ gridArea: "name" }}>
