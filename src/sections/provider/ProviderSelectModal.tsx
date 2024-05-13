@@ -133,7 +133,7 @@ export function ProviderSelectModal(props: {
             )
           })}
 
-          {import.meta.env.VITE_ENV !== "production" &&
+          {
             rpcList?.map((rpc, index) => (
               <Fragment key={rpc.url}>
                 <ProviderItem
