@@ -25,3 +25,6 @@ export const ORMLVEST = "ormlvest"
 
 // asset type
 export const ASSET_TYPE_TOKEN = "Token"
+
+export const TREASURY_WALLET =
+  "bXj4uMHTyQyvNCLHKBv6ztwkPSx8tgsrxuFtAFfWDYntXtohw"

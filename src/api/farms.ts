@@ -3,8 +3,14 @@ import { u32 } from "@polkadot/types-codec"
 import { AccountId32 } from "@polkadot/types/interfaces/runtime"
 import { useQueries, useQuery } from "@tanstack/react-query"
 import { useApiPromise } from "utils/api"
+import { getAccountResolver } from "utils/farms/claiming/accountResolver"
 import { isNotNil, useQueryReduce } from "utils/helpers"
 import { QUERY_KEYS } from "utils/queryKeys"
+import { PROVIDERS, useProviderRpcUrlStore } from "./provider"
+import { u8aToHex } from "@polkadot/util"
+import { decodeAddress } from "@polkadot/util-crypto"
+import { BN_0, TREASURY_WALLET } from "utils/constants"
+import request, { gql } from "graphql-request"
 
 export const useYieldFarms = (ids: FarmIds[]) => {
   const { api } = useApiPromise()
@@ -55,12 +61,22 @@ export const useInactiveYieldFarms = (poolIds: (AccountId32 | string)[]) => {
 }
 
 export const useFarms = (poolIds: Array<AccountId32 | string>) => {
+  const { api } = useApiPromise()
   const activeYieldFarms = useActiveYieldFarms(poolIds)
 
   const data = activeYieldFarms.reduce(
     (acc, farm) => (farm.data ? [...acc, ...farm.data] : acc),
     [] as FarmIds[],
   )
+
+  const accountResolver = getAccountResolver(api.registry)
+  const globalFarmPotAddresses = data?.map((farm) => {
+    const potAddresss = accountResolver(farm.globalFarmId).toString()
+    return {
+      globalFarmId: farm.globalFarmId.toString(),
+      potAddresss,
+    }
+  })
 
   const globalFarms = useGlobalFarms(data.map((id) => id.globalFarmId))
   const yieldFarms = useYieldFarms(data)
@@ -74,8 +90,11 @@ export const useFarms = (poolIds: Array<AccountId32 | string>) => {
             af.globalFarmId.eq(gf.id),
           )
           const yieldFarm = yieldFarms?.find((yf) => af.yieldFarmId.eq(yf.id))
+          const globalFarmPotAddress = globalFarmPotAddresses.find(
+            (farm) => farm.globalFarmId === globalFarm?.id.toString(),
+          )?.potAddresss
           if (!globalFarm || !yieldFarm) return undefined
-          return { globalFarm, yieldFarm }
+          return { globalFarm, yieldFarm, globalFarmPotAddress }
         }) ?? []
       return farms.filter(isNotNil)
     },
@@ -224,4 +243,62 @@ export interface FarmIds {
   poolId: AccountId32 | string
   globalFarmId: u32
   yieldFarmId: u32
+}
+
+export const useFarmPotTransfers = (potAddresses: string[]) => {
+  const preference = useProviderRpcUrlStore()
+  const rpcUrl = preference.rpcUrl ?? import.meta.env.VITE_PROVIDER_URL
+  const selectedProvider = PROVIDERS.find(
+    (provider) => new URL(provider.url).hostname === new URL(rpcUrl).hostname,
+  )
+
+  const indexerUrl =
+    selectedProvider?.indexerUrl ?? import.meta.env.VITE_INDEXER_URL
+
+  return useQueries({
+    queries: potAddresses.map((potAddress) => ({
+      queryKey: QUERY_KEYS.potTransfers(potAddress),
+      queryFn: async () => {
+        const transfers = await getTransfers(indexerUrl, potAddress)
+        const sum = transfers.events.reduce((acc, transfer) => {
+          if (
+            transfer.args.to.slice(0, 26) !== transfer.args.from.slice(0, 26)
+          ) {
+            return acc.plus(transfer.args.amount)
+          }
+
+          return acc
+        }, BN_0)
+        return { amount: sum.toString(), potAddress }
+      },
+      enabled: !!potAddress,
+    })),
+  })
+}
+
+const getTransfers = async (indexerUrl: string, address: string) => {
+  const potAddress = u8aToHex(decodeAddress(address))
+  const treasuryAddress = u8aToHex(decodeAddress(TREASURY_WALLET))
+
+  return {
+    ...(await request<{
+      events: Array<{ args: { to: string; from: string; amount: string } }>
+    }>(
+      indexerUrl,
+      gql`
+        query FarmTransfers($potAddress: String!) {
+          events(
+            where: {
+              name_in: ["Balances.Transfer", "Tokens.Transfer"]
+              args_jsonContains: { to: $potAddress }
+            }
+            orderBy: block_height_ASC
+          ) {
+            args
+          }
+        }
+      `,
+      { potAddress, treasuryAddress },
+    )),
+  }
 }

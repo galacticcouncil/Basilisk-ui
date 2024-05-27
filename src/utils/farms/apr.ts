@@ -2,11 +2,11 @@ import * as liquidityMining from "@galacticcouncil/math-liquidity-mining"
 import { AccountId32 } from "@polkadot/types/interfaces/runtime"
 import { PalletLiquidityMiningLoyaltyCurve } from "@polkadot/types/lookup"
 import { useBestNumber } from "api/chain"
-import { useFarms } from "api/farms"
+import { useFarmPotTransfers, useFarms } from "api/farms"
 import BigNumber from "bignumber.js"
 import { secondsInYear } from "date-fns"
 import { BLOCK_TIME, BN_0, BN_1, BN_QUINTILL } from "utils/constants"
-import { useQueryReduce } from "utils/helpers"
+import { isNotNil, useQueryReduce } from "utils/helpers"
 
 export type AprFarm = NonNullable<
   Exclude<ReturnType<typeof useAPR>["data"], undefined>[number]
@@ -16,11 +16,17 @@ export const useAPR = (poolId: AccountId32 | string) => {
   const bestNumber = useBestNumber()
   const poolFarms = useFarms([poolId])
 
+  const potAddresses =
+    poolFarms.data?.map((farm) => farm.globalFarmPotAddress).filter(isNotNil) ??
+    []
+
+  const potTransfers = useFarmPotTransfers(potAddresses)
+
   return useQueryReduce(
     [bestNumber, poolFarms] as const,
     (bestNumber, poolFarms) => {
       const data = poolFarms.map((farm) => {
-        const { globalFarm, yieldFarm } = farm
+        const { globalFarm, yieldFarm, globalFarmPotAddress } = farm
 
         const loyaltyFactor = yieldFarm.loyaltyCurve.isNone
           ? BN_1
@@ -101,11 +107,19 @@ export const useAPR = (poolId: AccountId32 | string) => {
           .times(yieldPerPeriod)
           .div(maxRewardPerPeriod)
 
+        const potMaxBalance = BigNumber(
+          potTransfers.find(
+            (potTransfer) =>
+              potTransfer.data?.potAddress === globalFarmPotAddress,
+          )?.data?.amount ?? 0,
+        )
+
         return {
           minApr,
           apr,
           distributedRewards,
           maxRewards,
+          potMaxBalance,
           fullness,
           estimatedEndBlock: estimatedEndBlock,
           assetId: globalFarm.rewardCurrency,
