@@ -1,10 +1,12 @@
 import * as liquidityMining from "@galacticcouncil/math-liquidity-mining"
 import { AccountId32 } from "@polkadot/types/interfaces/runtime"
 import { PalletLiquidityMiningLoyaltyCurve } from "@polkadot/types/lookup"
+import { useAccountsBalances } from "api/accountBalances"
 import { useBestNumber } from "api/chain"
-import { useFarmPotTransfers, useFarms } from "api/farms"
+import { useFarms } from "api/farms"
 import BigNumber from "bignumber.js"
 import { secondsInYear } from "date-fns"
+import { NATIVE_ASSET_ID } from "utils/api"
 import { BLOCK_TIME, BN_0, BN_1, BN_QUINTILL } from "utils/constants"
 import { isNotNil, useQueryReduce } from "utils/helpers"
 
@@ -20,7 +22,7 @@ export const useAPR = (poolId: AccountId32 | string) => {
     poolFarms.data?.map((farm) => farm.globalFarmPotAddress).filter(isNotNil) ??
     []
 
-  const potTransfers = useFarmPotTransfers(potAddresses)
+  const balances = useAccountsBalances(potAddresses)
 
   return useQueryReduce(
     [bestNumber, poolFarms] as const,
@@ -107,12 +109,22 @@ export const useAPR = (poolId: AccountId32 | string) => {
           .times(yieldPerPeriod)
           .div(maxRewardPerPeriod)
 
-        const potMaxBalance = BigNumber(
-          potTransfers.find(
-            (potTransfer) =>
-              potTransfer.data?.potAddress === globalFarmPotAddress,
-          )?.data?.amount ?? 0,
+        const rewardCurrency = globalFarm.rewardCurrency.toString()
+        const accountBalance = balances.find(
+          (balance) => balance.data?.address === globalFarmPotAddress,
         )
+
+        const maxReward = accountBalance
+          ? rewardCurrency === NATIVE_ASSET_ID
+            ? accountBalance.data?.native.data.free.toBigNumber()
+            : accountBalance.data?.balances
+                .find((balance) => balance.id.toString() === rewardCurrency)
+                ?.data.free.toBigNumber()
+          : undefined
+
+        const potMaxBalance = maxReward
+          ? distributedRewards.plus(maxReward)
+          : undefined
 
         return {
           minApr,
@@ -122,7 +134,7 @@ export const useAPR = (poolId: AccountId32 | string) => {
           potMaxBalance,
           fullness,
           estimatedEndBlock: estimatedEndBlock,
-          assetId: globalFarm.rewardCurrency,
+          assetId: rewardCurrency,
           currentPeriod,
           loyaltyCurve,
           ...farm,
