@@ -3,7 +3,7 @@ import { QUERY_KEYS } from "utils/queryKeys"
 import { WsProvider } from "@polkadot/api"
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
-import { SubstrateApis } from "@galacticcouncil/xcm-sdk"
+import { SubstrateApis } from "@galacticcouncil/xcm-core"
 import { PoolService, PoolType, TradeRouter } from "@galacticcouncil/sdk"
 
 const fetchApi = async (url: string) => {
