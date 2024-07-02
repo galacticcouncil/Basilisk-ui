@@ -15,7 +15,7 @@ export const UigcAssetPlaceholder = createComponent({
   react: React,
 })
 
-export function getAssetLogo(symbol: string | null | undefined) {
+export function getAssetLogo(symbol: string | undefined) {
   return (
     <UigcAssetLogo
       ref={(el) => el && el.setAttribute("fit", "")}

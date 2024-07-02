@@ -88,18 +88,16 @@ export const SWalletButton = styled.button<{
       `
     }
 
-    if (variant === "external") {
-      return css`
-        background: hsla(360, 100%, 100%, 0.05);
+    return css`
+      background: hsla(360, 100%, 100%, 0.05);
 
-        :hover {
-          background: hsla(360, 100%, 100%, 0.1);
-        }
+      :hover {
+        background: hsla(360, 100%, 100%, 0.1);
+      }
 
-        :active {
-          background: hsla(360, 100%, 100%, 0.12);
-        }
-      `
-    }
+      :active {
+        background: hsla(360, 100%, 100%, 0.12);
+      }
+    `
   }}
 `

@@ -13,7 +13,7 @@ import { connectWsProvider } from "./ProviderSelectModal.utils"
 import { ProviderInput } from "./components/ProviderInput/ProviderInput"
 import { Separator } from "components/Separator/Separator"
 import { DeleteModal } from "./components/DeleteModal/DeleteModal"
-import { SubstrateApis } from "@galacticcouncil/xcm-sdk"
+import { SubstrateApis } from "@galacticcouncil/xcm-core"
 
 export function ProviderSelectModal(props: {
   open: boolean
