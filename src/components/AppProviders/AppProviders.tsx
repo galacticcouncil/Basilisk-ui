@@ -8,6 +8,15 @@ import { Provider as TooltipProvider } from "@radix-ui/react-tooltip"
 import { SkeletonTheme } from "react-loading-skeleton"
 import { theme } from "theme"
 import { WalletConnectProvider } from "components/WalletConnectProvider/WalletConnectProvider"
+import * as React from "react"
+import * as Apps from "@galacticcouncil/apps"
+import { createComponent } from "@lit-labs/react"
+
+const AppsContextProvider = createComponent({
+  tagName: "gc-context-provider",
+  elementClass: Apps.ContextProvider,
+  react: React,
+})
 
 export const AppProviders: FC<PropsWithChildren> = ({ children }) => {
   const preference = useProviderRpcUrlStore()
@@ -30,7 +39,7 @@ export const AppProviders: FC<PropsWithChildren> = ({ children }) => {
                 highlightColor={`rgba(${theme.rgbColors.white}, 0.24)`}
                 borderRadius={9999}
               >
-                {children}
+                <AppsContextProvider>{children}</AppsContextProvider>
                 <Transactions />
               </SkeletonTheme>
             </ToastProvider>

@@ -19,6 +19,7 @@ export const useLiquidityPositionsTableData = () => {
     : []
 
   const assetsPool = useAssetDetailsList(tokenIds, {
+    //@ts-ignore
     assetType: ["PoolShare"],
   })
 

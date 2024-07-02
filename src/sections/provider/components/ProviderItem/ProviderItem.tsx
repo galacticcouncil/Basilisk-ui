@@ -12,7 +12,7 @@ import { useEffect, useState } from "react"
 import { WsProvider } from "@polkadot/rpc-provider"
 import { u32, u64 } from "@polkadot/types"
 import { ProviderItemEdit } from "../ProviderItemEdit/ProviderItemEdit"
-import { SubstrateApis } from "@galacticcouncil/xcm-sdk"
+import { SubstrateApis } from "@galacticcouncil/xcm-core"
 
 const ProviderItemExternal = (props: { url: string; className?: string }) => {
   const [bestNumberState, setBestNumberState] = useState<

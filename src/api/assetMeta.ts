@@ -31,7 +31,9 @@ const getAllAssetMeta = (api: ApiPromise) => async () => {
     entries.map(([key, data]) => {
       return {
         id: key.args[0].toString(),
+        //@ts-ignore
         symbol: data.unwrap().symbol.toUtf8(),
+        //@ts-ignore
         decimals: data.unwrap().decimals,
       }
     })
@@ -68,5 +70,6 @@ export const getAssetMeta = (api: ApiPromise, id: u32 | string) => async () => {
   }
 
   const res = await api.query.assetRegistry.assetMetadataMap(id)
+  //@ts-ignore
   return { id, data: res.unwrapOr(null) }
 }
