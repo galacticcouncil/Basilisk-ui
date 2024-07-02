@@ -279,19 +279,11 @@ const getNativeBalances = (
   const free = balance.free.toBigNumber()
   const reservedBN = balance.reserved.toBigNumber()
 
-  const feeFrozen = balance.feeFrozen
-    ? balance.feeFrozen.toBigNumber()
-    : //@ts-ignore
-      balance.frozen.toBigNumber()
-
-  const miscFrozen = balance.miscFrozen
-    ? balance.miscFrozen.toBigNumber()
-    : //@ts-ignore
-      balance.frozen.toBigNumber()
+  const frozen = balance.frozen.toBigNumber()
 
   const total = free.plus(reservedBN).div(dp)
   const totalUSD = total.times(spotPrice)
-  const transferable = free.minus(BN.max(feeFrozen, miscFrozen)).div(dp)
+  const transferable = free.minus(frozen).div(dp)
   const transferableUSD = transferable.times(spotPrice)
 
   const reserved = reservedBN.div(dp)

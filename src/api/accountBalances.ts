@@ -73,9 +73,7 @@ const getTokenAccountBalancesList =
           let { data }: { data: PalletBalancesAccountDataCustom } =
             natives[nativeIdx]
 
-          const frozen = data.feeFrozen
-            ? data.feeFrozen.add(data.miscFrozen)
-            : data.frozen
+          const frozen = data.frozen
 
           values.push({
             free: data.free,

@@ -66,6 +66,7 @@ const getAssetDetails = (api: ApiPromise) => async () => {
   const assetsMeta = meta.map(([key, data]) => {
     return {
       id: key.args[0].toString(),
+      //@ts-ignore
       symbol: data.unwrap().symbol.toUtf8(),
     }
   })
@@ -88,6 +89,7 @@ const getAssetDetails = (api: ApiPromise) => async () => {
 
       return {
         id: key.args[0].toString(),
+        //@ts-ignore
         name: data.unwrap().name.toUtf8(),
         assetType: data.unwrap().assetType.type,
         existentialDeposit: data.unwrap().existentialDeposit.toBigNumber(),
