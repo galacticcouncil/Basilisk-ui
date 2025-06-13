@@ -37,6 +37,7 @@ export function XcmPage() {
             accountProvider={account?.provider}
             accountAddress={account?.address}
             apiAddress={rpcUrl}
+            blacklist="robonomics"
             stableCoinAssetId={usdAssetId}
           />
         </SContainer>
