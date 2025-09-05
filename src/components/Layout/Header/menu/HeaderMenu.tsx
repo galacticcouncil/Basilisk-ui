@@ -10,9 +10,6 @@ export const HeaderMenu = () => {
   return (
     <SList>
       {MENU_ITEMS.map((item, i) => {
-        if (!item.enabled) {
-          return null
-        }
         if (item.external) {
           return (
             <a href={item.href} key={i}>
@@ -26,9 +23,10 @@ export const HeaderMenu = () => {
             key={i}
             to={item.href}
             search={account ? { account } : undefined}
+            disabled={!item.enabled}
           >
             {({ isActive }) => (
-              <SItem isActive={isActive}>{t(item.translationKey)}</SItem>
+              <SItem isActive={isActive} disabled={!item.enabled}>{t(item.translationKey)}</SItem>
             )}
           </Link>
         )
