@@ -29,7 +29,6 @@ export const MobileNavBar = () => {
 
   const [visibleTabs, hiddenTabs] = MENU_ITEMS.reduce(
     (result, value) => {
-      if (!value.enabled) return result
       const isVisible = value.mobVisible
       result[isVisible ? 0 : 1].push(value)
       return result
@@ -42,6 +41,7 @@ export const MobileNavBar = () => {
       key={index}
       to={hiddenTab.href}
       search={account ? { account } : undefined}
+      disabled={!hiddenTab.enabled}
     >
       {({ isActive }) => (
         <SNavBarItemHidden key={index} active={isActive}>
