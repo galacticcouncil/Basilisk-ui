@@ -33,10 +33,10 @@ export const routes = [
       },
     ],
   },
-  {
-    path: "cross-chain",
-    element: <XcmPage />,
-  },
+  // {
+  //   path: "cross-chain",
+  //   element: <XcmPage />,
+  // },
   {
     path: "*",
     element: <Navigate to="/pools-and-farms" search />,
