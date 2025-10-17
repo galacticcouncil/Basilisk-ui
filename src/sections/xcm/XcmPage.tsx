@@ -30,14 +30,14 @@ export function XcmPage() {
           <XcmApp
             ref={ref}
             ecosystem={Ecosystem.Kusama}
-            srcChain="kusama"
+            srcChain="karura"
             destChain="basilisk"
             asset={"KSM"}
             accountName={account?.name}
             accountProvider={account?.provider}
             accountAddress={account?.address}
             apiAddress={rpcUrl}
-            blacklist="robonomics"
+            blacklist="robonomics,kusama"
             stableCoinAssetId={usdAssetId}
           />
         </SContainer>
